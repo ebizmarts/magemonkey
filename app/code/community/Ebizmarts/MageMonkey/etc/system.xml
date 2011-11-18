@@ -3,7 +3,7 @@
 	<sections>
 		<monkey translate="label" module="monkey">
             <class>monkey-section</class>
-            <label>monkey Configuration</label>
+            <label>Monkey Configuration</label>
             <header_css>mailchimp-header</header_css>
             <tab>customer</tab>
             <sort_order>404</sort_order>
