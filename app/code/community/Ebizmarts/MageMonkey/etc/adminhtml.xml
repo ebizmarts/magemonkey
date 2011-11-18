@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config>
+	<acl>
+	    <resources>
+	      <admin>
+		    <children>
+		        <system>
+		            <children>
+		                <config>
+		                    <children>
+		                        <monkey translate="title" module="monkey">
+		                            <title>MailChimp monkey Configuration</title>
+		                        </monkey>
+		                    </children>
+		                </config>
+		            </children>
+		        </system>
+		    </children>
+		</admin>
+	    </resources>
+	</acl>
+</config>
