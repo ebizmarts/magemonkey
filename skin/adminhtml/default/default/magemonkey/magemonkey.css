@@ -9,3 +9,5 @@ ul.tabs a.monkey-section:hover span { background:url(mailchimp-tab.png) no-repea
 ul.tabs a.monkey-section.active, ul.tabs a.monkey-section.active:hover {background-color: white;}
 
 h3.mailchimp-header { background:url(mailchimp-connected-ebizmarts-title.png) no-repeat 0 0; height: 64px; overflow:hidden; padding:0; width:200px; text-indent:-9999px; }
+
+fieldset#monkey_general {background:url(mailchimp-section-background.png) no-repeat 0 0; }
