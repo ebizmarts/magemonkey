@@ -9,7 +9,7 @@
 		                <config>
 		                    <children>
 		                        <monkey translate="title" module="monkey">
-		                            <title>MailChimp monkey Configuration</title>
+		                            <title>MailChimp Configuration</title>
 		                        </monkey>
 		                    </children>
 		                </config>
