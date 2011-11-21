@@ -70,6 +70,13 @@
         </routers>
     </frontend>
     <adminhtml>
+    	<layout>
+	        <updates>
+	            <magemonkey>
+	                <file>magemonkey.xml</file>
+	            </magemonkey>
+	        </updates>
+    	</layout>
         <translate>
             <modules>
                 <Ebizmarts_MageMonkey>
