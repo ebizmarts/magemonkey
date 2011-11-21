@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<layout>
+	<adminhtml_system_config_edit>
+		<reference name="head">
+			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
+		</reference>
+	</adminhtml_system_config_edit>
+
+	<magemonkey_adminhtml_ctemplate_edit>
+		<reference name="head">
+			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><name>magemonkey/magemonkey.js</name></action>
+		</reference>
+	</magemonkey_adminhtml_ctemplate_edit>
+
+	<magemonkey_adminhtml_ctemplate_new>
+		<reference name="head">
+			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><name>magemonkey/magemonkey.js</name></action>
+		</reference>
+	</magemonkey_adminhtml_ctemplate_new>
+</layout>
