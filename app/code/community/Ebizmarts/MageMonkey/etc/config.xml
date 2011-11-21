@@ -6,6 +6,16 @@
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
+    	<events>
+            <newsletter_subscriber_save_after>
+                <observers>
+                    <monkey_subscribe_observer>
+                        <class>monkey/observer</class>
+                        <method>handleSubscriber</method>
+                    </monkey_subscribe_observer>
+                </observers>
+            </newsletter_subscriber_save_after>
+    	</events>
         <models>
             <monkey>
                 <class>Ebizmarts_MageMonkey_Model</class>
