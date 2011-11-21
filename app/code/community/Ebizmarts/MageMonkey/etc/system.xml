@@ -37,7 +37,7 @@
                             <show_in_store>1</show_in_store>
                             <comment>Your MailChimp API Key</comment>
                         </apikey>
-                        <general translate="label comment">
+                        <list translate="label comment">
                             <label>General Subscription</label>
                             <frontend_type>select</frontend_type>
                             <source_model>monkey/system_config_source_list</source_model>
@@ -47,8 +47,8 @@
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
                             <comment>This is the main list used with the Magento General Subscription</comment>
-                        </general>
-                        <listid translate="label comment">
+                        </list>
+                        <additional_lists translate="label comment">
                             <label>Additional Lists</label>
                             <frontend_type>multiselect</frontend_type>
                             <source_model>monkey/system_config_source_list</source_model>
@@ -58,7 +58,7 @@
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
                             <comment>All selected lists will be available to customers as additionals lists</comment>
-                        </listid>
+                        </additional_lists>
                         <!--<intgr translate="label comment">
                             <label>Enable Interest Groups</label>
                             <frontend_type>select</frontend_type>
