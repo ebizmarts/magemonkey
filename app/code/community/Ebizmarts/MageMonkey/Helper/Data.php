@@ -39,4 +39,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		return Mage::getStoreConfig("monkey/general/$value", $store);
 	}
+
+	public function getDefaultList($storeId)
+	{
+		return $this->config('list', $storeId);
+	}
 }
