@@ -20,13 +20,18 @@ class Ebizmarts_MageMonkey_Model_Api
 	 *
 	 *@param string $command Command to be performed
 	 *@param optional array $args Call parameters
-	 *@return array Api call result
 	 */
 	public function call($command, $args)
 	{
 		try{
 
-			$result = ($args ? $this->_mcapi->{$command}($args) : $this->_mcapi->{$command}() );
+			if($args){
+				$result = call_user_func_array(array($this->_mcapi, $command), $args);
+			}else{
+				$result = $this->_mcapi->{$command}();
+			}
+
+			//$result = ($args ? $this->_mcapi->{$command}($args) : $this->_mcapi->{$command}() );
 
 			return $result;
 
@@ -37,6 +42,8 @@ class Ebizmarts_MageMonkey_Model_Api
 					->addError(Mage::helper('monkey')->__($ex->getMessage()));
 			}*/
 			Mage::logException($ex);
+
+			return $ex->getMessage();
 
 		}
 		return FALSE;
