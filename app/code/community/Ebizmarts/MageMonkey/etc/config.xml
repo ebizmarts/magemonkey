@@ -15,6 +15,14 @@
                     </monkey_subscribe_observer>
                 </observers>
             </newsletter_subscriber_save_after>
+            <newsletter_subscriber_delete_after>
+                <observers>
+                    <monkey_subscribe_delete_observer>
+                        <class>monkey/observer</class>
+                        <method>handleSubscriberDeletion</method>
+                    </monkey_subscribe_delete_observer>
+                </observers>
+            </newsletter_subscriber_delete_after>
     	</events>
         <models>
             <monkey>
