@@ -31,8 +31,6 @@ class Ebizmarts_MageMonkey_Model_Api
 				$result = $this->_mcapi->{$command}();
 			}
 
-			//$result = ($args ? $this->_mcapi->{$command}($args) : $this->_mcapi->{$command}() );
-
 			return $result;
 
 		}catch(Exception $ex){
