@@ -3,3 +3,5 @@
 "This is the main list used with the Magento General Subscription","This is the main list used with the Magento General Subscription"
 "All selected lists will be available to customers as additionals lists","All selected lists will be available to customers as additionals lists"
 "Secret key to validate webhooks requests","Secret key to validate webhooks requests"
+"MailChimp Cleaned Emails: %s %s at %s reason: %s","MailChimp Cleaned Emails: %s %s at %s reason: %s"
+"MailChimp Campaign Send: %s %s at %s","MailChimp Campaign Send: %s %s at %s"
