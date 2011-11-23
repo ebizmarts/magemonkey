@@ -15,17 +15,25 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$aux = (array_key_exists('Enterprise_Enterprise',$modulesArray))? 'EE' : 'CE' ;
 		$v = (string)Mage::getConfig()->getNode('modules/Ebizmarts_MageMonkey/version');
 		$version = strpos(Mage::getVersion(),'-')? substr(Mage::getVersion(),0,strpos(Mage::getVersion(),'-')) : Mage::getVersion();
-		return (string)'Ebizmarts/Mage'.$aux.$version.'/'. $v;
+		return (string)'MageMonkey/Mage'.$aux.$version.'/'. $v;
 	}
 
-	public function getApiKey()
+	public function getApiKey($store = null)
 	{
-		return $this->config('apikey');
+		if(is_null($store)){
+			$key = $this->config('apikey');
+		}else{
+			Mage::app()->setCurrentStore($store);
+			$key = $this->config('apikey', $store);
+			Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
+		}
+
+		return $key;
 	}
 
-	public function log($data)
+	public function log($data, $filename = 'Monkey.log')
 	{
-		return Mage::getModel('core/log_adapter', 'Monkey.log')->log($data);
+		return Mage::getModel('core/log_adapter', $filename)->log($data);
 	}
 
 	public function config($value, $store = null)
@@ -42,6 +50,31 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function getDefaultList($storeId)
 	{
-		return $this->config('list', $storeId);
+		Mage::app()->setCurrentStore($storeId);
+			$list = $this->config('list', $storeId);
+		Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
+		return $list;
+	}
+
+	public function getStoreByList($mcListId)
+	{
+        $list = Mage::getModel('core/config_data')->getCollection()
+            	->addValueFilter($mcListId)->getFirstItem();
+
+        $store = null;
+        if($list->getId() && ($list->getScope() != 'default')){
+        	$store = (string)Mage::app()->getStore($list->getScopeId())->getCode();
+        }
+
+        return $store;
+	}
+
+	public function isWebhookRequest()
+	{
+		$rq            = Mage::app()->getRequest();
+		$monkeyRequest = (string)'monkeywebhookindex';
+		$thisRequest   = (string)($rq->getRequestedRouteName() . $rq->getRequestedControllerName() . $rq->getRequestedActionName());
+
+		return (bool)($monkeyRequest === $thisRequest);
 	}
 }
