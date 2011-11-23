@@ -6,7 +6,8 @@ class Ebizmarts_MageMonkey_Model_Api
 
 	public function __construct($args)
 	{
-		$apikey = (empty($args) ? Mage::helper('monkey')->getApiKey() : $apikey);
+		$storeId = isset($args['store']) ? $args['store'] : null;
+		$apikey  = (!isset($args['apikey']) ? Mage::helper('monkey')->getApiKey($storeId) : $apikey);
 		$this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
 	}
 
@@ -25,20 +26,22 @@ class Ebizmarts_MageMonkey_Model_Api
 	{
 		try{
 
+			Mage::helper('monkey')->log($command, 'MageMonkey_ApiCall.log');
+			Mage::helper('monkey')->log($args, 'MageMonkey_ApiCall.log');
+			Mage::helper('monkey')->log($this->_mcapi->apiUrl, 'MageMonkey_ApiCall.log');
+
 			if($args){
 				$result = call_user_func_array(array($this->_mcapi, $command), $args);
 			}else{
 				$result = $this->_mcapi->{$command}();
 			}
 
+			Mage::helper('monkey')->log($result, 'MageMonkey_ApiCall.log');
+
 			return $result;
 
 		}catch(Exception $ex){
 
-			/*if( FALSE !== Mage::helper('adminhtml')->getCurrentUserId() ){
-				Mage::getSingleton('adminhtml/session')
-					->addError(Mage::helper('monkey')->__($ex->getMessage()));
-			}*/
 			Mage::logException($ex);
 
 			return $ex->getMessage();
