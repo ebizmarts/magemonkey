@@ -2,3 +2,4 @@
 "Your MailChimp API Key","Your MailChimp API Key"
 "This is the main list used with the Magento General Subscription","This is the main list used with the Magento General Subscription"
 "All selected lists will be available to customers as additionals lists","All selected lists will be available to customers as additionals lists"
+"Secret key to validate webhooks requests","Secret key to validate webhooks requests"
