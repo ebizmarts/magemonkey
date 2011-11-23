@@ -7,6 +7,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
+
+		if( TRUE === Mage::helper('monkey')->isWebhookRequest()){
+			return $observer;
+		}
+
 		$subscriber = $observer->getEvent()->getSubscriber();
 
 		$email  = $subscriber->getSubscriberEmail();
@@ -54,10 +59,15 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriberDeletion(Varien_Event_Observer $observer)
 	{
+		if( TRUE === Mage::helper('monkey')->isWebhookRequest()){
+			return $observer;
+		}
+
 		$subscriber = $observer->getEvent()->getSubscriber();
 
 		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
-		Mage::getSingleton('monkey/api')
+
+		Mage::getSingleton('monkey/api', array('store' => $subscriber->getStoreId()))
 									->listUnsubscribe($listId, $subscriber->getSubscriberEmail(), TRUE);
 
 	}
