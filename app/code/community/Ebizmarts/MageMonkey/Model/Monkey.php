@@ -68,6 +68,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
 			}elseif(!$newSubscriber->getId() && !$oldSubscriber->getId()){
 
 				Mage::getModel('newsletter/subscriber')
+					->setImportMode(TRUE)
 					->setStoreId(Mage::app()->getStore()->getId())
 						->subscribe($new);
 
@@ -133,7 +134,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
 			// entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
 			//VALIDAR si es lo que se requiere
 
-			Mage::getModel('newsletter/subscriber')->subscribe($data['data']['email']);
+			Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)->subscribe($data['data']['email']);
 		}catch(Exception $e){
 			Mage::logException($e);
 		}
@@ -159,7 +160,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
 			        	$s->delete();
 			        break;
 			        case 'unsub':
-			        	$s->unsubscribe();
+			        	$s->setImportMode(TRUE)->unsubscribe();
 			        break;
 			    }
 

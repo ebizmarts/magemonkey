@@ -14,6 +14,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$subscriber = $observer->getEvent()->getSubscriber();
 
+		$subscriber->setImportMode(TRUE);
+
 		$email  = $subscriber->getSubscriberEmail();
 		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
 		$isConfirmNeed = (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ? TRUE : FALSE;
@@ -64,6 +66,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$subscriber = $observer->getEvent()->getSubscriber();
+		$subscriber->setImportMode(TRUE);
 
 		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
 
