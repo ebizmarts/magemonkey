@@ -109,7 +109,7 @@
     	<monkey>
     		<general>
 	    		<active>0</active>
-	    		<double_optin><![CDATA[See: System->Configuration->Customers->Newsletter->Subscription Options->Need to Confirm // IMPORTANT: Should be set to Yes. Abusing this may cause your account to be suspended.]]></double_optin>
+	    		<double_optin><![CDATA[SEE: System->Configuration->Customers->Newsletter->Subscription Options->Need to Confirm]]></double_optin>
     		</general>
     	</monkey>
     </default>

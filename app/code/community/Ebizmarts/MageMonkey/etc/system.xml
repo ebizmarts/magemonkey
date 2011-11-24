@@ -85,6 +85,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <comment><![CDATA[<b>IMPORTANT</b>: Should be set to Yes. Abusing this may cause your account to be suspended.]]></comment>
                         </double_optin>
                         <!--<intgr translate="label comment">
                             <label>Enable Interest Groups</label>
