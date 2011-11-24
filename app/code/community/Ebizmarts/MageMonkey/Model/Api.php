@@ -3,12 +3,21 @@
 class Ebizmarts_MageMonkey_Model_Api
 {
 	protected $_mcapi = null;
+        protected $_apihost = null;
 
 	public function __construct($args)
 	{
 		$storeId = isset($args['store']) ? $args['store'] : null;
 		$apikey  = (!isset($args['apikey']) ? Mage::helper('monkey')->getApiKey($storeId) : $apikey);
 		$this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
+                
+                //Create actual API URL using API key, borrowed from MCAPI.php
+                $dc = "us1";
+                if (strstr($this->_mcapi->api_key,"-")){
+                    list($key, $dc) = explode("-",$this->_mcapi->api_key,2);
+                    if (!$dc) $dc = "us1";
+                }
+                $this->_apihost = $dc.".".$this->_mcapi->apiUrl["host"];
 	}
 
 	public function __call($method, $args = null)
@@ -25,10 +34,12 @@ class Ebizmarts_MageMonkey_Model_Api
 	public function call($command, $args)
 	{
 		try{
+                        
+
 
 			Mage::helper('monkey')->log($command, 'MageMonkey_ApiCall.log');
 			Mage::helper('monkey')->log($args, 'MageMonkey_ApiCall.log');
-			Mage::helper('monkey')->log($this->_mcapi->apiUrl, 'MageMonkey_ApiCall.log');
+			Mage::helper('monkey')->log($this->_apihost, 'MageMonkey_ApiCall.log');
 
 			if($args){
 				$result = call_user_func_array(array($this->_mcapi, $command), $args);
