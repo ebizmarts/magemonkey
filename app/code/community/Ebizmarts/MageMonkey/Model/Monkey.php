@@ -10,6 +10,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
 		$store  = Mage::helper('monkey')->getStoreByList($listId);
 
 		if(!is_null($store)){
+			$curstore = Mage::app()->getCurrentStore();
 			Mage::app()->setCurrentStore($store);
 		}
 
@@ -20,15 +21,103 @@ class Ebizmarts_MageMonkey_Model_Monkey
 	        case 'unsubscribe':
 	        	$this->_unsubscribe($data);
 	        break;
-	        /*case 'cleaned'    : $this->_subscribe($_POST['data']);     break;
-	        case 'upemail'    : $this->_subscribe($_POST['data']);     break;
-	        case 'profile'    : $this->_subscribe($_POST['data']);     break;*/
+	        case 'cleaned':
+	        	$this->_clean($data);
+	        break;
+	        case 'campaign':
+	        	$this->_campaign($data);
+	        break;
+	        //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
+	        case 'upemail':
+	        	$this->_updateEmail($data);
+	        break;
 	    }
 
 		if(!is_null($store)){
-			Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
+			Mage::app()->setCurrentStore($curstore);
 		}
 
+	}
+
+	protected function _updateEmail(array $data)
+	{
+
+		/*if($data['type'] == 'profile'){
+
+			$email = $data['data']['email'];
+
+			$subscriber = $this->_loadByEmail($email);
+			if($subscriber->getId()){
+				$subscriber->setSubscriberEmail($email)
+									->save();
+			}else{
+				Mage::getModel('newsletter/subscriber')->subscribe($email);
+			}
+
+		}else{*/
+
+	 		$old = $data['data']['old_email'];
+			$new = $data['data']['new_email'];
+
+	 		$oldSubscriber = $this->_loadByEmail($old);
+	 		$newSubscriber = $this->_loadByEmail($new);
+
+			if( !$newSubscriber->getId() && $oldSubscriber->getId() ){
+				$oldSubscriber->setSubscriberEmail($new)
+								->save();
+			}elseif(!$newSubscriber->getId() && !$oldSubscriber->getId()){
+
+				Mage::getModel('newsletter/subscriber')
+					->setStoreId(Mage::app()->getStore()->getId())
+						->subscribe($new);
+
+			}/*else{
+				Mage::getModel('newsletter/subscriber')
+					->setStoreId(Mage::app()->getStore()->getId())
+						->subscribe($new);
+				$oldSubscriber->delete();
+			}*/
+
+		/*}*/
+
+	}
+
+	/**
+	 * Add "Cleaned Emails" notification to Adminnotification Inbox
+	 */
+	protected function _clean(array $data)
+	{
+		$text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
+
+		$this->_getInbox()
+			  ->setTitle($text)
+			  ->setDescription($text)
+			  ->save();
+
+		//Delete subscriber from Magento
+		$s = $this->_loadByEmail($data['data']['email']);
+
+		if($s->getId()){
+			try{
+		    	$s->delete();
+			}catch(Exception $e){
+				Mage::logException($e);
+			}
+		}
+
+	}
+
+	/**
+	 * Add "Campaign Sending Status" to Adminnotification Inbox
+	 */
+	protected function _campaign(array $data)
+	{
+		$text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
+
+		$this->_getInbox()
+			  ->setTitle($text)
+			  ->setDescription($text)
+			  ->save();
 	}
 
 	/**
@@ -59,11 +148,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
 	protected function _unsubscribe(array $data)
 	{
 
-		$s = Mage::getModel('newsletter/subscriber')
-				->getCollection()
-				->addFieldToFilter('subscriber_email', $data['data']['email'])
-				->addFieldToFilter('store_id', Mage::app()->getStore()->getId())
-				->getFirstItem();
+		$s = $this->_loadByEmail($data['data']['email']);
 
 		if($s->getId()){
 
@@ -84,5 +169,21 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
 		}
 
+	}
+
+	protected function _getInbox()
+	{
+		return Mage::getModel('adminnotification/inbox')
+					->setSeverity(4)//Notice
+					->setDateAdded(Mage::getModel('core/date')->gmtDate());
+	}
+
+	protected function _loadByEmail($email)
+	{
+		return Mage::getModel('newsletter/subscriber')
+				->getCollection()
+				->addFieldToFilter('subscriber_email', $email)
+				->addFieldToFilter('store_id', Mage::app()->getStore()->getId())
+				->getFirstItem();
 	}
 }
