@@ -23,9 +23,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		if(is_null($store)){
 			$key = $this->config('apikey');
 		}else{
+			$curstore = Mage::app()->getCurrentStore();
 			Mage::app()->setCurrentStore($store);
 			$key = $this->config('apikey', $store);
-			Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
+			Mage::app()->setCurrentStore($curstore);
 		}
 
 		return $key;
@@ -50,9 +51,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function getDefaultList($storeId)
 	{
+		$curstore = Mage::app()->getCurrentStore();
 		Mage::app()->setCurrentStore($storeId);
 			$list = $this->config('list', $storeId);
-		Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
+		Mage::app()->setCurrentStore($curstore);
 		return $list;
 	}
 
