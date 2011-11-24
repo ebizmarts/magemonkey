@@ -20,12 +20,19 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
 		$isConfirmNeed = (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ? TRUE : FALSE;
 
+		$doubleoptin = ((int)Mage::helper('monkey')->config('double_optin', $subscriber->getStoreId()) === 1) ? TRUE : FALSE;
+
 		//New subscriber, just add
 		if( $subscriber->isObjectNew() ){
 
 			if(FALSE === $isConfirmNeed){
+
+				if( TRUE === $doubleoptin ){
+					$subscriber->setSubscriberStatus(Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE);
+				}
 				Mage::getSingleton('monkey/api')
-									->listSubscribe($listId, $email);
+									->listSubscribe($listId, $email, NULL, 'html', $doubleoptin);
+
 			}
 
 		}else{
@@ -45,7 +52,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 					if( FALSE === $isConfirmNeed || ($oldstatus == Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE) ){
 						Mage::getSingleton('monkey/api')
-									->listSubscribe($listId, $email);
+									->listSubscribe($listId, $email, NULL, 'html', $doubleoptin);
 					}
 
 				}
