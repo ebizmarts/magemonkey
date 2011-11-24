@@ -108,8 +108,8 @@
     <default>
     	<monkey>
     		<general>
-	    		<active>1</active>
-    			<double_optin>1</double_optin>
+	    		<active>0</active>
+	    		<double_optin><![CDATA[See: System - Configuration - Customers - Newsletter - Subscription Options - Need to Confirm]]></double_optin>
     		</general>
     	</monkey>
     </default>
