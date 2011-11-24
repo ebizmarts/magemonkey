@@ -23,15 +23,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 		//New subscriber, just add
 		if( $subscriber->isObjectNew() ){
 
-			if(FALSE === $isConfirmNeed){
-
-				if( TRUE === $isConfirmNeed ){
-					$subscriber->setSubscriberStatus(Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE);
-				}
-				Mage::getSingleton('monkey/api')
-									->listSubscribe($listId, $email, NULL, 'html', $isConfirmNeed);
-
+			if( TRUE === $isConfirmNeed ){
+				$subscriber->setSubscriberStatus(Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE);
 			}
+			Mage::getSingleton('monkey/api')
+								->listSubscribe($listId, $email, NULL, 'html', $isConfirmNeed);
 
 		}else{
 
@@ -48,7 +44,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 				}else if($status == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED){
 
-					if( FALSE === $isConfirmNeed || ($oldstatus == Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE) ){
+					if( $oldstatus == Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE ){
 						Mage::getSingleton('monkey/api')
 									->listSubscribe($listId, $email, NULL, 'html', $isConfirmNeed);
 					}
