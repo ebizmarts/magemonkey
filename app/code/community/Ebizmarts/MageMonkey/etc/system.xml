@@ -39,7 +39,7 @@
                         </apikey>
                         <account_details translate="label">
                             <label>Account details</label>
-                            <frontend_type>label</frontend_type>
+                            <frontend_type>select</frontend_type>
                             <sort_order>25</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
