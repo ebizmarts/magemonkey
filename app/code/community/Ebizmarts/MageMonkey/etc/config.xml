@@ -106,5 +106,11 @@
         </translate>
     </adminhtml>
     <default>
+    	<monkey>
+    		<general>
+	    		<active>1</active>
+    			<double_optin>1</double_optin>
+    		</general>
+    	</monkey>
     </default>
 </config>
