@@ -119,7 +119,7 @@
     	<monkey>
     		<general>
 	    		<active>0</active>
-	    		<double_optin><![CDATA[SEE: System->Configuration->Customers->Newsletter->Subscription Options->Need to Confirm]]></double_optin>
+	    		<double_optin>System->Configuration->Customers->Newsletter->Subscription Options->Need to Confirm</double_optin>
     		</general>
     	</monkey>
     </default>

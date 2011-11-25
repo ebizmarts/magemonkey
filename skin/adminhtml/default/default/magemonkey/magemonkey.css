@@ -4,11 +4,11 @@ ul.tabs a.monkey-section,
 ul.tabs a.monkey-section:hover {border-bottom:none; padding:0.5em 0.5em 0 1.5em; text-indent:-9999px;}
 
 ul.tabs a.monkey-section span,
-ul.tabs a.monkey-section:hover span { background:url(mailchimp-tab.png) no-repeat 0 0; overflow:hidden; padding:0; width:120px; height:24px;}
+ul.tabs a.monkey-section:hover span { background:url(mailchimp-tab.png) no-repeat 0 0; overflow:hidden; padding:0; width:120px; height:26px;}
 
 ul.tabs a.monkey-section.active, ul.tabs a.monkey-section.active:hover {background-color: white;}
 
-h3.mailchimp-header { background:url(mailchimp-tab.png) no-repeat 0 0; height: 24px; overflow:hidden; padding:0; width:120px; text-indent:-9999px; }
+h3.mailchimp-header { background:url(mailchimp-tab.png) no-repeat 0 0; height: 26px; overflow:hidden; padding:0; width:120px; text-indent:-9999px; }
 
 /*h3.mailchimp-header { background:url(mailchimp-connected-ebizmarts-title.png) no-repeat 0 0; height: 64px; overflow:hidden; padding:0; width:200px; text-indent:-9999px; }*/
 

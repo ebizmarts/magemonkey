@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <config>
-	<sections>
-		<monkey translate="label" module="monkey">
+    <sections>
+        <monkey translate="label" module="monkey">
             <class>monkey-section</class>
             <label>Mailchimp Configuration</label>
             <header_css>mailchimp-header</header_css>
@@ -12,8 +12,9 @@
             <show_in_store>1</show_in_store>
             <groups>
                 <general translate="label comment">
-		            <comment><![CDATA[<a href="http://mailchimp.com/signup/?pid=ebizmart&source=website" target="_blank">Get a free MailChimp account now</a>]]></comment>
-                    <label>General</label>
+                    <comment><![CDATA[<a href="http://mailchimp.com/signup/?pid=ebizmart&source=website" target="_blank">Get a free MailChimp account now</a>]]>
+                    </comment>
+                    <label>MageMonkey - MailChimp integration by ebizmarts</label>
                     <frontend_type>text</frontend_type>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -35,7 +36,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>Your MailChimp API Key</comment>
+                            <comment>Your MailChimp API Key.</comment>
                         </apikey>
                         <account_details translate="label">
                             <label>Account details</label>
@@ -55,7 +56,7 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
-                            <comment>This is the main list used with the Magento General Subscription</comment>
+                            <comment>Synchronize Magento's General Subscription List with this MailChimp list</comment>
                         </list>
                         <additional_lists translate="label comment">
                             <label>Additional Lists</label>
@@ -75,7 +76,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[<b>IMPORTANT</b>: Should be set to Yes. Abusing this may cause your account to be suspended.]]></comment>
+                            <comment>IMPORTANT: Should be set to Yes. Abusing this may cause your account to be suspended.</comment>
                         </double_optin>
                         <ecommerce360 translate="label comment">
                             <label>Enable Ecommerce360 for</label>
@@ -110,7 +111,8 @@
                             <show_in_store>3</show_in_store>
                             <comment>This will send all emails using the Amazon Simple Email Service so you must be registered in to use this feature.</comment>
                         </sts>
-                    --></fields>
+                    -->
+                    </fields>
                 </general>
 				<!--<subscribe translate="label">
                     <label>MailChimp Subscribe Options</label>
