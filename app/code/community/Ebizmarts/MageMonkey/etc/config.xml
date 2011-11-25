@@ -104,6 +104,16 @@
                 </Ebizmarts_MageMonkey>
             </modules>
         </translate>
+        <events>
+            <admin_system_config_changed_section_monkey>
+                <observers>
+                    <monkey_save_config>
+                        <class>monkey/observer</class>
+                        <method>saveConfig</method>
+                    </monkey_save_config>
+                </observers>
+            </admin_system_config_changed_section_monkey>
+        </events>
     </adminhtml>
     <default>
     	<monkey>
