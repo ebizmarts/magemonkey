@@ -11,10 +11,12 @@ class Ebizmarts_MageMonkey_WebhookController extends Mage_Core_Controller_Front_
 
 		Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
 
-		$requestKey = $this->getRequest()->getParam('wkey');
-		$myKey      = Mage::helper('core')->decrypt(Mage::helper('monkey')->config('webhooks_key'));
+		$data = $this->getRequest()->getPost('data');
 
-		//Validate "mkey" GET parameter
+		$requestKey = $this->getRequest()->getParam('wkey');
+		$myKey      = Mage::helper('monkey')->getWebhooksKey(null, $data['list_id']);
+
+		//Validate "wkey" GET parameter
 		if (($requestKey == $myKey) && ($this->getRequest()->getPost('type'))) {
 			Mage::getModel('monkey/monkey')->processWebhookData($this->getRequest()->getPost());
 		}
