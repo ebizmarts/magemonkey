@@ -2,6 +2,8 @@
 
 class Ebizmarts_MageMonkey_Model_Monkey
 {
+	const WEBHOOKS_PATH = 'monkey/webhook/index/wkey/';
+
 	public function processWebhookData(array $data)
 	{
 		Mage::helper('monkey')->log( print_r($data, true) );
