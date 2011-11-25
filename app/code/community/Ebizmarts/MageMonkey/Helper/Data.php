@@ -7,6 +7,18 @@
 class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+	public function getWebhooksKey($store, $listId = null)
+	{
+		if( !is_null($listId) ){
+			$store = $this->getStoreByList($listId);
+		}
+
+		$crypt = md5((string)Mage::getConfig()->getNode('global/crypt/key'));
+		$key   = substr($crypt, 0, (strlen($crypt)/2));
+
+		return ($key . $store);
+	}
+
 	public function getUserAgent()
 	{
 		$modules = Mage::getConfig()->getNode('modules')->children();
