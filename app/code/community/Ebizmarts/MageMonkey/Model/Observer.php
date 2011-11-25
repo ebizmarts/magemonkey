@@ -75,4 +75,52 @@ class Ebizmarts_MageMonkey_Model_Observer
 									->listUnsubscribe($listId, $subscriber->getSubscriberEmail(), TRUE);
 
 	}
+
+
+	public function saveConfig(Varien_Event_Observer $observer)
+	{
+		$store  = is_null($observer->getEvent()->getStore()) ? 'default': $observer->getEvent()->getStore();
+		$post   = Mage::app()->getRequest()->getPost();
+		$apiKey = (string)$post['groups']['general']['fields']['apikey']['value'];
+
+		if(!$apiKey){
+			return $observer;
+		}
+
+		$selectedLists = array();
+		$selectedLists []= $post['groups']['general']['fields']['list']['value'];
+
+		$additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
+		if(is_array($additionalLists)){
+			$selectedLists = array_merge($selectedLists, $additionalLists);
+		}
+
+		$webhooksKey = Mage::helper('monkey')->getWebhooksKey($store);
+		$hookUrl  = Mage::app()->getStore($store)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, FALSE);
+		$hookUrl .= Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH . $webhooksKey;
+
+		$api   = Mage::getSingleton('monkey/api', array('apikey' => $apiKey));
+		$lists = $api->lists();
+
+		foreach($lists['data'] as $list){
+
+			$webHooks = $api->listWebhooks($list['id']);
+
+			if(!empty($webHooks)){
+				foreach($webHooks as $whook){
+					$chunk = (string)substr($whook['url'], strrpos($whook['url'], '/')+1, strlen($whook['url']));
+
+					if((string)$webhooksKey === $chunk){
+						$api->listWebhookDel($list['id'], $whook['url']);
+					}
+				}
+			}
+
+			if(in_array($list['id'], $selectedLists)){
+				$api->listWebhookAdd($list['id'], $hookUrl);
+			}
+
+		}
+
+	}
 }
