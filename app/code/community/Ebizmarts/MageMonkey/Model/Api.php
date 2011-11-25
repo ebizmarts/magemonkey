@@ -8,9 +8,9 @@ class Ebizmarts_MageMonkey_Model_Api
 	public function __construct($args)
 	{
 		$storeId = isset($args['store']) ? $args['store'] : null;
-		$apikey  = (!isset($args['apikey']) ? Mage::helper('monkey')->getApiKey($storeId) : $apikey);
+		$apikey  = (!isset($args['apikey']) ? Mage::helper('monkey')->getApiKey($storeId) : $args['apikey']);
 		$this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
-                
+
                 //Create actual API URL using API key, borrowed from MCAPI.php
                 $dc = "us1";
                 if (strstr($this->_mcapi->api_key,"-")){
@@ -34,7 +34,7 @@ class Ebizmarts_MageMonkey_Model_Api
 	public function call($command, $args)
 	{
 		try{
-                        
+
 
 
 			Mage::helper('monkey')->log($command, 'MageMonkey_ApiCall.log');
