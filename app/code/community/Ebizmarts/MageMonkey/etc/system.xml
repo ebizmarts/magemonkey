@@ -36,9 +36,9 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>Your MailChimp API Key.</comment>
+                            <comment><![CDATA[Your MailChimp API Key.<br/><a target ='_blank' href ='http://kb.mailchimp.com/article/where-can-i-find-my-api-key/'>Where can I find my API Keys?</a>]]></comment>
                         </apikey>
-                        <account_details translate="label">
+                        <account_details translate="label comment">
                             <label>Account details</label>
                             <frontend_model>monkey/adminhtml_system_config_account</frontend_model>
                             <source_model>monkey/system_config_source_account</source_model>
@@ -46,6 +46,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <comment><![CDATA[<a target='_blank' href='http://mailchimp.com/pricing/'>More about MailChimp pricing.</a>]]></comment>
                         </account_details>
                         <list translate="label comment">
                             <label>General Subscription</label>
@@ -76,7 +77,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>IMPORTANT: Should be set to Yes. Abusing this may cause your account to be suspended.</comment>
+                            <comment><![CDATA[<b>IMPORTANT</b>: Should be set to <b>Yes</b>. Abusing this may cause your account to be suspended.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-does-confirmed-optin-or-double-optin-work/'>How does double opt-in work?</a>]]></comment>
                         </double_optin>
                         <ecommerce360 translate="label comment">
                             <label>Enable Ecommerce360 for</label>
@@ -87,7 +88,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
-                            <comment>Send new orders to MailChimp</comment>
+                            <comment><![CDATA[Send new orders to MailChimp using Ecommerce360.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-do-i-turn-on-ecommerce360-tracking-on-my-campaigns/'>How do I turn on Ecommerce360 tracking on my campaigns?</a>]]></comment>
                         </ecommerce360>
                         <!--<intgr translate="label comment">
                             <label>Enable Interest Groups</label>

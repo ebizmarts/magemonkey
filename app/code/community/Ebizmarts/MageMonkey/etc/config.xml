@@ -120,6 +120,7 @@
     		<general>
 	    		<active>0</active>
 	    		<double_optin>System->Configuration->Customers->Newsletter->Subscription Options->Need to Confirm</double_optin>
+                        <ecommerce360>0</ecommerce360>
     		</general>
     	</monkey>
     </default>
