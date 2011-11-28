@@ -97,7 +97,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[<span class='mailchimp-nowarp'>Format: <code>&lt;customer='attribute_code' mailchimp='merge_tag'&gt;</code><br/><a href='_blank' href='http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet'>All The Merge Tags (Cheatsheet)</a></span>]]></comment>
+                            <comment><![CDATA[<span class='mailchimp-nowarp'>One line per record with the follwing format:<span class='mailchimp-nowarp'></span><br/><code>customer='attribute_code' mailchimp='merge_tag'</code></span><br/><a href='_blank' href='http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet'>All The Merge Tags (Cheatsheet)</a>]]></comment>
                         </mapping_fields>
                         <guest_name translate="label comment">
                             <label>First Name for Guests subscribers</label>

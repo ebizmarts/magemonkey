@@ -122,15 +122,15 @@
 	    		<double_optin>System->Configuration->Customers->Newsletter->Subscription Options->Need to Confirm</double_optin>
                         <ecommerce360>0</ecommerce360>
                         <mapping_fields><![CDATA[
-<customer='firstname' mailchimp='FNAME'>
-<customer='lastname' mailchimp='LNAME'>
-<customer='dob' mailchimp='DOB'>
-<customer='prefix' mailchimp='PRENAME'>
-<customer='address' mailchimp='ADDRESS'>
-<customer='gender' mailchimp='GENDER'>
-<customer='store_id' mailchimp='STOREID'>
-<customer='website_id' mailchimp='WEBSITE'>
-<customer='date_of_purchase' mailchimp='DOP'>]]></mapping_fields>
+customer='firstname' mailchimp='FNAME'
+customer='lastname' mailchimp='LNAME'
+customer='dob' mailchimp='DOB'
+customer='prefix' mailchimp='PRENAME'
+customer='address' mailchimp='ADDRESS'
+customer='gender' mailchimp='GENDER'
+customer='store_id' mailchimp='STOREID'
+customer='website_id' mailchimp='WEBSITE'
+customer='date_of_purchase' mailchimp='DOP']]></mapping_fields>
     		</general>
     	</monkey>
     </default>

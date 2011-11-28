@@ -13,6 +13,10 @@
 "<b>IMPORTANT</b>: Should be set to <b>Yes</b>. Abusing this may cause your account to be suspended.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-does-confirmed-optin-or-double-optin-work/'>How does double opt-in work?</a>","<b>IMPORTANT</b>: Should be set to <b>Yes</b>. Abusing this may cause your account to be suspended.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-does-confirmed-optin-or-double-optin-work/'>How does double opt-in work?</a>"
 "Enable Ecommerce360 for", "Enable Ecommerce360 for"
 "Send new orders to MailChimp using Ecommerce360.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-do-i-turn-on-ecommerce360-tracking-on-my-campaigns/'>How do I turn on Ecommerce360 tracking on my campaigns?</a>", "Send new orders to MailChimp using Ecommerce360.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-do-i-turn-on-ecommerce360-tracking-on-my-campaigns/'>How do I turn on Ecommerce360 tracking on my campaigns?</a>"
+"Customer Fields Mapping", "Customer Fields Mapping"
+"<span class='mailchimp-nowarp'>One line per record with the follwing format:<span class='mailchimp-nowarp'></span><br/><code>customer='attribute_code' mailchimp='merge_tag'</code></span><br/><a href='_blank' href='http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet'>All The Merge Tags (Cheatsheet)</a>", "<span class='mailchimp-nowarp'>One line per record with the follwing format:<span class='mailchimp-nowarp'></span><br/><code>customer='attribute_code' mailchimp='merge_tag'</code></span><br/><a href='_blank' href='http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet'>All The Merge Tags (Cheatsheet)</a>"
+"First Name for Guests subscribers", "First Name for Guests subscribers"
+"Last Name for Guests subscribers", "Last Name for Guests subscribers"
 
 ;Notification messages
 "MailChimp Cleaned Emails: %s %s at %s reason: %s","MailChimp Cleaned Emails: %s %s at %s reason: %s"

@@ -91,4 +91,59 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		return (bool)($monkeyRequest === $thisRequest);
 	}
+        
+        public function getMergeVars($customer, $include_emailaddress){
+
+		$merge_vars             = array();
+                $merge_vars_settings    = $this->config('mapping_fields', $customer->getStoreId());
+		$maps                   = explode('/n', $merge_vars_settings);
+                
+		foreach($maps as $map){
+			if($map){
+				$aux = substr(strstr($map,"customer='"),10);
+				$customAtt = (string)substr($aux,0,strpos($aux,"'"));
+				$aux = substr(strstr($map,"mailchimp='"),11);
+				$chimpTag = (string)substr($aux,0,strpos($aux,"'"));
+				if($chimpTag && $customAtt){
+					if($customAtt == 'address'){
+						$address = $customer->getAddress();
+						$merge_vars[strtoupper($chimpTag)] = array('addr1'=>$address['street'],
+																   'addr2'=>'',
+																   'city'=>$address['city'],
+																   'state'=>$address['region'],
+																   'zip'=>$address['postcode'],
+																   'country'=>$address['country_id']);
+					/*****this code has been added thanks to phroggar*****************************/
+					}elseif($customAtt == 'date_of_purchase'){
+						$orders = Mage::getResourceModel('sales/order_collection')
+	                        ->addFieldToFilter('customer_id', $customer->getEntityId())
+	                        ->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
+	                        ->setOrder('created_at', 'desc');
+	                    if (($last_order = $orders->getFirstItem()) && (!$last_order->isEmpty())){
+	                      $merge_vars[strtoupper($chimpTag)] = Mage::helper('core')->formatDate($last_order->getCreatedAt());
+	                    }
+                	/*****this code has been added thanks to phroggar*****************************/
+					}else{
+						if($value = (string)$customer->getData(strtolower($customAtt))) $merge_vars[strtoupper($chimpTag)] = $value;
+					}
+				}
+			}
+		}
+		if($flag) $merge_vars['EMAIL'] = $customer->getEmail();
+
+		$groups = $customer->getListGroups();
+		$groupings = array();
+		if(is_array($groups) && count($groups)){
+			foreach($groups as $option){
+				$parts = explode(']',str_replace('[','',$option));
+				if($parts[0] == $customer->getListId() && count($parts) == 5){
+					$groupings[] = array('id'=>$parts[2],
+									   'name'=>str_replace(',','\,',$parts[1]),
+									   'groups'=>str_replace(',','\,',$parts[3]));
+				}
+			}
+		}
+		$merge_vars['GROUPINGS'] = $groupings;
+		return $merge_vars;
+	}
 }
