@@ -13,3 +13,5 @@ h3.mailchimp-header { background:url(mailchimp-tab.png) no-repeat 0 0; height: 2
 /*h3.mailchimp-header { background:url(mailchimp-connected-ebizmarts-title.png) no-repeat 0 0; height: 64px; overflow:hidden; padding:0; width:200px; text-indent:-9999px; }*/
 
 fieldset#monkey_general {background:url(mailchimp-section-background.png) no-repeat right top; }
+
+.mailchimp-nowarp {white-space:nowrap;}
