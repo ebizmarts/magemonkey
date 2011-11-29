@@ -91,45 +91,73 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		return (bool)($monkeyRequest === $thisRequest);
 	}
-        
-        public function getMergeVars($customer, $include_emailaddress){
 
-		$merge_vars             = array();
-                $merge_vars_settings    = $this->config('mapping_fields', $customer->getStoreId());
-		$maps                   = explode('/n', $merge_vars_settings);
-                
+
+	public function getMergeVars($customer, $includeEmail = FALSE)
+	{
+		$merge_vars = array();
+        $maps       = unserialize( $this->config('map_fields', $customer->getStoreId()) );
+
+		if(!$maps){
+			return;
+		}
+
 		foreach($maps as $map){
-			if($map){
-				$aux = substr(strstr($map,"customer='"),10);
-				$customAtt = (string)substr($aux,0,strpos($aux,"'"));
-				$aux = substr(strstr($map,"mailchimp='"),11);
-				$chimpTag = (string)substr($aux,0,strpos($aux,"'"));
-				if($chimpTag && $customAtt){
-					if($customAtt == 'address'){
-						$address = $customer->getAddress();
-						$merge_vars[strtoupper($chimpTag)] = array('addr1'=>$address['street'],
-																   'addr2'=>'',
-																   'city'=>$address['city'],
-																   'state'=>$address['region'],
-																   'zip'=>$address['postcode'],
-																   'country'=>$address['country_id']);
-					/*****this code has been added thanks to phroggar*****************************/
-					}elseif($customAtt == 'date_of_purchase'){
-						$orders = Mage::getResourceModel('sales/order_collection')
-	                        ->addFieldToFilter('customer_id', $customer->getEntityId())
-	                        ->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
-	                        ->setOrder('created_at', 'desc');
-	                    if (($last_order = $orders->getFirstItem()) && (!$last_order->isEmpty())){
-	                      $merge_vars[strtoupper($chimpTag)] = Mage::helper('core')->formatDate($last_order->getCreatedAt());
+
+			$customAtt = $map['magento'];
+			$chimpTag  = $map['mailchimp'];
+
+			if($chimpTag && $customAtt){
+
+				$key = strtoupper($chimpTag);
+
+				switch ($customAtt) {
+					case 'address':
+
+						$address = $customer->getDefaultBillingAddress();
+						if( FALSE !== $address){
+							$merge_vars[$key] = array(
+																	'addr1'   => $address->getStreet(1),
+														   			'addr2'   => $address->getStreet(2),
+															   		'city'    => $address->getCity(),
+															   		'state'   => $address->getRegion(),
+															   		'zip'     => $address->getPostcode(),
+															   		'country' => $address->getCountryId()
+															   	  );
+						}
+
+						break;
+					case 'date_of_purchase':
+
+						$last_order = Mage::getResourceModel('sales/order_collection')
+                        	->addFieldToFilter('customer_id', $customer->getEntityId())
+                        	->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
+                        	->setOrder('created_at', 'desc')
+                        	->getFirstItem();
+	                    if ( $last_order->getId() ){
+	                    	$merge_vars[$key] = Mage::helper('core')->formatDate($last_order->getCreatedAt());
 	                    }
-                	/*****this code has been added thanks to phroggar*****************************/
-					}else{
-						if($value = (string)$customer->getData(strtolower($customAtt))) $merge_vars[strtoupper($chimpTag)] = $value;
-					}
+
+						break;
+					default:
+
+						if( $value = (string)$customer->getData(strtolower($customAtt)) ){
+							$merge_vars[$key] = $value;
+						}
+
+						break;
 				}
+
 			}
 		}
-		if($flag) $merge_vars['EMAIL'] = $customer->getEmail();
+
+		if($includeEmail){
+			$merge_vars['EMAIL'] = $customer->getEmail();
+		}
+
+		/*
+
+		=== TODO ===
 
 		$groups = $customer->getListGroups();
 		$groupings = array();
@@ -143,7 +171,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				}
 			}
 		}
-		$merge_vars['GROUPINGS'] = $groupings;
+		$merge_vars['GROUPINGS'] = $groupings;*/
+		var_dump($merge_vars);die;
 		return $merge_vars;
 	}
+
 }
