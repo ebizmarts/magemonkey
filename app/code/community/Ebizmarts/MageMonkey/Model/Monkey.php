@@ -12,7 +12,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
 		$store  = Mage::helper('monkey')->getStoreByList($listId);
 
 		if(!is_null($store)){
-			$curstore = Mage::app()->getCurrentStore();
+			$curstore = Mage::app()->getStore();
 			Mage::app()->setCurrentStore($store);
 		}
 
