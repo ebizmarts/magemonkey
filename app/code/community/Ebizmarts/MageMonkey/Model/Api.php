@@ -49,6 +49,10 @@ class Ebizmarts_MageMonkey_Model_Api
 
 			Mage::helper('monkey')->log($result, 'MageMonkey_ApiCall.log');
 
+			if($this->_mcapi->errorMessage){
+				Mage::helper('monkey')->log("Error: {$this->_mcapi->errorMessage}, code {$this->_mcapi->errorCode}", 'MageMonkey_ApiCall.log');
+			}
+
 			return $result;
 
 		}catch(Exception $ex){
