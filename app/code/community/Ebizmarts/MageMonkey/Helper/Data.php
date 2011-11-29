@@ -27,7 +27,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$aux = (array_key_exists('Enterprise_Enterprise',$modulesArray))? 'EE' : 'CE' ;
 		$v = (string)Mage::getConfig()->getNode('modules/Ebizmarts_MageMonkey/version');
 		$version = strpos(Mage::getVersion(),'-')? substr(Mage::getVersion(),0,strpos(Mage::getVersion(),'-')) : Mage::getVersion();
-		return (string)'MageMonkey/Mage'.$aux.$version.'/'. $v;
+		return (string)'MageMonkey'.$v.'/Mage'.$aux.$version;
 	}
 
 	public function getApiKey($store = null)
@@ -35,7 +35,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		if(is_null($store)){
 			$key = $this->config('apikey');
 		}else{
-			$curstore = Mage::app()->getCurrentStore();
+			$curstore = Mage::app()->getStore();
 			Mage::app()->setCurrentStore($store);
 			$key = $this->config('apikey', $store);
 			Mage::app()->setCurrentStore($curstore);
@@ -63,7 +63,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function getDefaultList($storeId)
 	{
-		$curstore = Mage::app()->getCurrentStore();
+		$curstore = Mage::app()->getStore();
 		Mage::app()->setCurrentStore($storeId);
 			$list = $this->config('list', $storeId);
 		Mage::app()->setCurrentStore($curstore);
@@ -102,6 +102,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			return;
 		}
 
+		$request = Mage::app()->getRequest();
+
 		foreach($maps as $map){
 
 			$customAtt = $map['magento'];
@@ -115,7 +117,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					case 'address':
 
 						$address = $customer->getDefaultBillingAddress();
-						if( FALSE !== $address){
+						if($address){
 							$merge_vars[$key] = array(
 																	'addr1'   => $address->getStreet(1),
 														   			'addr2'   => $address->getStreet(2),
@@ -130,7 +132,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					case 'date_of_purchase':
 
 						$last_order = Mage::getResourceModel('sales/order_collection')
-                        	->addFieldToFilter('customer_id', $customer->getEntityId())
+                        	->addFieldToFilter('customer_id', $customer->getId())
                         	->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
                         	->setOrder('created_at', 'desc')
                         	->getFirstItem();
@@ -141,7 +143,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 						break;
 					default:
 
-						if( $value = (string)$customer->getData(strtolower($customAtt)) ){
+						if( ($value = (string)$customer->getData(strtolower($customAtt)))
+							OR ($value = (string)$request->getPost(strtolower($customAtt))) ){
 							$merge_vars[$key] = $value;
 						}
 
@@ -150,6 +153,20 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 			}
 		}
+
+		//GUEST
+		if( !$customer->getId() ){
+			$guestFirstName = $this->config('guest_name', $customer->getStoreId());
+			$guestLastName  = $this->config('guest_lastname', $customer->getStoreId());
+
+			if($guestFirstName){
+				$merge_vars['FNAME'] = $guestFirstName;
+			}
+			if($guestLastName){
+				$merge_vars['LNAME'] = $guestLastName;
+			}
+		}
+		//GUEST
 
 		if($includeEmail){
 			$merge_vars['EMAIL'] = $customer->getEmail();
@@ -172,7 +189,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			}
 		}
 		$merge_vars['GROUPINGS'] = $groupings;*/
-		var_dump($merge_vars);die;
+
 		return $merge_vars;
 	}
 
