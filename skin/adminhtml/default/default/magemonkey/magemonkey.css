@@ -15,3 +15,8 @@ h3.mailchimp-header { background:url(mailchimp-tab.png) no-repeat 0 0; height: 2
 fieldset#monkey_general {background:url(mailchimp-section-background.png) no-repeat right top; }
 
 .mailchimp-nowarp {white-space:nowrap;}
+
+button.add span span, button.cancel span span, button.delete span span {
+    background-image: none;
+    padding-left: 0;
+}
