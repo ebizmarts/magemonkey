@@ -46,7 +46,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[<a target='_blank' href='http://mailchimp.com/pricing/'>More about MailChimp pricing.</a>]]></comment>
+                            <comment><![CDATA[Trial mode: Whether the Account is in Trial mode (can only send campaigns to less than 100 emails).<br/><a target='_blank' href='http://mailchimp.com/pricing/'>More about MailChimp plans.</a>]]></comment>
                         </account_details>
                         <list translate="label comment">
                             <label>General Subscription</label>
