@@ -90,29 +90,30 @@
                             <can_be_empty>1</can_be_empty>
                             <comment><![CDATA[Send new orders to MailChimp using Ecommerce360.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-do-i-turn-on-ecommerce360-tracking-on-my-campaigns/'>How do I turn on Ecommerce360 tracking on my campaigns?</a>]]></comment>
                         </ecommerce360>
-                        <mapping_fields translate="label comment">
+                        <map_fields translate="label comment">
                             <label>Customer Fields Mapping</label>
-                            <frontend_type>textarea</frontend_type>
+                            <frontend_model>monkey/adminhtml_system_config_form_field_mapfields</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
                             <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[<span class='mailchimp-nowarp'>One line per record with the follwing format:<span class='mailchimp-nowarp'></span><br/><code>customer='attribute_code' mailchimp='merge_tag'</code></span><br/><a href='_blank' href='http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet'>All The Merge Tags (Cheatsheet)</a>]]></comment>
-                        </mapping_fields>
-                        <guest_name translate="label comment">
+                            <comment><![CDATA[<a target="_blank" href="http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet">All The Merge Tags (Cheatsheet)</a>]]></comment>
+                        </map_fields>
+                        <guest_name translate="label">
                             <label>First Name for Guests subscribers</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                         </guest_name>
-                            <guest_lastname translate="label comment">
+                        <guest_lastname translate="label">
                             <label>Last Name for Guests subscribers</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
+                            <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                         </guest_lastname>
                         <!--<intgr translate="label comment">
@@ -126,7 +127,7 @@
                             <can_be_empty>1</can_be_empty>
                             <comment>Allow customers to select over the existing groups per each list.</comment>
                         </intgr>
-                        
+
 						<sts translate="label">
                             <label>Enable STS feature</label>
                             <frontend_type>select</frontend_type>
