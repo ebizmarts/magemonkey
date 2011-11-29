@@ -23,6 +23,14 @@
                     </monkey_subscribe_delete_observer>
                 </observers>
             </newsletter_subscriber_delete_after>
+            <customer_save_after>
+                <observers>
+                    <monkey_update_customer>
+                        <class>monkey/observer</class>
+                        <method>updateCustomer</method>
+                    </monkey_update_customer>
+                </observers>
+            </customer_save_after>
     	</events>
         <models>
             <monkey>
