@@ -19,4 +19,14 @@
             <action method="addItem"><type>skin_js</type><name>magemonkey/magemonkey.js</name></action>
 		</reference>
 	</magemonkey_adminhtml_ctemplate_new>
+
+    <adminhtml_customer_edit>
+        <reference name="customer_edit_tabs">
+            <action method="addTab">
+            	<name>customer_edit_tab_monkey_memberactivity</name>
+            	<block>monkey/adminhtml_customer_edit_tab_memberactivity</block>
+            </action>
+        </reference>
+    </adminhtml_customer_edit>
+
 </layout>
