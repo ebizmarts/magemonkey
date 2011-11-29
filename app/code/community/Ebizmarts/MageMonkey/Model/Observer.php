@@ -26,8 +26,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 			if( TRUE === $isConfirmNeed ){
 				$subscriber->setSubscriberStatus(Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE);
 			}
+
+			$mergeVars = $this->_mergeVars($subscriber);
 			Mage::getSingleton('monkey/api')
-								->listSubscribe($listId, $email, NULL, 'html', $isConfirmNeed);
+								->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
 
 		}else{
 
@@ -122,5 +124,47 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		}
 
+	}
+
+	public function updateCustomer(Varien_Event_Observer $observer)
+	{
+		$customer = $observer->getEvent()->getCustomer();
+
+		$mergeVars = $this->_mergeVars($customer, TRUE);
+
+		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
+
+		$oldEmail = $customer->getOrigData('email');
+		$lists = $api->listsForEmail($oldEmail);
+
+		if($lists){
+			foreach($lists as $listId){
+				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
+			}
+		}
+
+		return $observer;
+	}
+
+	protected function _mergeVars($object = NULL, $includeEmail = FALSE)
+	{
+		//Initialize as GUEST customer
+		$customer = new Varien_Object;
+
+		if( Mage::helper('customer')->isLoggedIn() ){
+			$customer = Mage::helper('customer')->getCustomer();
+		}else{
+			if(is_null($object)){
+				$customer->setEmail($object->getSubscriberEmail())
+					 ->setStoreId($object->getStoreId());
+			}else{
+				$customer = $object;
+			}
+
+		}
+
+		$mergeVars = Mage::helper('monkey')->getMergeVars($customer, $includeEmail);
+
+		return $mergeVars;
 	}
 }
