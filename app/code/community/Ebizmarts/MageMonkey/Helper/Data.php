@@ -129,9 +129,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 								$merge_vars[$key] = (substr($dob, 5, 2) . '/' . substr($dob, 8, 2));
 							}
 						break;
-					case 'address':
+					case 'billing_address':
+					case 'shipping_address':
 
-						$address = $customer->getDefaultBillingAddress();
+						$addr = explode('_', $customAtt);
+						$address = $customer->getPrimaryAddress('default_' . $addr[0]);
 						if($address){
 							$merge_vars[$key] = array(
 																	'addr1'   => $address->getStreet(1),
@@ -155,6 +157,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	                    	$merge_vars[$key] = Mage::helper('core')->formatDate($last_order->getCreatedAt());
 	                    }
 
+						break;
+					case 'ee_customer_balance':
+						//TODO
 						break;
 					default:
 
