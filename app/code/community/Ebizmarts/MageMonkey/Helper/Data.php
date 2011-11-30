@@ -61,6 +61,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return Mage::getStoreConfig("monkey/general/$value", $store);
 	}
 
+	public function canCheckoutSubscribe()
+	{
+		return Mage::getStoreConfigFlag('monkey/general/checkout_subscribe');
+	}
+
 	public function getDefaultList($storeId)
 	{
 		$curstore = Mage::app()->getStore();
