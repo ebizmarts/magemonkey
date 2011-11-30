@@ -10,7 +10,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	public function getWebhooksKey($store, $listId = null)
 	{
 		if( !is_null($listId) ){
-			$store = $this->getStoreByList($listId);
+			$store = $this->getStoreByList($listId, TRUE);
 		}
 
 		$crypt = md5((string)Mage::getConfig()->getNode('global/crypt/key'));
@@ -75,14 +75,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return $list;
 	}
 
-	public function getStoreByList($mcListId)
+	public function getStoreByList($mcListId, $includeDefault = FALSE)
 	{
         $list = Mage::getModel('core/config_data')->getCollection()
             	->addValueFilter($mcListId)->getFirstItem();
 
         $store = null;
-        if($list->getId() && ($list->getScope() != 'default')){
-        	$store = (string)Mage::app()->getStore($list->getScopeId())->getCode();
+        if($list->getId()){
+
+        	$isDefault = (bool)($list->getScope() == 'default');
+        	if(!$isDefault && !$includeDefault){
+        		$store = (string)Mage::app()->getStore($list->getScopeId())->getCode();
+        	}else{
+        		$store = $list->getScope();
+        	}
+
         }
 
         return $store;
@@ -120,7 +127,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 				switch ($customAtt) {
 					case 'gender':
-							$merge_vars[$key] = '';
 							$val = (int)$customer->getData(strtolower($customAtt));
 							if($val == 1){
 								$merge_vars[$key] = 'Male';
