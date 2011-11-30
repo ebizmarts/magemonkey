@@ -35,11 +35,9 @@ class Ebizmarts_MageMonkey_Model_Api
 	{
 		try{
 
-
-
+			Mage::helper('monkey')->log($this->_apihost, 'MageMonkey_ApiCall.log');
 			Mage::helper('monkey')->log($command, 'MageMonkey_ApiCall.log');
 			Mage::helper('monkey')->log($args, 'MageMonkey_ApiCall.log');
-			Mage::helper('monkey')->log($this->_apihost, 'MageMonkey_ApiCall.log');
 
 			if($args){
 				$result = call_user_func_array(array($this->_mcapi, $command), $args);
@@ -51,6 +49,8 @@ class Ebizmarts_MageMonkey_Model_Api
 
 			if($this->_mcapi->errorMessage){
 				Mage::helper('monkey')->log("Error: {$this->_mcapi->errorMessage}, code {$this->_mcapi->errorCode}", 'MageMonkey_ApiCall.log');
+
+				return (string)$this->_mcapi->errorMessage;
 			}
 
 			return $result;
