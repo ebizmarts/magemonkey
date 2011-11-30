@@ -146,6 +146,38 @@ class Ebizmarts_MageMonkey_Model_Observer
 		return $observer;
 	}
 
+	/**
+	 * Add flag on session to tell the module if on success page should subscribe customer
+	 */
+	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
+	{
+		$subscribe = Mage::app()->getRequest()->getPost('magemonkey_subscribe');
+
+		if(!is_null($subscribe)){
+			Mage::getSingleton('core/session')->setMonkeyCheckout($subscribe);
+		}
+	}
+
+	/**
+	 * Subscribe customer to Newsletter if flag on session is present
+	 */
+	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
+	{
+		$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
+
+		if($sessionFlag){
+			$orderId = (int)current($observer->getEvent()->getOrderIds());
+
+			if($orderId){
+				$order = Mage::getModel('sales/order')->load($orderId);
+				if( $order->getId() ){
+						$subscriber = Mage::getModel('newsletter/subscriber')
+							->subscribe($order->getCustomerEmail());
+				}
+			}
+		}
+	}
+
 	protected function _mergeVars($object = NULL, $includeEmail = FALSE)
 	{
 		//Initialize as GUEST customer
@@ -167,4 +199,5 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		return $mergeVars;
 	}
+
 }
