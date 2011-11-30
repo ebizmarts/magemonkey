@@ -7,14 +7,14 @@
     </modules>
     <global>
     	<events>
-            <newsletter_subscriber_save_after>
+            <newsletter_subscriber_save_before>
                 <observers>
                     <monkey_subscribe_observer>
                         <class>monkey/observer</class>
                         <method>handleSubscriber</method>
                     </monkey_subscribe_observer>
                 </observers>
-            </newsletter_subscriber_save_after>
+            </newsletter_subscriber_save_before>
             <newsletter_subscriber_delete_after>
                 <observers>
                     <monkey_subscribe_delete_observer>
