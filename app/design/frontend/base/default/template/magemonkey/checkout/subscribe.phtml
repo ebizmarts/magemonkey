@@ -1,0 +1,18 @@
+<script type="text/javascript">
+addSubscribeToPost = function (element){
+
+	if(element.checked){
+		Element.insert( Form.findFirstElement(payment.form),
+						new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" }) );
+	}else{
+		if( $('magemonkey-subscribe') ){
+			$('magemonkey-subscribe').remove();
+		}
+	}
+
+}
+</script>
+<div class="buttons-set">
+	<input type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
+	<label for="magemonkey-trigger"><?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?></label>
+</div>
