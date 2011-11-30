@@ -24,7 +24,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if( $subscriber->isObjectNew() ){
 
 			if( TRUE === $isConfirmNeed ){
-				$subscriber->setSubscriberStatus(Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE);
+				$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
 			}
 
 			$mergeVars = $this->_mergeVars($subscriber);
@@ -33,22 +33,33 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		}else{
 
-			$status    = (int)$subscriber->getData('subscriber_status');
-			$oldstatus = (int)$subscriber->getOrigData('subscriber_status');
+			$oldSubscriber = Mage::getModel('newsletter/subscriber')
+								->load($subscriber->getId());
+
+			$status        = (int)$subscriber->getData('subscriber_status');
+			$oldstatus     = (int)$oldSubscriber->getData('subscriber_status');
 
 			if( $status !== $oldstatus ){ //Status change
 
 				//Unsubscribe customer
 				if($status == Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED){
 
-					Mage::getSingleton('monkey/api')
+					$rs = Mage::getSingleton('monkey/api')
 									->listUnsubscribe($listId, $email);
+					if($rs !== TRUE){
+						Mage::throwException($rs);
+					}
 
 				}else if($status == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED){
 
-					if( $oldstatus == Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE ){
-						Mage::getSingleton('monkey/api')
-									->listSubscribe($listId, $email, NULL, 'html', $isConfirmNeed);
+					if( TRUE === $isConfirmNeed ){
+						$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
+					}
+
+					$rs = Mage::getSingleton('monkey/api')
+									->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
+					if($rs !== TRUE){
+						Mage::throwException($rs);
 					}
 
 				}
@@ -135,9 +146,13 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 
 		$oldEmail = $customer->getOrigData('email');
+		if(!$oldEmail){
+			return $observer;
+		}
+
 		$lists = $api->listsForEmail($oldEmail);
 
-		if($lists){
+		if(is_array($lists)){
 			foreach($lists as $listId){
 				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
 			}
@@ -183,8 +198,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 		//Initialize as GUEST customer
 		$customer = new Varien_Object;
 
+		$regCustomer = Mage::registry('current_customer');
+
 		if( Mage::helper('customer')->isLoggedIn() ){
 			$customer = Mage::helper('customer')->getCustomer();
+		}elseif($regCustomer){
+			$customer = $regCustomer;
 		}else{
 			if(is_null($object)){
 				$customer->setEmail($object->getSubscriberEmail())
