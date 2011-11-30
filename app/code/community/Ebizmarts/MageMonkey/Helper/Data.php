@@ -114,6 +114,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				$key = strtoupper($chimpTag);
 
 				switch ($customAtt) {
+					case 'gender':
+							$merge_vars[$key] = '';
+							$val = (int)$customer->getData(strtolower($customAtt));
+							if($val == 1){
+								$merge_vars[$key] = 'Male';
+							}elseif($val == 2){
+								$merge_vars[$key] = 'Female';
+							}
+						break;
+					case 'dob':
+							$dob = (string)$customer->getData(strtolower($customAtt));
+							if($dob){
+								$merge_vars[$key] = (substr($dob, 5, 2) . '/' . substr($dob, 8, 2));
+							}
+						break;
 					case 'address':
 
 						$address = $customer->getDefaultBillingAddress();
