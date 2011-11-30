@@ -6,8 +6,6 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
 	public function processWebhookData(array $data)
 	{
-		Mage::helper('monkey')->log( print_r($data, true) );
-
 		$listId = $data['data']['list_id']; //According to the docs, we events are always related to a list_id
 		$store  = Mage::helper('monkey')->getStoreByList($listId);
 
@@ -136,7 +134,16 @@ class Ebizmarts_MageMonkey_Model_Monkey
 			// entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
 			//VALIDAR si es lo que se requiere
 
-			Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)->subscribe($data['data']['email']);
+			$subscriber = Mage::getModel('newsletter/subscriber')
+							->loadByEmail($data['data']['email']);
+			if( $subscriber->getId() ){
+				$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+					->save();
+			}else{
+				Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
+					->subscribe($data['data']['email']);
+			}
+
 		}catch(Exception $e){
 			Mage::logException($e);
 		}
