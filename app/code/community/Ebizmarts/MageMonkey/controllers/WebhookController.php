@@ -20,6 +20,8 @@ class Ebizmarts_MageMonkey_WebhookController extends Mage_Core_Controller_Front_
         	return $this;
 		}
 
+		Mage::helper('monkey')->log( print_r($this->getRequest()->getPost(), true) );
+
 		Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
 
 		$data  = $this->getRequest()->getPost('data');
