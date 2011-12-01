@@ -7,6 +7,11 @@
 class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+	public function isAdmin()
+	{
+		return Mage::getSingleton('admin/session')->isLoggedIn();
+	}
+
 	public function getWebhooksKey($store, $listId = null)
 	{
 		if( !is_null($listId) ){
