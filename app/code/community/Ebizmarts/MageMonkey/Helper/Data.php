@@ -149,13 +149,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					case 'shipping_address':
 
 						$addr = explode('_', $customAtt);
-						$address = $customer->getPrimaryAddress('default_' . $addr[0]);
+						//$address = $customer->getPrimaryAddress('default_' . $addr[0]);
+						$address = $customer->{'getPrimary'.ucfirst($addr[0]).'Address'}();
 						if($address){
 							$merge_vars[$key] = array(
 																	'addr1'   => $address->getStreet(1),
 														   			'addr2'   => $address->getStreet(2),
 															   		'city'    => $address->getCity(),
-															   		'state'   => $address->getRegion(),
+															   		'state'   => (!$address->getRegion() ? $address->getCity() : $address->getRegion()),
 															   		'zip'     => $address->getPostcode(),
 															   		'country' => $address->getCountryId()
 															   	  );
@@ -165,7 +166,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					case 'date_of_purchase':
 
 						$last_order = Mage::getResourceModel('sales/order_collection')
-                        	->addFieldToFilter('customer_id', $customer->getId())
+                        	->addFieldToFilter('customer_email', $customer->getEmail())
                         	->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
                         	->setOrder('created_at', 'desc')
                         	->getFirstItem();
@@ -227,6 +228,30 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$merge_vars['GROUPINGS'] = $groupings;*/
 
 		return $merge_vars;
+	}
+
+	/**
+	 * Register on registry GUEST customer data for MergeVars for on checkout subscribe
+	 */
+	public function registerGuestCustomer($order)
+	{
+
+		if( Mage::registry('mc_guest_customer') ){
+			return;
+		}
+
+		$customer = new Varien_Object;
+
+		$customer->setId(time());
+		$customer->setEmail($order->getBillingAddress()->getEmail());
+		$customer->setStoreId($order->getStoreId());
+		$customer->setFirstname($order->getBillingAddress()->getFirstname());
+		$customer->setLastname($order->getBillingAddress()->getLastname());
+		$customer->setPrimaryBillingAddress($order->getBillingAddress());
+		$customer->setPrimaryShippingAddress($order->getShippingAddress());
+
+		Mage::register('mc_guest_customer', $customer, TRUE);
+
 	}
 
 }
