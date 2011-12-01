@@ -56,7 +56,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function config($value, $store = null)
 	{
-		$store = Mage::app()->getStore();
+		$store = is_null($store) ? Mage::app()->getStore() : $store;
 
 		$configscope = Mage::app()->getRequest()->getParam('store');
 		if( $configscope ){
@@ -68,7 +68,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function canCheckoutSubscribe()
 	{
-		return Mage::getStoreConfigFlag('monkey/general/checkout_subscribe');
+		return (bool)($this->config('checkout_subscribe') != 0);
 	}
 
 	public function getDefaultList($storeId)
