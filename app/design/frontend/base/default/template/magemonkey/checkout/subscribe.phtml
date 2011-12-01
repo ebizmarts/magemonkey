@@ -1,18 +1,26 @@
+<?php
+	$check = $this->checkStatus();
+	$auto  = (($check === 1) OR ($check === 3));
+?>
 <script type="text/javascript">
 addSubscribeToPost = function (element){
+
+	if( $('magemonkey-subscribe') ){
+		$('magemonkey-subscribe').remove();
+	}
 
 	if(element.checked){
 		Element.insert( Form.findFirstElement(payment.form),
 						new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" }) );
-	}else{
-		if( $('magemonkey-subscribe') ){
-			$('magemonkey-subscribe').remove();
-		}
 	}
 
 }
 </script>
-<div class="buttons-set">
-	<input type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
+<div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
+	<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
 	<label for="magemonkey-trigger"><?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?></label>
 </div>
+
+<script type="text/javascript">
+	addSubscribeToPost($('magemonkey-trigger'));
+</script>
