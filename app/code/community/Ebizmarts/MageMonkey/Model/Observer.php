@@ -97,8 +97,14 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 	public function saveConfig(Varien_Event_Observer $observer)
 	{
+
 		$store  = is_null($observer->getEvent()->getStore()) ? 'default': $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
+
+		if( !isset($post['groups']) ){
+			return $observer;
+		}
+
 		$apiKey = (string)$post['groups']['general']['fields']['apikey']['value'];
 
 		if(!$apiKey){
@@ -191,6 +197,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 			if($orderId){
 				$order = Mage::getModel('sales/order')->load($orderId);
 				if( $order->getId() ){
+
+						//Guest Checkout
+						if( (int)$order->getCustomerGroupId() === Mage_Customer_Model_Group::NOT_LOGGED_IN_ID ){
+							Mage::helper('monkey')->registerGuestCustomer($order);
+						}
+
 						$subscriber = Mage::getModel('newsletter/subscriber')
 							->subscribe($order->getCustomerEmail());
 				}
@@ -203,12 +215,15 @@ class Ebizmarts_MageMonkey_Model_Observer
 		//Initialize as GUEST customer
 		$customer = new Varien_Object;
 
-		$regCustomer = Mage::registry('current_customer');
+		$regCustomer   = Mage::registry('current_customer');
+		$guestCustomer = Mage::registry('mc_guest_customer');
 
 		if( Mage::helper('customer')->isLoggedIn() ){
 			$customer = Mage::helper('customer')->getCustomer();
 		}elseif($regCustomer){
 			$customer = $regCustomer;
+		}elseif($guestCustomer){
+			$customer = $guestCustomer;
 		}else{
 			if(is_null($object)){
 				$customer->setEmail($object->getSubscriberEmail())
