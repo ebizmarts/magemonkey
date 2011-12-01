@@ -16,7 +16,9 @@
 "Customer Fields Mapping", "Customer Fields Mapping"
 "<a target=\"_blank\" href=\"http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet\">All The Merge Tags (Cheatsheet)</a>","<a target=\"_blank\" href=\"http://kb.mailchimp.com/article/all-the-merge-tags-cheatsheet\">All The Merge Tags (Cheatsheet)</a>"
 "First Name for Guests subscribers", "First Name for Guests subscribers"
+"This value will be sent as FNAME to MailChimp", "This value will be sent as FNAME to MailChimp"
 "Last Name for Guests subscribers", "Last Name for Guests subscribers"
+"This value will be sent as LNAME to MailChimp", "This value will be sent as LNAME to MailChimp"
 
 ;Notification messages
 "MailChimp Cleaned Emails: %s %s at %s reason: %s","MailChimp Cleaned Emails: %s %s at %s reason: %s"
@@ -30,3 +32,7 @@
 "Username:", "Username:"
 "Plan type:", "Plan type:"
 "Is in trial mode?:", "Is in trial mode?:"
+"Enabled - Checked by default", "Enabled - Checked by default"
+"Enabled - Not Checked by default", "Enabled - Not Checked by default"
+"Enabled - Force subscription", "Enabled - Force subscription"
+"-- Disabled --", "-- Disabled --"
