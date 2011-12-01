@@ -18,7 +18,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$email  = $subscriber->getSubscriberEmail();
 		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
-		$isConfirmNeed = (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ? TRUE : FALSE;
+
+		$isConfirmNeed = FALSE;
+		if( !Mage::helper('monkey')->isAdmin() &&
+			(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
+			$isConfirmNeed = TRUE;
+		}
 
 		//New subscriber, just add
 		if( $subscriber->isObjectNew() ){
