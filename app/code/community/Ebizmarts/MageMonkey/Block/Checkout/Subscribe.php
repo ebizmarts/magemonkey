@@ -28,4 +28,9 @@ class Ebizmarts_MageMonkey_Block_Checkout_Subscribe extends Mage_Core_Block_Temp
     			->getQuote();
     }
 
+	public function checkStatus()
+	{
+		return (int)$this->helper('monkey')->config('checkout_subscribe');
+	}
+
 }
