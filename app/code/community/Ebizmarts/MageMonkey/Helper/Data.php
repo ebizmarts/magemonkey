@@ -71,6 +71,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return (bool)($this->config('checkout_subscribe') != 0);
 	}
 
+	public function ecommerce360Active()
+	{
+		return (bool)($this->config('ecommerce360') != 0);
+	}
+
 	public function getDefaultList($storeId)
 	{
 		$curstore = Mage::app()->getStore();
@@ -110,7 +115,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 
-	public function getMergeVars($customer, $includeEmail = FALSE)
+	public function getMergeVars($customer, $includeEmail = FALSE, $websiteId = NULL)
 	{
 		$merge_vars = array();
         $maps       = unserialize( $this->config('map_fields', $customer->getStoreId()) );
@@ -149,7 +154,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					case 'shipping_address':
 
 						$addr = explode('_', $customAtt);
-						//$address = $customer->getPrimaryAddress('default_' . $addr[0]);
 						$address = $customer->{'getPrimary'.ucfirst($addr[0]).'Address'}();
 						if($address){
 							$merge_vars[$key] = array(
@@ -177,6 +181,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 						break;
 					case 'ee_customer_balance':
 						//TODO
+
+						$websiteBalance = Mage::getModel('enterprise_customerbalance/balance')
+	                    					->setCustomerId($customer->getId())
+	                    					->setWebsiteId($websiteId)
+	                    					->load()
+	                    					->getAmount();
+
+
 						break;
 					default:
 
