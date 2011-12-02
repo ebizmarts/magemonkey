@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>0.0.1</version>
+             <version>0.0.2</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -41,6 +41,7 @@
                 <class>Ebizmarts_MageMonkey_Model_Mysql4</class>
                 <entities>
                     <apidebug><table>magemonkey_api_debug</table></apidebug>
+                    <ecommerce><table>magemonkey_ecommerce360</table></ecommerce>
                 </entities>
             </monkey_mysql4>
         </models>
@@ -118,6 +119,23 @@
 	               </monkey_subscribe_checkoutsuccess>
 	         	</observers>
 	        </checkout_onepage_controller_success_action>
+	        <controller_action_predispatch>
+	           	<observers>
+	               <monkey_ecomm360_cookie>
+	                   <class>monkey/ecommerce360</class>
+	                   <method>saveCookie</method>
+	               </monkey_ecomm360_cookie>
+	         	</observers>
+	        </controller_action_predispatch>
+			<sales_order_place_after>
+			  <observers>
+			      <monkey_ecomm360_sendorder>
+			       <type>singleton</type>
+			          <class>mailchimp/ecommerce360</class>
+			          <method>run</method>
+			      </monkey_ecomm360_sendorder>
+			  </observers>
+			</sales_order_place_after>
       	</events>
     </frontend>
     <adminhtml>
@@ -138,6 +156,14 @@
             </modules>
         </translate>
         <events>
+            <core_block_abstract_prepare_layout_before>
+                <observers>
+                    <monkey_order_addmassbutton>
+                        <class>monkey/observer</class>
+                        <method>massActionOption</method>
+                    </monkey_order_addmassbutton>
+                </observers>
+            </core_block_abstract_prepare_layout_before>
             <admin_system_config_changed_section_monkey>
                 <observers>
                     <monkey_save_config>
