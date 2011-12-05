@@ -1,5 +1,20 @@
 <?xml version="1.0"?>
 <config>
+    <menu>
+        <newsletter>
+            <children>
+                <magemonkey translate="title" module="monkey">
+                    <title>MailChimp</title>
+                    <children>
+		                <magemonkey translate="title" module="monkey">
+		                    <title>Ecommerce 360 Orders</title>
+		                    <action>monkey/adminhtml_ecommerce</action>
+		                </magemonkey>
+                    </children>
+                </magemonkey>
+            </children>
+        </newsletter>
+    </menu>
 	<acl>
 	    <resources>
 	      <admin>
