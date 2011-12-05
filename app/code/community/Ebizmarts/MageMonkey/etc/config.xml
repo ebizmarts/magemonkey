@@ -130,8 +130,7 @@
 			<sales_order_place_after>
 			  <observers>
 			      <monkey_ecomm360_sendorder>
-			       <type>singleton</type>
-			          <class>mailchimp/ecommerce360</class>
+			          <class>monkey/ecommerce360</class>
 			          <method>run</method>
 			      </monkey_ecomm360_sendorder>
 			  </observers>
