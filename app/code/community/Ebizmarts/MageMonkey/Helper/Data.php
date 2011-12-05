@@ -182,11 +182,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					case 'ee_customer_balance':
 						//TODO
 
-						$websiteBalance = Mage::getModel('enterprise_customerbalance/balance')
+						/*$websiteBalance = Mage::getModel('enterprise_customerbalance/balance')
 	                    					->setCustomerId($customer->getId())
 	                    					->setWebsiteId($websiteId)
 	                    					->load()
-	                    					->getAmount();
+	                    					->getAmount();*/
 
 
 						break;
