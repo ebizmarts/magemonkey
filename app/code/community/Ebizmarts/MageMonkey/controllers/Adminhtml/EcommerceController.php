@@ -3,6 +3,24 @@
 class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_Controller_Action
 {
 
+	public function indexAction()
+	{
+        $this->_title($this->__('Newsletter'))
+             ->_title($this->__('MailChimp'));
+
+        $this->loadLayout();
+        $this->_setActiveMenu('newsletter/magemonkey');
+        $this->renderLayout();
+	}
+
+	public function gridAction()
+	{
+        $this->loadLayout();
+        $this->getResponse()->setBody(
+            $this->getLayout()->createBlock('monkey/adminhtml_ecommerce_grid')->toHtml()
+        );
+	}
+
 	/**
 	 * Mass action send order to mailchimp
 	 */
@@ -20,7 +38,7 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
             if ($result === TRUE) {
                 $sent++;
             } else {
-            	$this->_getSession()->addError($this->__('Error on order #%s, "%s"', $order->getIncrementId(), $result));
+            	$this->_getSession()->addError($this->__('Error on order #%s, - %s -', $order->getIncrementId(), $result));
                 $notSent++;
             }
         }
