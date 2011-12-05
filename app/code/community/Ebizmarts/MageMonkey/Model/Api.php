@@ -36,6 +36,7 @@ class Ebizmarts_MageMonkey_Model_Api
 		try{
 
 			Mage::helper('monkey')->log($this->_apihost, 'MageMonkey_ApiCall.log');
+			Mage::helper('monkey')->log($this->_mcapi->api_key, 'MageMonkey_ApiCall.log');
 			Mage::helper('monkey')->log($command, 'MageMonkey_ApiCall.log');
 			Mage::helper('monkey')->log($args, 'MageMonkey_ApiCall.log');
 
