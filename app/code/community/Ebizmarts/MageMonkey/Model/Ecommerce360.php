@@ -82,7 +82,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			//Send order to MailChimp
 	    	$rs = $api->campaignEcommOrderAdd($this->_info);
 		}else{
-			$this->_info ['email_id']= $this->_order->getCustomerEmail();
+			$this->_info ['email']= $this->_order->getCustomerEmail();
 			$rs = $api->ecommOrderAdd($this->_info);
 		}
 
@@ -150,9 +150,10 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     {
 		Mage::getModel('monkey/ecommerce')
 			 ->setOrderIncrementId($this->_order->getIncrementId())
+			 ->setOrderId($this->_order->getId())
 	         ->setMcCampaignId($this->_getCampaignCookie())
 	         ->setMcEmailId($this->_getEmailCookie())
-	         ->setCreatedAt( Mage::getModel('core/date')->date() )
+	         ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
 		     ->save();
 	}
 
