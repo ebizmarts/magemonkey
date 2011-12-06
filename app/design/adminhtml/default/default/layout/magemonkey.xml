@@ -7,6 +7,17 @@
         </reference>
     </monkey_adminhtml_ecommerce_index>
 
+    <monkey_adminhtml_bulksync_export>
+        <reference name="content">
+            <block type="monkey/adminhtml_bulksync_export" name="mc_bulksyc_export" />
+        </reference>
+    </monkey_adminhtml_bulksync_export>
+    <monkey_adminhtml_bulksync_import>
+        <reference name="content">
+            <block type="monkey/adminhtml_bulksync_import" name="mc_bulksyc_import" />
+        </reference>
+    </monkey_adminhtml_bulksync_import>
+
 	<adminhtml_system_config_edit>
 		<reference name="head">
 			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
