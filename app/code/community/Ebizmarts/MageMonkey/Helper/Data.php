@@ -76,6 +76,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return (bool)($this->config('ecommerce360') != 0);
 	}
 
+	public function canMonkey()
+	{
+		return (bool)((int)$this->config('active') !== 0);
+	}
+
 	public function getDefaultList($storeId)
 	{
 		$curstore = Mage::app()->getStore();
