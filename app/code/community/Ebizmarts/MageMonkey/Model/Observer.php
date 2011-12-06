@@ -8,6 +8,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
 
+		if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
+
 		if( TRUE === Mage::helper('monkey')->isWebhookRequest()){
 			return $observer;
 		}
@@ -80,6 +84,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriberDeletion(Varien_Event_Observer $observer)
 	{
+		if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
+
 		if( TRUE === Mage::helper('monkey')->isWebhookRequest()){
 			return $observer;
 		}
@@ -150,6 +158,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 	public function updateCustomer(Varien_Event_Observer $observer)
 	{
+		if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
+
 		$customer = $observer->getEvent()->getCustomer();
 
 		$mergeVars = $this->_mergeVars($customer, TRUE);
@@ -177,6 +189,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
+		if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
 		$subscribe = Mage::app()->getRequest()->getPost('magemonkey_subscribe');
 
 		if(!is_null($subscribe)){
@@ -189,6 +204,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
+		if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
 		$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
 
 		if($sessionFlag){
@@ -241,6 +259,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 	public function massActionOption($observer)
     {
+		if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
         $block = $observer->getEvent()->getBlock();
 
         if(get_class($block) == 'Enterprise_SalesArchive_Block_Adminhtml_Sales_Order_Grid_Massaction') {
