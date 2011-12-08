@@ -34,6 +34,8 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
             'title'     => Mage::helper('monkey')->__('Choose Lists'),
             'name'      => 'list',
             'values'   => $lists,
+            'class' => 'required-entry',
+            'required' => true,
         ));
 
         $fieldset->addField('direction', 'hidden', array(
