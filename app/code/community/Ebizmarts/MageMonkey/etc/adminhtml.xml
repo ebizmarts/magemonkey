@@ -14,11 +14,11 @@
 		                    <title>Bulk Sync</title>
 		                    <children>
 				                <mage_to_mc translate="title" module="monkey">
-				                    <title>From Magento To MailChimp</title>
+				                    <title>Export</title>
 				                    <action>monkey/adminhtml_bulksync/export</action>
 				                </mage_to_mc>
 				                <mc_to_mage translate="title" module="monkey">
-				                    <title>From MailChimp To Magento</title>
+				                    <title>Import</title>
 				                    <action>monkey/adminhtml_bulksync/import</action>
 				                </mc_to_mage>
 		                    </children>
