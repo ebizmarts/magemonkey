@@ -21,10 +21,10 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
         ));
 
 		$dataSource = Mage::getSingleton('monkey/system_config_source_bulksyncDatasource')->toOptionArray();
-        $fieldset->addField('data_source', 'select', array(
+        $fieldset->addField('data_source_entity', 'select', array(
             'label'     => Mage::helper('monkey')->__('Data Source'),
             'title'     => Mage::helper('monkey')->__('Data Source'),
-            'name'      => 'data_source',
+            'name'      => 'data_source_entity',
             'values'   => $dataSource,
         ));
 
