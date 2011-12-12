@@ -43,6 +43,7 @@
                     <apidebug><table>magemonkey_api_debug</table></apidebug>
                     <ecommerce><table>magemonkey_ecommerce360</table></ecommerce>
                     <bulksync_export><table>magemonkey_bulksync_export</table></bulksync_export>
+                    <bulksync_import><table>magemonkey_bulksync_import</table></bulksync_import>
                 </entities>
             </monkey_mysql4>
         </models>
