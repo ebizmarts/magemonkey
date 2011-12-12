@@ -21,6 +21,10 @@
 				                    <title>Import</title>
 				                    <action>monkey/adminhtml_bulksync/import</action>
 				                </mc_to_mage>
+				                <job_queue translate="title" module="monkey">
+				                    <title>Job Queue</title>
+				                    <action>monkey/adminhtml_bulksync/queue</action>
+				                </job_queue>
 		                    </children>
 		                </bulksync>
                     </children>
