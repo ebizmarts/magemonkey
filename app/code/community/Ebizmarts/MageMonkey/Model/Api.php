@@ -2,8 +2,11 @@
 
 class Ebizmarts_MageMonkey_Model_Api
 {
-	protected $_mcapi = null;
-        protected $_apihost = null;
+	protected $_mcapi   = null;
+    protected $_apihost = null;
+
+    public $errorCode    = null;
+    public $errorMessage = null;
 
 	public function __construct($args)
 	{
@@ -22,6 +25,9 @@ class Ebizmarts_MageMonkey_Model_Api
 
 	public function __call($method, $args = null)
 	{
+		$this->errorCode    = null;
+		$this->errorMessage = null;
+
 		return $this->call( $method, $args );
 	}
 
@@ -50,6 +56,9 @@ class Ebizmarts_MageMonkey_Model_Api
 
 			if($this->_mcapi->errorMessage){
 				Mage::helper('monkey')->log("Error: {$this->_mcapi->errorMessage}, code {$this->_mcapi->errorCode}", 'MageMonkey_ApiCall.log');
+
+				$this->errorCode    = $this->_mcapi->errorCode;
+				$this->errorMessage = $this->_mcapi->errorMessage;
 
 				return (string)$this->_mcapi->errorMessage;
 			}
