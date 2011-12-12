@@ -7,9 +7,27 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 */
 	protected $_limit = 200;
 
+	/**
+	 * Import limit var
+	 */
+	protected $_importLimit = 500;
+
 	public function processImportJobs()
 	{
+		$job = $this->_getJob('Import');
+		if(is_null($job)){
+			return $this;
+		}
 
+		$start = 0;
+		foreach($job->lists() as $listId){
+
+			$store = $this->_helper()->getStoreByList($listId);
+			$api = Mage::getSingleton('monkey/api', array('store' => $store));
+
+			$api->listMembers($listId, 'subscribed', NULL, $start, $this->_importLimit);
+
+		}
 	}
 
 	/**
@@ -17,19 +35,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 */
 	public function processExportJobs()
 	{
-		$job = Mage::getModel('monkey/bulksyncExport')
-					->getCollection()
-					->addFieldToFilter('status', array('IN' => array('idle', 'chunk_running') ))
-					->addOrder('created_at', 'asc')
-					->load();
-
-		if(!$job->getFirstItem()->getId()){
+		$job = $this->_getJob('Export');
+		if(is_null($job)){
 			return $this;
 		}
-
-		$job = $job->getFirstItem();
-
-		$lists = unserialize($job->getLists());
 
 		$collection = $this->_getEntityModel($job->getDataSourceEntity())
 						->setPageSize($this->_limit);
@@ -45,7 +54,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 		$batch = array();
 
-		foreach($lists as $listId){
+		foreach($job->lists() as $listId){
 			$store = $this->_helper()->getStoreByList($listId);
 
 			//if($store){
@@ -163,5 +172,19 @@ class Ebizmarts_MageMonkey_Model_Cron
 	protected function _dbDate()
 	{
 		return Mage::getModel('core/date')->gmtDate();
+	}
+
+	protected function _getJob($entity)
+	{
+		$job = Mage::getModel("monkey/bulksync{$entity}")
+					->getCollection()
+					->addFieldToFilter('status', array('IN' => array('idle', 'chunk_running') ))
+					->addOrder('created_at', 'asc')
+					->load();
+		if(!$job->getFirstItem()->getId()){
+			return null;
+		}
+
+		return $job->getFirstItem();
 	}
 }
