@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>0.0.2</version>
+             <version>0.0.3</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -42,6 +42,7 @@
                 <entities>
                     <apidebug><table>magemonkey_api_debug</table></apidebug>
                     <ecommerce><table>magemonkey_ecommerce360</table></ecommerce>
+                    <bulksync_export><table>magemonkey_bulksync_export</table></bulksync_export>
                 </entities>
             </monkey_mysql4>
         </models>
@@ -184,4 +185,16 @@
     		</general>
     	</monkey>
     </default>
+    <crontab>
+        <jobs>
+            <magemonkey_bulksync_export_subscribers>
+                <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
+                <run><model>monkey/cron::processExportJobs</model></run>
+            </magemonkey_bulksync_export_subscribers>
+            <!--<enterprise_giftcardaccount_generage_codes_pool>
+                <schedule><cron_expr>30 * * * *</cron_expr></schedule>
+                <run><model>enterprise_giftcardaccount/pool::applyCodesGeneration</model></run>
+            </enterprise_giftcardaccount_generage_codes_pool>-->
+        </jobs>
+    </crontab>
 </config>
