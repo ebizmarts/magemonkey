@@ -122,14 +122,20 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	public function getMergeVars($customer, $includeEmail = FALSE, $websiteId = NULL)
 	{
-		$merge_vars = array();
-        $maps       = unserialize( $this->config('map_fields', $customer->getStoreId()) );
+		$merge_vars   = array();
+        $maps         = unserialize( $this->config('map_fields', $customer->getStoreId()) );
 
 		if(!$maps){
 			return;
 		}
 
 		$request = Mage::app()->getRequest();
+
+		//Add Customer data to Subscriber if is Newsletter_Subscriber is Customer
+		if($customer->getCustomerId()){
+			$customer->addData(Mage::getModel('customer/customer')->load($customer->getCustomerId())
+									->toArray());
+		}
 
 		foreach($maps as $map){
 
