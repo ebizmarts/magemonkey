@@ -12,4 +12,10 @@ class Ebizmarts_MageMonkey_Model_BulksyncImport extends Mage_Core_Model_Abstract
     {
     	return unserialize($this->getLists());
     }
+
+    public function statuses()
+    {
+    	return unserialize($this->getImportTypes());
+    }
+
 }
