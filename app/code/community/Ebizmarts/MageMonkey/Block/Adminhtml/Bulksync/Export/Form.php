@@ -45,6 +45,10 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
 
         $form->setUseContainer(true);
         $this->setForm($form);
+
+        $this->setChild('form_after', Mage::getModel('core/layout')->createBlock('monkey/adminhtml_bulksync_queueExport', 'exportqueue'));
+
+        return parent::_prepareForm();
     }
 
 }
