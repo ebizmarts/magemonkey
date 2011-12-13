@@ -30,6 +30,16 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Import_Form extends Mage_Adm
             'required' => true,
         ));
 
+		$statuses = Mage::getSingleton('monkey/system_config_source_status')->toOptionArray();
+        $fieldset->addField('import_types', 'multiselect', array(
+            'label'     => Mage::helper('monkey')->__('Statuses to import'),
+            'title'     => Mage::helper('monkey')->__('Statuses to import'),
+            'name'      => 'import_types',
+            'values'   => $statuses,
+            'class' => 'required-entry',
+            'required' => true,
+        ));
+
         $fieldset->addField('create_customers', 'checkbox', array(
             'label'     => Mage::helper('monkey')->__('Create customer accounts'),
             'title'     => Mage::helper('monkey')->__('Create customer accounts'),
@@ -49,6 +59,12 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Import_Form extends Mage_Adm
             'name'     => 'direction',
             'value'    => 'import',
         ));
+
+		//Set default FORM values
+		$formValues = array(
+							'import_types' => array('subscribed')
+						   );
+		$form->setValues($formValues);
 
         $form->setUseContainer(true);
         $this->setForm($form);
