@@ -64,10 +64,15 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Import_Form extends Mage_Adm
 		$formValues = array(
 							'import_types' => array('subscribed')
 						   );
-		$form->setValues($formValues);
+		$form->addValues($formValues);
 
         $form->setUseContainer(true);
         $this->setForm($form);
+
+        $this->setChild('form_after', Mage::getModel('core/layout')->createBlock('monkey/adminhtml_bulksync_queueImport', 'importqueue'));
+
+		return parent::_prepareForm();
+
     }
 
 }
