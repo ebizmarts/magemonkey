@@ -277,4 +277,50 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	}
 
+	public function createCustomerAccount($email, $websiteId)
+	{
+		$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId);
+
+		$accountData = array(
+							 'firstname'     => 'Automatic created',
+							 'lastname'      => 'Automatic created',
+							 'email'         => $customer,
+							 'is_subscribed' => 1
+							);
+
+		$customerForm = Mage::getModel('customer/form');
+    	$customerForm->setFormCode('customer_account_create')
+        	->setEntity($customer)
+        	->initDefaultValues();
+        // emulate request
+        $request = $customerForm->prepareRequest($accountData);
+        $customerData    = $customerForm->extractData($request);
+        $customerForm->restoreData($customerData);
+
+		$customerErrors = $customerForm->validateData($customerData);
+
+		if($customerErrors){
+            $customerForm->compactData($customerData);
+
+            $pwd = $customer->generatePassword(8);
+            $customer->setPassword($pwd);
+            $customer->setConfirmation($pwd);
+            $customerErrors = $customer->validate();
+            if (is_array($customerErrors) && count($customerErrors)) {
+
+                //TODO: Do something with errors.
+
+            }else{
+            	$customer->save();
+
+				if ( $customer->isConfirmationRequired() ){
+                    $customer->sendNewAccountEmail('confirmation');
+				}
+				$customer->sendPasswordReminderEmail();
+            }
+		}
+
+		return $customer;
+	}
+
 }
