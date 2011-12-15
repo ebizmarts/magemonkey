@@ -20,15 +20,91 @@ class Ebizmarts_MageMonkey_Model_Cron
 		}
 
 		$start = 0;
+		$toImport = array();
+
 		foreach($job->lists() as $listId){
 
 			$store = $this->_helper()->getStoreByList($listId);
+			$websiteId = Mage::app()->getStore($store)->getWebsiteId();
+
 			$api = Mage::getSingleton('monkey/api', array('store' => $store));
 
-			$api->listMembers($listId, 'subscribed', NULL, $start, $this->_importLimit);
+			foreach($job->statuses() as $status){
+
+				$members = $api->listMembers($listId, $status, NULL, $start, $this->_importLimit);
+
+				if($members['total'] > 0){
+					if( !isset($toImport[$status]) ){
+						$toImport [$status] = array();
+					}
+					$toImport [$status] += $members['data'];
+				}
+
+			}
+
+			if( count($toImport) > 0 ){
+
+				foreach($toImport as $type => $emails){
+
+					foreach($emails as $data){
+
+						$this->{$type}($data['email'], $websiteId, (bool)$job->getCreateCustomer());
+
+					}
+
+				}
+
+			}
+
+			//var_dump($job->getCreateCustomer(), $store);
+			//var_dump($toImport);die;
 
 		}
 	}
+
+	protected function subscribed($email, $websiteId = null, $createCustomer = FALSE)
+	{
+
+		if( $createCustomer ){
+
+			$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId)
+															->loadByEmail($email);
+
+			//Create customer if not exists, and subscribe
+			if( is_null($customer->getId()) ){
+				$this->_helper()->createCustomerAccount($email, $websiteId);
+			}else{
+				//Just subscribe existing customer
+				Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
+														->subscribeCustomer($customer);
+			}
+
+		}else{
+
+			//Just subscribe email
+			Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
+													->subscribe($email);
+
+		}
+
+	}
+
+	protected function unsubscribed($email, $websiteId = null, $createCustomer = FALSE)
+	{
+
+	}
+
+	protected function cleaned($email, $websiteId = null, $createCustomer = FALSE)
+	{
+		return $this->unsubscribed($email, $websiteId, $createCustomer);
+	}
+
+	protected function updated($email, $websiteId = null, $createCustomer = FALSE)
+	{
+
+	}
+
+
 
 	/**
 	 * Process EXPORT tasks
