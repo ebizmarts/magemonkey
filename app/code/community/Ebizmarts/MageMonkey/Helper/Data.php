@@ -281,16 +281,31 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	}
 
-	public function createCustomerAccount($email, $websiteId)
+	public function createCustomerAccount($accountData, $websiteId)
 	{
 		$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId);
 
-		$accountData = array(
-							 'firstname'     => $this->__('Store'),
-							 'lastname'      => $this->__('Guest'),
-							 'email'         => $email,
-							 'is_subscribed' => 1
-							);
+		$accountData ['is_subscribed'] = 1;
+
+		if(!isset($accountData['firstname']) OR empty($accountData['firstname'])){
+			$accountData['firstname'] = $this->__('Store');
+		}
+		if(!isset($accountData['lastname']) OR empty($accountData['lastname'])){
+			$accountData['lastname'] = $this->__('Guest');
+		}
+
+		/**
+		 * Handle Address related Data
+		 */
+		if(isset($accountData['billing_address']) && !empty($accountData['billing_address'])){
+			//TODO: Parse and add this data
+		}
+		if(isset($accountData['shipping_address']) && !empty($accountData['shipping_address'])){
+			//TODO: Parse and add this data
+		}
+		/**
+		 * Handle Address related Data
+		 */
 
 		$customerForm = Mage::getModel('customer/form');
     	$customerForm->setFormCode('customer_account_create')
