@@ -12,7 +12,12 @@ class Ebizmarts_MageMonkey_Model_Api
 	{
 		$storeId = isset($args['store']) ? $args['store'] : null;
 		$apikey  = (!isset($args['apikey']) ? Mage::helper('monkey')->getApiKey($storeId) : $args['apikey']);
-		$this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
+
+		if( isset($args['_export_']) ){
+			$this->_mcapi = new Ebizmarts_MageMonkey_Model_MCEXPORTAPI($apikey);
+		}else{
+			$this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
+		}
 
                 //Create actual API URL using API key, borrowed from MCAPI.php
                 $dc = "us1";
