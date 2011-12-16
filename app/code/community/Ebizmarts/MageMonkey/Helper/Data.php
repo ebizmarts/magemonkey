@@ -119,11 +119,15 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return (bool)($monkeyRequest === $thisRequest);
 	}
 
+	public function getMergeMaps($storeId)
+	{
+		return unserialize( $this->config('map_fields', $storeId) );
+	}
 
 	public function getMergeVars($customer, $includeEmail = FALSE, $websiteId = NULL)
 	{
 		$merge_vars   = array();
-        $maps         = unserialize( $this->config('map_fields', $customer->getStoreId()) );
+        $maps         = $this->getMergeMaps($customer->getStoreId());
 
 		if(!$maps){
 			return;
@@ -282,9 +286,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId);
 
 		$accountData = array(
-							 'firstname'     => 'Automatic created',
-							 'lastname'      => 'Automatic created',
-							 'email'         => $customer,
+							 'firstname'     => $this->__('Store'),
+							 'lastname'      => $this->__('Guest'),
+							 'email'         => $email,
 							 'is_subscribed' => 1
 							);
 
