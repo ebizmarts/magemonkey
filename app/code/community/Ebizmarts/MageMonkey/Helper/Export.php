@@ -3,31 +3,46 @@
 class Ebizmarts_MageMonkey_Helper_Export extends Mage_Core_Helper_Abstract
 {
 
-	public function parseMembers($response, $mergeVars = NULL)
+	public function parseMembers($response, $listMergeVars, $store)
 	{
-		if($mergeVars){
-			var_dump($mergeVars);
+		$storeId = Mage::app()->getStore($store)->getId();
+
+		//Explode response, one record per line
+		$response = explode("\n", $response);
+
+		//My Merge Vars
+		$mergeMaps = Mage::helper('monkey')->getMergeMaps($storeId);
+
+		//Get Header (MergeVars)
+		$header = json_decode(array_shift($response));
+
+		//Add var to maps, not included on config
+		array_unshift($mergeMaps, array('magento' => 'email', 'mailchimp' => 'EMAIL'));
+
+		$canMerge = array();
+		foreach($header as $mergePos => $mergeLabel){
+			foreach($listMergeVars as $var){
+				if( strcmp($mergeLabel, $var['name']) === 0 ){
+
+					foreach($mergeMaps as $map){
+						if(strcmp($var['tag'], $map['mailchimp']) === 0){
+							$canMerge [$mergePos]= $map['magento'];
+						}
+					}
+
+				}
+			}
 		}
 
-		$response = explode("\n", $response);
-		$i = 0;
-		$header = array();
-        foreach($response as $buffer){
+		$membersData = array();
 
-		    if (trim($buffer) != ''){
-		      $obj = json_decode($buffer);
-		      if ($i == 0){
-		        //Header row
-		        $header = $obj;
-		        var_dump( $header );
-		      } else {
-		        //echo, write to a file, queue a job, etc.
-		        var_dump( $header, $obj );
-		      }
-		      $i++;
+        foreach($response as $member){
+		    if (trim($member) != ''){
+		      $membersData []= array_combine($canMerge, array_intersect_key(json_decode($member), $canMerge));
 		    }
-
         }
+
+		return $membersData;
 	}
 
 }
