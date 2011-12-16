@@ -1,9 +1,26 @@
 <?xml version="1.0"?>
 
 <layout version="0.1.0">
+
+	<!-- Checkout -->
 	<checkout_onepage_review>
         <reference name="checkout.onepage.review.info.items.after">
 			<block type="monkey/checkout_subscribe" name="magemonkey.subscribe" template="magemonkey/checkout/subscribe.phtml" />
         </reference>
 	</checkout_onepage_review>
+	<!-- Checkout -->
+
+	<!-- Customer -->
+	<customer_account>
+	    <reference name="customer_account_navigation">
+	    	<!-- Check that <ifconfig> works -->
+	        <action method="addLink" ifconfig="monkey/general/active" translate="label" module="monkey">
+	        	<name>mailchimp</name>
+	        	<path>monkey/customer_account/index</path>
+	        	<label>MailChimp</label>
+	        </action>
+	    </reference>
+	</customer_account>
+	<!-- Customer -->
+
 </layout>
