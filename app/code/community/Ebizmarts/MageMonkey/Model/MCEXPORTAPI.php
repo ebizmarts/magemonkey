@@ -16,6 +16,9 @@ class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_
         $this->api_key = $apikey;
     }
 
+	/**
+	 * @link http://apidocs.mailchimp.com/export/1.0/list.func.php
+	 */
 	public function listExport($id, $status = 'subscribed', $segment = NULL, $since = NULL)
 	{
 		$params = array();
@@ -99,31 +102,6 @@ class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_
                 $error_code = trim(substr($h,27));
                 break;
             }
-        }
-
-		$response = explode("\n", $response);
-		$i = 0;
-		$header = array();
-        foreach($response as $buffer){
-
-		    if (trim($buffer) != ''){
-		      $obj = json_decode($buffer);
-		      if ($i == 0){
-		        //store the header row
-		        $header = $obj;
-		        var_dump( $header );
-		      } else {
-		        //echo, write to a file, queue a job, etc.
-		        var_dump( $header, $obj );
-		      }
-		      $i++;
-
-		      if($i==2){
-		      	exit;
-		      }
-
-		    }
-
         }
 
         if(ini_get("magic_quotes_runtime")) $response = stripslashes($response);
