@@ -2482,5 +2482,3 @@ class Ebizmarts_MageMonkey_Model_MCAPI {
     }
 
 }
-
-?>
