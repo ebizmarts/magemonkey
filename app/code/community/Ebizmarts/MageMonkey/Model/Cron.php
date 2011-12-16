@@ -27,17 +27,22 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$store = $this->_helper()->getStoreByList($listId);
 			$websiteId = Mage::app()->getStore($store)->getWebsiteId();
 
-			$api = Mage::getSingleton('monkey/api', array('store' => $store));
+			$exportapi = Mage::getModel('monkey/api', array('store' => $store, '_export_' => TRUE));
+			$api = Mage::getModel('monkey/api', array('store' => $store));
+
+			$mergevars = $api->listMergeVars($listId);
 
 			foreach($job->statuses() as $status){
 
-				$members = $api->listMembers($listId, $status, NULL, $start, $this->_importLimit);
+				$members = $exportapi->listExport($listId, $status, NULL, $start, $this->_importLimit);
 
-				if($members['total'] > 0){
+				if($members){
 					if( !isset($toImport[$status]) ){
 						$toImport [$status] = array();
 					}
-					$toImport [$status] += $members['data'];
+					$mdata = $this->_helper('export')->parseMembers($members, $mergevars, $store);
+
+					$toImport [$status] += $mdata;
 				}
 
 			}
@@ -48,7 +53,8 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 					foreach($emails as $data){
 
-						$this->{$type}($data['email'], $websiteId, (bool)$job->getCreateCustomer());
+						//Run: subscribed, unsubscribed, cleaned or updated method
+						$this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
 
 					}
 
@@ -56,23 +62,22 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 			}
 
-			//var_dump($job->getCreateCustomer(), $store);
 			//var_dump($toImport);die;
 
 		}
 	}
 
-	protected function subscribed($email, $websiteId = null, $createCustomer = FALSE)
+	protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
 	{
 
 		if( $createCustomer ){
 
 			$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId)
-															->loadByEmail($email);
+															->loadByEmail($member['email']);
 
 			//Create customer if not exists, and subscribe
 			if( is_null($customer->getId()) ){
-				$this->_helper()->createCustomerAccount($email, $websiteId);
+				$this->_helper()->createCustomerAccount($member, $websiteId);
 			}else{
 				//Just subscribe existing customer
 				Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
@@ -83,7 +88,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 			//Just subscribe email
 			Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
-													->subscribe($email);
+													->subscribe($member['email']);
 
 		}
 
@@ -240,9 +245,9 @@ class Ebizmarts_MageMonkey_Model_Cron
 		return $idFieldName;
 	}
 
-	protected function _helper()
+	protected function _helper($which = 'data')
 	{
-		return Mage::helper('monkey');
+		return Mage::helper('monkey/'.$which);
 	}
 
 	protected function _dbDate()
