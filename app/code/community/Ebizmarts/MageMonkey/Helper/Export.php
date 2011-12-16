@@ -5,6 +5,7 @@ class Ebizmarts_MageMonkey_Helper_Export extends Mage_Core_Helper_Abstract
 
 	public function parseMembers($response, $listMergeVars, $store)
 	{
+
 		$storeId = Mage::app()->getStore($store)->getId();
 
 		//Explode response, one record per line
