@@ -294,19 +294,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			$accountData['lastname'] = $this->__('Guest');
 		}
 
-		/**
-		 * Handle Address related Data
-		 */
-		if(isset($accountData['billing_address']) && !empty($accountData['billing_address'])){
-			//TODO: Parse and add this data
-		}
-		if(isset($accountData['shipping_address']) && !empty($accountData['shipping_address'])){
-			//TODO: Parse and add this data
-		}
-		/**
-		 * Handle Address related Data
-		 */
-
 		$customerForm = Mage::getModel('customer/form');
     	$customerForm->setFormCode('customer_account_create')
         	->setEntity($customer)
@@ -324,6 +311,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $pwd = $customer->generatePassword(8);
             $customer->setPassword($pwd);
             $customer->setConfirmation($pwd);
+
+
+			/**
+			 * Handle Address related Data
+			 */
+			$billing = $shipping = null;
+			if(isset($accountData['billing_address']) && !empty($accountData['billing_address'])){
+				$this->_McAddressToMage($accountData, 'billing', $customer);
+			}
+			if(isset($accountData['shipping_address']) && !empty($accountData['shipping_address'])){
+				$this->_McAddressToMage($accountData, 'shipping', $customer);
+			}
+			/**
+			 * Handle Address related Data
+			 */
+
             $customerErrors = $customer->validate();
             if (is_array($customerErrors) && count($customerErrors)) {
 
@@ -340,6 +343,55 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 
 		return $customer;
+	}
+
+	protected function _McAddressToMage(array $data, $type, $customer)
+	{
+		$addressData = $data["{$type}_address"];
+		$address = explode(str_repeat(chr(32), 2), $addressData);
+		list($addr1, $addr2, $city, $state, $zip, $country) = $address;
+
+		$region = Mage::getModel('directory/region')->loadByName($state, $country);
+
+		$mgAddress = array(
+							'firstname' => $data['firstname'],
+							'lastname' => $data['lastname'],
+							'street'  => array($addr1, $addr2),
+							'city' => $city,
+							'country_id' => $country,
+							'region' => $state,
+							'region_id' => (!is_null($region->getId()) ? $region->getId() : null),
+							'postcode' => $zip,
+							'telephone' => 'not_provided',
+						  );
+
+        /* @var $address Mage_Customer_Model_Address */
+        $address = Mage::getModel('customer/address');
+        /* @var $addressForm Mage_Customer_Model_Form */
+        $addressForm = Mage::getModel('customer/form');
+        $addressForm->setFormCode('customer_register_address')
+            ->setEntity($address);
+
+		$addrrequest = $addressForm->prepareRequest($mgAddress);
+        $addressData = $addressForm->extractData($addrrequest);
+        $addressErrors  = $addressForm->validateData($addressData);
+
+        $errors = array();
+        if ($addressErrors === true) {
+            $address->setId(null)
+            	->setData("is_default_{$type}", TRUE);
+            $addressForm->compactData($addressData);
+            $customer->addAddress($address);
+
+            $addressErrors = $address->validate();
+            if (is_array($addressErrors)) {
+                $errors = array_merge($errors, $addressErrors);
+            }
+        } else {
+            $errors = array_merge($errors, $addressErrors);
+        }
+
+		return $errors;
 	}
 
 }
