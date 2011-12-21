@@ -21,6 +21,15 @@
 	        </action>
 	    </reference>
 	</customer_account>
+
+	<monkey_customer_account_index>
+      <label>Customer My Account Mage Monkey</label>
+      <update handle="customer_account"/>
+      <reference name="my.account.wrapper">
+      	  <block type="monkey/customer_account_lists" name="magemonkey_additionallists" template="magemonkey/customer/account/lists.phtml" />
+          <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
+      </reference>
+	</monkey_customer_account_index>
 	<!-- Customer -->
 
 </layout>
