@@ -338,7 +338,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				if ( $customer->isConfirmationRequired() ){
                     $customer->sendNewAccountEmail('confirmation');
 				}
-				$customer->sendPasswordReminderEmail();
+				//$customer->sendPasswordReminderEmail();
             }
 		}
 
