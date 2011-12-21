@@ -1,0 +1,33 @@
+<?php
+
+$lists   = $this->getLists();
+$myLists = $this->getSubscribedLists();
+
+?>
+
+<form action="<?php echo $this->getUrl(); ?>" name="mailchimp_additional" id="mailchimp-additional" method="post">
+	<ul>
+
+	<?php
+		foreach($lists as $list):
+			$igroups = $list['interest_groupings'];
+	?>
+
+	<li><?php echo $list['name'], ' ', (in_array($list['id'], $myLists) ? $this->__('subscribed') : $this->__('not subscribed')); ?></li>
+
+	<?php if(is_array($igroups)): ?>
+
+		<?php foreach($igroups as $group): ?>
+
+		<strong><?php echo $group['name']; ?></strong>
+		<?php echo $this->renderGroup($group); ?>
+
+
+		<?php endforeach; ?>
+
+	<?php endif; ?>
+
+	<?php endforeach; ?>
+
+	</ul>
+</form>
