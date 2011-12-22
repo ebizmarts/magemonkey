@@ -9,7 +9,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	{
 
 		if(!Mage::helper('monkey')->canMonkey()){
-			return;
+			return $observer;
 		}
 
 		if( TRUE === Mage::helper('monkey')->isWebhookRequest()){
@@ -17,6 +17,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$subscriber = $observer->getEvent()->getSubscriber();
+
+		if( $subscriber->getBulksync() ){
+			return $observer;
+		}
 
 		$subscriber->setImportMode(TRUE);
 
@@ -92,6 +96,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
+		if( $subscriber->getBulksync() ){
+			return $observer;
+		}
+
 		$subscriber = $observer->getEvent()->getSubscriber();
 		$subscriber->setImportMode(TRUE);
 
@@ -112,6 +120,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if( !isset($post['groups']) ){
 			return $observer;
 		}
+		//Chequear que el índice exista
 
 		$apiKey = (string)$post['groups']['general']['fields']['apikey']['value'];
 
