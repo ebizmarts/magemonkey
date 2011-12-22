@@ -285,7 +285,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	{
 		$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId);
 
-		$accountData ['is_subscribed'] = 1;
+		//$accountData ['is_subscribed'] = 1;
 
 		if(!isset($accountData['firstname']) OR empty($accountData['firstname'])){
 			$accountData['firstname'] = $this->__('Store');
