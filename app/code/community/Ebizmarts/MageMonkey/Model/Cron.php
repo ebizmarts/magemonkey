@@ -12,6 +12,8 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 */
 	protected $_importLimit = 500;
 
+	protected $_store;
+
 	public function processImportJobs()
 	{
 		$job = $this->_getJob('Import');
@@ -19,13 +21,13 @@ class Ebizmarts_MageMonkey_Model_Cron
 			return $this;
 		}
 
-		$start = 0;
 		$toImport = array();
 
 		foreach($job->lists() as $listId){
 
 			$store = $this->_helper()->getStoreByList($listId);
 			$websiteId = Mage::app()->getStore($store)->getWebsiteId();
+			$this->_store = Mage::app()->getStore($store);
 
 			$exportapi = Mage::getModel('monkey/api', array('store' => $store, '_export_' => TRUE));
 			$api = Mage::getModel('monkey/api', array('store' => $store));
@@ -34,9 +36,9 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 			foreach($job->statuses() as $status){
 
-				$members = $exportapi->listExport($listId, $status, NULL, $start, $this->_importLimit);
+				$members = $exportapi->listExport($listId, $status, NULL, $job->getSince());
 
-				if($members){
+				if(is_null($exportapi->errorCode) && $members){
 					if( !isset($toImport[$status]) ){
 						$toImport [$status] = array();
 					}
@@ -49,26 +51,54 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 			if( count($toImport) > 0 ){
 
+				$job->setStatus('running')
+					->save();
+
 				foreach($toImport as $type => $emails){
+
+					$procCount = 0;
 
 					foreach($emails as $data){
 
 						//Run: subscribed, unsubscribed, cleaned or updated method
 						$this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
 
+						$procCount++;
 					}
+
+					$job->setProcessedCount( ((int)$job->getProcessedCount() + $procCount) )
+						->save();
 
 				}
 
-			}
+			$job->setStatus('finished')
+					->save();
 
-			//var_dump($toImport);die;
+			}
 
 		}
 	}
 
+	protected function _getSubscriberObject($email, $status = Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+	{
+		$subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+		$subscriber->setImportMode(TRUE)->setBulksync(TRUE);
+
+		if(!$subscriber->getId()){
+			$subscriber->setStoreId($this->_store->getId())
+			->setSubscriberConfirmCode(Mage::getModel('newsletter/subscriber')->randomSequence())
+			->setEmail($email);
+		}
+
+		$subscriber->setStatus($status);
+
+		return $subscriber;
+	}
+
 	protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
 	{
+
+		$subscriber = $this->_getSubscriberObject($member['email']);
 
 		if( $createCustomer ){
 
@@ -77,36 +107,36 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 			//Create customer if not exists, and subscribe
 			if( is_null($customer->getId()) ){
-				$this->_helper()->createCustomerAccount($member, $websiteId);
-			}else{
-				//Just subscribe existing customer
-				Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
-														->subscribeCustomer($customer);
+				$customer = $this->_helper()->createCustomerAccount($member, $websiteId);
 			}
+
+			$subscriber
+            ->setCustomerId($customer->getId())
+            ->save();
 
 		}else{
 
 			//Just subscribe email
-			Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
-													->subscribe($member['email']);
+			$subscriber->save();
 
 		}
 
 	}
 
+	protected function updated($email, $websiteId = null, $createCustomer = FALSE)
+	{
+		//TODO
+	}
+
 	protected function unsubscribed($email, $websiteId = null, $createCustomer = FALSE)
 	{
-
+		$this->_getSubscriberObject($email, Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
+										->save();
 	}
 
 	protected function cleaned($email, $websiteId = null, $createCustomer = FALSE)
 	{
 		return $this->unsubscribed($email, $websiteId, $createCustomer);
-	}
-
-	protected function updated($email, $websiteId = null, $createCustomer = FALSE)
-	{
-
 	}
 
 
