@@ -7,10 +7,10 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
     {
         parent::__construct();
         $this->setId('bulksync_exportjobs_queue');
-        $this->setUseAjax(true);
+        $this->setUseAjax(TRUE);
         $this->setDefaultSort('created_at');
-        $this->setDefaultDir('DESC');
-        $this->setSaveParametersInSession(false);
+        $this->setDefaultDir('asc');
+        $this->setSaveParametersInSession(TRUE);
     }
 
     protected function _prepareCollection()
@@ -18,23 +18,13 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
         $collection = Mage::getModel('monkey/bulksyncExport')
 					  	->getCollection();
 
-		foreach($collection as $item){
-			$lists = Mage::getSingleton('monkey/api')
-							->lists(array('list_id' => implode(', ', $item->lists())));
-			$listsNames = array();
-			foreach($lists['data'] as $list){
-				$listsNames []= $list['name'];
-			}
-			$item->setLists(implode(', ', $listsNames));
-		}
-
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
 
     protected function _prepareColumns()
     {
-
+		//TODO: Add, reset and delete actions
         $this->addColumn('id', array(
             'header'=> Mage::helper('monkey')->__('ID'),
             'index' => 'id',
@@ -66,6 +56,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
             'index' => 'lists',
             'filter' => false,
             'sortable' => false,
+            'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists'
         ));
 
         $this->addColumn('updated_at', array(
