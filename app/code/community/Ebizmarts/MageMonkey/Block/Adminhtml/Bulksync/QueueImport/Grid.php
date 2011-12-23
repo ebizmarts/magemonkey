@@ -7,10 +7,10 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueImport_Grid extends Mag
     {
         parent::__construct();
         $this->setId('bulksync_importjobs_queue');
-        $this->setUseAjax(true);
+        $this->setUseAjax(TRUE);
         $this->setDefaultSort('created_at');
-        $this->setDefaultDir('DESC');
-        $this->setSaveParametersInSession(false);
+        $this->setDefaultDir('asc');
+        $this->setSaveParametersInSession(TRUE);
     }
 
     protected function _prepareCollection()
@@ -18,28 +18,14 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueImport_Grid extends Mag
         $collection = Mage::getModel('monkey/bulksyncImport')
 					  	->getCollection();
 
-		foreach($collection as $item){
-			$item->setImportTypes(implode(', ', $item->statuses()));
-
-			$lists = Mage::getSingleton('monkey/api')
-							->lists(array('list_id' => implode(', ', $item->lists())));
-			$listsNames = array();
-			foreach($lists['data'] as $list){
-				$listsNames []= $list['name'];
-			}
-			$item->setLists(implode(', ', $listsNames));
-
-			$item->setCreateCustomer( ($item->getCreateCustomer() == 1 ? Mage::helper('monkey')->__('Yes') : Mage::helper('monkey')->__('No')) );
-			$item->setSince( ($item->getSince() ? str_replace('00:00:00', '', $item->getSince()) : '') );
-		}
-
         $this->setCollection($collection);
+
         return parent::_prepareCollection();
     }
 
     protected function _prepareColumns()
     {
-
+		//TODO: Add, reset and delete actions
         $this->addColumn('id', array(
             'header'=> Mage::helper('monkey')->__('ID'),
             'index' => 'id',
@@ -64,6 +50,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueImport_Grid extends Mag
             'index' => 'import_types',
             'filter' => false,
             'sortable' => false,
+            'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Importypes'
         ));
 
         $this->addColumn('lists', array(
@@ -71,6 +58,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueImport_Grid extends Mag
             'index' => 'lists',
             'filter' => false,
             'sortable' => false,
+            'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists'
         ));
 
         $this->addColumn('create_customer', array(
@@ -78,11 +66,13 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueImport_Grid extends Mag
             'index' => 'create_customer',
             'filter' => false,
             'sortable' => false,
+            'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Yesno'
         ));
 
         $this->addColumn('since', array(
             'header'=> Mage::helper('monkey')->__('Retrieve Since'),
             'index' => 'since',
+            'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Date'
         ));
 
         $this->addColumn('updated_at', array(
