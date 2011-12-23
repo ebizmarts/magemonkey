@@ -21,9 +21,9 @@ class Ebizmarts_MageMonkey_Model_Cron
 			return $this;
 		}
 
-		$toImport = array();
-
 		foreach($job->lists() as $listId){
+
+			$toImport = array();
 
 			$store = $this->_helper()->getStoreByList($listId);
 			$websiteId = Mage::app()->getStore($store)->getWebsiteId();
@@ -44,7 +44,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 					}
 					$mdata = $this->_helper('export')->parseMembers($members, $mergevars, $store);
 
-					$toImport [$status] += $mdata;
+					$toImport[$status] = array_merge($toImport[$status], $mdata);
 				}
 
 			}
@@ -123,20 +123,20 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 	}
 
-	protected function updated($email, $websiteId = null, $createCustomer = FALSE)
+	protected function updated($member, $websiteId = null, $createCustomer = FALSE)
 	{
 		//TODO
 	}
 
-	protected function unsubscribed($email, $websiteId = null, $createCustomer = FALSE)
+	protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE)
 	{
-		$this->_getSubscriberObject($email, Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
+		$this->_getSubscriberObject($member['email'], Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
 										->save();
 	}
 
-	protected function cleaned($email, $websiteId = null, $createCustomer = FALSE)
+	protected function cleaned($member, $websiteId = null, $createCustomer = FALSE)
 	{
-		return $this->unsubscribed($email, $websiteId, $createCustomer);
+		return $this->unsubscribed($member, $websiteId, $createCustomer);
 	}
 
 
@@ -161,8 +161,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 		$collection->load();
 
-    	//var_dump((string)$collection->getSelect());
-
 		$batch = array();
 
 		foreach($job->lists() as $listId){
@@ -177,8 +175,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 					$processedCount += 1;
 					$batch []= $this->_helper()->getMergeVars($item, TRUE);
 				}
-
-				//var_dump($batch);
 
 				if(count($batch) > 0){
 
