@@ -236,6 +236,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			$merge_vars['EMAIL'] = $customer->getEmail();
 		}
 
+		$blank = new Varien_Object;
+		Mage::dispatchEvent('magemonkey_mergevars_after',
+            					array('vars' => $merge_vars, 'customer' => $customer, 'newvars' => $blank));
+		if($blank->hasData()){
+			$merge_vars = array_merge($merge_vars, $blank->toArray());
+		}
+
+
 		/*
 
 		=== TODO ===
