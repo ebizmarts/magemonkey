@@ -61,6 +61,71 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         );
 	}
 
+    protected function _initJob()
+    {
+        $id     = $this->getRequest()->getParam('job_id');
+        $entity = $this->getRequest()->getParam('entity');
+        $job = Mage::getModel("monkey/bulksync{$entity}")->load($id);
+
+        if (!$job->getId()) {
+            $this->_getSession()->addError($this->__('This job no longer exists.'));
+            $this->_redirect('*/*/');
+            $this->setFlag('', self::FLAG_NO_DISPATCH, true);
+            return false;
+        }
+
+        return $job;
+    }
+
+	public function deleteAction()
+	{
+        if ($job = $this->_initJob()) {
+
+            try {
+                $job->delete();
+                $this->_getSession()->addSuccess(
+                    $this->__('The job has been deleted.')
+                );
+            }
+            catch (Mage_Core_Exception $e) {
+                $this->_getSession()->addError($e->getMessage());
+            }
+            catch (Exception $e) {
+                $this->_getSession()->addError($this->__('The job has not been deleted.'));
+                Mage::logException($e);
+            }
+            $this->_redirectReferer();
+
+        }
+	}
+
+	public function resetAction()
+	{
+        if ($job = $this->_initJob()) {
+
+            try {
+
+                $job->setStatus('idle')
+                ->setProcessedCount(0)
+                ->setLastProcessedId(0)
+                ->save();
+
+                $this->_getSession()->addSuccess(
+                    $this->__('The job has been updated.')
+                );
+            }
+            catch (Mage_Core_Exception $e) {
+                $this->_getSession()->addError($e->getMessage());
+            }
+            catch (Exception $e) {
+                $this->_getSession()->addError($this->__('The job has not been updated.'));
+                Mage::logException($e);
+            }
+            $this->_redirectReferer();
+
+        }
+	}
+
 	public function saveAction()
 	{
 		$request = $this->getRequest();
