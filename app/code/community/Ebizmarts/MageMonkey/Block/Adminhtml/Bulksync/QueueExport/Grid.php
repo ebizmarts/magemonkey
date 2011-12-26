@@ -24,7 +24,6 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
 
     protected function _prepareColumns()
     {
-		//TODO: Add, reset and delete actions
         $this->addColumn('id', array(
             'header'=> Mage::helper('monkey')->__('ID'),
             'index' => 'id',
@@ -69,6 +68,31 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
             'header'=> Mage::helper('monkey')->__('Created At'),
             'index' => 'created_at',
             'type'  => 'datetime'
+        ));
+
+        $this->addColumn('action',
+            array(
+                'header'    => Mage::helper('monkey')->__('Action'),
+                'width'     => '60px',
+                'type'      => 'action',
+                'getter'     => 'getId',
+                'actions'   => array(
+                    array(
+                        'caption' => Mage::helper('monkey')->__('Delete'),
+                        'url'     => array('base' => '*/*/delete', 'params' => array('entity'=>'Export')),
+                        'field'   => 'job_id',
+                        'confirm' => Mage::helper('monkey')->__('Are you sure?')
+                    ),
+                    array(
+                        'caption' => Mage::helper('monkey')->__('Reset Status'),
+                        'url'     => array('base' => '*/*/reset', 'params' => array('entity'=>'Export')),
+                        'field'   => 'job_id',
+                        'confirm' => Mage::helper('monkey')->__('Are you sure you want to reset status to IDLE?')
+                    ),
+                ),
+                'filter'    => false,
+                'sortable'  => false,
+                'is_system' => true,
         ));
 
         return parent::_prepareColumns();
