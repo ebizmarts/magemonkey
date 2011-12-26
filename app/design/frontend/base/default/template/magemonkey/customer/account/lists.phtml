@@ -13,7 +13,7 @@ $myLists = $this->getSubscribedLists();
 			$igroups = $list['interest_groupings'];
 	?>
 
-	<li><?php echo $list['name'], ' ', (in_array($list['id'], $myLists) ? $this->__('subscribed') : $this->__('not subscribed')); ?></li>
+	<li><?php echo $list['name'], ' ', ((is_array($myLists) && in_array($list['id'], $myLists)) ? $this->__('subscribed') : $this->__('not subscribed')); ?></li>
 
 	<?php if(is_array($igroups)): ?>
 
