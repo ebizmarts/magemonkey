@@ -4,30 +4,39 @@ $lists   = $this->getLists();
 $myLists = $this->getSubscribedLists();
 
 ?>
+<div class="page-title">
+    <h1><?php echo $this->__('MailChimp additional lists and interest groups') ?></h1>
+</div>
+<form action="<?php echo $this->getUrl('monkey/customer_account/saveadditional'); ?>" name="mailchimp_additional" id="mailchimp-additional" method="post">
+	<div class="fieldset">
+		<?php echo $this->getBlockHtml('formkey'); ?>
+		<ul class="monkey-additional-lists">
 
-<form action="<?php echo $this->getUrl(); ?>" name="mailchimp_additional" id="mailchimp-additional" method="post">
-	<ul>
+		<?php
+			foreach($lists as $list):
+				$igroups = $list['interest_groupings'];
+		?>
 
-	<?php
-		foreach($lists as $list):
-			$igroups = $list['interest_groupings'];
-	?>
+			<li class="listdata"><?php echo $this->listLabel($list); ?>
+			<?php if(is_array($igroups)): ?>
+				<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
+				<?php foreach($igroups as $group): ?>
+					<div class="grouping">
+						<strong><?php echo $group['name']; ?></strong>
+						<?php echo $this->renderGroup($group); ?>
+					</div>
+				<?php endforeach; ?>
+				</div>
 
-	<li><?php echo $list['name'], ' ', ((is_array($myLists) && in_array($list['id'], $myLists)) ? $this->__('subscribed') : $this->__('not subscribed')); ?></li>
-
-	<?php if(is_array($igroups)): ?>
-
-		<?php foreach($igroups as $group): ?>
-
-		<strong><?php echo $group['name']; ?></strong>
-		<?php echo $this->renderGroup($group); ?>
-
+			<?php endif; ?>
+			</li>
 
 		<?php endforeach; ?>
 
-	<?php endif; ?>
+		</ul>
+	</div>
 
-	<?php endforeach; ?>
-
-	</ul>
+    <div class="buttons-set">
+        <button type="submit" title="<?php echo $this->__('Save') ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
+    </div>
 </form>
