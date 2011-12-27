@@ -23,7 +23,7 @@ $myLists = $this->getSubscribedLists();
 				<?php foreach($igroups as $group): ?>
 					<div class="grouping">
 						<strong><?php echo $group['name']; ?></strong>
-						<?php echo $this->renderGroup($group); ?>
+						<?php echo $this->renderGroup($group, $list); ?>
 					</div>
 				<?php endforeach; ?>
 				</div>
