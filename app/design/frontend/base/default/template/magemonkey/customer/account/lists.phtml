@@ -35,8 +35,13 @@ $myLists = $this->getSubscribedLists();
 
 		</ul>
 	</div>
-
+	<input type="hidden" name="state" value="" id="form-state" />
     <div class="buttons-set">
         <button type="submit" title="<?php echo $this->__('Save') ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
     </div>
 </form>
+<script type="text/javascript">
+	document.observe("dom:loaded", function() {
+		$('form-state').writeAttribute('value', $('mailchimp-additional').serialize());
+	});
+</script>
