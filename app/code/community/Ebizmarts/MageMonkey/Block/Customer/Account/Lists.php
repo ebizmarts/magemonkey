@@ -50,9 +50,13 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		return $this->_myLists;
 	}
 
-	protected function _htmlGroupName($id, $multiple = FALSE)
+	protected function _htmlGroupName($list, $group = NULL, $multiple = FALSE)
 	{
-		$htmlName = "group[{$id}]";
+		$htmlName = "list[{$list['id']}]";
+
+		if(!is_null($group)){
+			$htmlName .= "[{$group['id']}]";
+		}
 
 		if(TRUE === $multiple){
 			$htmlName .= '[]';
@@ -87,9 +91,10 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 	public function renderGroup($group, $list)
 	{
 
+		$fieldType = $group['form_field'];
+
 		$memberInfo = $this->_memberInfo($list['id']);
 
-		$groupings = NULL;
 		$myGroups = array();
 		if($memberInfo['success'] == 1){
 			$groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
@@ -97,9 +102,9 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 			foreach($groupings as $_group){
 				if(!empty($_group['groups'])){
 
-					if($group['form_field'] == 'checkboxes'){
+					if($fieldType == 'checkboxes'){
 						$myGroups[$_group['id']] = explode(', ', $_group['groups']);
-					}elseif($group['form_field'] == 'radio'){
+					}elseif($fieldType == 'radio'){
 						$myGroups[$_group['id']] = array($_group['groups']);
 					}else{
 						$myGroups[$_group['id']] = $_group['groups'];
@@ -109,7 +114,7 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 			}
 		}
 
-		switch ($group['form_field']) {
+		switch ($fieldType) {
 			case 'radio':
 				$class = 'Varien_Data_Form_Element_Radios';
 				break;
@@ -129,38 +134,38 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 			$object->setValue($myGroups[$group['id']]);
 		}
 
-		if($group['form_field'] == 'checkboxes' || $group['form_field'] == 'dropdown'){
+		if($fieldType == 'checkboxes' || $fieldType == 'dropdown'){
 
 			$options = array();
 
-			if($group['form_field'] == 'dropdown'){
-				$options[] = '';
+			if($fieldType == 'dropdown'){
+				$options[''] = '';
 			}
 
 			foreach($group['groups'] as $g){
 				$options [$g['name']] = $g['name'];
 			}
 			$object->addElementValues($options);
-			$object->setName( $this->_htmlGroupName($group['id'], ($group['form_field'] == 'checkboxes' ? TRUE : FALSE)) );
+			$object->setName( $this->_htmlGroupName($list, $group, ($fieldType == 'checkboxes' ? TRUE : FALSE)) );
 			$object->setHtmlId('interest-group');
 
 			$html = $object->getElementHtml();
 
-		}elseif($group['form_field'] == 'radio'){
+		}elseif($fieldType == 'radio'){
 
 			$options = array();
 			foreach($group['groups'] as $g){
 				$options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
 			}
 
-			$object->setName($this->_htmlGroupName($group['id']));
+			$object->setName($this->_htmlGroupName($list, $group));
 			$object->setHtmlId('interest-group');
 			$object->addElementValues($options);
 
 			$html = $object->getElementHtml();
 		}
 
-		if($group['form_field'] != 'checkboxes'){
+		if($fieldType != 'checkboxes'){
 			$html = "<div class=\"groups-list\">{$html}</div>";
 		}
 
@@ -181,7 +186,14 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		$checkbox->setForm($this->getForm());
 		$checkbox->setHtmlId('list-' . $list['id']);
 		$checkbox->setChecked((bool)(is_array($myLists) && in_array($list['id'], $myLists)));
+		$checkbox->setTitle( ($checkbox->getChecked() ? $this->__('Click to unsubscribe from this list.') : $this->__('Click to subscribe to this list.')) );
 		$checkbox->setLabel($list['name']);
+
+		$hname = $this->_htmlGroupName($list);
+		$checkbox->setName($hname . '[subscribed]');
+
+		$checkbox->setValue($list['id']);
+
 
 		return $checkbox->getLabelHtml() . $checkbox->getElementHtml();
 	}
