@@ -9,3 +9,34 @@ fieldset#monkey_general p.note a {background:url(mailchimp-ico.png) no-repeat le
 .mailchimp-nowarp {white-space:nowrap;}
 button.add span span, button.cancel span span, button.delete span span {background-image: none; padding-left: 0;}
 tr#row_monkey_general_account_details ul{padding:5px;color:#444;background-color: #fdfdfd;border:1px solid #ccc;}
+
+
+/**
+* Progress Bar
+*/
+.bar-all-rounded {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+}
+
+.bar-spacer {
+	display: block;
+}
+
+#bar-progress-bar {
+	width: 100px;
+	margin: 0 auto;
+	background: #CCC;
+}
+
+#bar-progress-bar-percentage {
+	background: #3063A5;
+	padding: 2px 0px;
+ 	color: #FFF;
+ 	font-weight: bold;
+ 	text-align: center;
+}
+/**
+* Progress Bar
+*/
