@@ -44,10 +44,12 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
             'options' => Mage::getModel('monkey/system_config_source_bulksyncStatus')->toOption()
         ));
 
-        $this->addColumn('processed_count', array(
-            'header'=> Mage::helper('monkey')->__('# Processed'),
-            'index' => 'processed_count',
-            'type' => 'number'
+        $this->addColumn('progress', array(
+            'header'=> Mage::helper('monkey')->__('Progress'),
+            'index' => 'progress',
+            'filter' => false,
+            'sortable' => false,
+            'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Progress'
         ));
 
         $this->addColumn('lists', array(
