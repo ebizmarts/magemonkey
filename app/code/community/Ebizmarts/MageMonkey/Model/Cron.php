@@ -21,6 +21,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 			return $this;
 		}
 
+		//Update total count on first run
+		$setcount = FALSE;
+		if(!$job->getTotalCount()){
+			$setcount = TRUE;
+		}
+
 		foreach($job->lists() as $listId){
 
 			$toImport = array();
@@ -45,6 +51,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 					$mdata = $this->_helper('export')->parseMembers($members, $mergevars, $store);
 
 					$toImport[$status] = array_merge($toImport[$status], $mdata);
+
+					if($setcount === TRUE){
+						$job->setTotalCount( (count($toImport[$status])+(int)$job->getTotalCount()) )->save();
+					}
 				}
 
 			}
@@ -151,8 +161,15 @@ class Ebizmarts_MageMonkey_Model_Cron
 			return $this;
 		}
 
-		$collection = $this->_getEntityModel($job->getDataSourceEntity())
-						->setPageSize($this->_limit);
+		$collection = $this->_getEntityModel($job->getDataSourceEntity());
+
+		//Update total count on first run
+		if(!$job->getTotalCount()){
+			$allRows = $collection->getSize();
+			$job->setTotalCount($allRows)->save();
+		}
+
+		$collection->setPageSize($this->_limit);
 
 		//Condition for chunk batch
 		if($job->getLastProcessedId()){
