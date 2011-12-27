@@ -90,6 +90,9 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 			}
 			$object->addElementValues($options);
 			$object->setName( $this->_htmlGroupName($group['id'], ($group['form_field'] == 'checkboxes' ? TRUE : FALSE)) );
+			$object->setHtmlId('interest-group');
+
+			$html = $object->getElementHtml();
 
 		}elseif($group['form_field'] == 'radio'){
 
@@ -101,14 +104,33 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 			$object->setName($this->_htmlGroupName($group['id']));
 			$object->setHtmlId('interest-group');
 			$object->addElementValues($options);
+
+			$html = $object->getElementHtml();
 		}
 
-		return $object->getElementHtml();
+		if($group['form_field'] != 'checkboxes'){
+			$html = "<div class=\"groups-list\">{$html}</div>";
+		}
+
+		return $html;
 
 	}
 
 	protected function _getEmail()
 	{
 		return $this->helper('customer')->getCustomer()->getEmail();
+	}
+
+	public function listLabel($list)
+	{
+		$myLists = $this->getSubscribedLists();
+
+		$checkbox = new Varien_Data_Form_Element_Checkbox;
+		$checkbox->setForm($this->getForm());
+		$checkbox->setHtmlId('list-' . $list['id']);
+		$checkbox->setChecked((bool)(is_array($myLists) && in_array($list['id'], $myLists)));
+		$checkbox->setLabel($list['name']);
+
+		return $checkbox->getLabelHtml() . $checkbox->getElementHtml();
 	}
 }
