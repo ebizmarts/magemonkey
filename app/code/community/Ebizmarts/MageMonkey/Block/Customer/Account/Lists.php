@@ -4,8 +4,18 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 {
 
 	protected $_lists  = array();
+	protected $_info  = array();
 	protected $_myLists = array();
 	protected $_form;
+	protected $_api;
+
+	public function getApi()
+	{
+		if(is_null($this->_api)){
+			$this->_api = Mage::getSingleton('monkey/api');
+		}
+		return $this->_api;
+	}
 
 	public function getLists()
 	{
@@ -13,7 +23,7 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 
 		if($additionalLists){
 
-			$api     = Mage::getSingleton('monkey/api');
+			$api     = $this->getApi();
 
 			$this->_myLists = $api->listsForEmail($this->_getEmail());
 
@@ -65,8 +75,40 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
         return $form;
     }
 
-	public function renderGroup($group)
+	protected function _memberInfo($listId)
 	{
+		if( FALSE === array_key_exists($listId, $this->_info) ){
+			$this->_info[$listId] = $this->getApi()->listMemberInfo($listId, $this->_getEmail());
+		}
+
+		return $this->_info[$listId];
+	}
+
+	public function renderGroup($group, $list)
+	{
+
+		$memberInfo = $this->_memberInfo($list['id']);
+
+		$groupings = NULL;
+		$myGroups = array();
+		if($memberInfo['success'] == 1){
+			$groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
+
+			foreach($groupings as $_group){
+				if(!empty($_group['groups'])){
+
+					if($group['form_field'] == 'checkboxes'){
+						$myGroups[$_group['id']] = explode(', ', $_group['groups']);
+					}elseif($group['form_field'] == 'radio'){
+						$myGroups[$_group['id']] = array($_group['groups']);
+					}else{
+						$myGroups[$_group['id']] = $_group['groups'];
+					}
+
+				}
+			}
+		}
+
 		switch ($group['form_field']) {
 			case 'radio':
 				$class = 'Varien_Data_Form_Element_Radios';
@@ -82,11 +124,21 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		$object = new $class;
 		$object->setForm($this->getForm());
 
+		//Check/select values
+		if(isset($myGroups[$group['id']])){
+			$object->setValue($myGroups[$group['id']]);
+		}
+
 		if($group['form_field'] == 'checkboxes' || $group['form_field'] == 'dropdown'){
 
 			$options = array();
+
+			if($group['form_field'] == 'dropdown'){
+				$options[] = '';
+			}
+
 			foreach($group['groups'] as $g){
-				$options [$g['bit']] = $g['name'];
+				$options [$g['name']] = $g['name'];
 			}
 			$object->addElementValues($options);
 			$object->setName( $this->_htmlGroupName($group['id'], ($group['form_field'] == 'checkboxes' ? TRUE : FALSE)) );
@@ -98,9 +150,9 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 
 			$options = array();
 			foreach($group['groups'] as $g){
-				$options [] = new Varien_Object(array('value' => $g['bit'], 'label' => $g['name']));
+				$options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
 			}
-			$object->setValue(array());
+
 			$object->setName($this->_htmlGroupName($group['id']));
 			$object->setHtmlId('interest-group');
 			$object->addElementValues($options);
