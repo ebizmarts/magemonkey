@@ -43,4 +43,17 @@ class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controll
         $this->renderLayout();
 	}
 
+	public function saveadditionalAction()
+	{
+		if($this->getRequest()->isPost()){
+			parse_str($this->getRequest()->getPost('state'), $odata);
+
+			var_dump($odata);
+
+			$listsData = $this->getRequest()->getPost('list');
+
+		}
+		var_dump($listsData);
+	}
+
 }
