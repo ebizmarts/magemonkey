@@ -124,6 +124,27 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return unserialize( $this->config('map_fields', $storeId) );
 	}
 
+	public function progressbar($complete, $total)
+	{
+		if($total == 0){
+			return;
+		}
+		$percentage = round(($complete * 100) / $total, 0);
+
+		$barStyle = '';
+		if($percentage > 0){
+ 			$barStyle = " style=\"width: $percentage%\"";
+		}
+
+		$html = "<div id=\"bar-progress-bar\" class=\"bar-all-rounded\">\n";
+		$html .= "<div id=\"bar-progress-bar-percentage\" class=\"bar-all-rounded\"$barStyle>";
+		$html .= "$percentage% ($complete of $total)";
+			//if ($percentage > 5) {$html .= "$percentage% ($complete of $total)";} else {$html .= "<div class=\"bar-spacer\">&nbsp;</div>";}
+		$html .= "</div></div>";
+
+		return $html;
+	}
+
 	public function getMergeVars($customer, $includeEmail = FALSE, $websiteId = NULL)
 	{
 		$merge_vars   = array();
