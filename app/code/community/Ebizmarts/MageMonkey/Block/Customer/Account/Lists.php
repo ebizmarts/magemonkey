@@ -193,6 +193,7 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		$checkbox->setName($hname . '[subscribed]');
 
 		$checkbox->setValue($list['id']);
+		$checkbox->setClass('monkey-list-subscriber');
 
 
 		return $checkbox->getLabelHtml() . $checkbox->getElementHtml();
