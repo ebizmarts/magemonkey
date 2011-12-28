@@ -264,24 +264,17 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			$merge_vars = array_merge($merge_vars, $blank->toArray());
 		}
 
-
-		/*
-
-		=== TODO ===
-
 		$groups = $customer->getListGroups();
 		$groupings = array();
 		if(is_array($groups) && count($groups)){
-			foreach($groups as $option){
-				$parts = explode(']',str_replace('[','',$option));
-				if($parts[0] == $customer->getListId() && count($parts) == 5){
-					$groupings[] = array('id'=>$parts[2],
-									   'name'=>str_replace(',','\,',$parts[1]),
-									   'groups'=>str_replace(',','\,',$parts[3]));
-				}
+			foreach($groups as $groupId => $grupoptions){
+				$groupings[] = array(
+									 'id' => $groupId,
+								     'groups' => (is_array($grupoptions) ? implode(', ', $grupoptions) : $grupoptions)
+								    );
 			}
 		}
-		$merge_vars['GROUPINGS'] = $groupings;*/
+		$merge_vars['GROUPINGS'] = $groupings;
 
 		return $merge_vars;
 	}
