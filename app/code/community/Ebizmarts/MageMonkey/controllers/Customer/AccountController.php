@@ -46,14 +46,62 @@ class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controll
 	public function saveadditionalAction()
 	{
 		if($this->getRequest()->isPost()){
+
 			parse_str($this->getRequest()->getPost('state'), $odata);
 
-			var_dump($odata);
+			$curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
+			$lists    = $this->getRequest()->getPost('list', array());
 
-			$listsData = $this->getRequest()->getPost('list');
+			$api       = Mage::getSingleton('monkey/api');
+			$customer  = Mage::helper('customer')->getCustomer();
+			$email     = $customer->getEmail();
+
+			if( !empty($curlists) ){
+
+				//Handle Unsubscribe and groups update actions
+				foreach($curlists as $listId => $list){
+
+					if(FALSE === array_key_exists($listId, $lists)){
+
+						//Unsubscribe Email
+						$api->listUnsubscribe($listId, $email);
+
+					}else{
+
+						$groupings = $lists[$listId];
+						unset($groupings['subscribed']);
+						$customer->setListGroups($groupings);
+						$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+
+						//Handle groups update
+						$api->listUpdateMember($listId, $email, $mergeVars);
+
+					}
+
+				}
+
+			}
+
+			//Subscribe to new lists
+			$subscribe = array_diff_key($lists, $curlists);
+			if( !empty($subscribe) ){
+
+				foreach($subscribe as $listId => $slist){
+
+					$groupings = $lists[$listId];
+					unset($groupings['subscribed']);
+					$customer->setListGroups($groupings);
+					$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+
+					$api->listSubscribe($listId, $email, $mergeVars, 'html', false);
+
+				}
+
+			}
 
 		}
-		var_dump($listsData);
+
+		$this->_redirect('*/*/index');
 	}
 
 }
