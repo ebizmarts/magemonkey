@@ -42,6 +42,34 @@ $myLists = $this->getSubscribedLists();
 </form>
 <script type="text/javascript">
 	document.observe("dom:loaded", function() {
+
+		//Handle newsletter subscribe/unsubscribe checkbox events
+		$$('input.monkey-list-subscriber').each(function(chk){
+
+				if( !chk.checked ){
+					var groupings = $('interest_groupings_'+chk.value);
+					if(groupings){
+						groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
+					}
+				}
+
+				chk.observe('change', function(){
+
+					var groupings = $('interest_groupings_'+this.value);
+					if(groupings){
+						var elements = groupings.select('select', 'input');
+						if(this.checked){
+							elements.invoke('removeAttribute', 'disabled');
+						}else{
+							elements.invoke('writeAttribute', 'disabled', 'disabled');
+						}
+					}
+
+				});
+		});
+
+		//Load viewstate on hidden field for later process
 		$('form-state').writeAttribute('value', $('mailchimp-additional').serialize());
+
 	});
 </script>
