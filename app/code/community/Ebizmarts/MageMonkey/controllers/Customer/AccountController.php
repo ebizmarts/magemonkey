@@ -39,7 +39,7 @@ class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controll
         $this->loadLayout();
         $this->_initLayoutMessages('customer/session');
 
-        $this->getLayout()->getBlock('head')->setTitle($this->__('MailChimp'));
+        $this->getLayout()->getBlock('head')->setTitle($this->__('Newsletter Subscription'));
         $this->renderLayout();
 	}
 
