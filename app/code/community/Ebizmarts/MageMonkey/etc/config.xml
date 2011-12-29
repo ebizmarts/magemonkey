@@ -189,11 +189,11 @@
     <crontab>
         <jobs>
             <magemonkey_bulksync_export_subscribers>
-                <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
+                <schedule><cron_expr>0 * * * *</cron_expr></schedule>
                 <run><model>monkey/cron::processExportJobs</model></run>
             </magemonkey_bulksync_export_subscribers>
             <magemonkey_bulksync_import_subscribers>
-                <schedule><cron_expr>0 1 * * *</cron_expr></schedule>
+                <schedule><cron_expr>0 * * * *</cron_expr></schedule>
                 <run><model>monkey/cron::processImportJobs</model></run>
             </magemonkey_bulksync_import_subscribers>
         </jobs>
