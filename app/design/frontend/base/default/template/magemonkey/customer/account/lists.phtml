@@ -1,37 +1,56 @@
 <?php
 
-$lists   = $this->getLists();
-$myLists = $this->getSubscribedLists();
+$lists       = $this->getLists();
+$myLists     = $this->getSubscribedLists();
+$generalList = $this->getGeneralList();
 
 ?>
 <div class="page-title">
-    <h1><?php echo $this->__('MailChimp additional lists and interest groups') ?></h1>
+    <h1><?php echo $this->__('Newsletter Subscription'); ?></h1>
 </div>
 <form action="<?php echo $this->getUrl('monkey/customer_account/saveadditional'); ?>" name="mailchimp_additional" id="mailchimp-additional" method="post">
 	<div class="fieldset">
 		<?php echo $this->getBlockHtml('formkey'); ?>
 		<ul class="monkey-additional-lists">
 
-		<?php
-			foreach($lists as $list):
-				$igroups = $list['interest_groupings'];
-		?>
-
-			<li class="listdata"><?php echo $this->listLabel($list); ?>
-			<?php if(is_array($igroups)): ?>
-				<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
-				<?php foreach($igroups as $group): ?>
-					<div class="grouping">
-						<strong><?php echo $group['name']; ?></strong>
-						<?php echo $this->renderGroup($group, $list); ?>
+			<!-- General Subscription -->
+			<li class="listdata"><?php echo $this->listLabel($generalList); ?>
+				<?php if(is_array($generalList['interest_groupings'])): ?>
+					<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
+					<?php foreach($generalList['interest_groupings'] as $group): ?>
+						<div class="grouping">
+							<strong><?php echo $group['name']; ?></strong>
+							<?php echo $this->renderGroup($group, $generalList); ?>
+						</div>
+					<?php endforeach; ?>
 					</div>
-				<?php endforeach; ?>
-				</div>
 
-			<?php endif; ?>
+				<?php endif; ?>
 			</li>
+			<!-- General Subscription -->
 
-		<?php endforeach; ?>
+				<!-- Additional Lists -->
+			<?php
+				foreach($lists as $list):
+					$igroups = $list['interest_groupings'];
+			?>
+
+				<li class="listdata"><?php echo $this->listLabel($list); ?>
+				<?php if(is_array($igroups)): ?>
+					<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
+					<?php foreach($igroups as $group): ?>
+						<div class="grouping">
+							<strong><?php echo $group['name']; ?></strong>
+							<?php echo $this->renderGroup($group, $list); ?>
+						</div>
+					<?php endforeach; ?>
+					</div>
+
+				<?php endif; ?>
+				</li>
+
+			<?php endforeach; ?>
+				<!-- Additional Lists -->
 
 		</ul>
 	</div>
@@ -42,6 +61,8 @@ $myLists = $this->getSubscribedLists();
 </form>
 <script type="text/javascript">
 	document.observe("dom:loaded", function() {
+
+		$$('div.block-content ul li.current').first().previous().remove();
 
 		//Handle newsletter subscribe/unsubscribe checkbox events
 		$$('input.monkey-list-subscriber').each(function(chk){
