@@ -13,11 +13,10 @@
 	<!-- Customer -->
 	<customer_account>
 	    <reference name="customer_account_navigation">
-	    	<!-- Check that <ifconfig> works -->
 	        <action method="addLink" ifconfig="monkey/general/active" translate="label" module="monkey">
 	        	<name>mailchimp</name>
 	        	<path>monkey/customer_account/index</path>
-	        	<label>MailChimp</label>
+	        	<label>Newsletter Subscriptions</label>
 	        </action>
 	    </reference>
 	</customer_account>
