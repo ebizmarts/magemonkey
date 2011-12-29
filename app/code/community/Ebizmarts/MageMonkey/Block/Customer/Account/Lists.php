@@ -6,6 +6,7 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 	protected $_lists  = array();
 	protected $_info  = array();
 	protected $_myLists = array();
+	protected $_generalList = array();
 	protected $_form;
 	protected $_api;
 
@@ -17,26 +18,57 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		return $this->_api;
 	}
 
+	/**
+	 * Get default list data
+	 */
+	public function getGeneralList()
+	{
+		$list = $this->helper('monkey')->config('list');
+
+		if($list){
+			if(empty($this->_generalList)){
+
+				$api      = $this->getApi();
+				$listData = $api->lists(array('list_id' => $list));
+
+				if($listData['total'] > 0){
+					$this->_generalList = array(
+												'id'   => $listData['data'][0]['id'],
+												'name' => $this->__('General Subscription'),
+												'interest_groupings' => $api->listInterestGroupings($listData['data'][0]['id']),
+											   );
+				}
+			}
+		}
+
+		return $this->_generalList;
+	}
+
+	/**
+	 * Get additional lists data
+	 */
 	public function getLists()
 	{
 		$additionalLists = $this->helper('monkey')->config('additional_lists');
 
 		if($additionalLists){
 
-			$api     = $this->getApi();
+			if(empty($this->_lists)){
+				$api     = $this->getApi();
 
-			$this->_myLists = $api->listsForEmail($this->_getEmail());
+				$this->_myLists = $api->listsForEmail($this->_getEmail());
 
-			$lists   = $api->lists(array('list_id' => $additionalLists));
+				$lists   = $api->lists(array('list_id' => $additionalLists));
 
-			if($lists['total'] > 0){
-				foreach($lists['data'] as $list){
-					$this->_lists []= array(
-											'id'   => $list['id'],
-											'name' => $list['name'],
-											'interest_groupings' => $api->listInterestGroupings($list['id']),
-										   );
+				if($lists['total'] > 0){
+					foreach($lists['data'] as $list){
+						$this->_lists []= array(
+												'id'   => $list['id'],
+												'name' => $list['name'],
+												'interest_groupings' => $api->listInterestGroupings($list['id']),
+											   );
 
+					}
 				}
 			}
 
@@ -132,6 +164,8 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		//Check/select values
 		if(isset($myGroups[$group['id']])){
 			$object->setValue($myGroups[$group['id']]);
+		}else{
+			$object->setValue(array());
 		}
 
 		if($fieldType == 'checkboxes' || $fieldType == 'dropdown'){
