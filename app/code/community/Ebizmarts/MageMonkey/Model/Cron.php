@@ -74,10 +74,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 						$this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
 
 						$procCount++;
-					}
 
-					$job->setProcessedCount( ((int)$job->getProcessedCount() + $procCount) )
-						->save();
+						$job->setProcessedCount( ((int)$job->getProcessedCount() + $procCount) )
+							->save();
+					}
 
 				}
 
