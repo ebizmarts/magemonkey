@@ -60,6 +60,12 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
             'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists'
         ));
 
+        $this->addColumn('started_at', array(
+            'header'=> Mage::helper('monkey')->__('Started At'),
+            'index' => 'started_at',
+            'type'  => 'datetime'
+        ));
+
         $this->addColumn('updated_at', array(
             'header'=> Mage::helper('monkey')->__('Updated At'),
             'index' => 'updated_at',
