@@ -70,16 +70,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 				foreach($toImport as $type => $emails){
 
-					$procCount = 0;
-
 					foreach($emails as $data){
 
 						//Run: subscribed, unsubscribed, cleaned or updated method
 						$this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
 
-						$procCount++;
-
-						$job->setProcessedCount( ((int)$job->getProcessedCount() + $procCount) )
+						$job->setProcessedCount( ((int)$job->getProcessedCount() + 1) )
 							->save();
 					}
 
