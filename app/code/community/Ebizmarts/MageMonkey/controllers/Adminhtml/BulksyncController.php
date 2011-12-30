@@ -3,6 +3,8 @@
 class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_Controller_Action
 {
 
+	protected $_defredirect = 'monkey/adminhtml_ecommerce/';
+
     /**
      * Initialize action
      *
@@ -69,7 +71,7 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
 
         if (!$job->getId()) {
             $this->_getSession()->addError($this->__('This job no longer exists.'));
-            $this->_redirect('*/*/');
+            $this->_redirect($this->_defredirect);
             $this->setFlag('', self::FLAG_NO_DISPATCH, true);
             return false;
         }
@@ -94,7 +96,7 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
                 $this->_getSession()->addError($this->__('The job has not been deleted.'));
                 Mage::logException($e);
             }
-            $this->_redirectReferer();
+            $this->_redirectReferer($this->_defredirect);
 
         }
 	}
@@ -121,7 +123,7 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
                 $this->_getSession()->addError($this->__('The job has not been updated.'));
                 Mage::logException($e);
             }
-            $this->_redirectReferer();
+            $this->_redirectReferer($this->_defredirect);
 
         }
 	}
@@ -165,7 +167,7 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
 			$this->_getSession()->addError($this->__('Could not schedule job.'));
 		}
 
-		$this->_redirectReferer();
+		$this->_redirectReferer($this->_defredirect);
 	}
 
 }
