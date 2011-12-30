@@ -27,6 +27,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$setcount = TRUE;
 		}
 
+		if(!$job->getStartedAt()){
+			$job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
+		}
+
 		foreach($job->lists() as $listId){
 
 			$toImport = array();
@@ -167,6 +171,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 		if(!$job->getTotalCount()){
 			$allRows = $collection->getSize();
 			$job->setTotalCount($allRows)->save();
+		}
+
+		if(!$job->getStartedAt()){
+			$job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
 		}
 
 		$collection->setPageSize($this->_limit);
