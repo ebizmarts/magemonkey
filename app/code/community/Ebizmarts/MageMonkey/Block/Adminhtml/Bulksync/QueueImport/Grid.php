@@ -78,6 +78,12 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueImport_Grid extends Mag
             'sortable' => false,
         ));
 
+        $this->addColumn('started_at', array(
+            'header'=> Mage::helper('monkey')->__('Started At'),
+            'index' => 'started_at',
+            'type'  => 'datetime'
+        ));
+
         $this->addColumn('updated_at', array(
             'header'=> Mage::helper('monkey')->__('Updated At'),
             'index' => 'updated_at',
