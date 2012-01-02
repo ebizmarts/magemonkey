@@ -173,14 +173,13 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$customer = $observer->getEvent()->getCustomer();
 
-		$mergeVars = $this->_mergeVars($customer, TRUE);
-
-		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
-
 		$oldEmail = $customer->getOrigData('email');
 		if(!$oldEmail){
 			return $observer;
 		}
+
+		$mergeVars = $this->_mergeVars($customer, TRUE);
+		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 
 		$lists = $api->listsForEmail($oldEmail);
 
