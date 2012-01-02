@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Bulksync controller to schedule and manage jobs
+ *
+ */
 class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_Controller_Action
 {
 
@@ -47,6 +51,9 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         $this->renderLayout();
 	}
 
+	/**
+	 * Just the import grid for AJAX calls
+	 */
 	public function importgridAction()
 	{
         $this->loadLayout();
@@ -55,6 +62,9 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         );
 	}
 
+	/**
+	 * Just the export grid for AJAX calls
+	 */
 	public function exportgridAction()
 	{
         $this->loadLayout();
@@ -63,6 +73,11 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         );
 	}
 
+	/**
+	 * Initialize job based on job_id url param
+	 *
+	 * @return Ebizmarts_MageMonkey_Model_BulksyncExport|Ebizmarts_MageMonkey_Model_BulksyncImport
+	 */
     protected function _initJob()
     {
         $id     = $this->getRequest()->getParam('job_id');
@@ -79,6 +94,11 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         return $job;
     }
 
+	/**
+	 * Delete a job from current schedule
+	 *
+	 * @return void
+	 */
 	public function deleteAction()
 	{
         if ($job = $this->_initJob()) {
@@ -101,6 +121,11 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         }
 	}
 
+	/**
+	 * Reset job status to IDLE
+	 *
+	 * @return void
+	 */
 	public function resetAction()
 	{
         if ($job = $this->_initJob()) {
@@ -128,6 +153,11 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         }
 	}
 
+	/**
+	 * Schedule a job on database
+	 *
+	 * @return void
+	 */
 	public function saveAction()
 	{
 		$request = $this->getRequest();

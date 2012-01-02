@@ -6,6 +6,9 @@
 class Ebizmarts_MageMonkey_WebhookController extends Mage_Core_Controller_Front_Action
 {
 
+	/**
+	 * Entry point for all webhook operations
+	 */
 	public function indexAction()
 	{
 

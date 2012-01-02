@@ -34,6 +34,9 @@ class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controll
         return Mage::getSingleton('customer/session');
     }
 
+	/**
+	 * Display data
+	 */
 	public function indexAction()
 	{
         $this->loadLayout();
@@ -43,10 +46,15 @@ class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controll
         $this->renderLayout();
 	}
 
+	/**
+	 * Perform saving operation, update grouping and subscribe/unsubscribe operations
+	 */
 	public function saveadditionalAction()
 	{
 		if($this->getRequest()->isPost()){
 
+			//<state> param is an html serialized field containing the default form state
+			//before submission, we need to parse it as a request in order to save it to $odata and process it
 			parse_str($this->getRequest()->getPost('state'), $odata);
 
 			$curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();

@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * Ecommerce360 controller, perform mass actions and show grid
+ *
+ */
 class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_Controller_Action
 {
 
+	/**
+	 * Display already sent orders
+	 */
 	public function indexAction()
 	{
         $this->_title($this->__('Newsletter'))
@@ -13,6 +20,9 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
         $this->renderLayout();
 	}
 
+	/**
+	 * Just the grid contents for AJAX requests
+	 */
 	public function gridAction()
 	{
         $this->loadLayout();
