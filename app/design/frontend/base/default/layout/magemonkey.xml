@@ -12,6 +12,9 @@
 
 	<!-- Customer -->
 	<customer_account>
+		<reference name="head">
+			<action method="addItem"><type>skin_js</type><name>magemonkey/monkey.js</name><params/></action>
+		</reference>
 	    <reference name="customer_account_navigation">
 	        <action method="addLink" ifconfig="monkey/general/active" translate="label" module="monkey">
 	        	<name>mailchimp</name>
