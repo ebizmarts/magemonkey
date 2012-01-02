@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Member activity data grid
+ *
+ */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 

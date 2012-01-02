@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Bulksync import form, lets you schedule jobs to be processed by Magento's cron
+ *
+ */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Import_Form extends Mage_Adminhtml_Block_Widget_Form
 {
 

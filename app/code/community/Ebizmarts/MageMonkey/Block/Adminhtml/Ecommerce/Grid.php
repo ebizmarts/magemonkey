@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Ecommerce360 sent orders Grid
+ *
+ */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 

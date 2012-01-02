@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Customer activiy information block retrieved from MailChimp to show under Customer
+ * Edit section
+ *
+ */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Customer_Edit_Tab_Memberactivity
     extends Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface

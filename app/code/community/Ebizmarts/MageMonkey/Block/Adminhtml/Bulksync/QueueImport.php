@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Bulksync import grid container
+ *
+ */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueImport extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
 

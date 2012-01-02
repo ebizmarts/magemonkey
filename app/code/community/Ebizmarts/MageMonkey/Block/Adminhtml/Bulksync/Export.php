@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Bulksync export form container
+ *
+ */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export extends Mage_Adminhtml_Block_Widget_Form_Container
 {
 

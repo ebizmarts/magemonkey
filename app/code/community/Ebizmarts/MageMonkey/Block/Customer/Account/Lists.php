@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Newsletter subscription block for MyAccount
+ *
+ */
 class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_Template
 {
 
@@ -10,6 +14,11 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 	protected $_form;
 	protected $_api;
 
+	/**
+	 * Get API instance (singleton)
+	 *
+	 * @return Ebizmarts_MageMonkey_Model_Api
+	 */
 	public function getApi()
 	{
 		if(is_null($this->_api)){
@@ -19,7 +28,9 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 	}
 
 	/**
-	 * Get default list data
+	 * Get default list data from MC
+	 *
+	 * @return array
 	 */
 	public function getGeneralList()
 	{
@@ -45,7 +56,9 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 	}
 
 	/**
-	 * Get additional lists data
+	 * Get additional lists data from MC
+	 *
+	 * @return array
 	 */
 	public function getLists()
 	{
@@ -77,11 +90,23 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		return $this->_lists;
 	}
 
+	/**
+	 * Getter for class property
+	 *
+	 * @return array
+	 */
 	public function getSubscribedLists()
 	{
 		return $this->_myLists;
 	}
 
+	/**
+	 * Utility to generate HTML name for element
+	 * @param string $list
+	 * @param string $group
+	 * @param bool $multiple
+	 * @return string
+	 */
 	protected function _htmlGroupName($list, $group = NULL, $multiple = FALSE)
 	{
 		$htmlName = "list[{$list['id']}]";
@@ -111,6 +136,12 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
         return $form;
     }
 
+	/**
+	 * Get MC member information for an specific list
+	 *
+	 * @param string $listId ID of list in MC
+	 * @return array Member info on list
+	 */
 	protected function _memberInfo($listId)
 	{
 		if( FALSE === array_key_exists($listId, $this->_info) ){
@@ -120,6 +151,13 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 		return $this->_info[$listId];
 	}
 
+	/**
+	 * Render interest grouping with its groups
+	 *
+	 * @param array $group Group data from MC
+	 * @param array $list List data from MC
+	 * @return string HTML code
+	 */
 	public function renderGroup($group, $list)
 	{
 
@@ -207,11 +245,22 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 
 	}
 
+	/**
+	 * Retrieve email from Customer object in session
+	 *
+	 * @return string Email address
+	 */
 	protected function _getEmail()
 	{
 		return $this->helper('customer')->getCustomer()->getEmail();
 	}
 
+	/**
+	 * Return HTML code for list <label> with checkbox, checked if subscribed, otherwise not
+	 *
+	 * @param array $list List data from MC
+	 * @return string HTML code
+	 */
 	public function listLabel($list)
 	{
 		$myLists = $this->getSubscribedLists();

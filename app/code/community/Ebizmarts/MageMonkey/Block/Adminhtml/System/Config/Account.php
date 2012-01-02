@@ -1,6 +1,10 @@
 <?php
 
-class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_Account
+/**
+ * Account details renderer for configuration settings
+ *
+ */
+class Ebizmarts_MageMonkey_Block_Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_Account
     extends Mage_Adminhtml_Block_System_Config_Form_Field
 {
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
