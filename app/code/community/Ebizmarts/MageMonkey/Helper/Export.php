@@ -1,8 +1,19 @@
 <?php
 
+/**
+ * Export API helper
+ *
+ */
 class Ebizmarts_MageMonkey_Helper_Export extends Mage_Core_Helper_Abstract
 {
-
+	/**
+	 * Parse members data
+	 *
+	 * @param string $response JSON encoded
+	 * @param array $listMergeVars MergeFields for this list from MC
+	 * @param string $store
+	 * @return array
+	 */
 	public function parseMembers($response, $listMergeVars, $store)
 	{
 

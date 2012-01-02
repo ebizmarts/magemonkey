@@ -1,17 +1,29 @@
 <?php
 
 /**
- * Mage Monkey helper
+ * Mage Monkey default helper
  *
  */
 class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
+	/**
+	 * Utility to check if admin is logged in
+	 *
+	 * @return bool
+	 */
 	public function isAdmin()
 	{
 		return Mage::getSingleton('admin/session')->isLoggedIn();
 	}
 
+	/**
+	 * Return Webhooks security key for given store
+	 *
+	 * @param mixed $store Store object, or Id, or code
+	 * @param string $listId Optional listid to retrieve store code from it
+	 * @return string
+	 */
 	public function getWebhooksKey($store, $listId = null)
 	{
 		if( !is_null($listId) ){
@@ -24,6 +36,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return ($key . $store);
 	}
 
+	/**
+	 * Get module User-Agent to use on API requests
+	 *
+	 * @return string
+	 */
 	public function getUserAgent()
 	{
 		$modules = Mage::getConfig()->getNode('modules')->children();
@@ -35,6 +52,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return (string)'MageMonkey'.$v.'/Mage'.$aux.$version;
 	}
 
+	/**
+	 * Return MC API key for given store, if none is given
+	 * default key is returned
+	 *
+	 * @param string $store
+	 * @return string Api Key
+	 */
 	public function getApiKey($store = null)
 	{
 		if(is_null($store)){
@@ -49,11 +73,25 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return $key;
 	}
 
+	/**
+	 * Logging facility
+	 *
+	 * @param mixed $data Message to save to file
+	 * @param string $filename log filename, default is <Monkey.log>
+	 * @return Mage_Core_Model_Log_Adapter
+	 */
 	public function log($data, $filename = 'Monkey.log')
 	{
 		return Mage::getModel('core/log_adapter', $filename)->log($data);
 	}
 
+	/**
+	 * Get module configuration value
+	 *
+	 * @param string $value
+	 * @param string $store
+	 * @return mixed Configuration setting
+	 */
 	public function config($value, $store = null)
 	{
 		$store = is_null($store) ? Mage::app()->getStore() : $store;
@@ -66,30 +104,58 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return Mage::getStoreConfig("monkey/general/$value", $store);
 	}
 
+	/**
+	 * Check if config setting <checkout_subscribe> is enabled
+	 *
+	 * @return bool
+	 */
 	public function canCheckoutSubscribe()
 	{
 		return (bool)($this->config('checkout_subscribe') != 0);
 	}
 
+	/**
+	 * Check if Ecommerce360 integration is enabled
+	 *
+	 * @return bool
+	 */
 	public function ecommerce360Active()
 	{
 		return (bool)($this->config('ecommerce360') != 0);
 	}
 
+	/**
+	 * Check if Ebizmarts_MageMonkey module is enabled
+	 *
+	 * @return bool
+	 */
 	public function canMonkey()
 	{
 		return (bool)((int)$this->config('active') !== 0);
 	}
 
-	public function getDefaultList($storeId)
+	/**
+	 * Get default MC listId for given storeId
+	 *
+	 * @param string $store
+	 * @return string $list
+	 */
+	public function getDefaultList($store)
 	{
 		$curstore = Mage::app()->getStore();
-		Mage::app()->setCurrentStore($storeId);
-			$list = $this->config('list', $storeId);
+		Mage::app()->setCurrentStore($store);
+			$list = $this->config('list', $store);
 		Mage::app()->setCurrentStore($curstore);
 		return $list;
 	}
 
+	/**
+	 * Get which store is associated to given $mcListId
+	 *
+	 * @param string $mcListId
+	 * @param bool $includeDefault Include <default> store or not on result
+	 * @return string $store
+	 */
 	public function getStoreByList($mcListId, $includeDefault = FALSE)
 	{
         $list = Mage::getModel('core/config_data')->getCollection()
@@ -110,6 +176,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         return $store;
 	}
 
+	/**
+	 * Check if current request is a Webhooks request
+	 *
+	 * @return bool
+	 */
 	public function isWebhookRequest()
 	{
 		$rq            = Mage::app()->getRequest();
@@ -119,11 +190,23 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return (bool)($monkeyRequest === $thisRequest);
 	}
 
+	/**
+	 * Get config setting <map_fields>
+	 *
+	 * @return array|FALSE
+	 */
 	public function getMergeMaps($storeId)
 	{
 		return unserialize( $this->config('map_fields', $storeId) );
 	}
 
+	/**
+	 * Get progress bar HTML code
+	 *
+	 * @param integer $complete Processed qty so far
+	 * @param integer $total Total qty to process
+	 * @return string
+	 */
 	public function progressbar($complete, $total)
 	{
 		if($total == 0){
@@ -145,6 +228,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return $html;
 	}
 
+	/**
+	 * Return Merge Fields mapped to Magento attributes
+	 *
+	 * @param object $customer
+	 * @param bool $includeEmail
+	 * @param integer $websiteId
+	 * @return array
+	 */
 	public function getMergeVars($customer, $includeEmail = FALSE, $websiteId = NULL)
 	{
 		$merge_vars   = array();
@@ -283,7 +374,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	/**
-	 * Register on registry GUEST customer data for MergeVars for on checkout subscribe
+	 * Register on Magento's registry GUEST customer data for MergeVars for on checkout subscribe
+	 *
+	 * @param Mage_Sales_Model_Order $order
+	 * @return void
 	 */
 	public function registerGuestCustomer($order)
 	{
@@ -306,6 +400,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 	}
 
+
+	/**
+	 * Create a Magento's customer account for given data
+	 *
+	 * @param array $accountData
+	 * @param integer $websiteId ID of website to associate customer to
+	 * @return Mage_Customer_Model_Customer
+	 */
 	public function createCustomerAccount($accountData, $websiteId)
 	{
 		$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId);
@@ -368,6 +470,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return $customer;
 	}
 
+	/**
+	 * Parse MailChimp <address> MergeField type to Magento's address object
+	 *
+	 * @param array $data MC address data
+	 * @param string $type billing or shipping
+	 * @param Mage_Customer_Model_Customer $customer
+	 * @return array Empty if noy errors, or a list of errors in an Array
+	 */
 	protected function _McAddressToMage(array $data, $type, $customer)
 	{
 		$addressData = $data["{$type}_address"];
