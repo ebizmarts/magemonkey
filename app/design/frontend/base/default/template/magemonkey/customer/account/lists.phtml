@@ -62,7 +62,7 @@ $generalList = $this->getGeneralList();
 <script type="text/javascript">
 	document.observe("dom:loaded", function() {
 
-		$$('div.block-content ul li.current').first().previous().remove();
+		removeManageNewsletter();
 
 		//Handle newsletter subscribe/unsubscribe checkbox events
 		$$('input.monkey-list-subscriber').each(function(chk){
