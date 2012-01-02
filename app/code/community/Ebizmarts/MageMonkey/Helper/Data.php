@@ -216,14 +216,17 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						break;
 					case 'ee_customer_balance':
-						//TODO
 
-						/*$websiteBalance = Mage::getModel('enterprise_customerbalance/balance')
-	                    					->setCustomerId($customer->getId())
-	                    					->setWebsiteId($websiteId)
-	                    					->load()
-	                    					->getAmount();*/
+			            if (Mage::app()->getStore()->isAdmin()) {
+			                $websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
+			            }
 
+						$balance = Mage::getModel('enterprise_customerbalance/balance')
+						          ->setWebsiteId($websiteId)
+           				          ->setCustomerId($customer->getId())
+            			          ->loadByCustomer();
+
+            			$merge_vars[$key] = $balance->getAmount();
 
 						break;
 					default:
@@ -307,8 +310,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	{
 		$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId);
 
-		//$accountData ['is_subscribed'] = 1;
-
 		if(!isset($accountData['firstname']) OR empty($accountData['firstname'])){
 			$accountData['firstname'] = $this->__('Store');
 		}
@@ -360,7 +361,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				if ( $customer->isConfirmationRequired() ){
                     $customer->sendNewAccountEmail('confirmation');
 				}
-				//$customer->sendPasswordReminderEmail();
+
             }
 		}
 
