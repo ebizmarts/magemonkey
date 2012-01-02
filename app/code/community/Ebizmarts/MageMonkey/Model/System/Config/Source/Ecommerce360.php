@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Ecommerce360 export orders config source options list
+ *
+ */
 class Ebizmarts_MageMonkey_Model_System_Config_Source_Ecommerce360
 {
     /**

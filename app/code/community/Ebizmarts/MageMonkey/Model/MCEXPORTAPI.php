@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * MailChimp EXPORT API wrapper
+ *
+ */
 class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_MCAPI
 {
     var $version = "1.0";

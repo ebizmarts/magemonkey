@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Bulksync status list source
+ *
+ */
 class Ebizmarts_MageMonkey_Model_System_Config_Source_BulksyncStatus
 {
 
@@ -18,6 +22,11 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_BulksyncStatus
         );
     }
 
+	/**
+	 * Another way of returning data
+	 *
+	 * @return array
+	 */
     public function toOption()
     {
     	$options = $this->toOptionArray();

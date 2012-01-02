@@ -1,9 +1,16 @@
 <?php
 
+/**
+ * Events Observer model
+ *
+ */
 class Ebizmarts_MageMonkey_Model_Observer
 {
 	/**
 	 * Handle Subscriber object saving process
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void|Varien_Event_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
@@ -85,6 +92,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 	/**
 	 * Handle Subscriber deletion from Magento, unsubcribes email from MailChimp
 	 * and sends the delete_member flag so the subscriber gets deleted.
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void|Varien_Event_Observer
 	 */
 	public function handleSubscriberDeletion(Varien_Event_Observer $observer)
 	{
@@ -110,7 +120,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 	}
 
-
+	/**
+	 * Handle save of System -> Configuration, section <monkey>
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void|Varien_Event_Observer
+	 */
 	public function saveConfig(Varien_Event_Observer $observer)
 	{
 
@@ -165,6 +180,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 	}
 
+	/**
+	 * Update customer after_save event observer
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void|Varien_Event_Observer
+	 */
 	public function updateCustomer(Varien_Event_Observer $observer)
 	{
 		if(!Mage::helper('monkey')->canMonkey()){
@@ -194,6 +215,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 	/**
 	 * Add flag on session to tell the module if on success page should subscribe customer
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void
 	 */
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
@@ -209,6 +233,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 	/**
 	 * Subscribe customer to Newsletter if flag on session is present
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
@@ -236,6 +263,13 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 	}
 
+	/**
+	 * Get Mergevars
+	 *
+	 * @param null|Mage_Customer_Model_Customer $object
+	 * @param bool $includeEmail
+	 * @return array
+	 */
 	protected function _mergeVars($object = NULL, $includeEmail = FALSE)
 	{
 		//Initialize as GUEST customer
@@ -265,6 +299,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 		return $mergeVars;
 	}
 
+	/**
+	 * Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void
+	 */
 	public function massActionOption($observer)
     {
 		if(!Mage::helper('monkey')->canMonkey()){

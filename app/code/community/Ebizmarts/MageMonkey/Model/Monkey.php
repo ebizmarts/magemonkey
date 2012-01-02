@@ -1,12 +1,27 @@
 <?php
 
+/**
+ * Module's main multi-purpose model
+ *
+ */
 class Ebizmarts_MageMonkey_Model_Monkey
 {
+	/**
+	 * Webhooks request url path
+	 *
+	 * @const string
+	 */
 	const WEBHOOKS_PATH = 'monkey/webhook/index/wkey/';
 
+	/**
+	 * Process Webhook request
+	 *
+	 * @param array $data
+	 * @return void
+	 */
 	public function processWebhookData(array $data)
 	{
-		$listId = $data['data']['list_id']; //According to the docs, we events are always related to a list_id
+		$listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
 		$store  = Mage::helper('monkey')->getStoreByList($listId);
 
 		if(!is_null($store)){
@@ -39,6 +54,12 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
 	}
 
+	/**
+	 * Update customer email <upemail>
+	 *
+	 * @param array $data
+	 * @return void
+	 */
 	protected function _updateEmail(array $data)
 	{
 
@@ -83,8 +104,12 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
 	}
 
+
 	/**
-	 * Add "Cleaned Emails" notification to Adminnotification Inbox
+	 * Add "Cleaned Emails" notification to Adminnotification Inbox <cleaned>
+	 *
+	 * @param array $data
+	 * @return void
 	 */
 	protected function _clean(array $data)
 	{
@@ -109,7 +134,10 @@ class Ebizmarts_MageMonkey_Model_Monkey
 	}
 
 	/**
-	 * Add "Campaign Sending Status" to Adminnotification Inbox
+	 * Add "Campaign Sending Status" notification to Adminnotification Inbox <campaign>
+	 *
+	 * @param array $data
+	 * @return void
 	 */
 	protected function _campaign(array $data)
 	{
@@ -122,9 +150,10 @@ class Ebizmarts_MageMonkey_Model_Monkey
 	}
 
 	/**
-	 *
 	 * Subscribe email to Magento list, store aware
 	 *
+	 * @param array $data
+	 * @return void
 	 */
 	protected function _subscribe(array $data)
 	{
@@ -151,9 +180,10 @@ class Ebizmarts_MageMonkey_Model_Monkey
 	}
 
 	/**
-	 *
 	 * Unsubscribe or delete email from Magento list, store aware
 	 *
+	 * @param array $data
+	 * @return void
 	 */
 	protected function _unsubscribe(array $data)
 	{
@@ -181,6 +211,11 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
 	}
 
+	/**
+	 * Return Inbox model instance
+	 *
+	 * @return Mage_AdminNotification_Model_Inbox
+	 */
 	protected function _getInbox()
 	{
 		return Mage::getModel('adminnotification/inbox')
@@ -188,6 +223,12 @@ class Ebizmarts_MageMonkey_Model_Monkey
 					->setDateAdded(Mage::getModel('core/date')->gmtDate());
 	}
 
+	/**
+	 * Load newsletter_subscriber by email
+	 *
+	 * @param string $email
+	 * @return Mage_Newsletter_Model_Subscriber
+	 */
 	protected function _loadByEmail($email)
 	{
 		return Mage::getModel('newsletter/subscriber')

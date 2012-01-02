@@ -1,11 +1,40 @@
 <?php
 
+/**
+ * Ecommerce360 main model
+ *
+ */
 class Ebizmarts_MageMonkey_Model_Ecommerce360
 {
 
+	/**
+	 * Order information to send to MC
+	 *
+	 * @var array
+	 * @access protected
+	 */
 	protected $_info = array();
+
+	/**
+	 * @var integer
+	 * @access protected
+	 */
 	protected $_auxPrice = 0;
+
+	/**
+	 * Current order
+	 *
+	 * @var Mage_Sales_Model_Order
+	 * @access protected
+	 */
 	protected $_order;
+
+	/**
+	 * Skip products list
+	 *
+	 * @var array
+	 * @access protected
+	 */
 	protected $_productsToSkip = array(Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE, Mage_Catalog_Model_Product_Type::TYPE_BUNDLE);
 
     /**
@@ -18,11 +47,22 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         return Mage::app()->getCookie();
     }
 
+	/**
+	 * Check if Ecommerce360 integration is enabled per configuration settings
+	 *
+	 * @return bool
+	 */
 	public function isActive()
 	{
 		return Mage::helper('monkey')->ecommerce360Active();
 	}
 
+	/**
+	 * Add cookie to customer's session
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return Varien_Event_Observer
+	 */
 	public function saveCookie(Varien_Event_Observer $observer)
 	{
 		if( $this->isActive() ){
@@ -39,6 +79,12 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         return $observer;
 	}
 
+	/**
+	 * Process data and send order to MC
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return Varien_Event_Observer
+	 */
 	public function run(Varien_Event_Observer $observer)
 	{
         $order = $observer->getEvent()->getOrder();
@@ -50,6 +96,12 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 		return $observer;
 	}
 
+	/**
+	 * Send order to MailChimp
+	 *
+	 * @param Mage_Sales_Model_Order $order
+	 * @return bool|array
+	 */
 	public function logSale($order)
 	{
 
@@ -95,6 +147,12 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 
     }
 
+	/**
+	 * Process order items to send to MailChimp
+	 *
+	 * @access private
+	 * @return Ebizmarts_MageMonkey_Model_Ecommerce360
+	 */
     private function setItemstoSend()
     {
     	 foreach ($this->_order->getAllItems() as $item){
@@ -133,11 +191,21 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 		return $this;
     }
 
+	/**
+	 * Get cookie <magemonkey_email_id> from customer's session
+	 *
+	 * @return string|null
+	 */
 	protected function _getEmailCookie()
 	{
 		return $this->getCookie()->get('magemonkey_email_id');
 	}
 
+	/**
+	 * Get cookie <magemonkey_campaign_id> from customer's session
+	 *
+	 * @return string|null
+	 */
 	protected function _getCampaignCookie()
 	{
 		return $this->getCookie()->get('magemonkey_campaign_id');
@@ -145,10 +213,12 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 
 	/**
 	 * Save Api Call on db
+	 *
+	 * @return Ebizmarts_MageMonkey_Model_Ecommerce
 	 */
     protected function _logCall()
     {
-		Mage::getModel('monkey/ecommerce')
+		return Mage::getModel('monkey/ecommerce')
 			 ->setOrderIncrementId($this->_order->getIncrementId())
 			 ->setOrderId($this->_order->getId())
 	         ->setMcCampaignId($this->_getCampaignCookie())

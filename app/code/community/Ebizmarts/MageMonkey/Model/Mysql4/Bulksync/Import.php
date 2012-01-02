@@ -1,12 +1,28 @@
 <?php
 
+/**
+ * Mysql4 Bulksync Import model
+ *
+ */
 class Ebizmarts_MageMonkey_Model_Mysql4_Bulksync_Import extends Mage_Core_Model_Mysql4_Abstract
 {
+
+	/**
+	 * Initialize model
+	 *
+	 * @return void
+	 */
     public function _construct()
     {
         $this->_init('monkey/bulksync_import', 'id');
     }
 
+	/**
+	 * Before save callback, set <created_at> and <updated_at> values
+	 *
+	 * @param Mage_Core_Model_Abstract $object
+	 * @return void
+	 */
     protected function _beforeSave(Mage_Core_Model_Abstract $object)
     {
         if (!$object->getCreatedAt()) {

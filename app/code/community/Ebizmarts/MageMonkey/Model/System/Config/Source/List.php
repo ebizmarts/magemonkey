@@ -1,10 +1,25 @@
 <?php
 
+/**
+ * MailChimp lists source file
+ *
+ */
 class Ebizmarts_MageMonkey_Model_System_Config_Source_List
 {
 
+	/**
+	 * Lists for API key will be stored here
+	 *
+	 * @access protected
+	 * @var array Email lists for given API key
+	 */
 	protected $_lists   = null;
 
+	/**
+	 * Load lists and store on class property
+	 *
+	 * @return void
+	 */
 	public function __construct()
 	{
 		if( is_null($this->_lists) ){

@@ -1,13 +1,49 @@
 <?php
 
+/**
+ * MailChimp API Magento wrapper
+ *
+ */
 class Ebizmarts_MageMonkey_Model_Api
 {
+	/**
+	 * Api instance
+	 *
+	 * @var Ebizmarts_MageMonkey_Model_MCAPI|Ebizmarts_MageMonkey_Model_MCEXPORTAPI
+	 * @access protected
+	 */
 	protected $_mcapi   = null;
+
+	/**
+	 * Api host
+	 *
+	 * @var string
+	 * @access protected
+	 */
     protected $_apihost = null;
 
+	/**
+	 * MC API error code if any
+	 *
+	 * @var integer
+	 * @access public
+	 */
     public $errorCode    = null;
+
+	/**
+	 * MC API error message if any
+	 *
+	 * @var string
+	 * @access public
+	 */
     public $errorMessage = null;
 
+	/**
+	 * Initialize API
+	 *
+	 * @param array $args
+	 * @return void
+	 */
 	public function __construct($args)
 	{
 		$storeId = isset($args['store']) ? $args['store'] : null;
@@ -28,6 +64,14 @@ class Ebizmarts_MageMonkey_Model_Api
                 $this->_apihost = $dc.".".$this->_mcapi->apiUrl["host"];
 	}
 
+	/**
+	 * Magic __call method
+	 *
+	 * @link http://www.php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.methods
+	 * @param string $method
+	 * @param array $args
+	 * @return mixed
+	 */
 	public function __call($method, $args = null)
 	{
 		$this->errorCode    = null;
@@ -37,10 +81,11 @@ class Ebizmarts_MageMonkey_Model_Api
 	}
 
 	/**
-	 * Perform API call, also can be used "manually"
+	 * Perform API call, also can be used "directly"
 	 *
-	 *@param string $command Command to be performed
-	 *@param optional array $args Call parameters
+	 * @param string $command Command to be performed
+	 * @param array $args OPTIONAL call parameters
+	 * @return mixed
 	 */
 	public function call($command, $args)
 	{

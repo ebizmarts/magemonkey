@@ -1,5 +1,10 @@
 <?php
 
+
+/**
+ * Checkout subscribe available status options source
+ *
+ */
 class Ebizmarts_MageMonkey_Model_System_Config_Source_Checkoutsubscribe
 {
     /**

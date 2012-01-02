@@ -4,16 +4,33 @@ class Ebizmarts_MageMonkey_Model_Cron
 {
 	/**
 	 * Limit var for SQL queries
+	 *
+	 * @var integer
+	 * @access protected
 	 */
 	protected $_limit = 200;
 
 	/**
 	 * Import limit var
+	 *
+	 * @var integer
+	 * @access protected
 	 */
 	protected $_importLimit = 500;
 
+	/**
+	 * Current Magento store
+	 *
+	 * @var Mage_Core_Model_Store
+	 * @access protected
+	 */
 	protected $_store;
 
+	/**
+	 * Process scheduled IMPORT tasks
+	 *
+	 * @return void
+	 */
 	public function processImportJobs()
 	{
 		$job = $this->_getJob('Import');
@@ -89,6 +106,13 @@ class Ebizmarts_MageMonkey_Model_Cron
 		}
 	}
 
+	/**
+	 * Return subscriber object with basic attribues
+	 *
+	 * @param string $email
+	 * @param string $status OPTIONAL
+	 * @return Mage_Newsletter_Model_Subscriber
+	 */
 	protected function _getSubscriberObject($email, $status = Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
 	{
 		$subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
@@ -105,6 +129,14 @@ class Ebizmarts_MageMonkey_Model_Cron
 		return $subscriber;
 	}
 
+	/**
+	 * Process <subscribed> data list when importing members
+	 *
+	 * @param array $member
+	 * @param integer $websiteId OPTIONAL
+	 * @param bool $createCustomer
+	 * @return void
+	 */
 	protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
 	{
 
@@ -133,17 +165,41 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 	}
 
+	/**
+	 * Process <updated> data list when importing members
+	 *
+	 * @param array $member
+	 * @param integer $websiteId OPTIONAL
+	 * @param bool $createCustomer
+	 * @return void
+	 */
 	protected function updated($member, $websiteId = null, $createCustomer = FALSE)
 	{
 		//TODO
 	}
 
+	/**
+	 * Process <unsubscribed> data list when importing members
+	 *
+	 * @param array $member
+	 * @param integer $websiteId OPTIONAL
+	 * @param bool $createCustomer
+	 * @return void
+	 */
 	protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE)
 	{
 		$this->_getSubscriberObject($member['email'], Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
 										->save();
 	}
 
+	/**
+	 * Process <cleaned> data list when importing members
+	 *
+	 * @param array $member
+	 * @param integer $websiteId OPTIONAL
+	 * @param bool $createCustomer
+	 * @return void
+	 */
 	protected function cleaned($member, $websiteId = null, $createCustomer = FALSE)
 	{
 		return $this->unsubscribed($member, $websiteId, $createCustomer);
@@ -153,6 +209,8 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 	/**
 	 * Process EXPORT tasks
+	 *
+	 * @return Ebizmarts_MageMonkey_Model_Cron
 	 */
 	public function processExportJobs()
 	{
@@ -252,6 +310,13 @@ class Ebizmarts_MageMonkey_Model_Cron
 		return $this;
 	}
 
+	/**
+	 * Get collection object for given entity type
+	 *
+	 * @todo Add default Billing and Shipping address data
+	 * @param string $type
+	 * @return Mage_Newsletter_Model_Mysql4_Subscriber_Collection|Mage_Customer_Model_Entity_Customer_Collection
+	 */
 	protected function _getEntityModel($type)
 	{
 		$model = null;
@@ -277,6 +342,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 		return $model;
 	}
 
+	/**
+	 * Return ID field name for given entity type
+	 *
+	 * @param string $type
+	 * @return string
+	 */
 	protected function _getId($type)
 	{
 		$idFieldName = null;
@@ -292,16 +363,33 @@ class Ebizmarts_MageMonkey_Model_Cron
 		return $idFieldName;
 	}
 
+	/**
+	 * Get HELPER instance
+	 *
+	 * @param string $which
+	 * @return object
+	 */
 	protected function _helper($which = 'data')
 	{
 		return Mage::helper('monkey/'.$which);
 	}
 
+	/**
+	 * Return GMT date
+	 *
+	 * @return string
+	 */
 	protected function _dbDate()
 	{
 		return Mage::getModel('core/date')->gmtDate();
 	}
 
+	/**
+	 * Get first job to process in queue
+	 *
+	 * @param string $entity
+	 * @return null|Ebizmarts_MageMonkey_Model_BulksyncExport|Ebizmarts_MageMonkey_Model_BulksyncImport
+	 */
 	protected function _getJob($entity)
 	{
 		$job = Mage::getModel("monkey/bulksync{$entity}")

@@ -1,6 +1,11 @@
 <?php
 
-class Ebizmarts_MageMonkey_Model_MCAPI {
+/**
+ * MailChimp API wrapper
+ *
+ */
+class Ebizmarts_MageMonkey_Model_MCAPI
+{
     var $version = "1.3";
     var $errorMessage;
     var $errorCode;

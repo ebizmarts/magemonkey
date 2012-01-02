@@ -1,18 +1,40 @@
 <?php
 
+/**
+ * MC source class for account data
+ *
+ */
 class Ebizmarts_MageMonkey_Model_System_Config_Source_Account
 {
 
+	/**
+	 * Account details storage
+	 *
+	 * @access protected
+	 * @var bool|array
+	 */
     protected $_account_details = FALSE;
 
-    public function __construct() {
+	/**
+	 * Set AccountDetails on class property if not already set
+	 *
+	 * @return void
+	 */
+    public function __construct()
+    {
         if (!$this->_account_details) {
             $this->_account_details = Mage::getSingleton('monkey/api')
                     ->getAccountDetails();
         }
     }
 
-    public function toOptionArray() {
+	/**
+	 * Return data if API key is entered
+	 *
+	 * @return array
+	 */
+    public function toOptionArray()
+    {
         if($this->_account_details){
             return array(
                 array('value' => 0, 'label' => Mage::helper('monkey')->__('Username:') . ' ' . $this->_account_details['username']),
@@ -23,7 +45,5 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_Account
             return array(array('value' => '', 'label' => Mage::helper('monkey')->__('--- Enter your API KEY first ---')));
         }
     }
-
-
 
 }
