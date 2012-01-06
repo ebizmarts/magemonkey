@@ -3,6 +3,9 @@
 /**
  * Ecommerce360 main model
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Model_Ecommerce360
 {

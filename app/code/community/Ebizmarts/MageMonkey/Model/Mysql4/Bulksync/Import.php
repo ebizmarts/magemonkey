@@ -3,6 +3,9 @@
 /**
  * Mysql4 Bulksync Import model
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Model_Mysql4_Bulksync_Import extends Mage_Core_Model_Mysql4_Abstract
 {

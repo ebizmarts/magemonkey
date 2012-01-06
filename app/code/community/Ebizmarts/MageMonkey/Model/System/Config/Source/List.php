@@ -3,6 +3,9 @@
 /**
  * MailChimp lists source file
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Model_System_Config_Source_List
 {

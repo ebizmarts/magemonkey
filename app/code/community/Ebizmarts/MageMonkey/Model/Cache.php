@@ -3,6 +3,9 @@
 /**
  * Module's cache model
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Model_Cache
 {
@@ -15,7 +18,7 @@ class Ebizmarts_MageMonkey_Model_Cache
     /**
      * @var array Store cache tags
      */
-    protected $_cacheTags;
+    protected $_cacheTags = array(self::CACHE_TAG);
 
     /**
      * @var int|null Cache lifetime in seconds or NULL for infinite lifetime
@@ -38,7 +41,6 @@ class Ebizmarts_MageMonkey_Model_Cache
     public function __construct()
     {
         $this->_isEnabled = Mage::app()->useCache(self::CACHE_ID);
-        $this->_cacheTags = array(self::CACHE_TAG);
     }
 
     /**
@@ -48,7 +50,7 @@ class Ebizmarts_MageMonkey_Model_Cache
      */
     public function isCacheEnabled()
     {
-        return $this->_isEnabled;
+        return (bool)$this->_isEnabled;
     }
 
     /**
@@ -72,12 +74,13 @@ class Ebizmarts_MageMonkey_Model_Cache
     }
 
     /**
-     * Save page body to cache storage
+     * Save data to cache
      *
-     * @param Varien_Event_Observer $observer
-     * @return Enterprise_PageCache_Model_Observer
+     * @param string $data Data to be cached
+     * @param string $cacheId
+     * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function cacheData(Varien_Event_Observer $observer)
+    public function saveCacheData($data, $cacheId)
     {
         if (!$this->isCacheEnabled()) {
             return $this;
