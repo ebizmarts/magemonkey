@@ -106,6 +106,23 @@ class Ebizmarts_MageMonkey_Model_Cache
 		return Mage::app()->loadCache($cacheId);
 	}
 
+	/**
+	 * Remove data from Cache
+	 *
+	 * @param string $cacheId Cache ID
+	 * @return Ebizmarts_MageMonkey_Model_Cache
+	 */
+	public function removeCacheData($cacheId)
+	{
+        if (!$this->isCacheEnabled()) {
+            return FALSE;
+        }
+
+		Mage::app()->removeCache($cacheId);
+
+		return $this;
+	}
+
     /**
      * Clean <monkey> cache
      *
