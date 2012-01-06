@@ -2,6 +2,10 @@
 
 /**
  * MailChimp Customer Account controller
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controller_Front_Action
 {
