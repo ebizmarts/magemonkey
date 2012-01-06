@@ -86,7 +86,6 @@ class Ebizmarts_MageMonkey_Model_Cache
             return $this;
         }
 
-		//$data must be a string
         Mage::app()->saveCache($data, $cacheId, $this->getCacheTags(), $this->getCacheLifetime());
 
         return $this;
@@ -100,6 +99,10 @@ class Ebizmarts_MageMonkey_Model_Cache
 	 */
 	public function loadCacheData($cacheId)
 	{
+        if (!$this->isCacheEnabled()) {
+            return FALSE;
+        }
+
 		return Mage::app()->loadCache($cacheId);
 	}
 
