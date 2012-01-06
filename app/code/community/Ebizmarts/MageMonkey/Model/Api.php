@@ -26,6 +26,23 @@ class Ebizmarts_MageMonkey_Model_Api
     protected $_apihost = null;
 
 	/**
+	 * Cacheable API commands
+	 *
+	 * @var array
+	 * @access protected
+	 */
+    protected $_cacheableCommands = array(
+											'getAccountDetails',
+											'listInterestGroupings',
+											'listMemberActivity',
+											'listMemberInfo',
+											'listMembers',
+											'listMergeVars',
+											'lists',
+											'listsForEmail'
+										 );
+
+	/**
 	 * MC API error code if any
 	 *
 	 * @var integer
@@ -94,10 +111,28 @@ class Ebizmarts_MageMonkey_Model_Api
 	{
 		try{
 
-			Mage::helper('monkey')->log($this->_apihost, 'MageMonkey_ApiCall.log');
-			Mage::helper('monkey')->log($this->_mcapi->api_key, 'MageMonkey_ApiCall.log');
-			Mage::helper('monkey')->log($command, 'MageMonkey_ApiCall.log');
-			Mage::helper('monkey')->log($args, 'MageMonkey_ApiCall.log');
+			$cacheKey  = $this->_cacheKey($command, $args);
+
+			$this->_logApiCall($this->_apihost);
+			$this->_logApiCall($this->_mcapi->api_key);
+			$this->_logApiCall($command);
+			$this->_logApiCall($args);
+
+			if($cacheKey){
+				$cache = Mage::getModel('monkey/cache');
+				$cacheData = $cache->loadCacheData($cacheKey);
+
+				if($cacheData){
+
+					$result = unserialize($cacheData);
+
+					$this->_logApiCall('------ START Data from Cache for `' . $command . '` ------');
+					$this->_logApiCall($result);
+					$this->_logApiCall('------ FINISH Data from Cache for `' . $command . '` ------');
+
+					return $result;
+				}
+			}
 
 			if($args){
 				$result = call_user_func_array(array($this->_mcapi, $command), $args);
@@ -105,15 +140,19 @@ class Ebizmarts_MageMonkey_Model_Api
 				$result = $this->_mcapi->{$command}();
 			}
 
-			Mage::helper('monkey')->log($result, 'MageMonkey_ApiCall.log');
+			$this->_logApiCall($result);
 
 			if($this->_mcapi->errorMessage){
-				Mage::helper('monkey')->log("Error: {$this->_mcapi->errorMessage}, code {$this->_mcapi->errorCode}", 'MageMonkey_ApiCall.log');
+				$this->_logApiCall("Error: {$this->_mcapi->errorMessage}, code {$this->_mcapi->errorCode}");
 
 				$this->errorCode    = $this->_mcapi->errorCode;
 				$this->errorMessage = $this->_mcapi->errorMessage;
 
 				return (string)$this->_mcapi->errorMessage;
+			}
+
+			if($cacheKey){
+				$cache->saveCacheData(serialize($result), $cacheKey);
 			}
 
 			return $result;
@@ -126,5 +165,36 @@ class Ebizmarts_MageMonkey_Model_Api
 
 		}
 		return FALSE;
+	}
+
+	/**
+	 * Retrieve cache key to save data in cache storage
+	 *
+	 * @param string $command
+	 * @param string $args
+	 * @return string
+	 */
+	protected function _cacheKey($command, $args)
+	{
+
+		if( FALSE === in_array($command, $this->_cacheableCommands) ){
+			return FALSE;
+		}
+
+		if(is_null($args)){
+			$args = array();
+		}
+		return md5($command.serialize($args).$this->_mcapi->api_key);
+	}
+
+	/**
+	 * Log message on <MageMonkey_ApiCall.log> file
+	 *
+	 * @param mixed $data
+	 * @return void
+	 */
+	protected function _logApiCall($data)
+	{
+		Mage::helper('monkey')->log($data, 'MageMonkey_ApiCall.log');
 	}
 }
