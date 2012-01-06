@@ -3,6 +3,9 @@
 /**
  * Export API helper
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Helper_Export extends Mage_Core_Helper_Abstract
 {

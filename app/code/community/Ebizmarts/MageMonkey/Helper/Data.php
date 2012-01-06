@@ -3,6 +3,9 @@
 /**
  * Mage Monkey default helper
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 {
@@ -222,6 +225,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$html = "<div id=\"bar-progress-bar\" class=\"bar-all-rounded\">\n";
 		$html .= "<div id=\"bar-progress-bar-percentage\" class=\"bar-all-rounded\"$barStyle>";
 		$html .= "$percentage% ($complete of $total)";
+		//<progress value="75" max="100">3/4 complete</progress>
 			//if ($percentage > 5) {$html .= "$percentage% ($complete of $total)";} else {$html .= "<div class=\"bar-spacer\">&nbsp;</div>";}
 		$html .= "</div></div>";
 
