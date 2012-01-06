@@ -4,6 +4,9 @@
  * Customer activiy information block retrieved from MailChimp to show under Customer
  * Edit section
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Customer_Edit_Tab_Memberactivity
     extends Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid

@@ -4,6 +4,9 @@
  * Bulksync export grid, shows all jobs, scheduled, completed, running, etc.
  * You can also perform additional operations such as Delete and Reset job status
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {

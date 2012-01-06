@@ -3,6 +3,9 @@
 /**
  * Bulksync import form container
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Import extends Mage_Adminhtml_Block_Widget_Form_Container
 {

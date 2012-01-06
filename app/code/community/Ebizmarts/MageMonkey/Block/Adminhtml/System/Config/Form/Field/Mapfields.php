@@ -4,6 +4,9 @@
  * System configuration form field renderer for mapping MergeVars fields with Magento
  * attributes.
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_Form_Field_Mapfields extends Mage_Adminhtml_Block_System_Config_Form_Field_Array_Abstract
 {

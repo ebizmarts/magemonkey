@@ -3,6 +3,9 @@
 /**
  * Grid column renderer for lists
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
 {

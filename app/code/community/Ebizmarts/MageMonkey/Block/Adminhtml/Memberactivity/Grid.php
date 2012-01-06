@@ -3,6 +3,9 @@
 /**
  * Member activity data grid
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {

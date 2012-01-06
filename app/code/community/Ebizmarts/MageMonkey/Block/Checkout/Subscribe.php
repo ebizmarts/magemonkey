@@ -3,6 +3,9 @@
 /**
  * Checkout subscribe checkbox block renderer
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Checkout_Subscribe extends Mage_Core_Block_Template
 {

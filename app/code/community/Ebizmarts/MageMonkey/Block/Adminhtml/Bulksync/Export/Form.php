@@ -3,6 +3,9 @@
 /**
  * Bulksync export form, lets you schedule jobs to be processed by Magento's cron
  *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
  */
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adminhtml_Block_Widget_Form
 {
