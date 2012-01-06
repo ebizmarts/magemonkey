@@ -2,10 +2,19 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>0.0.7</version>
+             <version>0.0.8</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
+        <cache>
+            <types>
+                <monkey translate="label,description" module="monkey">
+                    <label>MailChimp</label>
+                    <description>API requests data cache.</description>
+                    <tags>MONKEY_GENERAL_CACHE_TAG</tags>
+                </monkey>
+            </types>
+        </cache>
     	<events>
             <newsletter_subscriber_save_before>
                 <observers>
