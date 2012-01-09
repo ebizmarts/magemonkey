@@ -36,6 +36,11 @@ class Ebizmarts_MageMonkey_Model_MCAPI
     var $secure = false;
 
     /**
+     * @var array Request params storage
+     */
+    public $requestParams = array();
+
+    /**
      * Connect to the MailChimp API for a given list.
      *
      * @param string $apikey Your MailChimp apikey
@@ -2394,6 +2399,9 @@ class Ebizmarts_MageMonkey_Model_MCAPI
      * You should never have to call this function manually
      */
     function callServer($method, $params) {
+
+    	$this->requestParams = $params;
+
 	    $dc = "us1";
 	    if (strstr($this->api_key,"-")){
         	list($key, $dc) = explode("-",$this->api_key,2);
