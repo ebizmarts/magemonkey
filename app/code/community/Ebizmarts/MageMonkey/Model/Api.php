@@ -26,46 +26,12 @@ class Ebizmarts_MageMonkey_Model_Api {
     protected $_apihost = null;
 
     /**
-     * Cacheable API commands
+     * Cache Helper instance
      *
-     * @var array
+     * @var Ebizmarts_MageMonkey_Helper_Cache
      * @access protected
      */
-    protected $_cacheableCommands = array(
-        'getAccountDetails',
-        'listInterestGroupings',
-        'listMemberActivity',
-        'listMemberInfo',
-        'listMembers',
-        'listMergeVars',
-        'lists',
-        'listsForEmail'
-    );
-
-    /**
-     * Clear cache callbacks
-     *
-     * @var array
-     * @access protected
-     */
-    protected $_cacheClearCallbacks = array(
-        'listUnsubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail'),
-        'listSubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail'),
-        'listUpdateMember' => array('listMemberInfo', 'listMembers', 'listMemberActivity', 'listsForEmail'),
-    );
-
-    /**
-     * Cache tags unique param ID
-     *
-     * @var array
-     * @access protected
-     */
-    protected $_cacheTagId = array(
-        'listMemberInfo' => array('id', 'email_address'),
-        'listMembers' => array('id', 'status'),
-        'listMemberActivity' => array('id', 'email_address'),
-        'listsForEmail' => array( 'email_address'),
-    );
+    protected $_cacheHelper = null;
 
     /**
      * MC API error code if any
@@ -98,7 +64,9 @@ class Ebizmarts_MageMonkey_Model_Api {
         } else {
             $this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
         }
-
+        
+        $this->_cacheHelper = Mage::helper('monkey/cache');
+        
         //Create actual API URL using API key, borrowed from MCAPI.php
         $dc = "us1";
         if (strstr($this->_mcapi->api_key, "-")) {
@@ -134,7 +102,7 @@ class Ebizmarts_MageMonkey_Model_Api {
     public function call($command, $args) {
         try {
 
-            $cacheKey = $this->_cacheKey($command, $args);
+            $cacheKey = $this->_cacheHelper->cacheKey($command, $args, $this->_mcapi->api_key);
 
             $this->_logApiCall($this->_apihost);
             $this->_logApiCall($this->_mcapi->api_key);
@@ -173,17 +141,17 @@ class Ebizmarts_MageMonkey_Model_Api {
                 $this->errorMessage = $this->_mcapi->errorMessage;
                 
                 //Clear associated cache for this call, for example clear cache for listsForEmail when executing listUnsubscribe
-                $this->_clearCache($command);
+                $this->_cacheHelper->clearCache($command, $this->_mcapi);
 
                 return (string) $this->_mcapi->errorMessage;
             }
 
             if ($cacheKey) {
-                $cache->saveCacheData(serialize($result), $cacheKey, $this->_cacheTagForCommand($command));
+                $cache->saveCacheData(serialize($result), $cacheKey, $this->_cacheHelper->cacheTagForCommand($command, $this->_mcapi));
             }
             
             //Clear associated cache for this call, for example clear cache for listsForEmail when executing listUnsubscribe
-            $this->_clearCache($command);
+            $this->_cacheHelper->clearCache($command, $this->_mcapi);
 
             return $result;
         } catch (Exception $ex) {
@@ -193,65 +161,6 @@ class Ebizmarts_MageMonkey_Model_Api {
             return $ex->getMessage();
         }
         return FALSE;
-    }
-
-    /**
-     * Clear data from Cache
-     *
-     * @param string $command
-     * @param string $args
-     * @param string OPTIONAL $apikey
-     * @return Ebizmarts_MageMonkey_Model_Api
-     */
-    protected function _clearCache($command) {
-        if (FALSE === array_key_exists($command, $this->_cacheClearCallbacks)) {
-            return FALSE;
-        }
-
-        foreach ($this->_cacheClearCallbacks[$command] as $cmd) {
-            $this->_logApiCall('CLEAN CACHE TAG');
-            Mage::app()->cleanCache($this->_cacheTagForCommand($cmd));
-        }
-
-        return $this;
-    }
-
-    protected function _cacheTagForCommand($command) {
-        $tag = $command;
-
-        if (isset($this->_cacheTagId[$command])) {
-            foreach ($this->_cacheTagId[$command] as $param) {
-                $tag .= $this->_mcapi->requestParams[$param];
-            }
-        }
-
-        $tag = array(strtoupper($tag));
-        
-        $this->_logApiCall($tag);
-        
-        return $tag;
-    }
-
-    /**
-     * Retrieve cache key to save data in cache storage
-     *
-     * @param string $command
-     * @param string $args
-     * @return string
-     */
-    protected function _cacheKey($command, $args, $apiKey = null) {
-
-        if (FALSE === in_array($command, $this->_cacheableCommands)) {
-            return FALSE;
-        }
-
-        if (is_null($args)) {
-            $args = array();
-        }
-
-        $key = is_null($apiKey) ? $this->_mcapi->api_key : $apiKey;
-
-        return md5($command . serialize($args) . $key);
     }
 
     /**
