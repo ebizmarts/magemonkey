@@ -23,11 +23,10 @@ class Ebizmarts_MageMonkey_Model_Cache {
      * @var int|null Cache lifetime in seconds or NULL for infinite lifetime
      */
     protected $_cacheLifetime = NULL;
-
+    
     /**
      * @const CACHE_TAG General cache tag
      */
-
     const CACHE_TAG = 'MONKEY_GENERAL_CACHE_TAG';
 
     /**
@@ -136,6 +135,6 @@ class Ebizmarts_MageMonkey_Model_Cache {
     public function invalidateCache() {
         Mage::app()->getCacheInstance()->invalidateType(self::CACHE_ID);
         return $this;
-    }
-
+    }    
+    
 }
