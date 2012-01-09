@@ -55,6 +55,7 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      *
      * @param string $command
      * @param string $args
+     * @param string OPTIONAL $apiKey
      * @return string
      */
     public function cacheKey($command, $args, $apiKey = null) {
@@ -74,8 +75,7 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      * Clear data from Cache
      *
      * @param string $command
-     * @param string $args
-     * @param string OPTIONAL $apikey
+     * @param object $object Request object
      * @return Ebizmarts_MageMonkey_Helper_Cache
      */
     public function clearCache($command, $object) {
@@ -94,6 +94,7 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      * Return cache TAG for given command
      * 
      * @param string $command
+     * @param object $object Request object
      * @return array
      */
     public function cacheTagForCommand($command, $object) {
