@@ -7,8 +7,7 @@
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
  */
-class Ebizmarts_MageMonkey_Model_Cache
-{
+class Ebizmarts_MageMonkey_Model_Cache {
 
     /**
      * @var bool Store if cache type is enabled
@@ -23,23 +22,23 @@ class Ebizmarts_MageMonkey_Model_Cache
     /**
      * @var int|null Cache lifetime in seconds or NULL for infinite lifetime
      */
-	protected $_cacheLifetime = NULL;
+    protected $_cacheLifetime = NULL;
 
-	/**
-	 * @const CACHE_TAG General cache tag
-	 */
+    /**
+     * @const CACHE_TAG General cache tag
+     */
+
     const CACHE_TAG = 'MONKEY_GENERAL_CACHE_TAG';
 
-	/**
-	 * @const CACHE_ID Cache ID
-	 */
-    const CACHE_ID  = 'monkey';
+    /**
+     * @const CACHE_ID Cache ID
+     */
+    const CACHE_ID = 'monkey';
 
     /**
      * Class constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->_isEnabled = Mage::app()->useCache(self::CACHE_ID);
     }
 
@@ -48,9 +47,8 @@ class Ebizmarts_MageMonkey_Model_Cache
      *
      * @return bool
      */
-    public function isCacheEnabled()
-    {
-        return (bool)$this->_isEnabled;
+    public function isCacheEnabled() {
+        return (bool) $this->_isEnabled;
     }
 
     /**
@@ -58,8 +56,7 @@ class Ebizmarts_MageMonkey_Model_Cache
      *
      * @return array Cache tags
      */
-    public function getCacheTags()
-    {
+    public function getCacheTags() {
         return $this->_cacheTags;
     }
 
@@ -68,9 +65,8 @@ class Ebizmarts_MageMonkey_Model_Cache
      *
      * @return null|int
      */
-    public function getCacheLifetime()
-    {
-    	return $this->_cacheLifetime;
+    public function getCacheLifetime() {
+        return $this->_cacheLifetime;
     }
 
     /**
@@ -80,56 +76,54 @@ class Ebizmarts_MageMonkey_Model_Cache
      * @param string $cacheId
      * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function saveCacheData($data, $cacheId)
-    {
+    public function saveCacheData($data, $cacheId, $tags = array()) {
         if (!$this->isCacheEnabled()) {
             return $this;
         }
 
-        Mage::app()->saveCache($data, $cacheId, $this->getCacheTags(), $this->getCacheLifetime());
+        $cacheTags = (!empty($tags)) ? array_merge($this->getCacheTags(), $tags) : $this->getCacheTags();
+
+        Mage::app()->saveCache($data, $cacheId, $cacheTags, $this->getCacheLifetime());
 
         return $this;
     }
 
-	/**
-	 * Retrieve data from Cache
-	 *
-	 * @param string $cacheId Cache ID
-	 * @return mixed Cache data
-	 */
-	public function loadCacheData($cacheId)
-	{
+    /**
+     * Retrieve data from Cache
+     *
+     * @param string $cacheId Cache ID
+     * @return mixed Cache data
+     */
+    public function loadCacheData($cacheId) {
         if (!$this->isCacheEnabled()) {
             return FALSE;
         }
 
-		return Mage::app()->loadCache($cacheId);
-	}
+        return Mage::app()->loadCache($cacheId);
+    }
 
-	/**
-	 * Remove data from Cache
-	 *
-	 * @param string $cacheId Cache ID
-	 * @return Ebizmarts_MageMonkey_Model_Cache
-	 */
-	public function removeCacheData($cacheId)
-	{
+    /**
+     * Remove data from Cache
+     *
+     * @param string $cacheId Cache ID
+     * @return Ebizmarts_MageMonkey_Model_Cache
+     */
+    public function removeCacheData($cacheId) {
         if (!$this->isCacheEnabled()) {
             return FALSE;
         }
 
-		Mage::app()->removeCache($cacheId);
+        Mage::app()->removeCache($cacheId);
 
-		return $this;
-	}
+        return $this;
+    }
 
     /**
      * Clean <monkey> cache
      *
      * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function cleanCache()
-    {
+    public function cleanCache() {
         Mage::app()->cleanCache(self::CACHE_TAG);
         return $this;
     }
@@ -139,8 +133,7 @@ class Ebizmarts_MageMonkey_Model_Cache
      *
      * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function invalidateCache()
-    {
+    public function invalidateCache() {
         Mage::app()->getCacheInstance()->invalidateType(self::CACHE_ID);
         return $this;
     }
