@@ -7,237 +7,213 @@
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
  */
-class Ebizmarts_MageMonkey_Model_Monkey
-{
-	/**
-	 * Webhooks request url path
-	 *
-	 * @const string
-	 */
-	const WEBHOOKS_PATH = 'monkey/webhook/index/wkey/';
+class Ebizmarts_MageMonkey_Model_Monkey {
+    /**
+     * Webhooks request url path
+     *
+     * @const string
+     */
 
-	/**
-	 * Process Webhook request
-	 *
-	 * @param array $data
-	 * @return void
-	 */
-	public function processWebhookData(array $data)
-	{
-		$listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
-		$store  = Mage::helper('monkey')->getStoreByList($listId);
+    const WEBHOOKS_PATH = 'monkey/webhook/index/wkey/';
 
-		if(!is_null($store)){
-			$curstore = Mage::app()->getStore();
-			Mage::app()->setCurrentStore($store);
-		}
+    /**
+     * Process Webhook request
+     *
+     * @param array $data
+     * @return void
+     */
+    public function processWebhookData(array $data) {
+        $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
+        $store = Mage::helper('monkey')->getStoreByList($listId);
 
-	    switch($data['type']){
-	        case 'subscribe'  :
-	        	$this->_subscribe($data);
-	        break;
-	        case 'unsubscribe':
-	        	$this->_unsubscribe($data);
-	        break;
-	        case 'cleaned':
-	        	$this->_clean($data);
-	        break;
-	        case 'campaign':
-	        	$this->_campaign($data);
-	        break;
-	        //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
-	        case 'upemail':
-	        	$this->_updateEmail($data);
-	        break;
-	    }
+        if (!is_null($store)) {
+            $curstore = Mage::app()->getStore();
+            Mage::app()->setCurrentStore($store);
+        }
+        
+        //Object for cache clean
+        $object = new stdClass();            
+        $object->requestParams = array();       
+        $object->requestParams['id'] = $listId;
+        
+        if( isset($data['data']['email']) ){
+            $object->requestParams['email_address']  = $data['data']['email'];
+        }
+        $cacheHelper = Mage::helper('monkey/cache');
+        
+        switch ($data['type']) {
+            case 'subscribe' :                                               
+                $this->_subscribe($data);
+                    $cacheHelper->clearCache('listSubscribe', $object);
+                break;
+            case 'unsubscribe':                               
+                $this->_unsubscribe($data);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                break;
+            case 'cleaned':                
+                $this->_clean($data);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                break;
+            case 'campaign':
+                $this->_campaign($data);
+                break;
+            //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
+            case 'upemail':                
+                $this->_updateEmail($data);
+                    $cacheHelper->clearCache('listUpdateMember', $object);                   
+                break;
+        }
+        
+        if (!is_null($store)) {
+            Mage::app()->setCurrentStore($curstore);
+        }
+    }
 
-		if(!is_null($store)){
-			Mage::app()->setCurrentStore($curstore);
-		}
+    /**
+     * Update customer email <upemail>
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function _updateEmail(array $data) {
 
-	}
+        $old = $data['data']['old_email'];
+        $new = $data['data']['new_email'];
 
-	/**
-	 * Update customer email <upemail>
-	 *
-	 * @param array $data
-	 * @return void
-	 */
-	protected function _updateEmail(array $data)
-	{
+        $oldSubscriber = $this->_loadByEmail($old);
+        $newSubscriber = $this->_loadByEmail($new);
 
-		/*if($data['type'] == 'profile'){
+        if (!$newSubscriber->getId() && $oldSubscriber->getId()) {
+            $oldSubscriber->setSubscriberEmail($new)
+                    ->save();
+        } elseif (!$newSubscriber->getId() && !$oldSubscriber->getId()) {
 
-			$email = $data['data']['email'];
+            Mage::getModel('newsletter/subscriber')
+                    ->setImportMode(TRUE)
+                    ->setStoreId(Mage::app()->getStore()->getId())
+                    ->subscribe($new);
+        }
+    }
 
-			$subscriber = $this->_loadByEmail($email);
-			if($subscriber->getId()){
-				$subscriber->setSubscriberEmail($email)
-									->save();
-			}else{
-				Mage::getModel('newsletter/subscriber')->subscribe($email);
-			}
+    /**
+     * Add "Cleaned Emails" notification to Adminnotification Inbox <cleaned>
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function _clean(array $data) {
+        $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
 
-		}else{*/
+        $this->_getInbox()
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
 
-	 		$old = $data['data']['old_email'];
-			$new = $data['data']['new_email'];
+        //Delete subscriber from Magento
+        $s = $this->_loadByEmail($data['data']['email']);
 
-	 		$oldSubscriber = $this->_loadByEmail($old);
-	 		$newSubscriber = $this->_loadByEmail($new);
+        if ($s->getId()) {
+            try {
+                $s->delete();
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
 
-			if( !$newSubscriber->getId() && $oldSubscriber->getId() ){
-				$oldSubscriber->setSubscriberEmail($new)
-								->save();
-			}elseif(!$newSubscriber->getId() && !$oldSubscriber->getId()){
+    /**
+     * Add "Campaign Sending Status" notification to Adminnotification Inbox <campaign>
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function _campaign(array $data) {
+        $text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
 
-				Mage::getModel('newsletter/subscriber')
-					->setImportMode(TRUE)
-					->setStoreId(Mage::app()->getStore()->getId())
-						->subscribe($new);
+        $this->_getInbox()
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
+    }
 
-			}/*else{
-				Mage::getModel('newsletter/subscriber')
-					->setStoreId(Mage::app()->getStore()->getId())
-						->subscribe($new);
-				$oldSubscriber->delete();
-			}*/
+    /**
+     * Subscribe email to Magento list, store aware
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function _subscribe(array $data) {
+        try {
 
-		/*}*/
+            //TODO: El método subscribe de Subscriber (Magento) hace un load by email
+            // entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
+            //VALIDAR si es lo que se requiere           
+            
+            $subscriber = Mage::getModel('newsletter/subscriber')
+                    ->loadByEmail($data['data']['email']);
+            if ($subscriber->getId()) {
+                $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+                        ->save();
+            } else {
+                Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
+                        ->subscribe($data['data']['email']);
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+    }
 
-	}
+    /**
+     * Unsubscribe or delete email from Magento list, store aware
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function _unsubscribe(array $data) {
 
+        $s = $this->_loadByEmail($data['data']['email']);
 
-	/**
-	 * Add "Cleaned Emails" notification to Adminnotification Inbox <cleaned>
-	 *
-	 * @param array $data
-	 * @return void
-	 */
-	protected function _clean(array $data)
-	{
-		$text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
+        if ($s->getId()) {
 
-		$this->_getInbox()
-			  ->setTitle($text)
-			  ->setDescription($text)
-			  ->save();
+            try {
 
-		//Delete subscriber from Magento
-		$s = $this->_loadByEmail($data['data']['email']);
+                switch ($data['data']['action']) {
+                    case 'delete' :
+                        $s->delete();
+                        break;
+                    case 'unsub':
+                        $s->setImportMode(TRUE)->unsubscribe();
+                        break;
+                }
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
 
-		if($s->getId()){
-			try{
-		    	$s->delete();
-			}catch(Exception $e){
-				Mage::logException($e);
-			}
-		}
+    /**
+     * Return Inbox model instance
+     *
+     * @return Mage_AdminNotification_Model_Inbox
+     */
+    protected function _getInbox() {
+        return Mage::getModel('adminnotification/inbox')
+                        ->setSeverity(4)//Notice
+                        ->setDateAdded(Mage::getModel('core/date')->gmtDate());
+    }
 
-	}
+    /**
+     * Load newsletter_subscriber by email
+     *
+     * @param string $email
+     * @return Mage_Newsletter_Model_Subscriber
+     */
+    protected function _loadByEmail($email) {
+        return Mage::getModel('newsletter/subscriber')
+                        ->getCollection()
+                        ->addFieldToFilter('subscriber_email', $email)
+                        ->addFieldToFilter('store_id', Mage::app()->getStore()->getId())
+                        ->getFirstItem();
+    }
 
-	/**
-	 * Add "Campaign Sending Status" notification to Adminnotification Inbox <campaign>
-	 *
-	 * @param array $data
-	 * @return void
-	 */
-	protected function _campaign(array $data)
-	{
-		$text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
-
-		$this->_getInbox()
-			  ->setTitle($text)
-			  ->setDescription($text)
-			  ->save();
-	}
-
-	/**
-	 * Subscribe email to Magento list, store aware
-	 *
-	 * @param array $data
-	 * @return void
-	 */
-	protected function _subscribe(array $data)
-	{
-		try{
-
-			//TODO: El método subscribe de Subscriber (Magento) hace un load by email
-			// entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
-			//VALIDAR si es lo que se requiere
-
-			$subscriber = Mage::getModel('newsletter/subscriber')
-							->loadByEmail($data['data']['email']);
-			if( $subscriber->getId() ){
-				$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
-					->save();
-			}else{
-				Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
-					->subscribe($data['data']['email']);
-			}
-
-		}catch(Exception $e){
-			Mage::logException($e);
-		}
-
-	}
-
-	/**
-	 * Unsubscribe or delete email from Magento list, store aware
-	 *
-	 * @param array $data
-	 * @return void
-	 */
-	protected function _unsubscribe(array $data)
-	{
-
-		$s = $this->_loadByEmail($data['data']['email']);
-
-		if($s->getId()){
-
-			try{
-
-			    switch($data['data']['action']){
-			        case 'delete'  :
-			        	$s->delete();
-			        break;
-			        case 'unsub':
-			        	$s->setImportMode(TRUE)->unsubscribe();
-			        break;
-			    }
-
-			}catch(Exception $e){
-				Mage::logException($e);
-			}
-
-		}
-
-	}
-
-	/**
-	 * Return Inbox model instance
-	 *
-	 * @return Mage_AdminNotification_Model_Inbox
-	 */
-	protected function _getInbox()
-	{
-		return Mage::getModel('adminnotification/inbox')
-					->setSeverity(4)//Notice
-					->setDateAdded(Mage::getModel('core/date')->gmtDate());
-	}
-
-	/**
-	 * Load newsletter_subscriber by email
-	 *
-	 * @param string $email
-	 * @return Mage_Newsletter_Model_Subscriber
-	 */
-	protected function _loadByEmail($email)
-	{
-		return Mage::getModel('newsletter/subscriber')
-				->getCollection()
-				->addFieldToFilter('subscriber_email', $email)
-				->addFieldToFilter('store_id', Mage::app()->getStore()->getId())
-				->getFirstItem();
-	}
 }
