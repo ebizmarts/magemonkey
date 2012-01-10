@@ -45,9 +45,9 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      * @access protected
      */
     protected $_cacheClearCallbacks = array(
-        'listUnsubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail'),
-        'listSubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail'),
-        'listUpdateMember' => array('listMemberInfo', 'listMembers', 'listMemberActivity', 'listsForEmail'),
+        'listUnsubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail', 'lists'),
+        'listSubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail', 'lists'),
+        'listUpdateMember' => array('listMemberInfo', 'listMembers', 'listMemberActivity', 'listsForEmail', 'lists'),
     );    
 
     /**
