@@ -42,8 +42,8 @@ class Ebizmarts_MageMonkey_Model_Monkey {
         $cacheHelper = Mage::helper('monkey/cache');
         
         switch ($data['type']) {
-            case 'subscribe' :                                               
-                $this->_subscribe($data);
+            case 'subscribe':
+				$this->_subscribe($data);
                     $cacheHelper->clearCache('listSubscribe', $object);
                 break;
             case 'unsubscribe':                               
