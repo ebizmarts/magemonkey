@@ -20,6 +20,16 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return Mage::getSingleton('admin/session')->isLoggedIn();
 	}
 
+    /**
+     * Check if Magento is EE
+     * 
+     * @return bool
+     */
+    public function isEnterprise()
+    {
+        return is_object(Mage::getConfig()->getNode('global/models/enterprise_enterprise'));
+    }
+
 	/**
 	 * Return Webhooks security key for given store
 	 *
@@ -311,18 +321,24 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						break;
 					case 'ee_customer_balance':
+						
+						$merge_vars[$key] = '';
+						
+						if($this->isEnterprise()){
+						
+							if (Mage::app()->getStore()->isAdmin()) {
+								$websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
+							}
 
-			            if (Mage::app()->getStore()->isAdmin()) {
-			                $websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
-			            }
+							$balance = Mage::getModel('enterprise_customerbalance/balance')
+									  ->setWebsiteId($websiteId)
+									  ->setCustomerId($customer->getId())
+									  ->loadByCustomer();
 
-						$balance = Mage::getModel('enterprise_customerbalance/balance')
-						          ->setWebsiteId($websiteId)
-           				          ->setCustomerId($customer->getId())
-            			          ->loadByCustomer();
-
-            			$merge_vars[$key] = $balance->getAmount();
-
+							$merge_vars[$key] = $balance->getAmount();
+            			
+						}
+						
 						break;
 					default:
 
