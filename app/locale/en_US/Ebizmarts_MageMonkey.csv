@@ -36,3 +36,4 @@
 "Enabled - Not Checked by default", "Enabled - Not Checked by default"
 "Enabled - Force subscription", "Enabled - Force subscription"
 "-- Disabled --", "-- Disabled --"
+"Could not add Webhook "%s" for list "%s", error code %s, %s","Could not add Webhook "%s" for list "%s", error code %s, %s"
