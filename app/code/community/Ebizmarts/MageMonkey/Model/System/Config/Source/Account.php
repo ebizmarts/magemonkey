@@ -38,7 +38,7 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_Account
 	 */
     public function toOptionArray()
     {
-        if($this->_account_details){
+        if(is_array($this->_account_details)){
             return array(
                 array('value' => 0, 'label' => Mage::helper('monkey')->__('Username:') . ' ' . $this->_account_details['username']),
                 array('value' => 1, 'label' => Mage::helper('monkey')->__('Plan type:') . ' ' . $this->_account_details['plan_type']),
