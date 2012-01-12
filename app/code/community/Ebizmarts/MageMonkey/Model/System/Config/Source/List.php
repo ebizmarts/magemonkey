@@ -40,7 +40,7 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_List
     {
     	$lists = array();
 
-    	if($this->_lists){
+    	if(is_array($this->_lists)){
 
     		foreach($this->_lists['data'] as $list){
     			$lists []= array('value' => $list['id'], 'label' => $list['name'] . ' (' . $list['stats']['member_count'] . ' ' . Mage::helper('monkey')->__('members') . ')');
