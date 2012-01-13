@@ -159,6 +159,14 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$hookUrl .= Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH . $webhooksKey;
 
 		$api   = Mage::getSingleton('monkey/api', array('apikey' => $apiKey));
+
+		//Validate API KEY
+		$api->ping();
+		if($api->errorCode){
+			Mage::getSingleton('adminhtml/session')->addError($api->errorMessage);
+			return $observer;
+		}
+
 		$lists = $api->lists();
 
 		foreach($lists['data'] as $list){
