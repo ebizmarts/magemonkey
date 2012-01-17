@@ -31,7 +31,9 @@ class Ebizmarts_MageMonkey_Model_MCAPI
     var $api_key;
 
     /**
-     * Cache the user api_key so we only have to log in once per client instantiation
+     * Use Secure connection or not
+     *
+     * @var bool
      */
     var $secure = false;
 
