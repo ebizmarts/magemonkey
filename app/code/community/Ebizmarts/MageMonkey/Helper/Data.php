@@ -22,7 +22,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Check if Magento is EE
-     * 
+     *
      * @return bool
      */
     public function isEnterprise()
@@ -135,6 +135,16 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	public function ecommerce360Active()
 	{
 		return (bool)($this->config('ecommerce360') != 0);
+	}
+
+	/**
+	 * Check if Transactional Email via MC is enabled
+	 *
+	 * @return bool
+	 */
+	public function useTransactionalService()
+	{
+		return Mage::getStoreConfigFlag("monkey/general/transactional_emails");
 	}
 
 	/**
@@ -321,11 +331,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						break;
 					case 'ee_customer_balance':
-						
+
 						$merge_vars[$key] = '';
-						
+
 						if($this->isEnterprise()){
-						
+
 							if (Mage::app()->getStore()->isAdmin()) {
 								$websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
 							}
@@ -336,9 +346,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 									  ->loadByCustomer();
 
 							$merge_vars[$key] = $balance->getAmount();
-            			
+
 						}
-						
+
 						break;
 					default:
 
