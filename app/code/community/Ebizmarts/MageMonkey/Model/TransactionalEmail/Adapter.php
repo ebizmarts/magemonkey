@@ -9,17 +9,17 @@
  */
 class Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter
 {
-    const ADAPTER_STS      = 'STS';
-    const ADAPTER_MANDRILL = 'MANDRILL';
+    const ADAPTER_STS      = 'sts';
+    const ADAPTER_MANDRILL = 'mandrill';
 
     public static function factory($adapter)
     {
-        switch( $adapter ) {
+        switch($adapter) {
             case self::ADAPTER_STS:
-                return new Varien_Image_Adapter_Gd();
+                return new Ebizmarts_MageMonkey_Model_TransactionalEmail_STS();
                 break;
             case self::ADAPTER_MANDRILL:
-                return new Varien_Image_Adapter_Gd2();
+                return new Ebizmarts_MageMonkey_Model_TransactionalEmail_MANDRILL();
                 break;
             default:
                 throw new Exception('Invalid Transactional Email service selected.');
