@@ -118,7 +118,7 @@ class Ebizmarts_MageMonkey_Model_STSAPI
      * Actually connect to the server and call the requested methods, parsing the result
 	 *
 	 * @param string $method
-	 * @param mixed $params
+	 * @param array $params
 	 * @return object|false
      */
     protected function _callServer($method, $params)
