@@ -7,7 +7,7 @@
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
  */
-class Ebizmarts_MageMonkey_Model_STS
+class Ebizmarts_MageMonkey_Model_TransactionalEmail_STS
 {
 	/**
 	 * API version number
@@ -57,11 +57,24 @@ class Ebizmarts_MageMonkey_Model_STS
      * @param string $apikey Your MailChimp apikey
      * @param string $secure Whether or not this should use a secure connection
      */
-    function __construct($apikey, $secure = false)
+    function __construct($apikey = null, $secure = false)
     {
-
         $this->secure  = $secure;
-		$this->api_key = $apikey;
+
+        if($apikey){
+			$this->setApiKey($apikey);
+		}
+    }
+
+	/**
+	 * Api key setter
+	 *
+	 * @param string $key API Key
+	 * @return void
+	 */
+	public function setApiKey($key)
+	{
+		$this->api_key = $key;
 
 	    $dc = "us1";
 	    if (strstr($this->api_key, "-")){
@@ -71,8 +84,7 @@ class Ebizmarts_MageMonkey_Model_STS
 			}
         }
         $this->apiUrl = "http://{$dc}.sts.mailchimp.com/{$this->version}/";
-
-    }
+	}
 
 	/**
 	 * Composes an email message based on input data, and then immediately queues the message for sending.
@@ -110,8 +122,48 @@ class Ebizmarts_MageMonkey_Model_STS
         $params["track_clicks"] = $track_clicks;
         $params["tags"]         = $tags;
 
-        return $this->_callServer("sendEmail", $params);
+        return $this->_callServer("SendEmail", $params);
 
+	}
+
+	/**
+	 * Returns a list containing all of the email addresses that have been verified.
+	 *
+	 * @return array
+	 */
+	public function listVerifiedEmailAddresses()
+	{
+		return $this->_callServer("ListVerifiedEmailAddresses");
+	}
+
+	/**
+	 * Verifies an email address.
+	 * This action causes a confirmation email message to be sent to the specified address.
+	 *
+	 * @param string $email Email address to be verified
+	 * @return array
+	 */
+	public function verifyEmailAddress($email)
+	{
+        $params          = array();
+        $params["email"] = $email;
+
+        return $this->_callServer("VerifyEmailAddress", $params);
+	}
+
+	/**
+	 * Deletes a verified email address.
+	 * This action takes immediate effect, so use it with care.
+	 *
+	 * @param string $email Email address to be deleted
+	 * @return array
+	 */
+	public function deleteVerifiedEmailAddress($email)
+	{
+        $params          = array();
+        $params["email"] = $email;
+
+        return $this->_callServer("DeleteVerifiedEmailAddress", $params);
 	}
 
     /**
@@ -131,6 +183,9 @@ class Ebizmarts_MageMonkey_Model_STS
 
 		$url = $this->apiUrl . $method;
 
+		Mage::helper('monkey')->log($url, 'MageMonkey_ApiCall.log');
+		Mage::helper('monkey')->log($params, 'MageMonkey_ApiCall.log');
+
         $curlSession = curl_init();
 
 		curl_setopt($curlSession, CURLOPT_USERAGENT, Mage::helper('monkey')->getUserAgent());
@@ -148,6 +203,10 @@ class Ebizmarts_MageMonkey_Model_STS
 
 		$result = curl_exec($curlSession);
         if(!$result){
+
+			$errstr = curl_error($curlSession);
+			$errno = curl_errno($curlSession);
+
 			$this->errorMessage = "Could not connect (ERR $errno: $errstr)";
             $this->errorCode = "-99";
             return false;
@@ -160,9 +219,21 @@ class Ebizmarts_MageMonkey_Model_STS
             return false;
         }
 
+		$httpCode = curl_getinfo($curlSession, CURLINFO_HTTP_CODE);
+
 		curl_close($curlSession);
 
-		return json_decode($result);
+		$resultObject = json_decode($result);
+
+		Mage::helper('monkey')->log($resultObject, 'MageMonkey_ApiCall.log');
+
+		if($httpCode != 200){
+			$this->errorMessage = $resultObject->message;
+            $this->errorCode    = "-99";
+			return false;
+		}
+
+		return true;
 
     }
 
