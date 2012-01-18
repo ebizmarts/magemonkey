@@ -10,6 +10,19 @@
 		                    <title>Ecommerce 360 Orders</title>
 		                    <action>monkey/adminhtml_ecommerce</action>
 		                </ecommerce>
+		                <transactional_email translate="title" module="monkey">
+		                    <title>Transactional Email</title>
+		                    <children>
+				                <sts translate="title" module="monkey">
+				                    <title>STS (Amazon Simple Email Service)</title>
+				                    <action>monkey/adminhtml_transactionalemail/sts</action>
+				                </sts>
+				                <mandrill translate="title" module="monkey">
+				                    <title>Mandrill</title>
+				                    <action>monkey/adminhtml_transactionalemail/mandrill</action>
+				                </mandrill>
+		                    </children>
+		                </transactional_email>
 		                <bulksync translate="title" module="monkey">
 		                    <title>Bulk Sync</title>
 		                    <children>
