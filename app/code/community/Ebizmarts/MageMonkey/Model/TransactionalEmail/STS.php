@@ -70,7 +70,7 @@ class Ebizmarts_MageMonkey_Model_TransactionalEmail_STS
 	 * Api key setter
 	 *
 	 * @param string $key API Key
-	 * @return void
+	 * @return Ebizmarts_MageMonkey_Model_TransactionalEmail_STS
 	 */
 	public function setApiKey($key)
 	{
@@ -84,6 +84,8 @@ class Ebizmarts_MageMonkey_Model_TransactionalEmail_STS
 			}
         }
         $this->apiUrl = "http://{$dc}.sts.mailchimp.com/{$this->version}/";
+
+        return $this;
 	}
 
 	/**
@@ -170,10 +172,10 @@ class Ebizmarts_MageMonkey_Model_TransactionalEmail_STS
      * Actually connect to the server and call the requested methods, parsing the result
 	 *
 	 * @param string $method
-	 * @param array $params
+	 * @param array OPTIONAL $params
 	 * @return object|false
      */
-    protected function _callServer($method, $params)
+    protected function _callServer($method, $params = array())
     {
 
         $this->errorMessage = null;
@@ -233,7 +235,7 @@ class Ebizmarts_MageMonkey_Model_TransactionalEmail_STS
 			return false;
 		}
 
-		return true;
+		return $resultObject;
 
     }
 
