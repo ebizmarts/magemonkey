@@ -49,6 +49,38 @@ class Ebizmarts_MageMonkey_Adminhtml_TransactionalemailController extends Mage_A
 	/**
 	 * Delete valid email address from Amazon SES
 	 */
+	public function newAction()
+	{
+		$this->_initAction();
+		$this->_title($this->__('Validate Email'));
+        $this->renderLayout();
+	}
+
+	public function validateEmailAction()
+	{
+		$service = $this->getRequest()->getPost('service', 'sts');
+
+		if($this->getRequest()->isPost() && $service){
+
+			$store = $this->getRequest()->getPost('store');
+			$apiKey  = Mage::helper('monkey')->getApiKey($store);
+			$mail = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory($service)
+						->setApiKey($apiKey);
+
+            $mail->verifyEmailAddress($this->getRequest()->getPost('email_address'));
+            if($mail->errorCode){
+				$this->_getSession()->addError($this->__($mail->errorMessage));
+			}else{
+				$this->_getSession()->addSuccess($this->__('Email address verified.'));
+			}
+		}
+
+		$this->_redirect('monkey/adminhtml_transactionalemail/' . $service);
+	}
+
+	/**
+	 * Delete valid email address from Amazon SES
+	 */
 	public function stsDeleteAction()
 	{
 		$email = $this->getRequest()->getParam('email');
