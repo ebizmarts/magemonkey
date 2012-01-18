@@ -24,4 +24,9 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Sts extends Mage_A
         return $this->getChildHtml('store_switcher') . $this->getChildHtml('grid');
     }
 
+    public function getCreateUrl()
+    {
+        return $this->getUrl('*/*/new', array('service' => 'sts', 'store' => $this->getRequest()->getParam('store', 0)));
+    }
+
 }
