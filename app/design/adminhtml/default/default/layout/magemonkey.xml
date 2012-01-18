@@ -16,6 +16,11 @@
 			</block>
         </reference>
     </monkey_adminhtml_transactionalemail_sts>
+    <monkey_adminhtml_transactionalemail_new>
+        <reference name="content">
+            <block type="monkey/adminhtml_transactionalemail_newemail" name="mc_transemail_add" />
+        </reference>
+    </monkey_adminhtml_transactionalemail_new>
 
     <monkey_adminhtml_bulksync_export>
 		<reference name="head">
