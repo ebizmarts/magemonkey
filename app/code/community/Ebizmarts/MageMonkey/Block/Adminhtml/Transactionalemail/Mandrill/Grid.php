@@ -22,15 +22,20 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Mandrill_Grid exte
 
     protected function _prepareCollection()
     {
-		$apiKey  = Mage::helper('monkey')->getApiKey(0);
+		$apiKey  = Mage::helper('monkey')->getMandrillApiKey(0);
         $mail = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory('mandrill')
 					->setApiKey($apiKey);
 		$emails = $mail->usersSenders();
 
 		if($emails !== FALSE){
 			$_emails = array();
-			foreach($emails->email_addresses as $email){
-				$_emails []= array('email' => $email);
+			foreach($emails as $email){
+				$_emails []= array(
+									'email'       => $email->address,
+									'approved_at' => $email->approved_at,
+									'created_at'  => $email->created_at,
+									'enabled'     => ($email->is_enabled === TRUE ? Mage::helper('monkey')->__('Yes') : Mage::helper('monkey')->__('No')),
+								  );
 			}
 			$collection = Mage::getModel('monkey/custom_collection', array($_emails));
 		}else{
@@ -49,6 +54,24 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Mandrill_Grid exte
             'filter' => false,
             'sortable' => false
         ));
+        $this->addColumn('enabled', array(
+            'header'=> Mage::helper('monkey')->__('Enabled'),
+            'index' => 'enabled',
+            'filter' => false,
+            'sortable' => false
+        ));
+        $this->addColumn('approved_at', array(
+            'header'=> Mage::helper('monkey')->__('Approved At'),
+            'index' => 'approved_at',
+            'filter' => false,
+            'sortable' => false
+        ));
+        $this->addColumn('created_at', array(
+            'header'=> Mage::helper('monkey')->__('Created At'),
+            'index' => 'created_at',
+            'filter' => false,
+            'sortable' => false
+        ));
 
         $this->addColumn('action',
             array(
@@ -58,10 +81,10 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Mandrill_Grid exte
                 'getter'     => 'getEmail',
                 'actions'   => array(
                     array(
-                        'caption' => Mage::helper('monkey')->__('Delete'),
+                        'caption' => Mage::helper('monkey')->__('Disable'),
                         'confirm' => Mage::helper('monkey')->__('This action takes immediate effect, so use it with care.'),
                         'url'     => array(
-                            'base' => '*/*/mandrillDelete',
+                            'base' => '*/*/mandrillDisable',
                             'params' => array('store' => $this->getRequest()->getParam('store')),
                         ),
                         'field'   => 'email'
