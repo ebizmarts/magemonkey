@@ -56,6 +56,7 @@
 	<adminhtml_system_config_edit>
 		<reference name="head">
 			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
+			<action method="addItem"><type>skin_js</type><name>magemonkey/magemonkey.js</name></action>
 		</reference>
 	</adminhtml_system_config_edit>
 
