@@ -7,6 +7,15 @@
         </reference>
     </monkey_adminhtml_ecommerce_index>
 
+    <monkey_adminhtml_transactionalemail_mandrill>
+        <reference name="content">
+            <block type="monkey/adminhtml_transactionalemail_mandrill" name="mc_transactionalemail_mandrill">
+                <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
+                    <action method="setUseConfirm"><params>0</params></action>
+                </block>
+			</block>
+        </reference>
+    </monkey_adminhtml_transactionalemail_mandrill>
     <monkey_adminhtml_transactionalemail_sts>
         <reference name="content">
             <block type="monkey/adminhtml_transactionalemail_sts" name="mc_transactionalemail_sts">
