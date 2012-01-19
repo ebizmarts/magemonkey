@@ -66,6 +66,26 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	/**
+	 * Return Mandrill API key
+	 *
+	 * @param string $store
+	 * @return string Api Key
+	 */
+	public function getMandrillApiKey($store = null)
+	{
+		if(is_null($store)){
+			$key = $this->config('mandrill_apikey');
+		}else{
+			$curstore = Mage::app()->getStore();
+			Mage::app()->setCurrentStore($store);
+			$key = $this->config('mandrill_apikey', $store);
+			Mage::app()->setCurrentStore($curstore);
+		}
+
+		return $key;
+	}
+
+	/**
 	 * Return MC API key for given store, if none is given
 	 * default key is returned
 	 *
