@@ -62,7 +62,12 @@ class Ebizmarts_MageMonkey_Adminhtml_TransactionalemailController extends Mage_A
 		if($this->getRequest()->isPost() && $service){
 
 			$store = $this->getRequest()->getPost('store');
+
 			$apiKey  = Mage::helper('monkey')->getApiKey($store);
+			if($service == 'mandrill'){
+				$apiKey = Mage::helper('monkey')->getMandrillApiKey($store);
+			}
+
 			$mail = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory($service)
 						->setApiKey($apiKey);
 
@@ -80,13 +85,13 @@ class Ebizmarts_MageMonkey_Adminhtml_TransactionalemailController extends Mage_A
 	/**
 	 * Delete valid email address from Mandrill
 	 */
-	public function mandrillDeleteAction()
+	public function mandrillDisableAction()
 	{
 		$email = $this->getRequest()->getParam('email');
 		$store = $this->getRequest()->getParam('store', 0);
 
 		if($email){
-			$apiKey  = Mage::helper('monkey')->getApiKey($store);
+			$apiKey  = Mage::helper('monkey')->getMandrillApiKey($store);
 			$mail = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory('mandrill')
 						->setApiKey($apiKey);
 
@@ -94,7 +99,7 @@ class Ebizmarts_MageMonkey_Adminhtml_TransactionalemailController extends Mage_A
             if($mail->errorCode){
 				$this->_getSession()->addError($this->__($mail->errorMessage));
 			}else{
-				$this->_getSession()->addSuccess($this->__('Email address deleted.'));
+				$this->_getSession()->addSuccess($this->__('Email address was disabled.'));
 			}
 		}
 
