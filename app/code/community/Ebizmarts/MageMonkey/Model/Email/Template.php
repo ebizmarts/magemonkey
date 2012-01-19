@@ -49,6 +49,9 @@ class Ebizmarts_MageMonkey_Model_Email_Template extends Mage_Core_Model_Email_Te
 
 		$service = Mage::helper('monkey')->config('transactional_emails');
 		$apiKey  = Mage::helper('monkey')->getApiKey($this->getDesignConfig()->getStore());
+		if('mandrill' == $service){
+			$apiKey  = Mage::helper('monkey')->getMandrillApiKey($this->getDesignConfig()->getStore());
+		}
 
         $mail    = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory($service);
         $mail->setApiKey($apiKey);
