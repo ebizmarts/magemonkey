@@ -137,6 +137,11 @@ class Ebizmarts_MageMonkey_Model_TransactionalEmail_MANDRILL
         return $this->_callServer("users/verify-sender", $params);
 	}
 
+	public function verifyEmailAddress($email)
+	{
+		return $this->usersVerifySender($email);
+	}
+
 	/**
 	 *
 	 * ===== Users 유  Calls =====
