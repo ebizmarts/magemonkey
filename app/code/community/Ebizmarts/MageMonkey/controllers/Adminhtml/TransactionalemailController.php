@@ -26,24 +26,23 @@ class Ebizmarts_MageMonkey_Adminhtml_TransactionalemailController extends Mage_A
     }
 
 	/**
-	 * STS grid
+	 * Mandrill verified emails grid
+	 */
+	public function mandrillAction()
+	{
+		$this->_initAction();
+		$this->_title($this->__('Mandrill'));
+        $this->renderLayout();
+	}
+
+	/**
+	 * STS verified emails grid
 	 */
 	public function stsAction()
 	{
 		$this->_initAction();
 		$this->_title($this->__('Amazon Simple Email Service'));
         $this->renderLayout();
-	}
-
-	/**
-	 * Just the import grid for AJAX calls
-	 */
-	public function stsgridAction()
-	{
-        $this->loadLayout();
-        $this->getResponse()->setBody(
-            $this->getLayout()->createBlock('monkey/adminhtml_bulksync_queueImport_grid')->toHtml()
-        );
 	}
 
 	/**
@@ -79,6 +78,30 @@ class Ebizmarts_MageMonkey_Adminhtml_TransactionalemailController extends Mage_A
 	}
 
 	/**
+	 * Delete valid email address from Mandrill
+	 */
+	public function mandrillDeleteAction()
+	{
+		$email = $this->getRequest()->getParam('email');
+		$store = $this->getRequest()->getParam('store', 0);
+
+		if($email){
+			$apiKey  = Mage::helper('monkey')->getApiKey($store);
+			$mail = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory('mandrill')
+						->setApiKey($apiKey);
+
+            $mail->usersDisableSender($email);
+            if($mail->errorCode){
+				$this->_getSession()->addError($this->__($mail->errorMessage));
+			}else{
+				$this->_getSession()->addSuccess($this->__('Email address deleted.'));
+			}
+		}
+
+		$this->_redirect('monkey/adminhtml_transactionalemail/mandrill');
+	}
+
+	/**
 	 * Delete valid email address from Amazon SES
 	 */
 	public function stsDeleteAction()
@@ -93,7 +116,7 @@ class Ebizmarts_MageMonkey_Adminhtml_TransactionalemailController extends Mage_A
 
             $mail->deleteVerifiedEmailAddress($email);
             if($mail->errorCode){
-				$this->_getSession()->addError($this->__($mail->errorCode));
+				$this->_getSession()->addError($this->__($mail->errorMessage));
 			}else{
 				$this->_getSession()->addSuccess($this->__('Email address deleted.'));
 			}
