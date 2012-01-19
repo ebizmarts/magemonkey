@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>0.0.8</version>
+             <version>1.0.0</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -187,6 +187,14 @@
                     </monkey_save_config>
                 </observers>
             </admin_system_config_changed_section_monkey>
+            <controller_action_predispatch_adminhtml_system_config_edit>
+                <observers>
+                    <monkey_load_config>
+                        <class>monkey/observer</class>
+                        <method>loadConfig</method>
+                    </monkey_load_config>
+                </observers>
+            </controller_action_predispatch_adminhtml_system_config_edit>
         </events>
     </adminhtml>
     <default>
