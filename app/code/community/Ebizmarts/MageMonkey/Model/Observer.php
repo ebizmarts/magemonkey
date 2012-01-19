@@ -124,6 +124,37 @@ class Ebizmarts_MageMonkey_Model_Observer
 	}
 
 	/**
+	 * Check for conflicts with rewrite on Core/Email_Template
+	 *
+	 * @param Varien_Event_Observer $observer
+	 * @return void|Varien_Event_Observer
+	 */
+	public function loadConfig(Varien_Event_Observer $observer)
+	{
+		$action = $observer->getEvent()->getControllerAction();
+
+        //Do nothing for data saving actions
+        if ($action->getRequest()->isPost() || $action->getRequest()->getQuery('isAjax')) {
+            return $observer;
+        }
+
+		if('monkey' !== $action->getRequest()->getParam('section')){
+			return $observer;
+		}
+
+		$myRewrite = 'Ebizmarts_MageMonkey_Model_Email_Template';
+		$modelName = Mage::app()->getConfig()->getModelClassName('core/email_template');
+
+		if(Mage::helper('monkey')->useTransactionalService() && ($myRewrite !== $modelName)){
+			Mage::getSingleton('adminhtml/session')->addError(
+                Mage::helper('monkey')->__('Transactional Emails via MailChimp are not working because of a conflict with: "%s"', $modelName)
+            );
+		}
+
+		return $observer;
+	}
+
+	/**
 	 * Handle save of System -> Configuration, section <monkey>
 	 *
 	 * @param Varien_Event_Observer $observer
