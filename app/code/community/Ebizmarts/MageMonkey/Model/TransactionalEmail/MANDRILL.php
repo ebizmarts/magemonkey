@@ -169,10 +169,28 @@ class Ebizmarts_MageMonkey_Model_TransactionalEmail_MANDRILL
 	 */
 	public function messagesSend($message)
 	{
+
+		$to = array();
+
+		foreach($message['to_email'] as $pos => $email){
+			$to []= array(
+							'email' => $email,
+							'name'  => $message['to_name'][$pos]
+						 );
+		}
+
+		$message['to'] = $to;
+		unset($message['to_email'], $message['to_name']);
+
         $params          = array();
         $params["message"] = $message;
 
         return $this->_callServer("messages/send", $params);
+	}
+
+	public function sendEmail($message)
+	{
+		return $this->messagesSend($message);
 	}
 
 	/**
