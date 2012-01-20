@@ -109,12 +109,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
+		$subscriber = $observer->getEvent()->getSubscriber();
+		$subscriber->setImportMode(TRUE);
+
 		if( $subscriber->getBulksync() ){
 			return $observer;
 		}
-
-		$subscriber = $observer->getEvent()->getSubscriber();
-		$subscriber->setImportMode(TRUE);
 
 		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
 
