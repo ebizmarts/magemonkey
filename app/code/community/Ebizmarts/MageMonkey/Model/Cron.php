@@ -364,7 +364,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 				$idFieldName = 'subscriber_id';
 				break;
 			default:
-				$idFieldName = 'id';
+				$idFieldName = 'entity_id';
 		}
 
 		return $idFieldName;
