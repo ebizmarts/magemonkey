@@ -354,7 +354,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						$merge_vars[$key] = '';
 
-						if($this->isEnterprise()){
+						if($this->isEnterprise() && $customer->getId()){
 
 							if (Mage::app()->getStore()->isAdmin()) {
 								$websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
