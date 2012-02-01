@@ -82,6 +82,7 @@ class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controll
 
 						$groupings = $lists[$listId];
 						unset($groupings['subscribed']);
+						$customer->setMcListId($listId);
 						$customer->setListGroups($groupings);
 						$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 
@@ -103,6 +104,7 @@ class Ebizmarts_MageMonkey_Customer_AccountController extends Mage_Core_Controll
 					$groupings = $lists[$listId];
 					unset($groupings['subscribed']);
 					$customer->setListGroups($groupings);
+					$customer->setMcListId($listId);
 					$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 
 					$api->listSubscribe($listId, $email, $mergeVars, 'html', false);
