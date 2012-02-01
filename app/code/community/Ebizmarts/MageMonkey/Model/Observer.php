@@ -165,6 +165,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$store  = is_null($observer->getEvent()->getStore()) ? 'default': $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
+		$request = Mage::app()->getRequest();
 
 		if( !isset($post['groups']) ){
 			return $observer;
@@ -215,6 +216,64 @@ class Ebizmarts_MageMonkey_Model_Observer
 			}
 
 			if(in_array($list['id'], $selectedLists)){
+
+				 /**
+				  * Customer Group - Interest Grouping
+				  */
+				    $config = Mage::getModel('core/config_data');
+
+					$interestGroupings = $api->listInterestGroupings($list['id']);
+					$groupingName = Mage::helper('monkey')->getCustomerGroupingName();
+
+					//Check that Grouping not exists
+					$groupingExists = Mage::helper('monkey')->customerGroupGroupingExists($interestGroupings);
+
+					if(FALSE === $groupingExists){
+						$magentoGroups     = Mage::helper('customer')->getGroups()
+												->toOptionHash();
+
+						$groupingId = NULL;
+
+						if($api->errorCode){
+							//Maybe the error is telling us that there are no groupings yet
+							//Check for "This list does not have interest groups enabled"
+							if($api->errorCode == '211'){
+								$groupingId = $api->listInterestGroupingAdd($list['id'], $groupingName, 'dropdown', $magentoGroups);
+							}
+						}else{
+							$groupingId = $api->listInterestGroupingAdd($list['id'], $groupingName, 'dropdown', $magentoGroups);
+						}
+
+						if($groupingId && is_int($groupingId)){
+
+							$website = $request->getParam('website');
+							$store   = $request->getParam('store');
+							if ($store) {
+								$scope   = 'stores';
+								$scopeId = (int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');
+							} elseif ($website) {
+								$scope   = 'websites';
+								$scopeId = (int)Mage::getConfig()->getNode('websites/' . $website . '/system/website/id');
+							} else {
+								$scope   = 'default';
+								$scopeId = 0;
+							}
+
+							$config
+							->setScope($scope)
+							->setScopeId($scopeId)
+							->setPath('monkey/groupings/' . $list['id'])
+							->setValue($groupingId)
+							->save();
+						}
+					}
+				 /**
+				  * Customer Group - Interest Grouping
+				  */
+
+				/**
+				 * Adding Webhooks
+				 */
 				$api->listWebhookAdd($list['id'], $hookUrl);
 
 				//If webhook was not added, add a message on Admin panel
@@ -224,6 +283,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 					Mage::getSingleton('adminhtml/session')->addError($message);
 
 				}
+				/**
+				 * Adding Webhooks
+				 */
 			}
 
 		}
