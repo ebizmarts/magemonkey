@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>1.0.2</version>
+             <version>1.0.4</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -199,6 +199,10 @@
     </adminhtml>
     <default>
     	<monkey>
+			<custom_groupings>
+				<customer_grouping_name><![CDATA[MAGE_CUSTOMER_GROUPS]]></customer_grouping_name>
+				<segment_grouping_name><![CDATA[MAGE_CUSTOMER_SEGMENTS]]></segment_grouping_name>
+			</custom_groupings>
     		<general>
 	    		<active>0</active>
 	    		<double_optin>System->Configuration->Customers->Newsletter->Subscription Options->Need to Confirm</double_optin>
