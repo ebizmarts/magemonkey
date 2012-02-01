@@ -49,6 +49,57 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return ($key . $store);
 	}
 
+	public function filterShowGroupings($interestGroupings)
+	{
+		if(is_array($interestGroupings)){
+
+			$customGroupings = Mage::getConfig()->getNode('default/monkey/custom_groupings')
+																					->asArray();
+
+			foreach($interestGroupings as $key => $group){
+
+				if(TRUE === in_array($group['name'], $customGroupings)){
+					unset($interestGroupings[$key]);
+				}
+
+			}
+		}
+
+		return $interestGroupings;
+	}
+
+	/**
+	 * Check if CustomerGroup grouping already exists on MC
+	 *
+	 * @param array $groupings
+	 * @return bool
+	 */
+	public function customerGroupGroupingExists($interestGroupings)
+	{
+		$exists = FALSE;
+		if(is_array($interestGroupings)){
+			foreach($interestGroupings as $group){
+				if($group['name'] == $this->getCustomerGroupingName()){
+					$exists = TRUE;
+					break;
+				}
+			}
+		}
+
+		return $exists;
+	}
+
+	/**
+	 * Return customer groping name to be used when creating a grouping to store
+	 * Magento customer groups
+	 *
+	 * @return string
+	 */
+	public function getCustomerGroupingName()
+	{
+		return (string)Mage::getConfig()->getNode('default/monkey/custom_groupings/customer_grouping_name');
+	}
+
 	/**
 	 * Get module User-Agent to use on API requests
 	 *
@@ -401,13 +452,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			$merge_vars['EMAIL'] = $customer->getEmail();
 		}
 
-		$blank = new Varien_Object;
-		Mage::dispatchEvent('magemonkey_mergevars_after',
-            					array('vars' => $merge_vars, 'customer' => $customer, 'newvars' => $blank));
-		if($blank->hasData()){
-			$merge_vars = array_merge($merge_vars, $blank->toArray());
-		}
-
 		$groups = $customer->getListGroups();
 		$groupings = array();
 		if(is_array($groups) && count($groups)){
@@ -418,7 +462,31 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 								    );
 			}
 		}
+
+		//Add customer group for logged in customers
+		if( $customer->getId() && $customer->getMcListId()){
+
+			$groupId = (int)Mage::getStoreConfig("monkey/groupings/" . $customer->getMcListId(), $customer->getStoreId());
+			if($groupId){
+				$groups = Mage::helper('customer')->getGroups()->toOptionHash();
+				$groupings[] = array(
+					'id'     => $groupId,
+					'groups' => $groups[$customer->getGroupId()],
+				);
+			}
+
+		}
+
 		$merge_vars['GROUPINGS'] = $groupings;
+
+		//magemonkey_mergevars_after
+		$blank = new Varien_Object;
+		Mage::dispatchEvent('magemonkey_mergevars_after',
+            					array('vars' => $merge_vars, 'customer' => $customer, 'newvars' => $blank));
+		if($blank->hasData()){
+			$merge_vars = array_merge($merge_vars, $blank->toArray());
+		}
+		//magemonkey_mergevars_after
 
 		return $merge_vars;
 	}
