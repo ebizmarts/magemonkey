@@ -49,7 +49,7 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 					$this->_generalList = array(
 												'id'   => $listData['data'][0]['id'],
 												'name' => $this->__('General Subscription'),
-												'interest_groupings' => $api->listInterestGroupings($listData['data'][0]['id']),
+												'interest_groupings' => $this->helper('monkey')->filterShowGroupings($api->listInterestGroupings($listData['data'][0]['id'])),
 											   );
 				}
 			}
@@ -81,7 +81,7 @@ class Ebizmarts_MageMonkey_Block_Customer_Account_Lists extends Mage_Core_Block_
 						$this->_lists []= array(
 												'id'   => $list['id'],
 												'name' => $list['name'],
-												'interest_groupings' => $api->listInterestGroupings($list['id']),
+												'interest_groupings' => $this->helper('monkey')->filterShowGroupings($api->listInterestGroupings($list['id'])),
 											   );
 
 					}
