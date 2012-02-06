@@ -17,7 +17,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
-
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -305,6 +304,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$customer = $observer->getEvent()->getCustomer();
+
+		//Handle additional lists subscription on Customer Create Account
+		Mage::helper('monkey')->additionalListsSubscription($customer);
 
 		$oldEmail = $customer->getOrigData('email');
 		if(!$oldEmail){
