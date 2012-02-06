@@ -2,6 +2,14 @@
 
 <layout version="0.1.0">
 
+	<!-- Monkey Multiple Signup EXAMPLE Layout directive on how you can include template -->
+    <!--default>
+        <reference name="footer">
+            <block type="monkey/signup" name="left.monkeysignup" template="magemonkey/lists.phtml"/>
+        </reference>
+    </default-->
+    <!-- EXAMPLE Layout directive on how you can include template Monkey Multiple Signup -->
+
 	<!-- Checkout -->
 	<checkout_onepage_review>
         <reference name="checkout.onepage.review.info.items.after">
@@ -31,7 +39,7 @@
 	  	<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
 	  </reference>
       <reference name="my.account.wrapper">
-      	  <block type="monkey/customer_account_lists" name="magemonkey_additionallists" template="magemonkey/customer/account/lists.phtml" />
+      	  <block type="monkey/customer_account_lists" name="magemonkey_additionallists" template="magemonkey/lists.phtml" />
           <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
       </reference>
 	</monkey_customer_account_index>
