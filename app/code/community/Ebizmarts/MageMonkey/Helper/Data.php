@@ -258,7 +258,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $store = null;
         if($list->getId()){
 
-        	$isDefault = (bool)($list->getScope() == 'default');
+        	//$isDefault = (bool)($list->getScope() == 'default');
+        	$isDefault = (bool)($list->getScope() == Mage::app()->getDefaultStoreView()->getCode());
         	if(!$isDefault && !$includeDefault){
         		$store = (string)Mage::app()->getStore($list->getScopeId())->getCode();
         	}else{
@@ -650,18 +651,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 *
 	 * @param Mage_Customer_Model_Customer $customer
 	 */
-	public function additionalListsSubscription($customer = null)
+	public function additionalListsSubscription($customer = null, $post = null)
 	{
 		$request = Mage::app()->getRequest();
 
-		if( !$request->isPost() ){
+		if( !$request->isPost() && is_null($post) ){
 			return false;
 		}
 
 		$allowedPost   = array('/customer/account/createpost/');
 		$requestString = $request->getRequestString();
 
-		if( in_array($requestString, $allowedPost) ){
+		if( in_array($requestString, $allowedPost) OR !is_null($post) ){
+			if(!is_null($post)){
+				$request = $post;
+			}
 			$this->handlePost($request, $customer->getEmail());
 		}
 
