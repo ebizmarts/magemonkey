@@ -1,0 +1,115 @@
+<?php
+
+$lists         = $this->getLists();
+$myLists       = $this->getSubscribedLists();
+$generalList   = $this->getGeneralList();
+$canShowButton = $this->getCanShowButton();
+?>
+<div class="monkey-multisubscribe">
+	<div class="page-title">
+		<h1><?php echo $this->__('Newsletter Subscription'); ?></h1>
+	</div>
+	<?php if($canShowButton): ?><form action="<?php echo $this->getSaveUrl(); ?>" name="mailchimp_additional" id="mailchimp-additional" method="post"><?php endif; ?>
+		<div class="fieldset">
+			<?php echo $this->getBlockHtml('formkey'); ?>
+			<ul class="monkey-additional-lists">
+
+				<?php if($this->getShowGeneral()): ?>
+				<!-- General Subscription -->
+				<li class="listdata"><?php echo $this->listLabel($generalList); ?>
+					<?php if(is_array($generalList['interest_groupings'])): ?>
+						<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
+						<?php foreach($generalList['interest_groupings'] as $group): ?>
+							<div class="grouping">
+								<strong><?php echo $group['name']; ?></strong>
+								<?php echo $this->renderGroup($group, $generalList); ?>
+							</div>
+						<?php endforeach; ?>
+						</div>
+
+					<?php endif; ?>
+				</li>
+				<!-- General Subscription -->
+				<?php endif; ?>
+
+					<!-- Additional Lists -->
+				<?php
+					foreach($lists as $list):
+
+						if($this->notInMyAccount() && in_array($list['id'], $myLists)){
+							continue;
+						}
+
+						$igroups = $list['interest_groupings'];
+				?>
+
+					<li class="listdata"><?php echo $this->listLabel($list); ?>
+					<?php if(is_array($igroups)): ?>
+						<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
+						<?php foreach($igroups as $group): ?>
+							<div class="grouping">
+								<strong><?php echo $group['name']; ?></strong>
+								<?php echo $this->renderGroup($group, $list); ?>
+							</div>
+						<?php endforeach; ?>
+						</div>
+
+					<?php endif; ?>
+					</li>
+
+				<?php endforeach; ?>
+					<!-- Additional Lists -->
+
+			</ul>
+
+			<?php if(!$this->helper('customer')->isLoggedIn() && $canShowButton):
+					$emailTile = $this->__('Enter your email address');
+			?>
+				<input onclick="this.value=='<?php echo $emailTile; ?>'?this.value='':''" onblur="this.value==''?this.value='<?php echo $emailTile; ?>':''" type="text" name="monkey_email" id="monkey-email" value="<?php echo $emailTile; ?>" />
+			<?php endif; ?>
+		</div>
+
+		<input type="hidden" name="state" value="" id="form-state" />
+
+		<?php if($canShowButton): ?>
+		<div class="buttons-set">
+			<button type="submit" title="<?php echo $this->__('Save') ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
+		</div>
+		<?php endif; ?>
+	<?php if($canShowButton): ?></form><?php endif; ?>
+</div>
+<script type="text/javascript">
+	document.observe("dom:loaded", function() {
+
+		removeManageNewsletter();
+
+		//Handle newsletter subscribe/unsubscribe checkbox events
+		$$('input.monkey-list-subscriber').each(function(chk){
+
+				if( !chk.checked ){
+					var groupings = $('interest_groupings_'+chk.value);
+					if(groupings){
+						groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
+					}
+				}
+
+				chk.observe('change', function(){
+
+					var groupings = $('interest_groupings_'+this.value);
+					if(groupings){
+						var elements = groupings.select('select', 'input');
+						if(this.checked){
+							elements.invoke('removeAttribute', 'disabled');
+						}else{
+							elements.invoke('writeAttribute', 'disabled', 'disabled');
+						}
+					}
+
+				});
+		});
+
+		//Load viewstate on hidden field for later process
+		$('form-state').writeAttribute('value', $('mailchimp-additional').serialize());
+
+	});
+</script>
