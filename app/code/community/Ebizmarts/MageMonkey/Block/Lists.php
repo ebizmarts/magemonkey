@@ -36,6 +36,28 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	}
 
 	/**
+	 * Check if GENERAL list can be shown on ALL LISTS template
+	 *
+	 * @return bool
+	 */
+	public function getShowGeneral()
+	{
+		$action = $this->getRequest()->getActionName();
+		$controller = $this->getRequest()->getControllerName();
+
+		return (bool)!($action == 'savePayment' && $controller == 'onepage');
+	}
+
+	public function notInMyAccount()
+	{
+		$action = $this->getRequest()->getActionName();
+		$controller = $this->getRequest()->getControllerName();
+		$module = $this->getRequest()->getModuleName();
+
+		return (bool)!($action == 'index' && $controller == 'customer_account' && $module == 'monkey');
+	}
+
+	/**
 	 * Get default list data from MC
 	 *
 	 * @return array
@@ -105,6 +127,9 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	 */
 	public function getSubscribedLists()
 	{
+		if(!is_array($this->_myLists)){
+			return array();
+		}
 		return $this->_myLists;
 	}
 
@@ -297,7 +322,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	 */
 	public function getCanShowButton()
 	{
-		$ary = array('/customer/account/create/');
+		$ary = array('/customer/account/create/', '/checkout/onepage/savePayment/');
 		$requestString = $this->getRequest()->getRequestString();
 
 		return !in_array($requestString, $ary);
