@@ -15,12 +15,51 @@ addSubscribeToPost = function (element){
 	}
 
 }
+addElementToPost = function (element){
+
+	var formInputId = element.readAttribute('id') + '-serialize';
+
+	if($(formInputId)){
+	 $(formInputId).remove();
+	}
+
+	var inp = new Element('input', { name: element.readAttribute('name'), id: formInputId, value: element.getValue(), type: "hidden" });
+
+	Element.insert( Form.findFirstElement(payment.form), inp);
+
+}
 </script>
 <div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
 	<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
 	<label for="magemonkey-trigger"><?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?></label>
 </div>
 
+<?php echo $this->getChildHtml('left.monkeysignup'); ?>
+
 <script type="text/javascript">
 	addSubscribeToPost($('magemonkey-trigger'));
+
+	if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
+
+	  var event = 'change';
+
+	  //Radio||Checkbox
+	  $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
+
+		  if(input.readAttribute('type') == 'radio'){
+			  event = 'click';
+		  }
+
+		  input.observe(event, function(){
+			  addElementToPost(this);
+		  });
+	  });
+
+	  $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
+		  ddl.observe(event, function(){
+			  addElementToPost(this);
+		  });
+	  });
+
+	}
 </script>
