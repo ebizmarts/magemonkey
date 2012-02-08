@@ -119,6 +119,14 @@
             </updates>
         </layout>
         <events>
+			<controller_action_predispatch_onestepcheckout_index_index>
+	           	<observers>
+	               <monkey_subscribe_checkout>
+	                   <class>monkey/observer</class>
+	                   <method>registerCheckoutSubscribe</method>
+	               </monkey_subscribe_checkout>
+	         	</observers>
+	        </controller_action_predispatch_onestepcheckout_index_index>
 			<controller_action_postdispatch_checkout_onepage_saveOrder>
 	           	<observers>
 	               <monkey_subscribe_checkout>
