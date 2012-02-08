@@ -58,6 +58,23 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	}
 
 	/**
+	 * Show form items or not if customer is logged in and / or is on register page
+	 *
+	 * @return bool
+	 */
+	public function getCanShowButton()
+	{
+		$ary = array(
+						'/customer/account/create/',
+						'/checkout/onepage/savePayment/',
+						'/onestepcheckout/',
+					);
+		$requestString = $this->getRequest()->getRequestString();
+
+		return !in_array($requestString, $ary);
+	}
+
+	/**
 	 * Get default list data from MC
 	 *
 	 * @return array
@@ -250,7 +267,13 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 			foreach($group['groups'] as $g){
 				$options [$g['name']] = $g['name'];
 			}
-			$object->addElementValues($options);
+
+			if(method_exists('Varien_Data_Form_Element_Checkboxes', 'addElementValues')){
+				$object->addElementValues($options);
+			}else{
+				$object->setValues($options);
+			}
+
 			$object->setName( $this->_htmlGroupName($list, $group, ($fieldType == 'checkboxes' ? TRUE : FALSE)) );
 			$object->setHtmlId('interest-group');
 
@@ -265,7 +288,12 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
 			$object->setName($this->_htmlGroupName($list, $group));
 			$object->setHtmlId('interest-group');
-			$object->addElementValues($options);
+
+			if(method_exists('Varien_Data_Form_Element_Checkboxes', 'addElementValues')){
+				$object->addElementValues($options);
+			}else{
+				$object->setValues($options);
+			}
 
 			$html = $object->getElementHtml();
 		}
@@ -313,18 +341,5 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
 
 		return $checkbox->getLabelHtml() . $checkbox->getElementHtml();
-	}
-
-	/**
-	 * Show form items or not if customer is logged in and / or is on register page
-	 *
-	 * @return bool
-	 */
-	public function getCanShowButton()
-	{
-		$ary = array('/customer/account/create/', '/checkout/onepage/savePayment/');
-		$requestString = $this->getRequest()->getRequestString();
-
-		return !in_array($requestString, $ary);
 	}
 }
