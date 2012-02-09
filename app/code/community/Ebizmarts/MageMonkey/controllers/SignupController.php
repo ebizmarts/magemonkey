@@ -11,14 +11,16 @@ class Ebizmarts_MageMonkey_SignupController extends Mage_Core_Controller_Front_A
 		if($this->getRequest()->isPost()){
 
 			$loggedIn = Mage::helper('customer')->isLoggedIn();
-			if(!$loggedIn && !Zend_Validate::is($email, 'EmailAddress')){
+			$guestEmail = $this->getRequest()->getPost('monkey_email');
+
+			if(!$loggedIn && !Zend_Validate::is($guestEmail, 'EmailAddress')){
 				Mage::getSingleton('core/session')
 					->addError($this->__('Please specify a valid email address.'));
 				$this->_redirect($this->_getRedirectPath());
 				return;
 			}
 
-			Mage::helper('monkey')->handlePost($this->getRequest(), $this->getRequest()->getPost('monkey_email'));
+			Mage::helper('monkey')->handlePost($this->getRequest(), $guestEmail);
 		}
 
 		$this->_redirect($this->_getRedirectPath());
