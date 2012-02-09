@@ -467,7 +467,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		//Add customer group for logged in customers
 		if( $customer->getId() && $customer->getMcListId()){
 
-			$groupId = (int)Mage::getStoreConfig("monkey/groupings/" . $customer->getMcListId(), $customer->getStoreId());
+			$groupId = (int)Mage::getStoreConfig("monkey/groupings/list_" . $customer->getMcListId(), $customer->getStoreId());
 			if($groupId){
 				$groups = Mage::helper('customer')->getGroups()->toOptionHash();
 				$groupings[] = array(
