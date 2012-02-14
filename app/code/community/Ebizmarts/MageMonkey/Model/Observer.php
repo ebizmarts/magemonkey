@@ -258,6 +258,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 								$scopeId = 0;
 							}
 
+
 							//This is to fix lists starting with numbers becuse break XML parsing
 							$safeListId = 'list_' . $list['id'];
 
