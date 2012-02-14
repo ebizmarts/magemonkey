@@ -21,6 +21,11 @@ class Ebizmarts_MageMonkey_SignupController extends Mage_Core_Controller_Front_A
 			}
 
 			Mage::helper('monkey')->handlePost($this->getRequest(), $guestEmail);
+
+			if(!$loggedIn){
+				Mage::getSingleton('core/session')
+					->addSuccess($this->__('Thanks for your subscription!'));
+			}
 		}
 
 		$this->_redirect($this->_getRedirectPath());
@@ -31,7 +36,7 @@ class Ebizmarts_MageMonkey_SignupController extends Mage_Core_Controller_Front_A
 		$path = '/';
 
 		if(Mage::helper('customer')->isLoggedIn()){
-			$path = '*/*/index';
+			$path = 'monkey/customer_account/index';
 		}
 
 		return $path;
