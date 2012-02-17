@@ -2,18 +2,20 @@
 
 <layout version="0.1.0">
 
-	<!-- Monkey Multiple Signup EXAMPLE Layout directive on how you can include template -->
-    <!--default>
+	<!-- Monkey Multiple Signup EXAMPLE Layout directive on how you can include template
+    <default>
         <reference name="footer">
             <block type="monkey/signup" name="left.monkeysignup" template="magemonkey/lists.phtml"/>
         </reference>
-    </default-->
-    <!-- EXAMPLE Layout directive on how you can include template Monkey Multiple Signup -->
+    </default>
+    EXAMPLE Layout directive on how you can include template Monkey Multiple Signup -->
 
 	<!-- Checkout -->
 	<checkout_onepage_review>
         <reference name="checkout.onepage.review.info.items.after">
-			<block type="monkey/checkout_subscribe" name="magemonkey.subscribe" template="magemonkey/checkout/subscribe.phtml" />
+			<block type="monkey/checkout_subscribe" name="magemonkey.subscribe" template="magemonkey/checkout/subscribe.phtml">
+				<block type="monkey/signup" name="left.monkeysignup" template="magemonkey/lists.phtml" />
+			</block>
         </reference>
 	</checkout_onepage_review>
 	<!-- Checkout -->
