@@ -408,16 +408,19 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						if($this->isEnterprise() && $customer->getId()){
 
-							if (Mage::app()->getStore()->isAdmin()) {
-								$websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
+							$customer = Mage::getModel('customer/customer')->load($customer->getId());
+							if($customer->getId()){
+								if (Mage::app()->getStore()->isAdmin()) {
+									$websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
+								}
+
+								$balance = Mage::getModel('enterprise_customerbalance/balance')
+										  ->setWebsiteId($websiteId)
+										  ->setCustomerId($customer->getId())
+										  ->loadByCustomer();
+
+								$merge_vars[$key] = $balance->getAmount();
 							}
-
-							$balance = Mage::getModel('enterprise_customerbalance/balance')
-									  ->setWebsiteId($websiteId)
-									  ->setCustomerId($customer->getId())
-									  ->loadByCustomer();
-
-							$merge_vars[$key] = $balance->getAmount();
 
 						}
 
@@ -507,7 +510,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		$customer = new Varien_Object;
 
-		$customer->setId(time());
+		$customer->setId('guest' . time());
 		$customer->setEmail($order->getBillingAddress()->getEmail());
 		$customer->setStoreId($order->getStoreId());
 		$customer->setFirstname($order->getBillingAddress()->getFirstname());
