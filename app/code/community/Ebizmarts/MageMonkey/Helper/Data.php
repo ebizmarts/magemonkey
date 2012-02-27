@@ -721,21 +721,23 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 
 		//Subscribe to new lists
-		$subscribe = array_diff_key($lists, $curlists);
-		if( !empty($subscribe) ){
+		if(is_array($lists) && is_array($curlists)){
+			$subscribe = array_diff_key($lists, $curlists);
+			if( !empty($subscribe) ){
 
-			foreach($subscribe as $listId => $slist){
+				foreach($subscribe as $listId => $slist){
 
-				$groupings = $lists[$listId];
-				unset($groupings['subscribed']);
-				$customer->setListGroups($groupings);
-				$customer->setMcListId($listId);
-				$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+					$groupings = $lists[$listId];
+					unset($groupings['subscribed']);
+					$customer->setListGroups($groupings);
+					$customer->setMcListId($listId);
+					$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 
-				$api->listSubscribe($listId, $email, $mergeVars, 'html', ($loggedIn ? false : true));
+					$api->listSubscribe($listId, $email, $mergeVars, 'html', ($loggedIn ? false : true));
+
+				}
 
 			}
-
 		}
 	}
 }

@@ -381,8 +381,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 					Mage::helper('monkey')->registerGuestCustomer($order);
 				}
 
-				$subscriber = Mage::getModel('newsletter/subscriber')
-					->subscribe($order->getCustomerEmail());
+				try{
+					$subscriber = Mage::getModel('newsletter/subscriber')
+						->subscribe($order->getCustomerEmail());
+				}catch(Exception $e){
+					Mage::logException($e);
+				}
 
 			}
 
