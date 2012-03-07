@@ -14,7 +14,7 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @const string
      */
 
-    const WEBHOOKS_PATH = 'monkey/webhook/index/wkey/';
+    const WEBHOOKS_PATH = 'monkey/webhook/index/';
 
     /**
      * Process Webhook request
@@ -30,27 +30,27 @@ class Ebizmarts_MageMonkey_Model_Monkey {
             $curstore = Mage::app()->getStore();
             Mage::app()->setCurrentStore($store);
         }
-        
+
         //Object for cache clean
-        $object = new stdClass();            
-        $object->requestParams = array();       
+        $object = new stdClass();
+        $object->requestParams = array();
         $object->requestParams['id'] = $listId;
-        
+
         if( isset($data['data']['email']) ){
             $object->requestParams['email_address']  = $data['data']['email'];
         }
         $cacheHelper = Mage::helper('monkey/cache');
-        
+
         switch ($data['type']) {
             case 'subscribe':
 				$this->_subscribe($data);
                     $cacheHelper->clearCache('listSubscribe', $object);
                 break;
-            case 'unsubscribe':                               
+            case 'unsubscribe':
                 $this->_unsubscribe($data);
                     $cacheHelper->clearCache('listUnsubscribe', $object);
                 break;
-            case 'cleaned':                
+            case 'cleaned':
                 $this->_clean($data);
                     $cacheHelper->clearCache('listUnsubscribe', $object);
                 break;
@@ -58,12 +58,12 @@ class Ebizmarts_MageMonkey_Model_Monkey {
                 $this->_campaign($data);
                 break;
             //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
-            case 'upemail':                
+            case 'upemail':
                 $this->_updateEmail($data);
-                    $cacheHelper->clearCache('listUpdateMember', $object);                   
+                    $cacheHelper->clearCache('listUpdateMember', $object);
                 break;
         }
-        
+
         if (!is_null($store)) {
             Mage::app()->setCurrentStore($curstore);
         }
@@ -147,8 +147,8 @@ class Ebizmarts_MageMonkey_Model_Monkey {
 
             //TODO: El método subscribe de Subscriber (Magento) hace un load by email
             // entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
-            //VALIDAR si es lo que se requiere           
-            
+            //VALIDAR si es lo que se requiere
+
             $subscriber = Mage::getModel('newsletter/subscriber')
                     ->loadByEmail($data['data']['email']);
             if ($subscriber->getId()) {

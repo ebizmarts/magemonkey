@@ -186,10 +186,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$webhooksKey = Mage::helper('monkey')->getWebhooksKey($store);
-		$hookUrl  = Mage::app()->getStore($store)->getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, FALSE);
-		$hookUrl .= Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH . $webhooksKey;
 
-		$api   = Mage::getSingleton('monkey/api', array('apikey' => $apiKey));
+		//Generating Webhooks URL
+		$hookUrl  = Mage::getModel('core/url')->setStore($store)
+						->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+
+		$api = Mage::getSingleton('monkey/api', array('apikey' => $apiKey));
 
 		//Validate API KEY
 		$api->ping();
