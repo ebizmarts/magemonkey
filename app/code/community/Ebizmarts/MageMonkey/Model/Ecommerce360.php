@@ -7,7 +7,7 @@
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
  */
-class Ebizmarts_MageMonkey_Model_Ecommerce360
+class Ebizmarts_MageMonkey_Model_EcommerceThreeSixty
 {
 
 	/**
