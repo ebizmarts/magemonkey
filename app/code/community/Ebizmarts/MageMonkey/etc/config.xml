@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>1.0.9</version>
+             <version>1.0.10</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -143,20 +143,20 @@
 	               </monkey_subscribe_checkoutsuccess>
 	         	</observers>
 	        </checkout_onepage_controller_success_action>
-	        <controller_action_predispatch>
+	        <controller_action_postdispatch>
 	           	<observers>
-	               <monkey_ecomm360_cookie>
+	               <monkey_ecomm_tracking_cookie>
 	                   <class>monkey/ecommerce360</class>
 	                   <method>saveCookie</method>
-	               </monkey_ecomm360_cookie>
+	               </monkey_ecomm_tracking_cookie>
 	         	</observers>
-	        </controller_action_predispatch>
+	        </controller_action_postdispatch>
 			<sales_order_place_after>
 			  <observers>
-			      <monkey_ecomm360_sendorder>
+			      <monkey_ecomm_tracking_sendorder>
 			          <class>monkey/ecommerce360</class>
 			          <method>run</method>
-			      </monkey_ecomm360_sendorder>
+			      </monkey_ecomm_tracking_sendorder>
 			  </observers>
 			</sales_order_place_after>
       	</events>
