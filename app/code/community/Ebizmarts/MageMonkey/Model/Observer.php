@@ -42,6 +42,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 			$isConfirmNeed = TRUE;
 		}
 
+		//Check if customer is not yet subscribed on MailChimp
+		$isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
+		if($isOnMailChimp == 1){
+			return $observer;
+		}
+
 		//New subscriber, just add
 		if( $subscriber->isObjectNew() ){
 
