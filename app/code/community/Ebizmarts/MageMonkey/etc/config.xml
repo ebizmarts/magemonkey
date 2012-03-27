@@ -6,7 +6,7 @@
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
-        <cache>
+        <!-- not yet fully tested cache>
             <types>
                 <monkey translate="label,description" module="monkey">
                     <label>MailChimp</label>
@@ -14,7 +14,7 @@
                     <tags>MONKEY_GENERAL_CACHE_TAG</tags>
                 </monkey>
             </types>
-        </cache>
+        </cache-->
     	<events>
             <newsletter_subscriber_save_before>
                 <observers>
