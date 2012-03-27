@@ -199,6 +199,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	/**
+	 * Check if an email is subscribed on MailChimp
+	 *
+	 * @param string $email
+	 * @param string $listId
+	 * @return bool
+	 */
+	public function subscribedToList($email, $listId = null)
+	{
+		$member = Mage::getSingleton('monkey/api')
+									->listMemberInfo($listId, $email);
+
+        return $member['success'];
+	}
+
+	/**
 	 * Check if Ecommerce360 integration is enabled
 	 *
 	 * @return bool
