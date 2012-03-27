@@ -21,9 +21,13 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists extends Mage_Adminhtml
 
 		$lists = Mage::getSingleton('monkey/api')
 							->lists(array('list_id' => implode(', ', $row->lists())));
+
 		$listsNames = array();
-		foreach($lists['data'] as $list){
-			$listsNames []= $list['name'];
+
+		if(is_array($lists)){
+			foreach($lists['data'] as $list){
+				$listsNames []= $list['name'];
+			}
 		}
 
         return implode(', ', $listsNames);
