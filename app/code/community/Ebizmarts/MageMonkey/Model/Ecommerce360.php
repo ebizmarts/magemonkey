@@ -114,9 +114,15 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			return false;
 		}
 
+		$subtotal = $this->_order->getSubtotal();
+		$discount = (float)$this->_order->getDiscountAmount();
+		if ($discount != 0) {
+			$subtotal = $subtotal + ($discount);
+		}
+
         $this->_info = array(
 				                'id'          => $this->_order->getIncrementId(),
-				                'total'       => $this->_order->getSubtotal(),
+				                'total'       => $subtotal,
 				                'shipping'    => $this->_order->getShippingAmount(),
 				                'tax'         => $this->_order->getTaxAmount(),
 				                'store_id'    => $this->_order->getStoreId(),
@@ -170,6 +176,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			}
 
 			$mcitem['product_id'] = $product->getEntityId();
+			$mcitem['sku'] = $product->getSku();
             $mcitem['product_name'] = $product->getName();
 
             $names = array();
