@@ -210,7 +210,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		foreach($lists['data'] as $list){
 
-			$webHooks = $api->listWebhooks($list['id']);
+			/*$webHooks = $api->listWebhooks($list['id']);
 
 			if(!empty($webHooks)){
 				foreach($webHooks as $whook){
@@ -220,7 +220,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 						$api->listWebhookDel($list['id'], $whook['url']);
 					}
 				}
-			}
+			}*/
 
 			if(in_array($list['id'], $selectedLists)){
 
