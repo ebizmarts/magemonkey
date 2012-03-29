@@ -745,6 +745,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 				foreach($subscribe as $listId => $slist){
 
+					if(!isset($slist['subscribed'])){
+						continue;
+					}
+
 					$groupings = $lists[$listId];
 					unset($groupings['subscribed']);
 					$customer->setListGroups($groupings);
