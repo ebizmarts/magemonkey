@@ -80,8 +80,8 @@ class Ebizmarts_MageMonkey_Model_Monkey {
         $old = $data['data']['old_email'];
         $new = $data['data']['new_email'];
 
-        $oldSubscriber = $this->_loadByEmail($old);
-        $newSubscriber = $this->_loadByEmail($new);
+        $oldSubscriber = $this->loadByEmail($old);
+        $newSubscriber = $this->loadByEmail($new);
 
         if (!$newSubscriber->getId() && $oldSubscriber->getId()) {
             $oldSubscriber->setSubscriberEmail($new)
@@ -110,7 +110,7 @@ class Ebizmarts_MageMonkey_Model_Monkey {
                 ->save();
 
         //Delete subscriber from Magento
-        $s = $this->_loadByEmail($data['data']['email']);
+        $s = $this->loadByEmail($data['data']['email']);
 
         if ($s->getId()) {
             try {
@@ -171,7 +171,7 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      */
     protected function _unsubscribe(array $data) {
 
-        $s = $this->_loadByEmail($data['data']['email']);
+        $s = $this->loadByEmail($data['data']['email']);
 
         if ($s->getId()) {
 
@@ -208,7 +208,7 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param string $email
      * @return Mage_Newsletter_Model_Subscriber
      */
-    protected function _loadByEmail($email) {
+    public function loadByEmail($email) {
         return Mage::getModel('newsletter/subscriber')
                         ->getCollection()
                         ->addFieldToFilter('subscriber_email', $email)
