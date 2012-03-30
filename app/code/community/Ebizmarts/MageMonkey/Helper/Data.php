@@ -423,15 +423,15 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						if($this->isEnterprise() && $customer->getId()){
 
-							$customer = Mage::getModel('customer/customer')->load($customer->getId());
-							if($customer->getId()){
+							$_customer = Mage::getModel('customer/customer')->load($customer->getId());
+							if($_customer->getId()){
 								if (Mage::app()->getStore()->isAdmin()) {
 									$websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
 								}
 
 								$balance = Mage::getModel('enterprise_customerbalance/balance')
 										  ->setWebsiteId($websiteId)
-										  ->setCustomerId($customer->getId())
+										  ->setCustomerId($_customer->getId())
 										  ->loadByCustomer();
 
 								$merge_vars[$key] = $balance->getAmount();
@@ -705,6 +705,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
 		$lists    = $request->getPost('list', array());
 
+		$defaultList = $this->getDefaultList(Mage::app()->getStore());
+
 		$api       = Mage::getSingleton('monkey/api');
 		$customer  = Mage::helper('customer')->getCustomer();
 		$email     =  $guestEmail ? $guestEmail : $customer->getEmail();
@@ -719,7 +721,18 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				if(FALSE === array_key_exists($listId, $lists)){
 
 					//Unsubscribe Email
-					$api->listUnsubscribe($listId, $email);
+					if($defaultList){
+
+						$item = Mage::getModel('monkey/monkey')->loadByEmail($email);
+
+						if($item->getSubscriberEmail()){
+							$item->unsubscribe();
+						}
+
+					}else{
+						//Unsubscribe Email
+						$api->listUnsubscribe($listId, $email);
+					}
 
 				}else{
 
@@ -751,11 +764,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 					$groupings = $lists[$listId];
 					unset($groupings['subscribed']);
-					$customer->setListGroups($groupings);
-					$customer->setMcListId($listId);
-					$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 
-					$api->listSubscribe($listId, $email, $mergeVars, 'html', ($loggedIn ? false : true));
+					if($defaultList){
+						$subscriber = Mage::getModel('newsletter/subscriber');
+
+						$subscriber->setListGroups($groupings);
+						$subscriber->setMcListId($listId);
+
+						$subscriber->subscribe($email);
+					}else{
+
+						$customer->setListGroups($groupings);
+						$customer->setMcListId($listId);
+						$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+						$api->listSubscribe($listId, $email, $mergeVars, 'html', ($loggedIn ? false : true));
+
+					}
 
 				}
 
