@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <layout>
 
+    <monkey_adminhtml_ecommerce_apiorders>
+        <reference name="content">
+            <block type="monkey/adminhtml_ecommerceapi" name="ecommerceapi.list" />
+        </reference>
+    </monkey_adminhtml_ecommerce_apiorders>
+
     <monkey_adminhtml_ecommerce_index>
         <reference name="content">
             <block type="monkey/adminhtml_ecommerce" name="ecommerce.log.list" />
