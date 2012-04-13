@@ -8,7 +8,16 @@
                     <children>
 		                <ecommerce translate="title" module="monkey">
 		                    <title>Ecommerce 360 Orders</title>
-		                    <action>monkey/adminhtml_ecommerce</action>
+                            <children>
+				                <commerce translate="title" module="monkey">
+				                    <title>Magento sent orders</title>
+				                    <action>monkey/adminhtml_ecommerce</action>
+				                </commerce>
+				                <apicommerce translate="title" module="monkey">
+				                    <title>ALL orders from API</title>
+				                    <action>monkey/adminhtml_ecommerce/apiorders</action>
+				                </apicommerce>
+                            </children>
 		                </ecommerce>
 		                <transactional_email translate="title" module="monkey">
 		                    <title>Transactional Email</title>
