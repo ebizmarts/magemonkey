@@ -35,6 +35,19 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
 	}
 
 	/**
+	 * Display already sent ALL orders from API
+	 */
+	public function apiordersAction()
+	{
+        $this->_title($this->__('Newsletter'))
+             ->_title($this->__('MailChimp'));
+
+        $this->loadLayout();
+        $this->_setActiveMenu('newsletter/magemonkey');
+        $this->renderLayout();
+	}
+
+	/**
 	 * Mass action send order to mailchimp
 	 */
 	public function masssendAction()
