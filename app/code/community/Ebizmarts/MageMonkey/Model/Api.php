@@ -64,9 +64,9 @@ class Ebizmarts_MageMonkey_Model_Api {
         } else {
             $this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
         }
-        
+
         $this->_cacheHelper = Mage::helper('monkey/cache');
-        
+
         //Create actual API URL using API key, borrowed from MCAPI.php
         $dc = "us1";
         if (strstr($this->_mcapi->api_key, "-")) {
@@ -108,7 +108,7 @@ class Ebizmarts_MageMonkey_Model_Api {
             $this->_logApiCall($this->_mcapi->api_key);
             $this->_logApiCall($command);
             $this->_logApiCall($args);
-            
+
             //If there is NO cache key it means that we cannot cache methods data
             if ($cacheKey) {
                 $cache = Mage::getModel('monkey/cache');
@@ -139,7 +139,7 @@ class Ebizmarts_MageMonkey_Model_Api {
 
                 $this->errorCode = $this->_mcapi->errorCode;
                 $this->errorMessage = $this->_mcapi->errorMessage;
-                
+
                 //Clear associated cache for this call, for example clear cache for listsForEmail when executing listUnsubscribe
                 $this->_cacheHelper->clearCache($command, $this->_mcapi);
 
@@ -149,7 +149,7 @@ class Ebizmarts_MageMonkey_Model_Api {
             if ($cacheKey) {
                 $cache->saveCacheData(serialize($result), $cacheKey, $this->_cacheHelper->cacheTagForCommand($command, $this->_mcapi));
             }
-            
+
             //Clear associated cache for this call, for example clear cache for listsForEmail when executing listUnsubscribe
             $this->_cacheHelper->clearCache($command, $this->_mcapi);
 
