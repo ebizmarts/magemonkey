@@ -32,7 +32,6 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml
 
     protected function _prepareColumns()
     {
-
         $this->addColumn('id', array(
             'header'=> Mage::helper('monkey')->__('ID'),
             'width' => '80px',
