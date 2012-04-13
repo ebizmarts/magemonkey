@@ -721,7 +721,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				if(FALSE === array_key_exists($listId, $lists)){
 
 					//Unsubscribe Email
-					if($defaultList){
+					if($defaultList == $listId){
 
 						$item = Mage::getModel('monkey/monkey')->loadByEmail($email);
 
@@ -765,7 +765,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					$groupings = $lists[$listId];
 					unset($groupings['subscribed']);
 
-					if($defaultList){
+					if($defaultList == $listId){
 						$subscriber = Mage::getModel('newsletter/subscriber');
 
 						$subscriber->setListGroups($groupings);
