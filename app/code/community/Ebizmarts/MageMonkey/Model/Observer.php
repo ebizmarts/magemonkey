@@ -17,7 +17,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
-
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -35,7 +34,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$subscriber->setImportMode(TRUE);
 
 		$email  = $subscriber->getSubscriberEmail();
-		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
+		$listId = Mage::helper('monkey')->getDefaultList( ($subscriber->getMcStoreId() ? $subscriber->getMcStoreId() : Mage::app()->getStore()->getId()));
 
 		$isConfirmNeed = FALSE;
 		if( !Mage::helper('monkey')->isAdmin() &&
@@ -44,7 +43,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		//New subscriber, just add
-		if( $subscriber->isObjectNew() ){
+		if( $subscriber->isObjectNew() || ($subscriber->getStoreId() != $subscriber->getMcStoreId()) ){
 
 			//Check if customer is not yet subscribed on MailChimp
 			$isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
