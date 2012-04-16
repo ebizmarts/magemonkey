@@ -770,6 +770,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						$subscriber->setListGroups($groupings);
 						$subscriber->setMcListId($listId);
+                        $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
 
 						$subscriber->subscribe($email);
 					}else{
