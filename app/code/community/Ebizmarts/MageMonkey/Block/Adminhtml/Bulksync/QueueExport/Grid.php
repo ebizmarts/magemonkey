@@ -86,6 +86,16 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
             'type'  => 'datetime'
         ));
 
+        $this->addColumn('store_id',
+            array(
+                'header'=> Mage::helper('monkey')->__('Websites'),
+                'width' => '100px',
+                'sortable'  => false,
+                'index'     => 'store_id',
+                'type'      => 'options',
+                'options'   => Mage::getModel('core/website')->getCollection()->toOptionHash(),
+        ));
+
         $this->addColumn('action',
             array(
                 'header'    => Mage::helper('monkey')->__('Action'),
