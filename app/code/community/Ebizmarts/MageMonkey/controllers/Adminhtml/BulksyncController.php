@@ -189,6 +189,7 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
 
 			$job = Mage::getModel('monkey/bulksyncExport')
 					->setStatus('idle')
+                    ->setStoreId((int)$request->getPost('store_id'))
 					->setLists(serialize($request->getPost('list')))
 					->setDataSourceEntity($request->getPost('data_source_entity'))
 					->save();
