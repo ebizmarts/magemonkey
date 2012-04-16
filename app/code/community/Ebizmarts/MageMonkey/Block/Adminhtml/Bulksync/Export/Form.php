@@ -33,6 +33,8 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
             'title'     => Mage::helper('monkey')->__('Data Source'),
             'name'      => 'data_source_entity',
             'values'   => $dataSource,
+            'class' => 'required-entry',
+            'required' => true,
         ));
 
 		$lists = Mage::getSingleton('monkey/system_config_source_list')->toOptionArray();
@@ -42,6 +44,15 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
             'name'      => 'list',
             'values'   => $lists,
             'class' => 'required-entry',
+            'required' => true,
+        ));
+
+        $fieldset->addField('store_id', 'select', array(
+            'label'     => Mage::helper('monkey')->__('Store'),
+            'title'     => Mage::helper('monkey')->__('Store'),
+            'name'      => 'store_id',
+            'values'   => Mage::getModel('core/website')->getCollection()->toOptionHash(),
+            'class'    => 'required-entry',
             'required' => true,
         ));
 
