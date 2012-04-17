@@ -47,14 +47,15 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
             'required' => true,
         ));
 
-        $fieldset->addField('store_id', 'select', array(
+        $storeSwitcher = $fieldset->addField('store_id', 'select', array(
+            'name'      => 'store_id',
             'label'     => Mage::helper('monkey')->__('Store'),
             'title'     => Mage::helper('monkey')->__('Store'),
-            'name'      => 'store_id',
-            'values'   => Mage::getModel('core/website')->getCollection()->toOptionHash(),
-            'class'    => 'required-entry',
-            'required' => true,
+            'required'  => true,
+            'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
         ));
+        $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
+        $storeSwitcher->setRenderer($renderer);
 
         $fieldset->addField('direction', 'hidden', array(
             'name'     => 'direction',
