@@ -54,8 +54,6 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
             'required'  => true,
             'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
         ));
-        $renderer = $this->getLayout()->createBlock('adminhtml/store_switcher_form_renderer_fieldset_element');
-        $storeSwitcher->setRenderer($renderer);
 
         $fieldset->addField('direction', 'hidden', array(
             'name'     => 'direction',
