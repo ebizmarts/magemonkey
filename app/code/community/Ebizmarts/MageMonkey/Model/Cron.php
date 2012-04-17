@@ -246,8 +246,9 @@ class Ebizmarts_MageMonkey_Model_Cron
 		}
 
         //Filter by STORE
-		if($job->getStoreId()){
-			$collection->addFieldToFilter('store_id', (int)$job->getStoreId());
+        $jobStoreId = (int)$job->getStoreId();
+		if($jobStoreId){
+			$collection->addFieldToFilter('store_id', $jobStoreId);
 		}
 
 		$collection->load();
