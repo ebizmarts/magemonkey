@@ -11,11 +11,11 @@
                             <children>
 				                <commerce translate="title" module="monkey">
 				                    <title>Magento sent orders</title>
-				                    <action>monkey/adminhtml_ecommerce</action>
+				                    <action>adminhtml/ecommerce</action>
 				                </commerce>
 				                <apicommerce translate="title" module="monkey">
 				                    <title>ALL orders from API</title>
-				                    <action>monkey/adminhtml_ecommerce/apiorders</action>
+				                    <action>adminhtml/ecommerce/apiorders</action>
 				                </apicommerce>
                             </children>
 		                </ecommerce>
@@ -24,11 +24,11 @@
 		                    <children>
 				                <sts translate="title" module="monkey">
 				                    <title>STS (Amazon Simple Email Service)</title>
-				                    <action>monkey/adminhtml_transactionalemail/sts</action>
+				                    <action>adminhtml/transactionalemail/sts</action>
 				                </sts>
 				                <mandrill translate="title" module="monkey">
 				                    <title>Mandrill</title>
-				                    <action>monkey/adminhtml_transactionalemail/mandrill</action>
+				                    <action>adminhtml/transactionalemail/mandrill</action>
 				                </mandrill>
 		                    </children>
 		                </transactional_email>
@@ -37,11 +37,11 @@
 		                    <children>
 				                <mage_to_mc translate="title" module="monkey">
 				                    <title>Export</title>
-				                    <action>monkey/adminhtml_bulksync/export</action>
+				                    <action>adminhtml/bulksync/export</action>
 				                </mage_to_mc>
 				                <mc_to_mage translate="title" module="monkey">
 				                    <title>Import</title>
-				                    <action>monkey/adminhtml_bulksync/import</action>
+				                    <action>adminhtml/bulksync/import</action>
 				                </mc_to_mage>
 		                    </children>
 		                </bulksync>
