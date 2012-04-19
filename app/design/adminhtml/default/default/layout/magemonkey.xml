@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <layout>
 
-    <monkey_adminhtml_ecommerce_apiorders>
+    <adminhtml_ecommerce_apiorders>
         <reference name="content">
             <block type="monkey/adminhtml_ecommerceapi" name="ecommerceapi.list" />
         </reference>
-    </monkey_adminhtml_ecommerce_apiorders>
+    </adminhtml_ecommerce_apiorders>
 
-    <monkey_adminhtml_ecommerce_index>
+    <adminhtml_ecommerce_index>
         <reference name="content">
             <block type="monkey/adminhtml_ecommerce" name="ecommerce.log.list" />
         </reference>
-    </monkey_adminhtml_ecommerce_index>
+    </adminhtml_ecommerce_index>
 
-    <monkey_adminhtml_transactionalemail_mandrill>
+    <adminhtml_transactionalemail_mandrill>
         <reference name="content">
             <block type="monkey/adminhtml_transactionalemail_mandrill" name="mc_transactionalemail_mandrill">
                 <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
@@ -21,8 +21,8 @@
                 </block>
 			</block>
         </reference>
-    </monkey_adminhtml_transactionalemail_mandrill>
-    <monkey_adminhtml_transactionalemail_sts>
+    </adminhtml_transactionalemail_mandrill>
+    <adminhtml_transactionalemail_sts>
         <reference name="content">
             <block type="monkey/adminhtml_transactionalemail_sts" name="mc_transactionalemail_sts">
                 <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
@@ -30,34 +30,34 @@
                 </block>
 			</block>
         </reference>
-    </monkey_adminhtml_transactionalemail_sts>
-    <monkey_adminhtml_transactionalemail_new>
+    </adminhtml_transactionalemail_sts>
+    <adminhtml_transactionalemail_new>
         <reference name="content">
             <block type="monkey/adminhtml_transactionalemail_newemail" name="mc_transemail_add" />
         </reference>
-    </monkey_adminhtml_transactionalemail_new>
+    </adminhtml_transactionalemail_new>
 
-    <monkey_adminhtml_bulksync_export>
+    <adminhtml_bulksync_export>
 		<reference name="head">
 			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
 		</reference>
         <reference name="content">
             <block type="monkey/adminhtml_bulksync_export" name="mc_bulksyc_export" />
         </reference>
-    </monkey_adminhtml_bulksync_export>
-    <monkey_adminhtml_bulksync_import>
+    </adminhtml_bulksync_export>
+    <adminhtml_bulksync_import>
 		<reference name="head">
 			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
 		</reference>
         <reference name="content">
             <block type="monkey/adminhtml_bulksync_import" name="mc_bulksyc_import" />
         </reference>
-    </monkey_adminhtml_bulksync_import>
-    <monkey_adminhtml_bulksync_queue>
+    </adminhtml_bulksync_import>
+    <adminhtml_bulksync_queue>
         <reference name="content">
             <block type="monkey/adminhtml_bulksync_queue" name="mc_bulksyc_queue" />
         </reference>
-    </monkey_adminhtml_bulksync_queue>
+    </adminhtml_bulksync_queue>
 
 	<adminhtml_system_config_edit>
 		<reference name="head">
