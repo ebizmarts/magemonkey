@@ -32,7 +32,6 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Mandrill_Grid exte
 			foreach($emails as $email){
 				$_emails []= array(
 									'email'       => $email->address,
-									'approved_at' => $email->approved_at,
 									'created_at'  => $email->created_at,
 									'enabled'     => ($email->is_enabled === TRUE ? Mage::helper('monkey')->__('Yes') : Mage::helper('monkey')->__('No')),
 								  );
@@ -57,12 +56,6 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Mandrill_Grid exte
         $this->addColumn('enabled', array(
             'header'=> Mage::helper('monkey')->__('Enabled'),
             'index' => 'enabled',
-            'filter' => false,
-            'sortable' => false
-        ));
-        $this->addColumn('approved_at', array(
-            'header'=> Mage::helper('monkey')->__('Approved At'),
-            'index' => 'approved_at',
             'filter' => false,
             'sortable' => false
         ));
