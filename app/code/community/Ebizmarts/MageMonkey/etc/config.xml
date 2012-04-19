@@ -161,6 +161,17 @@
 			</sales_order_place_after>
       	</events>
     </frontend>
+    <admin>
+        <routers>
+             <adminhtml>
+                 <args>
+                     <modules>
+                         <monkey before="Mage_Adminhtml">Ebizmarts_MageMonkey_Adminhtml</monkey>
+                     </modules>
+                 </args>
+             </adminhtml>
+        </routers>
+    </admin>
     <adminhtml>
     	<layout>
 	        <updates>
