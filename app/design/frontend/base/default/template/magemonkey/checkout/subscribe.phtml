@@ -10,8 +10,12 @@ addSubscribeToPost = function (element){
 	}
 
 	if(element.checked){
-		Element.insert( Form.findFirstElement(payment.form),
-						new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" }) );
+        var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
+        try{
+            Element.insert(Form.findFirstElement(payment.form), inputer);
+        }catch(notelem){
+            $("co-payment-form").insert(inputer);
+        }
 	}
 
 }
