@@ -42,11 +42,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 			$isConfirmNeed = TRUE;
 		}
 
-		//New subscriber, just add
-		if( $subscriber->isObjectNew() || ($subscriber->getStoreId() != $subscriber->getMcStoreId()) ){
+        //Check if customer is not yet subscribed on MailChimp
+		$isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
 
-			//Check if customer is not yet subscribed on MailChimp
-			$isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
+        //Flag only is TRUE when changing to SUBSCRIBE
+        if( TRUE === $subscriber->getIsStatusChanged() ){
+
 			if($isOnMailChimp == 1){
 				return $observer;
 			}
@@ -55,52 +56,19 @@ class Ebizmarts_MageMonkey_Model_Observer
 				$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
 			}
 
-			$mergeVars = $this->_mergeVars($subscriber);
 			Mage::getSingleton('monkey/api')
-								->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+								->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
 
-		}else{
+        }else{
+            if(($isOnMailChimp == 1) && ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)){
+                $rs = Mage::getSingleton('monkey/api')
+                                ->listUnsubscribe($listId, $email);
+                if($rs !== TRUE){
+                    Mage::throwException($rs);
+                }
+            }
+        }
 
-			$oldSubscriber = Mage::getModel('newsletter/subscriber')
-								->load($subscriber->getId());
-
-			$status        = (int)$subscriber->getData('subscriber_status');
-			$oldstatus     = (int)$oldSubscriber->getData('subscriber_status');
-
-			if( $status !== $oldstatus ){ //Status change
-
-				//Unsubscribe customer
-				if($status == Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED){
-
-					$rs = Mage::getSingleton('monkey/api')
-									->listUnsubscribe($listId, $email);
-					if($rs !== TRUE){
-						Mage::throwException($rs);
-					}
-
-				}else if($status == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED){
-
-					//Check if customer is not yet subscribed on MailChimp
-					$isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
-					if($isOnMailChimp == 1){
-						return $observer;
-					}
-
-					if( TRUE === $isConfirmNeed ){
-						$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
-					}
-
-					$rs = Mage::getSingleton('monkey/api')
-									->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
-					if($rs !== TRUE){
-						Mage::throwException($rs);
-					}
-
-				}
-
-			}
-
-		}
 	}
 
 	/**
@@ -384,11 +352,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$orderId = (int)current($observer->getEvent()->getOrderIds());
+        $order = null;
 		if($orderId){
 			$order = Mage::getModel('sales/order')->load($orderId);
 		}
 
-		if($order->getId()){
+		if(is_object($order) && $order->getId()){
 
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
 			if($sessionFlag){
