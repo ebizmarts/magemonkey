@@ -1,0 +1,206 @@
+<_>
+   <form_key>6QsrkRb9Ir9WBIpx</form_key>
+   <name>Ebizmarts_MageMonkey</name>
+   <channel>connect.magentocommerce.com/community</channel>
+   <summary>MailChimp integration for Magento by Ebizmarts</summary>
+   <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
+   <license>OSL v3.0</license>
+   <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
+   <release_version>1.0.13</release_version>
+   <api_version>1.0</api_version>
+   <release_stability>stable</release_stability>
+   <api_stability>stable</api_stability>
+   <notes>-- version 1.0.13 stable
+    Fixing bug on admin urls when store code is used, more bugs fixed.
+
+-- version 1.0.12 stable
+    Fixing bug on renderer for old magentos
+
+-- version 1.0.11 stable
+   Adding export jobs per store id
+
+-- version 1.0.10 stable
+    Fixing Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists bug
+    Fixing bug on MyAccount when subscribing, unsubscribing
+    Fix for bug on account creation, automatically subscribing
+    Ecommerce360 total with discount
+    Fixing but on order saving issue when customer is subscribed on MailChimp
+    Fixing error on cart page when compilation is ON
+
+-- version 1.0.9 stable
+       Bug fix on webhooks url when Rewrites are not enabled
+
+-- version 1.0.8 stable
+       Bug fix on checkout subscribe issues and EE customer credit balance issue fix (Customer is not set or does not exist.)
+
+-- version 1.0.7 stable
+       Bug fix on TinyMCE inserting image, workaround for Magento passing a store parameter with undefined value.
+
+-- version 1.0.6 stable
+       Fix bug when on hardcoded default store code. Additional Lists. 
+
+-- version 1.0.4 stable
+       Fix bug when checking newsletter box when registering. Adding customer groups as Interest Grouping
+
+-- version 1.0.2 beta
+       Fixing bug on bulk export for customers, gets stuck on 200
+
+-- version 1.0.1 beta
+       Bug fixing when deleting a subscriber
+
+-- version 1.0.0 beta
+       Including STS
+
+First public release 0.0.9, January 2012</notes>
+   <maintainers>
+      <role>
+         <role>lead</role>
+         <role>lead</role>
+      </role>
+      <name>
+         <name/>
+         <name>Ebizmarts Development Team</name>
+      </name>
+      <handle>
+         <handle/>
+         <handle>ebizmarts</handle>
+      </handle>
+      <email>
+         <email/>
+         <email>info@ebizmarts.com</email>
+      </email>
+      <active>
+         <active>0</active>
+         <active>1</active>
+      </active>
+   </maintainers>
+   <depends_php_min>5.2.0</depends_php_min>
+   <depends_php_max>6.0.0</depends_php_max>
+   <depends_php_recommended/>
+   <depends_php_exclude/>
+   <depends>
+      <package>
+         <name>
+            <name/>
+         </name>
+         <channel>
+            <channel/>
+         </channel>
+         <min>
+            <min/>
+         </min>
+         <max>
+            <max/>
+         </max>
+         <recommended>
+            <recommended/>
+         </recommended>
+         <exclude>
+            <exclude/>
+         </exclude>
+         <type>
+            <type>required</type>
+         </type>
+      </package>
+      <subpackage>
+         <name>
+            <name/>
+         </name>
+         <channel>
+            <channel/>
+         </channel>
+         <min>
+            <min/>
+         </min>
+         <max>
+            <max/>
+         </max>
+         <recommended>
+            <recommended/>
+         </recommended>
+         <exclude>
+            <exclude/>
+         </exclude>
+         <type>
+            <type>required</type>
+         </type>
+      </subpackage>
+      <extension>
+         <name>
+            <name>Core</name>
+         </name>
+         <min>
+            <min/>
+         </min>
+         <max>
+            <max/>
+         </max>
+         <recommended>
+            <recommended/>
+         </recommended>
+         <exclude>
+            <exclude/>
+         </exclude>
+         <type>
+            <type>required</type>
+         </type>
+      </extension>
+   </depends>
+   <contents>
+      <role>
+         <role>magelocal</role>
+         <role>magecommunity</role>
+         <role>magedesign</role>
+         <role>magedesign</role>
+         <role>magedesign</role>
+         <role>mageetc</role>
+         <role>magelocale</role>
+         <role>mageskin</role>
+         <role>mageskin</role>
+      </role>
+      <path>
+         <path/>
+         <path>Ebizmarts/MageMonkey</path>
+         <path>frontend/base/default/layout/magemonkey.xml</path>
+         <path>frontend/base/default/template/magemonkey</path>
+         <path>adminhtml/default/default/layout/magemonkey.xml</path>
+         <path>modules/Ebizmarts_MageMonkey.xml</path>
+         <path>en_US/Ebizmarts_MageMonkey.csv</path>
+         <path>adminhtml/default/default/magemonkey</path>
+         <path>frontend/base/default/magemonkey</path>
+      </path>
+      <type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+      </type>
+      <include>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+      </include>
+      <ignore>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+      </ignore>
+   </contents>
+</_>
