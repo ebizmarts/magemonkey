@@ -88,7 +88,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
-                            <comment><![CDATA[Send new orders to MailChimp using Ecommerce360.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-do-i-turn-on-ecommerce360-tracking-on-my-campaigns/'>How do I turn on Ecommerce360 tracking on my campaigns?</a>]]></comment>
+                                                        <comment><![CDATA[Send new orders to MailChimp using Ecommerce360.<br/><a target='_blank' href='http://kb.mailchimp.com/article/how-do-i-turn-on-ecommerce360-tracking-on-my-campaigns/'>How do I turn on Ecommerce360 tracking on my campaigns?</a><br/><a target='_blank' href='http://kb.mailchimp.com/article/how-to-segment-your-list-based-on-your-customers-purchase-activity'>How to segment your list based on your customers purchase activity</a>]]></comment>
                         </ecommerce360>
                         <map_fields translate="label comment">
                             <label>Customer Fields Mapping</label>
