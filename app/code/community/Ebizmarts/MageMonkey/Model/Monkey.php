@@ -170,25 +170,28 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @return void
      */
     protected function _unsubscribe(array $data) {
+	$subscriber = $this->loadByEmail($data['data']['email']);
 
-        $s = $this->loadByEmail($data['data']['email']);
+	if(!$subscriber->getId()){
+	$subscriber = Mage::getModel('newsletter/subscriber')
+	                    ->loadByEmail($data['data']['email']);
+	}
 
-        if ($s->getId()) {
+	if($subscriber->getId()){
+	try {
 
-            try {
-
-                switch ($data['data']['action']) {
-                    case 'delete' :
-                        $s->delete();
-                        break;
-                    case 'unsub':
-                        $s->setImportMode(TRUE)->unsubscribe();
-                        break;
-                }
-            } catch (Exception $e) {
-                Mage::logException($e);
-            }
+        switch ($data['data']['action']) {
+            case 'delete' :
+                $subscriber->delete();
+                break;
+            case 'unsub':
+                $subscriber->setImportMode(TRUE)->unsubscribe();
+                break;
         }
+    } catch (Exception $e) {
+        Mage::logException($e);
+    }
+	}
     }
 
     /**
