@@ -37,3 +37,4 @@
 "Enabled - Force subscription", "Enabled - Force subscription"
 "-- Disabled --", "-- Disabled --"
 "Could not add Webhook "%s" for list "%s", error code %s, %s","Could not add Webhook "%s" for list "%s", error code %s, %s"
+"There is no List selected please save the configuration again","There is no List selected please save the configuration again"

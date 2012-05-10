@@ -159,7 +159,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$selectedLists = array();
 		$selectedLists []= $post['groups']['general']['fields']['list']['value'];
-
+		if(!$post['groups']['general']['fields']['list']['value'])
+		{
+			$message = Mage::helper('monkey')->__('There is no List selected please save the configuration again');
+			Mage::getSingleton('adminhtml/session')->addWarning($message);
+		}
 		$additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
 		if(is_array($additionalLists)){
 			$selectedLists = array_merge($selectedLists, $additionalLists);
