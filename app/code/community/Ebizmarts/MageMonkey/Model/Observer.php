@@ -172,8 +172,13 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$webhooksKey = Mage::helper('monkey')->getWebhooksKey($store);
 
 		//Generating Webhooks URL
-		$hookUrl  = Mage::getModel('core/url')->setStore($store)
-						->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+		$hookUrl = '';
+		try{
+			$hookUrl  = Mage::getModel('core/url')->setStore($store)
+	    			    			->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+		}catch(Exception $e){
+			$hookUrl  = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+		}
 
 		$api = Mage::getSingleton('monkey/api', array('apikey' => $apiKey));
 
