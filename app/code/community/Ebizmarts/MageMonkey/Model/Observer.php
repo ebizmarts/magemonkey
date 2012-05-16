@@ -368,8 +368,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if(is_object($order) && $order->getId()){
 
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
-			if($sessionFlag){
-
+			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
+			if($sessionFlag || $forceSubscription == 1){
 				//Guest Checkout
 				if( (int)$order->getCustomerGroupId() === Mage_Customer_Model_Group::NOT_LOGGED_IN_ID ){
 					Mage::helper('monkey')->registerGuestCustomer($order);
