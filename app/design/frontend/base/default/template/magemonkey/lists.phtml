@@ -4,6 +4,8 @@ $lists         = $this->getLists();
 $myLists       = $this->getSubscribedLists();
 $generalList   = $this->getGeneralList();
 $canShowButton = $this->getCanShowButton();
+//Check if there's additional list selected, if not Dont show this section
+if(count($lists) > 0):
 ?>
 <div class="monkey-multisubscribe">
 	<div class="page-title">
@@ -113,3 +115,4 @@ $canShowButton = $this->getCanShowButton();
 
 	});
 </script>
+<?php endif; ?>
