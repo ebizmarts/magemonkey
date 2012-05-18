@@ -15,7 +15,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 * @var integer
 	 * @access protected
 	 */
-	protected $_limit = 200;
+	protected $_limit = 1000;
 
 	/**
 	 * Import limit var
@@ -250,7 +250,11 @@ class Ebizmarts_MageMonkey_Model_Cron
 		if($jobStoreId){
 			$collection->addFieldToFilter('store_id', $jobStoreId);
 		}
-
+		
+		if($job->getDataSourceEntity() == 'newsletter_subscriber'):
+			$collection->addFieldToFilter('subscriber_status', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
+		endif;
+		
 		$collection->load();
 
 		$batch = array();

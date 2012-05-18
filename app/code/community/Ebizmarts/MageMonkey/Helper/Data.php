@@ -263,6 +263,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	/**
+	 * Get additional Lists by storeId
+	 *
+	 * @param string $store
+	 * @return string $list
+	 */
+	public function getAdditionalList($store)
+	{
+		$curstore = Mage::app()->getStore();
+		Mage::app()->setCurrentStore($store);
+			$list = $this->config('additional_lists', $store);
+		Mage::app()->setCurrentStore($curstore);
+		return $list;
+	}
+	
+	/**
 	 * Get which store is associated to given $mcListId
 	 *
 	 * @param string $mcListId

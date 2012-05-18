@@ -148,22 +148,52 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if( !isset($post['groups']) ){
 			return $observer;
 		}
-		//Chequear que el índice exista
-
-		$apiKey = (string)$post['groups']['general']['fields']['apikey']['value'];
+		//Check if the api key exist
+		if(isset($post['groups']['general']['fields']['apikey']['value'])){
+			$apiKey = $post['groups']['general']['fields']['apikey']['value'];
+		}else{
+			//this case it's when we save the configuration for a particular store
+			if((string)$post['groups']['general']['fields']['apikey']['inherit'] == 1){
+				$apiKey = Mage::helper('monkey')->getApiKey();
+			}
+		}
 
 		if(!$apiKey){
 			return $observer;
 		}
 
 		$selectedLists = array();
-		$selectedLists []= $post['groups']['general']['fields']['list']['value'];
-		if(!$post['groups']['general']['fields']['list']['value'])
+		if(isset($post['groups']['general']['fields']['list']['value']))
+		{
+			$selectedLists []= $post['groups']['general']['fields']['list']['value'];
+		}
+		else
+		{
+			if((string)$post['groups']['general']['fields']['list']['inherit'] == 1)
+			{
+				$selectedLists []= Mage::helper('monkey')->getDefaultList(Mage::app()->getStore()->getId());
+			}
+
+		}
+
+		if(!$selectedLists)
 		{
 			$message = Mage::helper('monkey')->__('There is no List selected please save the configuration again');
 			Mage::getSingleton('adminhtml/session')->addWarning($message);
 		}
-		$additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
+
+		if(isset($post['groups']['general']['fields']['additional_lists']['value']))
+		{
+			$additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
+		}
+		else
+		{
+			if((string)$post['groups']['general']['fields']['additional_lists']['inherit'] == 1)
+			{
+				$additionalLists = Mage::helper('monkey')->getAdditionalList(Mage::app()->getStore()->getId());
+			}
+		}
+		
 		if(is_array($additionalLists)){
 			$selectedLists = array_merge($selectedLists, $additionalLists);
 		}
@@ -172,9 +202,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		//Generating Webhooks URL
 		$hookUrl = '';
-		try{
+		try
+		{
 			$hookUrl  = Mage::getModel('core/url')->setStore($store)
-	    			    			->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+												  ->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}catch(Exception $e){
 			$hookUrl  = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}
