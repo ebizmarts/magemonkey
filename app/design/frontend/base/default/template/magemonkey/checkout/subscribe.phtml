@@ -37,8 +37,12 @@ addElementToPost = function (element){
 	<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
 	<label for="magemonkey-trigger"><?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?></label>
 </div>
-
-<?php echo $this->getChildHtml('left.monkeysignup'); ?>
+<?php
+//Check if there's additional list selected, if not Dont show this section
+if(count($lists) > 0):
+	echo $this->getChildHtml('left.monkeysignup');
+endif;
+?>
 
 <script type="text/javascript">
 	addSubscribeToPost($('magemonkey-trigger'));

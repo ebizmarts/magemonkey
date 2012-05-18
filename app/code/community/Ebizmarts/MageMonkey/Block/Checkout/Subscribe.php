@@ -7,7 +7,7 @@
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
  */
-class Ebizmarts_MageMonkey_Block_Checkout_Subscribe extends Mage_Core_Block_Template
+class Ebizmarts_MageMonkey_Block_Checkout_Subscribe extends Ebizmarts_MageMonkey_Block_Lists
 {
 
     /**
