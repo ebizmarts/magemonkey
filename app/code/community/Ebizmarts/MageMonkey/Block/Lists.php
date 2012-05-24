@@ -250,6 +250,9 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 			case 'dropdown':
 				$class = 'Varien_Data_Form_Element_Select';
 				break;
+			default:
+				$class = 'Varien_Data_Form_Element_Text';
+				break;
 		}
 
 		$object = new $class;
