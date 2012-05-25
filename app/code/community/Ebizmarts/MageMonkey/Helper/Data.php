@@ -195,7 +195,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	public function canCheckoutSubscribe()
 	{
-		return (bool)($this->config('checkout_subscribe') != 0);
+		return $this->config('checkout_subscribe');
 	}
 
 	/**
