@@ -228,12 +228,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 		$collection = $this->_getEntityModel($job->getDataSourceEntity());
 
-		//Update total count on first run
-		if(!$job->getTotalCount()){
-			$allRows = $collection->getSize();
-			$job->setTotalCount($allRows)->save();
-		}
-
 		if(!$job->getStartedAt()){
 			$job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
 		}
@@ -257,71 +251,73 @@ class Ebizmarts_MageMonkey_Model_Cron
 		
 		$collection->load();
 
+		//Update total count on first run
+		if(!$job->getTotalCount()){
+			$allRows = $collection->getSize();
+			$job->setTotalCount($allRows)->save();
+		}
+		
 		$batch = array();
 
 		foreach($job->lists() as $listId){
 			$store = $this->_helper()->getStoreByList($listId);
+			$api = Mage::getSingleton('monkey/api', array('store' => $store));
 
-			//if($store){
+			$processedCount = 0;
+			foreach($collection as $item){
+				$processedCount += 1;
+				$batch []= $this->_helper()->getMergeVars($item, TRUE);
+			}
 
-				$api = Mage::getSingleton('monkey/api', array('store' => $store));
+			if(count($batch) > 0){
 
-				$processedCount = 0;
-				foreach($collection as $item){
-					$processedCount += 1;
-					$batch []= $this->_helper()->getMergeVars($item, TRUE);
-				}
-
-				if(count($batch) > 0){
-
-					$job->setStatus('chunk_running')
-						->setUpdatedAt($this->_dbDate())
-						->save();
-
-					$vals = $api->listBatchSubscribe($listId, $batch, FALSE, TRUE, FALSE);
-
-					if ( is_null($api->errorCode) ){
-
-						$lastId = $collection->getLastItem()->getId();
-						$job->setLastProcessedId($lastId);
-						$job->setProcessedCount( ( $processedCount+$job->getProcessedCount() ));
-
-						/*if( $processedCount < $this->_limit ){
-							$job->setStatus('finished');
-						}*/
-
-						$job
-						->setUpdatedAt($this->_dbDate())
-						->save();
-
-					} else {
-
-						//TODO: Do something to handle errors
-
-					    /*echo "Batch Subscribe failed!\n";
-						echo "code:".$api->errorCode."\n";
-						echo "msg :".$api->errorMessage."\n";
-						die;*/
-						/*echo "added:   ".$vals['add_count']."\n";
-						echo "updated: ".$vals['update_count']."\n";
-						echo "errors:  ".$vals['error_count']."\n";
-						foreach($vals['errors'] as $val){
-							echo $val['email_address']. " failed\n";
-							echo "code:".$val['code']."\n";
-							echo "msg :".$val['message']."\n";
-						}
-						die;*/
-
-					}
-
-				}else{
-					$job
-					->setStatus('finished')
+				$job->setStatus('chunk_running')
 					->setUpdatedAt($this->_dbDate())
 					->save();
+
+				$vals = $api->listBatchSubscribe($listId, $batch, FALSE, TRUE, FALSE);
+
+				if ( is_null($api->errorCode) ){
+
+					$lastId = $collection->getLastItem()->getId();
+					$job->setLastProcessedId($lastId);
+					$job->setProcessedCount( ( $processedCount+$job->getProcessedCount() ));
+
+					/*if( $processedCount < $this->_limit ){
+						$job->setStatus('finished');
+					}*/
+
+					$job
+					->setUpdatedAt($this->_dbDate())
+					->save();
+
+				} else {
+
+					//TODO: Do something to handle errors
+
+					/*echo "Batch Subscribe failed!\n";
+					echo "code:".$api->errorCode."\n";
+					echo "msg :".$api->errorMessage."\n";
+					die;*/
+					/*echo "added:   ".$vals['add_count']."\n";
+					echo "updated: ".$vals['update_count']."\n";
+					echo "errors:  ".$vals['error_count']."\n";
+					foreach($vals['errors'] as $val){
+						echo $val['email_address']. " failed\n";
+						echo "code:".$val['code']."\n";
+						echo "msg :".$val['message']."\n";
+					}
+					die;*/
+
 				}
 
-			//}
+			}else{
+				$job
+				->setStatus('finished')
+				->setUpdatedAt($this->_dbDate())
+				->save();
+			}
+
 		}
 
 		return $this;

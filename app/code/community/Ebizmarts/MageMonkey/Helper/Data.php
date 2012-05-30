@@ -743,7 +743,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					if($defaultList == $listId){
 
 						$item = Mage::getModel('monkey/monkey')->loadByEmail($email);
-
+						if(!$item->getId()){
+							$item = Mage::getModel('newsletter/subscriber')
+								    ->loadByEmail($email);
+						}
 						if($item->getSubscriberEmail()){
 							$item->unsubscribe();
 						}
