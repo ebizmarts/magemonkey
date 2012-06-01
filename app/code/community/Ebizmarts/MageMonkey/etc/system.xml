@@ -146,6 +146,26 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                         </mandrill_apikey>
+                        <cron_export translate="label comment">
+                            <label>Limit of Customers to Export</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>monkey/system_config_source_cronProcessLimit</source_model>
+                            <sort_order>122</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </cron_export>
+                        <webhook_delete translate="label comment">
+                            <label>Webhooks Delete action</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>monkey/system_config_source_webhookDelete</source_model>
+                            <sort_order>123</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment></comment>
+                        </webhook_delete>
                     </fields>
                 </general>
             </groups>

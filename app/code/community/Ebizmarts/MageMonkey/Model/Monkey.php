@@ -182,7 +182,12 @@ class Ebizmarts_MageMonkey_Model_Monkey {
 
         switch ($data['data']['action']) {
             case 'delete' :
-                $subscriber->delete();
+                //if config setting "Webhooks Delete action" is set as "Delete customer account"
+            	if(Mage::getStoreConfig("monkey/general/webhook_delete") == 1){
+                	$subscriber->delete();
+            	}else{
+					$subscriber->setImportMode(TRUE)->unsubscribe();
+				}
                 break;
             case 'unsub':
                 $subscriber->setImportMode(TRUE)->unsubscribe();

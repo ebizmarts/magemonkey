@@ -18,14 +18,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 	protected $_limit = 1000;
 
 	/**
-	 * Import limit var
-	 *
-	 * @var integer
-	 * @access protected
-	 */
-	protected $_importLimit = 500;
-
-	/**
 	 * Current Magento store
 	 *
 	 * @var Mage_Core_Model_Store
@@ -221,6 +213,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 */
 	public function processExportJobs()
 	{
+		$this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
 		$job = $this->_getJob('Export');
 		if(is_null($job)){
 			return $this;

@@ -1,0 +1,25 @@
+<?php
+
+
+/**
+ * Webhook delete available status options source
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_MageMonkey
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ */
+class Ebizmarts_MageMonkey_Model_System_Config_Source_WebhookDelete
+{
+    /**
+     * Options getter
+     *
+     * @return array
+     */
+    public function toOptionArray()
+    {
+        return array(
+            array('value' => 0, 'label' => Mage::helper('monkey')->__('Unsuscribe customers')),
+            array('value' => 1, 'label' => Mage::helper('monkey')->__('Delete customer account'))
+        );
+    }
+}
