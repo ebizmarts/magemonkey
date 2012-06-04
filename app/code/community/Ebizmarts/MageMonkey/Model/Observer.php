@@ -327,12 +327,18 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function updateCustomer(Varien_Event_Observer $observer)
 	{
+		$post = Mage::app()->getRequest()->getPost();
 		if(!Mage::helper('monkey')->canMonkey()){
 			return;
 		}
 
 		$customer = $observer->getEvent()->getCustomer();
-
+		if (!isset($post['subscription'])) {
+                 $subscriber = Mage::getModel('newsletter/subscriber')
+                               ->loadByEmail($customer->getEmail());
+                 $subscriber->setImportMode(TRUE)->unsubscribe();
+        }
+        
 		//Handle additional lists subscription on Customer Create Account
 		Mage::helper('monkey')->additionalListsSubscription($customer);
 
