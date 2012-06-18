@@ -26,5 +26,20 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_Fieldset_Hint
     	return (string) Mage::getConfig()->getNode('modules/Ebizmarts_MageMonkey/version');
     }
 
+	public function getPxParams() {
+
+	$v = (string)Mage::getConfig()->getNode('modules/Ebizmarts_MageMonkey/version');
+	$ext = "MageMonkey;{$v}";
+
+	$modulesArray = (array)Mage::getConfig()->getNode('modules')->children();
+	$aux = (array_key_exists('Enterprise_Enterprise', $modulesArray))? 'EE' : 'CE' ;
+	$mageVersion = Mage::getVersion();
+	$mage = "Magento {$aux};{$mageVersion}";
+
+	$hash = md5($ext . '_' . $mage . '_' . $ext);
+
+    return "ext=$ext&mage={$mage}&ctrl={$hash}";
+
+    }
 }
 
