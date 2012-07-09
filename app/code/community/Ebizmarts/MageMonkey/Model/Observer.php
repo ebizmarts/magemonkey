@@ -353,7 +353,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 			}
 		}
 		//Unsubscribe when update customer from admin
-		if (!isset($post['subscription'])) {
+		if (!isset($post['subscription']) && Mage::getSingleton('admin/session')->isLoggedIn()) {
                  $subscriber = Mage::getModel('newsletter/subscriber')
                                ->loadByEmail($customer->getEmail());
                  $subscriber->setImportMode(TRUE)->unsubscribe();
