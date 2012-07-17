@@ -1,0 +1,8 @@
+ul.tabs a.mandrill-section:hover { background-color:#D8E6E6; background-image:url(images/tabs_link_over_bg.gif); }
+ul.tabs a.mandrill-section,
+ul.tabs a.mandrill-section:hover {border-bottom:none; padding:0.5em 0.5em 0 1.5em; }
+ul.tabs a.mandrill-section span,
+ul.tabs a.mandrill-section:hover span { background:url(mandrill-tab.png) no-repeat 0 0; overflow:hidden; padding:0; padding-left:25px; width:120px; height:22px;}
+ul.tabs a.mandrill-section.active, ul.tabs a.mandrill-section.active:hover {background-color: white;}
+
+small { font-size: 9px; }

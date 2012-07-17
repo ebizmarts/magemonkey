@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config> 
+    <menu>
+        <system>
+            <children>
+            	<email_template>
+            		<children>
+		                <mandrill translate="title" module="mandrill">
+		                    <title>Mandrill</title>
+		                    <children>
+				                <users_senders translate="title" module="mandrill">
+				                    <title>Senders</title>
+						            <action>adminhtml/mandrill_users/senders</action>
+				                </users_senders>		               
+		                    </children>
+		                </mandrill>
+            		</children>
+            	</email_template>            		               
+            </children>
+        </system>
+    </menu>   
+	<acl>
+	    <resources>
+	      <admin>
+		    <children>
+		        <system>
+		            <children>
+		                <config>
+		                    <children>
+		                        <mandrill translate="title" module="monkey">
+		                            <title>Mandrill Configuration</title>
+		                        </mandrill>
+		                    </children>
+		                </config>
+		            </children>
+		        </system>
+		    </children>
+		</admin>
+	    </resources>
+	</acl>
+</config>
