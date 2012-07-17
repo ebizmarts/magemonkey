@@ -19,7 +19,7 @@
 				                </apicommerce>
                             </children>
 		                </ecommerce>
-		                <transactional_email translate="title" module="monkey">
+		                <!--<transactional_email translate="title" module="monkey">
 		                    <title>Transactional Email</title>
 		                    <children>
 				                <sts translate="title" module="monkey">
@@ -31,7 +31,7 @@
 				                    <action>adminhtml/transactionalemail/mandrill</action>
 				                </mandrill>
 		                    </children>
-		                </transactional_email>
+		                </transactional_email>-->
 		                <bulksync translate="title" module="monkey">
 		                    <title>Bulk Sync</title>
 		                    <children>
