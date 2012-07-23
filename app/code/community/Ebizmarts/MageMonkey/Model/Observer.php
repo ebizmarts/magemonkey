@@ -33,12 +33,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$email  = $subscriber->getSubscriberEmail();
 		$listId = Mage::helper('monkey')->getDefaultList( ($subscriber->getMcStoreId() ? $subscriber->getMcStoreId() : Mage::app()->getStore()->getId()));
-
+		$subscriber->setImportMode(TRUE);
 		$isConfirmNeed = FALSE;
 		if( !Mage::helper('monkey')->isAdmin() &&
 			(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
 			$isConfirmNeed = TRUE;
-			$subscriber->setImportMode(TRUE);
 		}
 
         //Check if customer is not yet subscribed on MailChimp
