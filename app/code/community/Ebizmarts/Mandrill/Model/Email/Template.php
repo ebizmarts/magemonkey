@@ -57,7 +57,7 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
             $message = array (
 					        'html'       => $text,
 					        'text'       => $text,
-					        'subject'    => ('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?='),
+					        'subject'    => $this->getProcessedTemplateSubject($variables),
 					        'from_name'  => $this->getSenderName(),
 					        'from_email' => $this->getSenderEmail(),
 					        'to_email'   => $emails,
