@@ -351,8 +351,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
 			}
 		}
+		$request = Mage::app()->getRequest();
 		//Unsubscribe when update customer from admin
-		if (!isset($post['subscription']) && Mage::getSingleton('admin/session')->isLoggedIn()) {
+		if (!isset($post['subscription']) && && $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
                  $subscriber = Mage::getModel('newsletter/subscriber')
                                ->loadByEmail($customer->getEmail());
                  $subscriber->setImportMode(TRUE)->unsubscribe();
