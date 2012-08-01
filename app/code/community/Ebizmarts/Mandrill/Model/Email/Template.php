@@ -9,6 +9,37 @@
  */
 class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Template {
 
+	protected $_mandrill = null;
+
+	protected $_bcc = array();
+
+	public function getMail() {
+		if(is_null($this->_mandrill)){
+			$this->_mandrill = Mage::helper('mandrill')->api();
+			$this->_mandrill->setApiKey(Mage::helper('mandrill')->getApiKey());
+		}
+		return $this->_mandrill;
+	}
+
+	/**
+	 * Add BCC emails to list to send.
+	 *
+	 * @return Ebizmarts_Mandrill_Model_Email_Template
+	 */
+    public function addBcc($bcc) {
+
+        if (is_array($bcc)) {
+            foreach ($bcc as $email) {
+                $this->_bcc[] = $email;
+            }
+        }
+        elseif ($bcc) {
+            $this->_bcc[] = $bcc;
+        }
+        return $this;
+
+    }
+
     /**
      * Send mail to recipient
      *
@@ -32,6 +63,11 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         }
 
         $emails = array_values((array)$email);
+
+		if(count($this->_bcc) > 0){
+			$emails = array_merge($emails, $this->_bcc);
+		}
+
         $names = is_array($name) ? $name : (array)$name;
         $names = array_values($names);
         foreach ($emails as $key => $email) {
@@ -43,11 +79,7 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $variables['email'] = reset($emails);
         $variables['name'] = reset($names);
 
-        ini_set('SMTP', Mage::getStoreConfig('system/smtp/host'));
-        ini_set('smtp_port', Mage::getStoreConfig('system/smtp/port'));
-		
-        $mail = $helper->api();
-        $mail->setApiKey($helper->getApiKey());
+        $mail = $this->getMail();
 
         $this->setUseAbsoluteLinks(true);
         $text = $this->getProcessedTemplate($variables, true);
