@@ -65,7 +65,9 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $emails = array_values((array)$email);
 
 		if(count($this->_bcc) > 0){
-			$emails = array_merge($emails, $this->_bcc);
+			$bccEmail = $this->_bcc[0];
+		}else{
+			$bccEmail = '';
 		}
 
         $names = is_array($name) ? $name : (array)$name;
@@ -87,13 +89,14 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         try {
 
             $message = array (
-					        'html'       => $text,
-					        'text'       => $text,
-					        'subject'    => $this->getProcessedTemplateSubject($variables),
-					        'from_name'  => $this->getSenderName(),
-					        'from_email' => $this->getSenderEmail(),
-					        'to_email'   => $emails,
-					        'to_name'    => $names
+					        'html'        => $text,
+					        'text'        => $text,
+					        'subject'     => $this->getProcessedTemplateSubject($variables),
+					        'from_name'   => $this->getSenderName(),
+					        'from_email'  => $this->getSenderEmail(),
+					        'to_email'    => $emails,
+					        'to_name'     => $names,
+					        'bcc_address' => $bccEmail,
 				        );
 
             $sent = $mail->sendEmail($message);
