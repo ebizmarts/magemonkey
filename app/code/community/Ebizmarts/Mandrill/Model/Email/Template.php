@@ -98,12 +98,12 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 					        'to_name'     => $names,
 					        'bcc_address' => $bccEmail,
 				        );
-			
+
 			$tTags = $this->_getTemplateTags();
 			if(!empty($tTags)){
 				$message ['tags'] = $tTags;
 			}
-			
+
             $sent = $mail->sendEmail($message);
             if($mail->errorCode){
 				return false;

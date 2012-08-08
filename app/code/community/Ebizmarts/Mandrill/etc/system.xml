@@ -4,15 +4,24 @@
         <mandrill translate="label" module="mandrill">
             <label><![CDATA[Mandrill]]></label>
             <class>mandrill-section</class>
+            <header_css>mandrill-header</header_css>
             <tab>advanced</tab>
             <sort_order>609</sort_order>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
+                <hint>
+                    <frontend_model>mandrill/adminhtml_system_config_fieldset_hint</frontend_model>
+                    <sort_order>0</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                </hint>
                 <general translate="label comment">
                     <comment><![CDATA[<a href="http://mandrill.com/signup/?pid=ebizmart&source=website" target="_blank">Get a free Mandrill account now</a>]]></comment>
                     <label><![CDATA[Mandrill, SMARTER EMAIL FOR APPS integration by ebizmarts]]></label>
+                    <sort_order>10</sort_order>
                     <frontend_type>text</frontend_type>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -45,7 +54,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[]]></comment>
-                        </user_info>                        
+                        </user_info>
                     </fields>
                 </general>
             </groups>

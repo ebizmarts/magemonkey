@@ -6,3 +6,19 @@ ul.tabs a.mandrill-section:hover span { background:url(mandrill-tab.png) no-repe
 ul.tabs a.mandrill-section.active, ul.tabs a.mandrill-section.active:hover {background-color: white;}
 
 small { font-size: 9px; }
+
+div.mandrill-notice {
+    background: none repeat scroll 0 0 #EAF0EE;
+    border: 1px solid #CCCCCC;
+    margin-bottom: 10px;
+    padding: 11px 0 0 10px;
+}
+
+h3.mandrill-header {
+    background: url("mandrill-tab.png") no-repeat scroll 0 0 transparent;
+    height: 22px;
+    overflow: hidden;
+    padding: 0;
+    text-indent: -9999px;
+    width: 120px;
+}
