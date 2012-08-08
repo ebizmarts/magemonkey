@@ -14,6 +14,12 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 	protected $_bcc = array();
 
 	public function getMail() {
+
+		//Check if should use Mandrill Transactional Email Service
+        if(FALSE === Mage::helper('mandrill')->useTransactionalService()){
+            return parent::getMail();
+        }
+		
 		if(is_null($this->_mandrill)){
 			$this->_mandrill = Mage::helper('mandrill')->api();
 			$this->_mandrill->setApiKey(Mage::helper('mandrill')->getApiKey());
