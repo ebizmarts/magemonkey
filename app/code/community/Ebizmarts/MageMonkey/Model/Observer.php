@@ -484,7 +484,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		return $mergeVars;
 	}
 
-	* Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
+	/** Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
 	 *
 	 * @param Varien_Event_Observer $observer
 	 * @return void
