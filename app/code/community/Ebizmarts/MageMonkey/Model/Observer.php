@@ -192,7 +192,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 				$additionalLists = Mage::helper('monkey')->getAdditionalList(Mage::app()->getStore()->getId());
 			}
 		}
-		
+
 		if(is_array($additionalLists)){
 			$selectedLists = array_merge($selectedLists, $additionalLists);
 		}
@@ -332,7 +332,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$customer = $observer->getEvent()->getCustomer();
-        
+
 		//Handle additional lists subscription on Customer Create Account
 		Mage::helper('monkey')->additionalListsSubscription($customer);
 
@@ -484,8 +484,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		return $mergeVars;
 	}
 
-	/**
-	 * Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
+	* Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
 	 *
 	 * @param Varien_Event_Observer $observer
 	 * @return void
@@ -497,7 +496,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
         $block = $observer->getEvent()->getBlock();
 
-        if(get_class($block) == 'Enterprise_SalesArchive_Block_Adminhtml_Sales_Order_Grid_Massaction') {
+        if(get_class($block) == 'Mage_Adminhtml_Block_Widget_Grid_Massaction') {
 
             if($block->getRequest()->getControllerName() == 'sales_order') {
 
