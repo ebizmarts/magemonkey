@@ -23,6 +23,7 @@
 ;Notification messages
 "MailChimp Cleaned Emails: %s %s at %s reason: %s","MailChimp Cleaned Emails: %s %s at %s reason: %s"
 "MailChimp Campaign Send: %s %s at %s","MailChimp Campaign Send: %s %s at %s"
+"Confirmation request has been sent.","Confirmation request has been sent."
 
 ;Additional translations
 "members", "members"
