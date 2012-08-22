@@ -55,11 +55,6 @@
                     <bulksync_import><table>magemonkey_bulksync_import</table></bulksync_import>
                 </entities>
             </monkey_mysql4>
-            <core>
-                <rewrite>
-                    <email_template>Ebizmarts_MageMonkey_Model_Email_Template</email_template>
-                </rewrite>
-            </core>
         </models>
         <resources>
             <monkey_setup>
