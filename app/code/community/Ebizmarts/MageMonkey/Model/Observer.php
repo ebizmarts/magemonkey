@@ -32,7 +32,15 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$email  = $subscriber->getSubscriberEmail();
-		$listId = Mage::helper('monkey')->getDefaultList( ($subscriber->getMcStoreId() ? $subscriber->getMcStoreId() : Mage::app()->getStore()->getId()));
+		if($subscriber->getMcStoreId()){
+			$listId = Mage::helper('monkey')->getDefaultList($subscriber->getMcStoreId());
+		}
+		elseif($subscriber->getStoreId()){
+			$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
+		}
+		else{
+			$listId = Mage::helper('monkey')->getDefaultList(Mage::app()->getStore()->getId());
+		}
 		$subscriber->setImportMode(TRUE);
 		$isConfirmNeed = FALSE;
 		if( !Mage::helper('monkey')->isAdmin() &&
