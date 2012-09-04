@@ -44,8 +44,17 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[Your MailChimp API Key.<br/><a target ='_blank' href ='https://us1.admin.mailchimp.com/account/api-key-popup/'>What's MailChimp my IP Key?</a><br/><a target ='_blank' href ='http://kb.mailchimp.com/article/where-can-i-find-my-api-key/'>Where can I find my API Keys?</a>]]></comment>
+                            <comment><![CDATA[Please click the button below to get your API key.]]></comment>
                         </apikey>
+                        <oauth_wizard translate="button_label">
+                            <label></label>
+                            <button_label>Get API credentials</button_label>
+                            <frontend_model>monkey/adminhtml_system_config_oauthWizard</frontend_model>
+                            <sort_order>22</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </oauth_wizard>
                         <account_details translate="label comment">
                             <label>Account details</label>
                             <frontend_model>monkey/adminhtml_system_config_account</frontend_model>
