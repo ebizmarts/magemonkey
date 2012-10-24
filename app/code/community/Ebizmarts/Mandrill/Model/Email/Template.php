@@ -147,8 +147,11 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 		return $tags;
     }
 
-    public function setReplyTo($email)
-    {
+    public function setReplyTo($email) {
+        if(FALSE === Mage::helper('mandrill')->useTransactionalService()){
+            return parent::setReplyTo($email);
+        }
+
 		$this->replyTo = $email;
         return $this;
     }
