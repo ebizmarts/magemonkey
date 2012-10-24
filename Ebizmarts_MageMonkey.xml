@@ -1,16 +1,70 @@
 <_>
-   <form_key>6QsrkRb9Ir9WBIpx</form_key>
+   <form_key>NWpo88Q1qZR01SAI</form_key>
    <name>Ebizmarts_MageMonkey</name>
-   <channel>connect.magentocommerce.com/community</channel>
+   <channel>community</channel>
+   <version_ids>
+      <version_ids>2</version_ids>
+      <version_ids>1</version_ids>
+   </version_ids>
    <summary>MailChimp integration for Magento by Ebizmarts</summary>
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <release_version>1.0.13</release_version>
-   <api_version>1.0</api_version>
-   <release_stability>stable</release_stability>
-   <api_stability>stable</api_stability>
-   <notes>-- version 1.0.13 stable
+   <version>1.0.22</version>
+   <stability>stable</stability>
+   <notes>-- version 1.0.22 stable
+
+- Adding Oauth2 support to connect MageMonkey with MailChimp
+- Fallback on setReplyTo in Mandrill when transactional email is not enabled
+- addBcc Fix on Mandrill
+
+-- version 1.0.21 stable
+
+- Fix duplicated confirmation email notifications
+- Add success message when customer register from the &quot;My Account&quot; section
+- Add mass action option to Sales -&gt; Order grid in admin panel to send orders to MC
+- Fix Mandrill_API::addTo() and Mandrill_API::replyTo() issues in the Mandrill module
+- Add version information in the configuration for the Mandrill module
+
+-- version 1.0.19 stable
+
+- Fix automatic unsubscribe issue when users create orders from backend
+- Adding BCC support for Mandrill Emails
+- Remove enconding from subject for Mandrill Emails
+- Add tags in emails sent from Mandrill
+
+-- version 1.0.18 stable
+
+Independence between MageMonkey and Mandrill modules
+
+-- version 1.0.17 stable
+
+-Fix &quot;unsubscribe&quot; when place an order 
+
+-- version 1.0.16 stable
+
+- Fix progress bar on export function 
+- Add option in admin for limit of customers per round for export and import and delete customers in Magento when are removed in MailChimp
+- Fix unsubscribe on edit customer from the admin panel
+- Add version in the config
+- Fix &quot;Fatal error: Cannot use string offset as an array&quot;
+
+-- version 1.0.15 stable
+
+- fix rendering of additional lists html elements
+- Fix force subscription on checkout when use a payment method wich redirects to a payment page like PayPal Express Checkout.
+
+-- version 1.0.14 stable
+    Fix Export functionality, only customers with status &quot;subscribed&quot; are exported now.
+Increase the limit of customers for exports from 200 to 1000 per hour
+Fix bug in unsubscribe customers.
+Send email confirmation in double opt-in is not used.
+Improve the save configuration proccess, add warnings, remove blank messages, improve the auto save webhooks in MailChimp.
+Fix force subscription on checkout when use a payment method wich redirects to a payment page like PayPal Express Checkout.
+Add new help links in the configuration (&quot;What&apos;s MailChimp my IP Key?&quot; and &quot;How to segment your list based on your customers purchase activity&quot;).
+Don&apos;t display additional lists newsletter block on checkout when there are no additional lists selected
+
+-- version 1.0.13 stable
     Fixing bug on admin urls when store code is used, more bugs fixed.
 
 -- version 1.0.12 stable
@@ -52,32 +106,19 @@
        Including STS
 
 First public release 0.0.9, January 2012</notes>
-   <maintainers>
-      <role>
-         <role>lead</role>
-         <role>lead</role>
-      </role>
+   <authors>
       <name>
-         <name/>
          <name>Ebizmarts Development Team</name>
       </name>
-      <handle>
-         <handle/>
-         <handle>ebizmarts</handle>
-      </handle>
+      <user>
+         <user>ebizmarts</user>
+      </user>
       <email>
-         <email/>
          <email>info@ebizmarts.com</email>
       </email>
-      <active>
-         <active>0</active>
-         <active>1</active>
-      </active>
-   </maintainers>
+   </authors>
    <depends_php_min>5.2.0</depends_php_min>
    <depends_php_max>6.0.0</depends_php_max>
-   <depends_php_recommended/>
-   <depends_php_exclude/>
    <depends>
       <package>
          <name>
@@ -92,39 +133,10 @@ First public release 0.0.9, January 2012</notes>
          <max>
             <max/>
          </max>
-         <recommended>
-            <recommended/>
-         </recommended>
-         <exclude>
-            <exclude/>
-         </exclude>
-         <type>
-            <type>required</type>
-         </type>
+         <files>
+            <files>                                        </files>
+         </files>
       </package>
-      <subpackage>
-         <name>
-            <name/>
-         </name>
-         <channel>
-            <channel/>
-         </channel>
-         <min>
-            <min/>
-         </min>
-         <max>
-            <max/>
-         </max>
-         <recommended>
-            <recommended/>
-         </recommended>
-         <exclude>
-            <exclude/>
-         </exclude>
-         <type>
-            <type>required</type>
-         </type>
-      </subpackage>
       <extension>
          <name>
             <name>Core</name>
@@ -135,29 +147,28 @@ First public release 0.0.9, January 2012</notes>
          <max>
             <max/>
          </max>
-         <recommended>
-            <recommended/>
-         </recommended>
-         <exclude>
-            <exclude/>
-         </exclude>
-         <type>
-            <type>required</type>
-         </type>
       </extension>
    </depends>
    <contents>
-      <role>
-         <role>magelocal</role>
-         <role>magecommunity</role>
-         <role>magedesign</role>
-         <role>magedesign</role>
-         <role>magedesign</role>
-         <role>mageetc</role>
-         <role>magelocale</role>
-         <role>mageskin</role>
-         <role>mageskin</role>
-      </role>
+      <target>
+         <target>magelocal</target>
+         <target>magecommunity</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mageetc</target>
+         <target>magelocale</target>
+         <target>magedesign</target>
+         <target>mageskin</target>
+         <target>magecommunity</target>
+         <target>magedesign</target>
+         <target>mageetc</target>
+         <target>mage</target>
+         <target>magelocale</target>
+         <target>mageskin</target>
+         <target>mageskin</target>
+         <target>magedesign</target>
+      </target>
       <path>
          <path/>
          <path>Ebizmarts/MageMonkey</path>
@@ -166,8 +177,16 @@ First public release 0.0.9, January 2012</notes>
          <path>adminhtml/default/default/layout/magemonkey.xml</path>
          <path>modules/Ebizmarts_MageMonkey.xml</path>
          <path>en_US/Ebizmarts_MageMonkey.csv</path>
-         <path>adminhtml/default/default/magemonkey</path>
+         <path>adminhtml/default/default/template/magemonkey</path>
          <path>frontend/base/default/magemonkey</path>
+         <path>Ebizmarts/Mandrill</path>
+         <path>adminhtml/default/default/layout/mandrill.xml</path>
+         <path>modules/Ebizmarts_Mandrill.xml</path>
+         <path>lib/Mandrill</path>
+         <path>en_US/Ebizmarts_Mandrill.csv</path>
+         <path>adminhtml/default/default/mandrill</path>
+         <path>adminhtml/default/default/magemonkey</path>
+         <path>adminhtml/default/default/template/mandrill</path>
       </path>
       <type>
          <type>file</type>
@@ -177,6 +196,14 @@ First public release 0.0.9, January 2012</notes>
          <type>file</type>
          <type>file</type>
          <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
          <type>dir</type>
          <type>dir</type>
       </type>
@@ -190,8 +217,24 @@ First public release 0.0.9, January 2012</notes>
          <include/>
          <include/>
          <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
       </include>
       <ignore>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
