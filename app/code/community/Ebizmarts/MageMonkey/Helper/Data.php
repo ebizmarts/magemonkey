@@ -477,7 +477,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 
 		//GUEST
-		if( !$customer->getId() ){
+		if( !$customer->getId() && (!$merge_vars['FNAME'] && !$merge_vars['LNAME'])){
 			$guestFirstName = $this->config('guest_name', $customer->getStoreId());
 			$guestLastName  = $this->config('guest_lastname', $customer->getStoreId());
 
