@@ -45,7 +45,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
 			}
 		}
 
-        $collection = Mage::getModel('monkey/custom_collection', array($activityData));
+        $collection = Mage::getModel('monkey/custom_collection', current($activityData));
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
