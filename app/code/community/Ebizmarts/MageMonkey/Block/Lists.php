@@ -94,9 +94,15 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 				}
 
 				if($listData['total'] > 0){
+					$showRealName = $this->helper('monkey')->config('showreallistname');
+					if($showRealName) {
+						$listName = $listData['data'][0]['name'];
+					}else{
+						$listName = $this->__('General Subscription');
+					}
 					$this->_generalList = array(
 												'id'   => $listData['data'][0]['id'],
-												'name' => $this->__('General Subscription'),
+												'name' => $listName,
 												'interest_groupings' => $this->helper('monkey')->filterShowGroupings($api->listInterestGroupings($listData['data'][0]['id'])),
 											   );
 				}
