@@ -248,57 +248,29 @@ class Ebizmarts_MageMonkey_Model_Observer
 				 /**
 				  * Customer Group - Interest Grouping
 				  */
-				    $config = Mage::getModel('core/config_data');
-
-					$interestGroupings = $api->listInterestGroupings($list['id']);
-					$groupingName = Mage::helper('monkey')->getCustomerGroupingName();
-
-					//Check that Grouping not exists
-					$groupingExists = Mage::helper('monkey')->customerGroupGroupingExists($interestGroupings);
-
-					if(FALSE === $groupingExists){
-						$magentoGroups     = Mage::helper('customer')->getGroups()
-												->toOptionHash();
-
-						$groupingId = NULL;
-
-						if($api->errorCode){
-							//Maybe the error is telling us that there are no groupings yet
-							//Check for "This list does not have interest groups enabled"
-							if($api->errorCode == '211'){
-								$groupingId = $api->listInterestGroupingAdd($list['id'], $groupingName, 'dropdown', $magentoGroups);
-							}
+				$magentoGroups = Mage::helper('customer')->getGroups()->toOptionHash();
+				array_push($magentoGroups, "NOT LOGGED IN");
+				$customerGroup = array('field_type'	=> 'dropdown', 'choices' => $magentoGroups);
+				$mergeVars = $api->listMergeVars($list['id']);
+				$mergeExist = false;
+				foreach($mergeVars as $vars) {
+					if($vars['tag'] == 'CGROUP'){
+						$mergeExist = true;
+						if($magentoGroups === $vars['choices']){
+							$update = false;
 						}else{
-							$groupingId = $api->listInterestGroupingAdd($list['id'], $groupingName, 'dropdown', $magentoGroups);
-						}
-
-						if($groupingId && is_int($groupingId)){
-
-							$website = $request->getParam('website');
-							$store   = $request->getParam('store');
-							if ($store) {
-								$scope   = 'stores';
-								$scopeId = (int)Mage::getConfig()->getNode('stores/' . $store . '/system/store/id');
-							} elseif ($website) {
-								$scope   = 'websites';
-								$scopeId = (int)Mage::getConfig()->getNode('websites/' . $website . '/system/website/id');
-							} else {
-								$scope   = 'default';
-								$scopeId = 0;
-							}
-
-
-							//This is to fix lists starting with numbers becuse break XML parsing
-							$safeListId = 'list_' . $list['id'];
-
-							$config
-							->setScope($scope)
-							->setScopeId($scopeId)
-							->setPath('monkey/groupings/' . $safeListId)
-							->setValue($groupingId)
-							->save();
+							$update = true;
 						}
 					}
+				}
+				if($mergeExist){
+					if($update){
+						$newValue = array('choices' => $magentoGroups);
+						$api->listMergeVarUpdate($list['id'], 'CGROUP', $newValue);
+					}
+				}else{
+					$api->listMergeVarAdd($list['id'], 'CGROUP', 'Customer Groups', $customerGroup);
+				}
 				 /**
 				  * Customer Group - Interest Grouping
 				  */

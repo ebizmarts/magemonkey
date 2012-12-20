@@ -2,19 +2,10 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>1.0.22</version>
+             <version>1.0.23</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
-        <!-- not yet fully tested cache>
-            <types>
-                <monkey translate="label,description" module="monkey">
-                    <label>MailChimp</label>
-                    <description>API requests data cache.</description>
-                    <tags>MONKEY_GENERAL_CACHE_TAG</tags>
-                </monkey>
-            </types>
-        </cache-->
     	<events>
             <newsletter_subscriber_save_before>
                 <observers>
@@ -224,7 +215,7 @@
 				<showreallistname>0</showreallistname>
 				<checkout_subscribe>0</checkout_subscribe>
 				<transactional_emails>false</transactional_emails>
-				<map_fields><![CDATA[a:11:{i:0;a:2:{s:7:"magento";s:9:"firstname";s:9:"mailchimp";s:5:"FNAME";}i:1;a:2:{s:7:"magento";s:8:"lastname";s:9:"mailchimp";s:5:"LNAME";}i:2;a:2:{s:7:"magento";s:3:"dob";s:9:"mailchimp";s:3:"DOB";}i:3;a:2:{s:7:"magento";s:6:"prefix";s:9:"mailchimp";s:7:"PRENAME";}i:4;a:2:{s:7:"magento";s:15:"billing_address";s:9:"mailchimp";s:7:"BILLING";}i:5;a:2:{s:7:"magento";s:16:"shipping_address";s:9:"mailchimp";s:8:"SHIPPING";}i:6;a:2:{s:7:"magento";s:6:"gender";s:9:"mailchimp";s:6:"GENDER";}i:7;a:2:{s:7:"magento";s:8:"store_id";s:9:"mailchimp";s:7:"STOREID";}i:8;a:2:{s:7:"magento";s:10:"website_id";s:9:"mailchimp";s:7:"WEBSITE";}i:9;a:2:{s:7:"magento";s:16:"date_of_purchase";s:9:"mailchimp";s:3:"DOP";}i:10;a:2:{s:7:"magento";s:19:"ee_customer_balance";s:9:"mailchimp";s:9:"STORECRED";}}]]></map_fields>
+				<map_fields><![CDATA[a:11:{i:0;a:2:{s:7:"magento";s:9:"firstname";s:9:"mailchimp";s:5:"FNAME";}i:1;a:2:{s:7:"magento";s:8:"lastname";s:9:"mailchimp";s:5:"LNAME";}i:2;a:2:{s:7:"magento";s:3:"dob";s:9:"mailchimp";s:3:"DOB";}i:3;a:2:{s:7:"magento";s:6:"prefix";s:9:"mailchimp";s:7:"PRENAME";}i:4;a:2:{s:7:"magento";s:15:"billing_address";s:9:"mailchimp";s:7:"BILLING";}i:5;a:2:{s:7:"magento";s:16:"shipping_address";s:9:"mailchimp";s:8:"SHIPPING";}i:6;a:2:{s:7:"magento";s:6:"gender";s:9:"mailchimp";s:6:"GENDER";}i:7;a:2:{s:7:"magento";s:8:"store_id";s:9:"mailchimp";s:7:"STOREID";}i:8;a:2:{s:7:"magento";s:10:"website_id";s:9:"mailchimp";s:7:"WEBSITE";}i:9;a:2:{s:7:"magento";s:16:"date_of_purchase";s:9:"mailchimp";s:3:"DOP";}i:10;a:2:{s:7:"magento";s:19:"ee_customer_balance";s:9:"mailchimp";s:9:"STORECRED";}i:11;a:2:{s:7:"magento";s:8:"group_id";s:9:"mailchimp";s:6:"CGROUP";}}]]></map_fields>
 				<cron_export>1000</cron_export>
     		</general>
     	</monkey>

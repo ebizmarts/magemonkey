@@ -463,6 +463,15 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 						}
 
 						break;
+					case 'group_id':
+							$group_id = (int)$customer->getData(strtolower($customAtt));
+							$customerGroup = Mage::helper('customer')->getGroups()->toOptionHash();
+							if($group_id == 0){
+								$merge_vars[$key] = 'NOT LOGGED IN';
+							}else{
+								$merge_vars[$key] = $customerGroup[$group_id];
+							}
+						break;
 					default:
 
 						if( ($value = (string)$customer->getData(strtolower($customAtt)))
@@ -477,7 +486,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 
 		//GUEST
-		if( !$customer->getId() && (!$merge_vars['FNAME'] && !$merge_vars['LNAME'])){
+		if( !$customer->getId() && (!$request->getPost('firstname') || !$request->getPost('lastname'))){
 			$guestFirstName = $this->config('guest_name', $customer->getStoreId());
 			$guestLastName  = $this->config('guest_lastname', $customer->getStoreId());
 
@@ -496,6 +505,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		$groups = $customer->getListGroups();
 		$groupings = array();
+
 		if(is_array($groups) && count($groups)){
 			foreach($groups as $groupId => $grupoptions){
 				$groupings[] = array(
@@ -517,7 +527,51 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				);
 			}
 
+		}else {
+			//Handle Customers during Register
+			$groups = Mage::helper('customer')->getGroups()->toOptionHash();
+
+			$_adminSession = Mage::getSingleton('admin/session');
+
+			/* Retrieve store level General List ID configured in:
+					System -> Configuration -> MailChimp -> General Subscription
+			   Retrieve Default Magento Customer's Group ID:
+					System -> Configuration -> Customer -> Customer Configuration -> Create New Account Option -> Default Group */
+			if(!$_adminSession->isLoggedIn()) {
+				$generalListId = Mage::getStoreConfig("monkey/general/list", Mage::app()->getStore()->getId());
+				if($generalListId) {
+					$magentoStoreGroupId = (int)Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID, Mage::app()->getStore()->getId());
+					$magentoStoreGroup = Mage::getModel('customer/group')->load($magentoStoreGroupId);
+				}
+			} else {
+				$generalListId = Mage::getStoreConfig("monkey/general/list", $customer->getStoreId());
+				if($generalListId) {
+					$magentoStoreGroup = Mage::getModel('customer/group')->load($customer->getGroupId());
+				}
+			}
+
+			// Retrieve MailChimp MAGE_CUSTOMER_GROUPS's ID
+			$api = Mage::getSingleton('monkey/api');
+			$mc_groupings = $api->listInterestGroupings($generalListId);
+			$mc_group_id = $mc_groupings[0]['id'];
+
+			if($mc_group_id) {
+				if($magentoStoreGroup) {
+					$customerGroup = array(
+								'id' => $mc_group_id,
+								'groups' => $magentoStoreGroup->getCode()
+					);
+				} else {
+					$customerGroup = array(
+								'id' => $mc_group_id,
+								'groups' => 'General'
+					);
+				}
+			}
+
 		}
+
+		array_push($groupings, $customerGroup);
 
 		$merge_vars['GROUPINGS'] = $groupings;
 
