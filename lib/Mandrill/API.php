@@ -333,4 +333,11 @@ class Mandrill_API {
 
     }
 
+    public function tagsInfo($tag) {
+        $params        = array();
+        $params["tag"] = $tag;
+
+        return $this->_callServer("tags/info", $params);
+    }
+
 }

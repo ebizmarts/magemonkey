@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * Main module helper
@@ -19,7 +19,7 @@ class Ebizmarts_Mandrill_Helper_Data extends Mage_Core_Helper_Abstract	 {
 	public function useTransactionalService() {
 		$active = Mage::getStoreConfigFlag($this->_configPath . "active");
 		$key    = $this->getApiKey();
-		
+
 		return ($active && (strlen($key)));
 	}
 
@@ -30,10 +30,10 @@ class Ebizmarts_Mandrill_Helper_Data extends Mage_Core_Helper_Abstract	 {
 	/**
 	* Retrieves Mandrill API KEY from Magento's configuration
 	*
-	* @return string 
+	* @return string
 	*/
-	public function getApiKey() {
-		return Mage::getStoreConfig($this->_configPath . "apikey");
+	public function getApiKey($store = null) {
+		return Mage::getStoreConfig($this->_configPath . "apikey",$store);
 	}
 
 	/**

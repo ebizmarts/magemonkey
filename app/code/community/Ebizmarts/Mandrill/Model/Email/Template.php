@@ -129,20 +129,24 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 
     protected function _getTemplateTags() {
 
-    	$tags = array();
+	    $tags = array();
 
-    	$templateId = (string)$this->getId();
+	    $templateId = (string)$this->getId();
 
 		$templates = parent::getDefaultTemplates();
 		if (isset($templates[$templateId])) {
-            $tags []= substr($templates[$templateId]['label'], 0, 50);
-		}else{
-        	if($this->getTemplateCode()){
-        		$tags []= substr($this->getTemplateCode(), 0, 50);
-        	}else{
-        		$tags []= substr($templateId, 0, 50);
-        	}
-        }
+			if(isset($templates[$templateId]['mandrill-tag'])) {
+				$tags = explode(',',$templates[$templateId]['mandrill-tag']);
+			} else {
+			    $tags []= substr($templates[$templateId]['label'], 0, 50);
+			}
+		} else {
+		        if($this->getTemplateCode()){
+		        	$tags []= substr($this->getTemplateCode(), 0, 50);
+		        } else {
+		        	$tags []= substr($templateId, 0, 50);
+		        }
+		}
 
 		return $tags;
     }
