@@ -54,14 +54,14 @@ class Ebizmarts_MageMonkey_Model_Observer
         //Flag only is TRUE when changing to SUBSCRIBE
         if( TRUE === $subscriber->getIsStatusChanged() ){
 
+			if($isOnMailChimp == 1){
+				return $observer;
+			}
+
 			if($isConfirmNeed){
        			$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
        			Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
  			}
-
-			if($isOnMailChimp == 1){
-				return $observer;
-			}
 
 			Mage::getSingleton('monkey/api')
 								->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
@@ -149,7 +149,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	public function saveConfig(Varien_Event_Observer $observer)
 	{
 
-		$store  = is_null($observer->getEvent()->getStore()) ? 'default': $observer->getEvent()->getStore();
+		$store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
 
@@ -210,10 +210,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		//Generating Webhooks URL
 		$hookUrl = '';
-		try
-		{
-			$hookUrl  = Mage::getModel('core/url')->setStore($store)
-												  ->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+		try{
+			$hookUrl  = Mage::getModel('core/url')->setStore($store)->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}catch(Exception $e){
 			$hookUrl  = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}
@@ -230,18 +228,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$lists = $api->lists();
 
 		foreach($lists['data'] as $list){
-
-			/*$webHooks = $api->listWebhooks($list['id']);
-
-			if(!empty($webHooks)){
-				foreach($webHooks as $whook){
-					$chunk = (string)substr($whook['url'], strrpos($whook['url'], '/')+1, strlen($whook['url']));
-
-					if((string)$webhooksKey === $chunk){
-						$api->listWebhookDel($list['id'], $whook['url']);
-					}
-				}
-			}*/
 
 			if(in_array($list['id'], $selectedLists)){
 
@@ -324,9 +310,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$mergeVars = $this->_mergeVars($customer, TRUE);
 		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
-
 		$lists = $api->listsForEmail($oldEmail);
-
 		if(is_array($lists)){
 			foreach($lists as $listId){
 				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
