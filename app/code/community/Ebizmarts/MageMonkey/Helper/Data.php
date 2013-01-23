@@ -53,9 +53,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	{
 		if(is_array($interestGroupings)){
 
-			$customGroupings = Mage::getConfig()->getNode('default/monkey/custom_groupings')
-																					->asArray();
-
+			$customGroupings = (array) Mage::getConfig()->getNode('default/monkey/custom_groupings');
 			foreach($interestGroupings as $key => $group){
 
 				if(TRUE === in_array($group['name'], $customGroupings)){
