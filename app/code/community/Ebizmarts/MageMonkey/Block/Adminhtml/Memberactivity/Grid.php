@@ -32,20 +32,26 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
 			foreach($lists as $list){
 				$activity []= $api->listMemberActivity($list, $email);
 			}
-
 			if(!empty($activity)){
 				foreach($activity as $act){
 
 					if(empty($act['data'][0])){
 						continue;
 					}
-
 					$activityData []= $act['data'];
 				}
 			}
 		}
+		if(empty($activityData)){
+			$activityData[] = array('action' => '', 'timestamp' => '', 'url' => '', 'bounce_type' => '', 'campaign_id' => '');
+		}
+		if (!is_array(current($activityData))) {
+			$activityData = array();
+		} else {
+			$activityData = current($activityData);
+		}
 
-        $collection = Mage::getModel('monkey/custom_collection', current($activityData));
+		$collection = Mage::getModel('monkey/custom_collection', $activityData);
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
