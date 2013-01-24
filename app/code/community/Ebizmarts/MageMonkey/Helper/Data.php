@@ -805,11 +805,15 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						$subscriber->subscribe($email);
 					}else{
-
+						$isConfirmNeed = FALSE;
+						if( !Mage::helper('monkey')->isAdmin() &&
+							(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1) ){
+							$isConfirmNeed = TRUE;
+						}
 						$customer->setListGroups($groupings);
 						$customer->setMcListId($listId);
 						$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
-						$api->listSubscribe($listId, $email, $mergeVars, 'html', ($loggedIn ? false : true));
+						$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
 
 					}
 
