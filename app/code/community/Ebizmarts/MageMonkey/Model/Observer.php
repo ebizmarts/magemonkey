@@ -149,7 +149,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	public function saveConfig(Varien_Event_Observer $observer)
 	{
 
-		$store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
+		$scope = is_null($observer->getEvent()->getStore()) ? 'default' : $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
 
@@ -206,12 +206,20 @@ class Ebizmarts_MageMonkey_Model_Observer
 			$selectedLists = array_merge($selectedLists, $additionalLists);
 		}
 
-		$webhooksKey = Mage::helper('monkey')->getWebhooksKey($store);
+		$webhooksKey = Mage::helper('monkey')->getWebhooksKey($scope);
 
 		//Generating Webhooks URL
 		$hookUrl = '';
 		try{
-			$hookUrl  = Mage::getModel('core/url')->setStore($store)->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+			switch ($scope) {
+		        case 'default':
+		            $store = Mage::app()->getDefaultStoreView()->getCode();
+		            break;
+		        default:
+		            $store = $scope;
+		            break;
+		    }
+		    $hookUrl  = Mage::getModel('core/url')->setStore($store)->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}catch(Exception $e){
 			$hookUrl  = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}
