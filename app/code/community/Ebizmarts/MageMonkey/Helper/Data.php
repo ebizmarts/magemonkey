@@ -718,7 +718,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		//<state> param is an html serialized field containing the default form state
 		//before submission, we need to parse it as a request in order to save it to $odata and process it
 		parse_str($request->getPost('state'), $odata);
-
+		$isConfirmNeed = FALSE;
 		$curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
 		$lists    = $request->getPost('list', array());
 
@@ -805,7 +805,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						$subscriber->subscribe($email);
 					}else{
-						$isConfirmNeed = FALSE;
 						if( !Mage::helper('monkey')->isAdmin() &&
 							(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1) ){
 							$isConfirmNeed = TRUE;
