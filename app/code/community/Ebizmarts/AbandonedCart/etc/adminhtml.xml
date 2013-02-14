@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <menu>
+        <sales>
+            <children>
+                <ebizmarts_abandonedcart translate="title" module="ebizmarts_abandonedcart">
+                    <title>Abandoned Cart Orders</title>
+                    <sort_order>800</sort_order>
+                    <action>adminhtml/abandonedorder/index</action>
+                </ebizmarts_abandonedcart>
+            </children>
+        </sales>
+        <dashboard>
+            <children>
+                <ebizmarts_abandonedcart translate="title" module="ebizmarts_abandonedcart">
+                    <title>Abandoned Cart Dashboard</title>
+                    <sort_order>800</sort_order>
+                    <!--depends>
+                        <module>Ebizmarts_Mandrill</module>
+                    </depends-->
+                    <action>adminhtml/abandonedorder/dashboard</action>
+                </ebizmarts_abandonedcart>
+            </children>
+        </dashboard>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <ebizmarts_abandonedcart translate="title" module="ebizmarts_abandonedcart">
+                                        <title>Ebizmarts Abandoned Cart</title>
+                                    </ebizmarts_abandonedcart>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <translate>
+        <modules>
+            <Ebizmarts_AbandonedCart>
+                <files>
+                    <default>Ebizmarts_AbandonedCart.csv</default>
+                </files>
+            </Ebizmarts_AbandonedCart>
+        </modules>
+    </translate>
+</config>

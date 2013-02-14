@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<config>
+    <sections>
+        <ebizmarts_abandonedcart translate="label" module="ebizmarts_abandonedcart">
+            <label>Ebizmarts Abandoned Cart</label>
+            <tab>customer</tab>
+            <sort_order>404</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <general translate="label comment">
+                    <label>General</label>
+                    <sort_order>1</sort_order>
+                    <frontend_type>text</frontend_type>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <hint>
+                            <frontend_model>ebizmarts_abandonedcart/adminhtml_system_config_fieldset_hint</frontend_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </hint>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </active>
+                        <identity translate="label">
+                            <label>Sender</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_identity</source_model>
+                            <sort_order>15</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </identity>
+                        <template translate="label">
+                            <label>Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/template</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </template>
+                        <coupon_template translate="label">
+                            <label>Email Template With Coupon</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/coupon_template</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </coupon_template>
+                        <days translate="label comment">
+                            <label>Send email after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Days]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </days>
+                        <max translate="label comment">
+                            <label>Max number of email to send</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Max]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </max>
+
+                    </fields>
+                </general>
+                <coupon>
+                    <label>Coupon</label>
+                    <sort_order>99</sort_order>
+                    <frontend_type>text</frontend_type>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <create translate="label">
+                            <label>Create Coupon?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </create>
+                        <sendon translate="label">
+                            <label>On email number?</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The coupon will be created on the email number]]></comment>
+                            <depends>
+                                <create>1</create>
+                            </depends>
+                        </sendon>
+                        <expire>
+                            <label>Expire on</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The coupon expiration in days]]></comment>
+                            <depends>
+                                <create>1</create>
+                            </depends>
+                        </expire>
+                        <length>
+                            <label>Coupon length</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <!--comment><![CDATA[The coupon expiration in days]]></comment-->
+                            <depends>
+                                <create>1</create>
+                            </depends>
+                        </length>
+                        <discounttype>
+                            <label>Discount type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_abandonedcart/system_config_discounttype</source_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Select percentage or fixed discount]]></comment>
+                            <depends>
+                                <create>1</create>
+                            </depends>
+                        </discounttype>
+                        <discount>
+                            <label>Discount amount</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Amount]]></comment>
+                            <depends>
+                                <create>1</create>
+                            </depends>
+                        </discount>
+                        <couponlabel>
+                            <label>Label for coupon</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[]]></comment>
+                            <depends>
+                                <create>1</create>
+                            </depends>
+                        </couponlabel>
+                    </fields>
+                </coupon>
+            </groups>
+        </ebizmarts_abandonedcart>
+    </sections>
+</config>

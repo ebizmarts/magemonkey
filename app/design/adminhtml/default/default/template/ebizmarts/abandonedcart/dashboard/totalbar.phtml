@@ -1,0 +1,46 @@
+<?php if( sizeof($this->getTotals()) > 0 ): ?>
+<?php
+    $last = '';
+    $total = array();
+    foreach($this->getTotals() as $_total):
+        $words = explode(' ',$_total['label']);
+        $total[$words[0]][] = $_total;
+    endforeach;
+ ?>
+<div class="box" id="dashboard_diagram_totals">
+    <?php foreach( $total as $label => $_auxtotal ): ?>
+    <div class="entry-edit">
+        <div class="entry-edit-head"><h4><?php echo $label ?></h4></div>
+        <table cellspacing="0" width="100%">
+            <tr>
+                <?php foreach( $_auxtotal as $_total ): ?>
+                <td class="a-center bold">
+                    <span><?php echo $_total['label'] ?></span><br />
+                    <span class="nowrap" style="font-size:18px; color:#EA7601;"><?php echo $_total['value'] ?><span style="font-size:14px; color:#DE8946;"><?php echo $_total['decimals'] ?></span></span>
+                </td>
+                <?php endforeach; ?>
+            </tr>
+        </table>
+    </div>
+    <?php endforeach; ?>
+    <?php if(!Mage::helper('core')->isModuleEnabled('Ebizmarts_Mandrill')): ?>
+        <div class="warning-msg">
+            You may obtain more statistics if you install <a class="action-link" href="http://www.magentocommerce.com/magento-connect/mage-monkey-mailchimp-integration-4865.html" target="_blank">Ebizmarts_Magemonkey</a>
+            extension and configure <a class="action-link-holder" href="http://mandrill.com/signup/?pid=ebizmart&source=website" target="_blank">Mandrill</a> is free
+        </div>
+    <?php else: ?>
+        <?php if(Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version < '1.0.5'): ?>
+        <div class="warning-msg">
+            You may obtain more statistics if you upgrade your <a class="action-link" href="http://www.magentocommerce.com/magento-connect/mage-monkey-mailchimp-integration-4865.html" target="_blank">Ebizmarts_Magemonkey</a>
+            extension to 1.0.5 or up and configure <a class="action-link-holder" href="http://mandrill.com/signup/?pid=ebizmart&source=website" target="_blank">Mandrill</a> is free
+        </div>
+        <?php else: ?>
+            <?php if(!Mage::helper('mandrill')->useTransactionalService()): ?>
+            <div class="warning-msg">
+                You may obtain more statistics if enable and configure <a class="action-link-holder" href="<?php echo Mage::helper("adminhtml")->getUrl("adminhtml/system_config/edit/section/mandrill"); ?>" >Mandrill</a> extension
+            </div>
+            <?php endif; ?>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+<?php endif; ?>

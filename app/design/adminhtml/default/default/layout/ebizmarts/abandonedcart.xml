@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_abandonedorder_grid>
+        <update handle="formkey"/>
+        <block type="ebizmarts_abandonedcart/adminhtml_abandonedorder_grid" name="ebizmarts_abandonedcart_abandonedorder.grid" output="toHtml"></block>
+    </adminhtml_abandonedorder_grid>
+
+    <adminhtml_abandonedorder_index>
+        <reference name="content">
+            <block type="ebizmarts_abandonedcart/adminhtml_abandonedorder" name="ebizmarts_abandonedcart_abandonedorder.grid.container"></block>
+        </reference>
+    </adminhtml_abandonedorder_index>
+    <adminhtml_abandonedorder_dashboard>
+        <reference name="content">
+            <block type="ebizmarts_abandonedcart/adminhtml_dashboard" name="ebizmarts_abandonedcart_abandonedorder.dashboard">
+                <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher" template="store/switcher.phtml">
+                    <action method="setUseConfirm"><params>0</params></action>
+                </block>
+            </block>
+        </reference>
+    </adminhtml_abandonedorder_dashboard>
+
+</layout>

@@ -1,0 +1,72 @@
+<script type="text/javascript">
+    //<![CDATA[
+    function changeDiagramsPeriod(periodObj) {
+        periodParam = periodObj.value ? 'period/' + periodObj.value + '/' : '';
+        ajaxBlockUrl = '<?php echo $this->getUrl('*/*/ajaxBlock', array('_current' => true, 'block' => 'totals', 'period' => '')) ?>' + periodParam;
+        new Ajax.Request(ajaxBlockUrl, {
+            parameters: {isAjax: 'true', form_key: FORM_KEY},
+            onSuccess: function(transport) {
+                tabContentElementId = 'dashboard_diagram_totals';
+                try {
+                    if (transport.responseText.isJSON()) {
+                        var response = transport.responseText.evalJSON()
+                        if (response.error) {
+                            alert(response.message);
+                        }
+                        if(response.ajaxExpired && response.ajaxRedirect) {
+                            setLocation(response.ajaxRedirect);
+                        }
+                    } else {
+                        $(tabContentElementId).replace(transport.responseText);
+                    }
+                }
+                catch (e) {
+                    $(tabContentElementId).replace(transport.responseText);
+                }
+            }
+        });
+    }
+
+    function toggleCal(id) {
+        $('dashboard_'+id+'_cal_div').toggle();
+        $('dashboard_'+id+'_range_div').toggle();
+    }
+    //]]>
+</script>
+
+
+
+<div class="content-header">
+    <table cellspacing="0">
+        <tr>
+            <td style="width:50%;"><h3>Abandoned Cart Dashboard (Ebizmarts)</h3></td>
+        </tr>
+    </table>
+</div>
+
+<div class="dashboard-container">
+    <?php echo $this->getChildHtml('store_switcher') ?>
+    <table cellspacing='25' width='100%'>
+        <tr>
+            <td>
+                <?php echo $this->getChildHtml('sales') ?>
+            </td>
+            <td>
+                <div class="entry-edit" style="border: 1px solid #ccc;">
+                    <div style="margin: 20px;">
+                        <p class="switcher a-right" style="padding: 5px 10px;">
+                            Select a range:
+                            <select name="period" id="order__period" onchange="changeDiagramsPeriod(this);">
+                                <?php foreach ($this->helper('ebizmarts_abandonedcart')->getDatePeriods() as $_value=>$_label): ?>
+                                <?php if(in_array($_value, array('custom'))) continue; ?>
+                                <option value="<?php echo $_value ?>" <?php if($this->getRequest()->getParam('period')==$_value): ?> selected="selected"<?php endif; ?>><?php echo $_label ?></option>
+                                <?php endforeach; ?>
+                            </select></p><br/>
+                        </p>
+                        <?php echo $this->getChildHtml('totals') ?>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

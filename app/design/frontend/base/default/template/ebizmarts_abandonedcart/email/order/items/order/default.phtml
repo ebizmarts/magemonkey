@@ -1,0 +1,111 @@
+<?php $_item = $this->getItem() ?>
+<?php $_quote = $this->getItem()->getQuote() ?>
+<tr>
+    <td align="left" valign="top" style="font-size:11px; padding:3px 9px; border-bottom:1px dotted #CCCCCC;">
+        <strong style="font-size:11px;"><?php echo $this->htmlEscape($_item->getName()) ?></strong>
+        <?php if ($this->getItemOptions()): ?>
+        <dl style="margin:0; padding:0;">
+            <?php foreach ($this->getItemOptions() as $option): ?>
+            <dt><strong><em><?php echo $option['label'] ?></em></strong></dt>
+            <dd style="margin:0; padding:0 0 0 9px;">
+                <?php echo nl2br($this->escapeHtml($option['value'])) ?>
+            </dd>
+            <?php endforeach; ?>
+        </dl>
+        <?php endif; ?>
+        <?php $addInfoBlock = $this->getProductAdditionalInformationBlock(); ?>
+        <?php if ($addInfoBlock) :?>
+        <?php echo $addInfoBlock->setItem($_item)->toHtml(); ?>
+        <?php endif; ?>
+        <?php echo $this->escapeHtml($_item->getDescription()) ?>
+    </td>
+    <td align="left" valign="top" style="font-size:11px; padding:3px 9px; border-bottom:1px dotted #CCCCCC;"><?php echo $this->htmlEscape($this->getSku($_item)) ?></td>
+    <td align="center" valign="top" style="font-size:11px; padding:3px 9px; border-bottom:1px dotted #CCCCCC;"><?php echo $_item->getQtyOrdered()*1 ?></td>
+    <td align="right" valign="top" style="font-size:11px; padding:3px 9px; border-bottom:1px dotted #CCCCCC;">
+        <?php if ($this->helper('tax')->displaySalesPriceExclTax($_quote->getStoreId()) || $this->helper('tax')->displaySalesBothPrices($_quote->getStore())): ?>
+        <?php if ($this->helper('tax')->displaySalesBothPrices($_quote->getStoreId())): ?>
+            <span class="label"><?php echo Mage::helper('tax')->__('Excl. Tax'); ?>:</span>
+            <?php endif; ?>
+        <?php if (Mage::helper('weee')->typeOfDisplay($_item, array(0, 1, 4), 'email', $_quote->getStore())): ?>
+            <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($_item->getRowTotal()+$_item->getWeeeTaxAppliedRowAmount()+$_item->getWeeeTaxRowDisposition()); ?>
+            <?php //echo $_quote->formatPrice($_item->getRowTotal()+$_item->getWeeeTaxAppliedRowAmount()+$_item->getWeeeTaxRowDisposition()); ?>
+            <?php else: ?>
+            <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($_item->getRowTotal()) ?>
+            <?php endif; ?>
+
+
+        <?php if (Mage::helper('weee')->getApplied($_item)): ?>
+            <br />
+            <?php if (Mage::helper('weee')->typeOfDisplay($_item, 1, 'email', $_quote->getStore())): ?>
+                <small>
+                    <?php foreach (Mage::helper('weee')->getApplied($_item) as $tax): ?>
+                    <span class="nobr"><?php echo $tax['title']; ?>: <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($tax['row_amount'],true,true); ?></span><br />
+                    <?php endforeach; ?>
+                </small>
+                <?php elseif (Mage::helper('weee')->typeOfDisplay($_item, 2, 'email', $_quote->getStoreId())): ?>
+                <?php foreach (Mage::helper('weee')->getApplied($_item) as $tax): ?>
+                    <span class="nobr"><small><?php echo $tax['title']; ?>: <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($tax['row_amount_incl_tax'],true,true); ?></small></span><br />
+                    <?php endforeach; ?>
+                <?php elseif (Mage::helper('weee')->typeOfDisplay($_item, 4, 'email', $_quote->getStoreId())): ?>
+                <small>
+                    <?php foreach (Mage::helper('weee')->getApplied($_item) as $tax): ?>
+                    <span class="nobr"><?php echo $tax['title']; ?>: <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($tax['row_amount_incl_tax'],true,true); ?></span><br />
+                    <?php endforeach; ?>
+                </small>
+                <?php endif; ?>
+
+            <?php if (Mage::helper('weee')->typeOfDisplay($_item, 2, 'email', $_quote->getStore())): ?>
+                <br />
+                <span class="nobr"><?php echo Mage::helper('weee')->__('Total'); ?>:<br /> <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($_item->getCalculationPrice()+$_item->getWeeeTaxAppliedRowAmount()+$_item->getWeeeTaxRowDisposition()); ?></span>
+                <?php endif; ?>
+            <?php endif; ?>
+        <?php endif; ?>
+
+
+        <?php if ($this->helper('tax')->displaySalesPriceInclTax($_quote->getStoreId()) || $this->helper('tax')->displaySalesBothPrices($_quote->getStoreId())): ?>
+        <?php if ($this->helper('tax')->displaySalesBothPrices($_quote->getStoreId())): ?>
+            <br /><span class="label"><?php echo Mage::helper('tax')->__('Incl. Tax'); ?>:</span>
+            <?php endif; ?>
+        <?php $_incl = $this->helper('checkout')->getSubtotalInclTax($_item); ?>
+        <?php if (Mage::helper('weee')->typeOfDisplay($_item, array(0, 1, 4), 'email', $_quote->getStoreId())): ?>
+            <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($_incl+$_item->getWeeeTaxAppliedRowAmount()); ?>
+            <?php else: ?>
+            <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($_incl-$_item->getWeeeTaxRowDisposition()) ?>
+            <?php endif; ?>
+        <?php if (Mage::helper('weee')->getApplied($_item)): ?>
+            <br />
+            <?php if (Mage::helper('weee')->typeOfDisplay($_item, 1, 'email', $_quote->getStore())): ?>
+                <small>
+                    <?php foreach (Mage::helper('weee')->getApplied($_item) as $tax): ?>
+                    <span class="nobr"><?php echo $tax['title']; ?>: <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($tax['row_amount'],true,true); ?></span><br />
+                    <?php endforeach; ?>
+                </small>
+                <?php elseif (Mage::helper('weee')->typeOfDisplay($_item, 2, 'email', $_quote->getStoreId())): ?>
+                <?php foreach (Mage::helper('weee')->getApplied($_item) as $tax): ?>
+                    <span class="nobr"><small><?php echo $tax['title']; ?>: <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($tax['row_amount_incl_tax'],true,true); ?></small></span><br />
+                    <?php endforeach; ?>
+                <?php elseif (Mage::helper('weee')->typeOfDisplay($_item, 4, 'email', $_quote->getStoreId())): ?>
+                <small>
+                    <?php foreach (Mage::helper('weee')->getApplied($_item) as $tax): ?>
+                    <span class="nobr"><?php echo $tax['title']; ?>: <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($tax['row_amount_incl_tax'],true,true); ?></span><br />
+                    <?php endforeach; ?>
+                </small>
+                <?php endif; ?>
+
+            <?php if (Mage::helper('weee')->typeOfDisplay($_item, 2, 'email', $_quote->getStoreId())): ?>
+                <span class="nobr"><?php echo Mage::helper('weee')->__('Total incl. tax'); ?>:<br /> <?php echo Mage::app()->getLocale()->currency($_quote->getQuoteCurrencyCode())->toCurrency($_incl+$_item->getWeeeTaxAppliedRowAmount()); ?></span>
+                <?php endif; ?>
+            <?php endif; ?>
+        <?php endif; ?>
+    </td>
+</tr>
+<?php if ($_item->getGiftMessageId() && $_giftMessage = $this->helper('giftmessage/message')->getGiftMessage($_item->getGiftMessageId())): ?>
+<tr>
+    <td colspan="4" style=" border-bottom:2px solid #CCCCCC; padding:3px 9px;">
+        <strong style="color:#444444; font-size:11px;"><?php echo $this->__('Gift Message') ?></strong>
+        <?php echo $this->__('From:'); ?> <?php echo $this->htmlEscape($_giftMessage->getSender()) ?><br />
+        <?php echo $this->__('To:'); ?> <?php echo $this->htmlEscape($_giftMessage->getRecipient()) ?><br />
+        <strong><?php echo $this->__('Message:'); ?></strong><br /><?php echo $this->htmlEscape($_giftMessage->getMessage()) ?>
+    </td>
+</tr>
+<?php endif; ?>
