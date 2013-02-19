@@ -45,16 +45,16 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml
             'index' => 'order_increment_id',
         ));
 
-        $this->addColumn('mc_campaign_id	', array(
+        $this->addColumn('mc_campaign_id', array(
             'header'=> Mage::helper('monkey')->__('Campaign #'),
             'width' => '80px',
-            'index' => 'mc_campaign_id	'
+            'index' => 'mc_campaign_id'
         ));
 
-        $this->addColumn('mc_email_id	', array(
+        $this->addColumn('mc_email_id', array(
             'header'=> Mage::helper('monkey')->__('Email #'),
             'width' => '80px',
-            'index' => 'mc_email_id	'
+            'index' => 'mc_email_id'
         ));
 
         $this->addColumn('created_at', array(
