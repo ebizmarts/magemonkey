@@ -1,5 +1,6 @@
 <_>
-    <form_key>aoCXEvYULC9PV8gr</form_key>
+    <form_key>n9Rjv1K08GpLofru</form_key>
+    <_create/>
     <name>Ebizmarts_MageMonkey</name>
     <channel>community</channel>
     <version_ids>
@@ -10,11 +11,11 @@
     <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
     <license>OSL v3.0</license>
     <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-    <version>1.0.23</version>
+    <version>1.1.0</version>
     <stability>stable</stability>
-    <notes>-- version 1.0.23
+    <notes>-- version 1.1.0 stable
 
-        - Adding abandoned order manager
+        - Adding abandoned order manager (beta)
 
         -- version 1.0.22 stable
 
@@ -138,7 +139,7 @@
                 <max/>
             </max>
             <files>
-                <files>                                                </files>
+                <files>                                                     </files>
             </files>
         </package>
         <extension>
@@ -179,6 +180,7 @@
             <target>magedesign</target>
             <target>magedesign</target>
             <target>magelocale</target>
+            <target>magelocale</target>
         </target>
         <path>
             <path/>
@@ -205,6 +207,7 @@
             <path>frontend/base/default/layout/ebizmarts_abandonedcart.xml</path>
             <path>frontend/base/default/template/ebizmarts_abandonedcart</path>
             <path>en_US/template/email/sales/abandoned_cart.html</path>
+            <path>en_US/Ebizmarts_AbandonedCart.csv</path>
         </path>
         <type>
             <type>file</type>
@@ -230,6 +233,7 @@
             <type>dir</type>
             <type>file</type>
             <type>dir</type>
+            <type>file</type>
             <type>file</type>
         </type>
         <include>
@@ -257,8 +261,10 @@
             <include/>
             <include/>
             <include/>
+            <include/>
         </include>
         <ignore>
+            <ignore/>
             <ignore/>
             <ignore/>
             <ignore/>
