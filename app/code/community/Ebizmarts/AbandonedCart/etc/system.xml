@@ -33,6 +33,20 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </active>
+                        <firstdate translate="label">
+                            <label>First date</label>
+                            <frontend_type>date</frontend_type>
+                            <frontend_model>ebizmarts_abandonedcart/adminhtml_system_config_date</frontend_model>
+                            <sort_order>12</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Carts previous than this value, will be ignored]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </firstdate>
+
                         <identity translate="label">
                             <label>Sender</label>
                             <frontend_type>select</frontend_type>

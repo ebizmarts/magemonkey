@@ -29,6 +29,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $maxtimes = Mage::getStoreConfig("ebizmarts_abandonedcart/general/max", $store);
         $sendcoupondays = Mage::getStoreConfig("ebizmarts_abandonedcart/coupon/sendon", $store);
         $sendcoupon = Mage::getStoreConfig("ebizmarts_abandonedcart/coupon/create", $store);
+        $firstdate = Mage::getStoreConfig("ebizmarts_abandonedcart/general/firstdate", $store);
 
         if(!$days) {
             return;
@@ -45,15 +46,16 @@ class Ebizmarts_AbandonedCart_Model_Cron
                    ->setOrder('updated_at');
 
         $collection->addFieldToFilter('main_table.converted_at', array(array('null'=>true),$this->_getSuggestedZeroDate()))
-                   ->addFieldToFilter('main_table.updated_at', array('to' => $from))
+                   ->addFieldToFilter('main_table.updated_at', array('to' => $from,'from' => $firstdate))
                    ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('lt' => $maxtimes));
 
         $collection->addFieldToFilter('main_table.customer_email', array('neq' => ''));
-//        Mage::log((string)$collection->getSelect());
+
 
         // for each cart
         foreach($collection as $quote)
         {
+            Mage::log("the collection as tuples");
             $url = Mage::getBaseUrl('web').'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
 
             $data = array('AbandonedURL'=>$url, 'AbandonedDate' => $quote->getUpdatedAt());
