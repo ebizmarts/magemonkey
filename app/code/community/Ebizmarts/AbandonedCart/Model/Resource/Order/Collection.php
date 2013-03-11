@@ -6,7 +6,7 @@
  * Time: 3:26 PM
  */
 
-class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Reports_Model_Resource_Order_Collection
+class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Reports_Model_Mysql4_Order_Collection
 {
     /**
      * @param string $period
@@ -67,15 +67,21 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
         } else {
             $this->setMainTable('sales/order');
             $this->removeAllFieldsFromSelect();
-
-            $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
-                $adapter->getIfNullSql('main_table.base_total_invoiced', 0),
-                $adapter->getIfNullSql('main_table.base_tax_invoiced', 0),
-                $adapter->getIfNullSql('main_table.base_shipping_invoiced', 0),
-                $adapter->getIfNullSql('main_table.base_total_refunded', 0),
-                $adapter->getIfNullSql('main_table.base_tax_refunded', 0),
-                $adapter->getIfNullSql('main_table.base_shipping_refunded', 0)
-            );
+            if(version_compare(Mage::getVersion(), '1.6.0.0')==1) {
+                $expr = 'IFNULL(main_table.base_subtotal, 0) - IFNULL(main_table.base_subtotal_refunded, 0)'
+                    . ' - IFNULL(main_table.base_subtotal_canceled, 0) - ABS(IFNULL(main_table.base_discount_amount, 0))'
+                    . ' + IFNULL(main_table.base_discount_refunded, 0)';
+            }
+            else {
+                $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
+                    $adapter->getIfNullSql('main_table.base_total_invoiced', 0),
+                    $adapter->getIfNullSql('main_table.base_tax_invoiced', 0),
+                    $adapter->getIfNullSql('main_table.base_shipping_invoiced', 0),
+                    $adapter->getIfNullSql('main_table.base_total_refunded', 0),
+                    $adapter->getIfNullSql('main_table.base_tax_refunded', 0),
+                    $adapter->getIfNullSql('main_table.base_shipping_refunded', 0)
+                );
+            }
 
             if ($isFilter == 0) {
                 $expr = '(' . $expr . ') * main_table.base_to_global_rate';
