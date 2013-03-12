@@ -30,8 +30,8 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         $collection = Mage::getResourceModel('ebizmarts_abandonedcart/order_collection')
                             ->addCreateAtPeriodFilter($period)
                             ->calculateTotals($isFilter);
-        $collection->getSelect()->join('sales_flat_quote' , 'main_table.increment_id = sales_flat_quote.reserved_order_id', 'ebizmarts_abandonedcart_flag');
-        $collection->addFieldToFilter('sales_flat_quote.ebizmarts_abandonedcart_flag',array('eq' => 1));
+//        $collection->getSelect()->join('sales_flat_quote' , 'main_table.increment_id = sales_flat_quote.reserved_order_id', 'ebizmarts_abandonedcart_flag');
+        $collection->addFieldToFilter('main_table.ebizmarts_abandonedcart_flag',array('eq' => 1));
 
 
 

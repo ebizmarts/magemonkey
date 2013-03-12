@@ -83,7 +83,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
             }
             $translate = Mage::getSingleton('core/translate');
-            Mage::log("sending mail to $name $email");
             Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$store);
             $translate->setTranslateInLine(true);
             $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
