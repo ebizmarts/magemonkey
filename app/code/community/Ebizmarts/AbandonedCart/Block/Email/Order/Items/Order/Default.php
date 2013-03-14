@@ -1,6 +1,6 @@
 <?php
 
-class Ebizmarts_AbandonedCart_Block_Email_Oder_Items_Order_Default extends Mage_Core_Block_Template
+class Ebizmarts_AbandonedCart_Block_Email_Order_Items_Order_Default extends Mage_Core_Block_Template
 {
     public function getOrder()
     {

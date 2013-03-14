@@ -75,7 +75,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 list($couponcode,$discount,$toDate) = $this->_createNewCoupon($store,$email);
 //                $templateId = Mage::getStoreConfig(self::EMAIL_TEMPLATE_XML_PATH_W_COUPON);
                 $templateId = Mage::getStoreConfig(self::EMAIL_TEMPLATE_XML_PATH);
-                $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate);
+                $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name);
             }
             else {
                 $templateId = Mage::getStoreConfig(self::EMAIL_TEMPLATE_XML_PATH);
@@ -132,7 +132,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     ->setStoreLabels(array($couponlabel))
                     ->setSimpleAction($action)
                     ->setDiscountAmount($couponamount)
-                    ->setDiscountQty(1)
+                    ->setDiscountQty(0)
                     ->setDiscountStep('0')
                     ->setSimpleFreeShipping('0')
                     ->setApplyToShipping('0')

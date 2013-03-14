@@ -1,5 +1,5 @@
 <?php
-class Ebizmarts_AbandonedCart_Block_Email_Oder_Items_Order_Grouped extends Mage_Sales_Block_Order_Email_Items_Order_Default
+class Ebizmarts_AbandonedCart_Block_Email_Order_Items_Order_Grouped extends Mage_Sales_Block_Order_Email_Items_Order_Default
 {
     /**
      * Prepare item html
