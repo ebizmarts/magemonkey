@@ -1,4 +1,6 @@
-<?php $_quote = $this->getQuote() ?>
+<?php $_quote = $this->getQuote();
+$currency = Mage::app()->getLocale()->currency(Mage::app()->getStore()->getCurrentCurrencyCode())->getSymbol();
+?>
 <table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #EAEAEA;">
     <thead>
     <tr>
@@ -8,15 +10,41 @@
         <th align="right" bgcolor="#EAEAEA" style="font-size:13px; padding:3px 9px"><?php echo $this->__('Subtotal') ?></th>
     </tr>
     </thead>
-
-    <?php $i=0; foreach ($_quote->getAllItems() as $_item): ?>
-    <?php if($_item->getParentItem()) continue; else $i++; ?>
-    <tbody<?php echo $i%2 ? ' bgcolor="#F6F6F6"' : '' ?>>
-        <?php echo $this->getItemHtml($_item) ?>
-    </tbody>
-    <?php endforeach; ?>
-
     <tbody>
-    <?php //echo $this->getChildHtml('order_totals') ?>
+    <?php foreach ($_quote->getAllItems() as $_item):?>
+        <?php if($_item->getParentItemId()): continue; endif;?>
+        <?php if($_item->getProductType() == 'configurable' || $_item->getProductType() == 'bundle') :
+            $finalResult = array();
+            $result = array();
+            $options = $_item->getProduct()->getTypeInstance(true)->getOrderOptions($_item->getProduct());
+            // Check for options
+            if ($options) {
+                if (isset($options['options']))	{
+                    $result = array_merge($result, $options['options']);
+                }
+                if (isset($options['additional_options'])) {
+                    $result = array_merge($result, $options['additional_options']);
+                }
+                if (!empty($options['attributes_info'])) {
+                    $result = array_merge($options['attributes_info'], $result);
+                }
+                if(isset($options['bundle_options'])) {
+                    foreach($options['bundle_options'] as $bundle)
+                    {
+                        $aux_options[] = array('label' => $bundle['label'], 'value' => $bundle['value'][0]['qty'] .' x '. $bundle['value'][0]['title'] .' '. Mage::helper('checkout')->formatPrice($bundle['value'][0]['price']));
+                    }
+                    $result = array_merge($result, $aux_options);
+                }
+            }
+            $options = array_merge($finalResult, $result);
+        endif; ?>
+    <tr>
+        <?php echo '<td valign="top" align="left" style="font-size:13px; padding:3px 9px">'. $_item['name']; ?>
+        <?php if(is_array($options)) : foreach($options as $option) : echo '<dl style="margin:0;padding:0"><dt><strong><em>'.$option['label'].'</em></strong></dt>'.'<dd style="margin:0;padding:0 0 0 9px">'.$option['value'].'</dd>'; endforeach; $options = null; endif; '</td>' ?>
+        <?php echo '<td valign="top" align="left" style="font-size:13px; padding:3px 9px">'. $_item['sku'] .'</td>'; ?>
+        <?php echo '<td valign="top" align="center" style="font-size:13px; padding:3px 9px">'. $_item['qty'] .'</td>'; ?>
+        <?php echo '<td valign="top" align="right" style="font-size:13px; padding:3px 9px">' .Mage::helper('checkout')->formatPrice($_item['row_total']) .'</td>'; ?>
+    </tr>
+        <?php endforeach; ?>
     </tbody>
 </table>
