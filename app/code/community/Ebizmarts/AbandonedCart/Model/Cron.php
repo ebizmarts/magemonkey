@@ -55,7 +55,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
         // for each cart
         foreach($collection as $quote)
         {
-            Mage::log("the collection as tuples");
             $url = Mage::getBaseUrl('web').'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
 
             $data = array('AbandonedURL'=>$url, 'AbandonedDate' => $quote->getUpdatedAt());
@@ -83,7 +82,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
             }
             $translate = Mage::getSingleton('core/translate');
-            Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$store);
+            $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$store);
             $translate->setTranslateInLine(true);
             $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
             $quote2->save();
