@@ -51,6 +51,8 @@ class Mandrill_API {
 	 */
     protected $_output = 'json';
 
+    protected $_attachments = array();
+
     /**
      * Setup data
      *
@@ -159,7 +161,6 @@ class Mandrill_API {
      *   array   tags	 an array of string to tag the message with. Stats are accumulated using tags, though we only store the first 100 we see, so this should not be unique or change frequently. Tags should be 50 characters or less. Any tags starting with an understore are reserved for internal use and will cause errors.
 	 */
 	public function messagesSend($message) {
-
 		$to = array();
 
 		foreach($message['to_email'] as $pos => $email){
@@ -168,7 +169,9 @@ class Mandrill_API {
 							'name'  => $message['to_name'][$pos]
 						 );
 		}
-
+        if(count($this->_attachments)) {
+            $message['attachments'] = $this->_attachments;
+        }
 		$message['to'] = $to;
 		unset($message['to_email'], $message['to_name']);
 
@@ -339,5 +342,17 @@ class Mandrill_API {
 
         return $this->_callServer("tags/info", $params);
     }
-
+    public function createAttachment($body,
+                                     $mimeType    = Zend_Mime::TYPE_OCTETSTREAM,
+                                     $disposition = Zend_Mime::DISPOSITION_ATTACHMENT,
+                                     $encoding    = Zend_Mime::ENCODING_BASE64,
+                                     $filename    = null)
+    {
+        $att = array();
+        $att['type'] = $mimeType;
+        $att['name'] = $filename;
+        $att['content'] = base64_encode($body);
+        $this->_attachments[] = $att;
+        return $att;
+    }
 }
