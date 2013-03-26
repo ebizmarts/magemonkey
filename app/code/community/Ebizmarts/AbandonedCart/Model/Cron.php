@@ -80,11 +80,16 @@ class Ebizmarts_AbandonedCart_Model_Cron
             $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
             if($sendcoupon && $quote2->getEbizmartsAbandonedcartCounter() + 1 == $sendcoupondays)
             {
-                // create a new coupon
-                list($couponcode,$discount,$toDate) = $this->_createNewCoupon($store,$email);
-//                $templateId = Mage::getStoreConfig(self::EMAIL_TEMPLATE_XML_PATH_W_COUPON);
                 $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
-                $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name);
+                // create a new coupon
+                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AUTOMATIC)==2) {
+                    list($couponcode,$discount,$toDate) = $this->_createNewCoupon($store,$email);
+                    $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name);
+                }
+                else {
+                    $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_CODE);
+                    $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode, 'name' => $name);
+                }
             }
             else {
                 $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);

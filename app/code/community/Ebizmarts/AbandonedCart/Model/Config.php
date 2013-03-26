@@ -17,6 +17,8 @@ class Ebizmarts_AbandonedCart_Model_Config
     const SEND_COUPON                       = "ebizmarts_abandonedcart/coupon/create";
     const FIRST_DATE                        = "ebizmarts_abandonedcart/general/firstdate";
     const COUPON_AMOUNT                     = "ebizmarts_abandonedcart/coupon/discount";
+    const COUPON_AUTOMATIC                  = "ebizmarts_abandonedcart/coupon/automatic";
+    const COUPON_CODE                       = "ebizmarts_abandonedcart/coupon/couponcode";
     const COUPON_EXPIRE                     = "ebizmarts_abandonedcart/coupon/expire";
     const COUPON_TYPE                       = "ebizmarts_abandonedcart/coupon/discounttype";
     const COUPON_LENGTH                     = "ebizmarts_abandonedcart/coupon/length";
