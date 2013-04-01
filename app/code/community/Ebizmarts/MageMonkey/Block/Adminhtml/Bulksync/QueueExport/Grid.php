@@ -87,7 +87,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
         ));
 
         $views = Mage::getModel('core/store')->getCollection()->toOptionHash();
-        array_unshift($views, Mage::helper('monkey')->__('All store views') );
+        $views[0] = Mage::helper('monkey')->__('All store views');
 
         $this->addColumn('store_id',
             array(
