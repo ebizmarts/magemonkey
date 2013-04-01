@@ -43,7 +43,7 @@
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Carts previous than this value, will be ignored]]></comment>
                             <depends>
-                                <active>1</active>
+                                <active>0</active>
                             </depends>
                         </firstdate>
 
