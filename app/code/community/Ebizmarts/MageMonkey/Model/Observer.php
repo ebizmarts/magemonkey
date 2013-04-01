@@ -377,7 +377,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		if(is_object($order) && $order->getId()){
-
+			//Set Campaign Id if exist
+			$campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');
+			if($campaign_id){
+				$order->setEbizmartsMagemonkeyCampaignId($campaign_id);
+			}
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
 			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
 			if($sessionFlag || $forceSubscription == 3){
