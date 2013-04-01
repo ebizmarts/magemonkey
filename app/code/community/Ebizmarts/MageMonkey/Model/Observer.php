@@ -469,7 +469,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
         $block = $observer->getEvent()->getBlock();
 
-        if(get_class($block) == 'Mage_Adminhtml_Block_Widget_Grid_Massaction') {
+        if(get_class($block) == 'Mage_Adminhtml_Block_Widget_Grid_Massaction' || get_class($block) == 'Enterprise_SalesArchive_Block_Adminhtml_Sales_Order_Grid_Massaction') {
 
             if($block->getRequest()->getControllerName() == 'sales_order') {
 
