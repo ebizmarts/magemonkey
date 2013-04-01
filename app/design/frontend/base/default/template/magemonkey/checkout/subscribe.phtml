@@ -1,6 +1,7 @@
 <?php
 	$lists = $this->getLists();
 	$check = $this->checkStatus();
+	$generalList   = $this->getGeneralList();
 	$auto  = (($check === 1) OR ($check === 3));
 ?>
 <script type="text/javascript">
@@ -35,8 +36,25 @@ addElementToPost = function (element){
 }
 </script>
 <div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
-	<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="1" title="<?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?>" class="checkbox" />
-	<label for="magemonkey-trigger"><?php echo $this->htmlEscape($this->__('Sign Up for Newsletter')) ?></label>
+<!-- General Subscription -->
+<?php echo $this->getBlockHtml('formkey'); ?>
+<ul class="monkey-additional-lists">
+	<li class="listdata"><?php echo $generalList['name']; ?>
+		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
+		<?php if(is_array($generalList['interest_groupings'])): ?>
+			<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
+			<?php foreach($generalList['interest_groupings'] as $group): ?>
+				<div class="grouping">
+					<strong><?php echo $group['name']; ?></strong>
+					<?php echo $this->renderGroup($group, $generalList); ?>
+				</div>
+			<?php endforeach; ?>
+			</div>
+
+		<?php endif; ?>
+	</li>
+</ul>
+<!-- General Subscription -->
 </div>
 <?php
 //Check if there's additional list selected, if not Dont show this section
@@ -46,29 +64,54 @@ endif;
 ?>
 
 <script type="text/javascript">
-	addSubscribeToPost($('magemonkey-trigger'));
+//Handle newsletter subscribe/unsubscribe checkbox events
+$$('input.monkey-list-subscriber').each(function(chk){
 
-	if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
+		if( !chk.checked ){
+			var groupings = $('interest_groupings_'+chk.value);
+			if(groupings){
+				groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
+			}
+		}
 
-	  var event = 'change';
+		chk.observe('change', function(){
 
-	  //Radio||Checkbox
-	  $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
+			var groupings = $('interest_groupings_'+this.value);
+			if(groupings){
+				var elements = groupings.select('select', 'input');
+				if(this.checked){
+					elements.invoke('removeAttribute', 'disabled');
+				}else{
+					elements.invoke('writeAttribute', 'disabled', 'disabled');
+				}
+			}
 
-		  if(input.readAttribute('type') == 'radio'){
-			  event = 'click';
-		  }
+		});
+});
 
-		  input.observe(event, function(){
-			  addElementToPost(this);
-		  });
+addSubscribeToPost($('magemonkey-trigger'));
+
+if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
+
+  var event = 'change';
+
+  //Radio||Checkbox
+  $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
+
+	  if(input.readAttribute('type') == 'radio'){
+		  event = 'click';
+	  }
+
+	  input.observe(event, function(){
+		  addElementToPost(this);
 	  });
+  });
 
-	  $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
-		  ddl.observe(event, function(){
-			  addElementToPost(this);
-		  });
+  $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
+	  ddl.observe(event, function(){
+		  addElementToPost(this);
 	  });
+  });
 
-	}
+}
 </script>
