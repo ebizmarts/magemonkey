@@ -19,19 +19,6 @@
 				                </apicommerce>
                             </children>
 		                </ecommerce>
-		                <!--<transactional_email translate="title" module="monkey">
-		                    <title>Transactional Email</title>
-		                    <children>
-				                <sts translate="title" module="monkey">
-				                    <title>STS (Amazon Simple Email Service)</title>
-				                    <action>adminhtml/transactionalemail/sts</action>
-				                </sts>
-				                <mandrill translate="title" module="monkey">
-				                    <title>Mandrill</title>
-				                    <action>adminhtml/transactionalemail/mandrill</action>
-				                </mandrill>
-		                    </children>
-		                </transactional_email>-->
 		                <bulksync translate="title" module="monkey">
 		                    <title>Bulk Sync</title>
 		                    <children>
