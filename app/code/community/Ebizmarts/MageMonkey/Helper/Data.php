@@ -423,6 +423,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 															   		'zip'     => $address->getPostcode(),
 															   		'country' => $address->getCountryId()
 															   	  );
+							$telephone = $address->getTelephone();
+							if($telephone){
+								$merge_vars['TELEPHONE'] = $telephone;
+							}
+							$company = $address->getCompany();
+							if($company){
+								$merge_vars['COMPANY'] = $company;
+							}
 						}
 
 						break;
