@@ -85,11 +85,12 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
             $collection2->addFieldToFilter('main_table.converted_at', array(array('null'=>true),$this->_getSuggestedZeroDate()))
                 ->addFieldToFilter('main_table.updated_at', array('to' => $from,'from' => $firstdate))
-                ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('from' => 1,'to' => $maxtimes));
+                ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('from' => 1,'to' => $maxtimes-1));
 
             $collection2->addFieldToFilter('main_table.customer_email', array('neq' => ''));
 
-
+            Mage::log((string)$collection1->getSelect());
+            Mage::log((string)$collection2->getSelect());
             $collection = $collection1;
             foreach($collection2 as $quote) {
                 $collection->addItem($quote);

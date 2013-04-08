@@ -10,8 +10,8 @@ class Ebizmarts_AbandonedCart_Model_System_Config_Unit
     public function toOptionArray()
     {
         $options = array(
-            array('value'=> 0, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Days')),
-            array('value'=> 1, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Hours'))
+            array('value'=> Ebizmarts_AbandonedCart_Model_Config::IN_DAYS, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Days')),
+            array('value'=> Ebizmarts_AbandonedCart_Model_Config::IN_HOURS, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Hours'))
         );
         return $options;
     }
