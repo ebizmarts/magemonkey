@@ -377,7 +377,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		if(is_object($order) && $order->getId()){
-
+			//Set Campaign Id if exist
+			$campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');
+			if($campaign_id){
+				$order->setEbizmartsMagemonkeyCampaignId($campaign_id);
+			}
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
 			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
 			if($sessionFlag || $forceSubscription == 3){
@@ -469,7 +473,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
         $block = $observer->getEvent()->getBlock();
 
-        if(get_class($block) == 'Mage_Adminhtml_Block_Widget_Grid_Massaction') {
+        if(get_class($block) == 'Mage_Adminhtml_Block_Widget_Grid_Massaction' || get_class($block) == 'Enterprise_SalesArchive_Block_Adminhtml_Sales_Order_Grid_Massaction') {
 
             if($block->getRequest()->getControllerName() == 'sales_order') {
 

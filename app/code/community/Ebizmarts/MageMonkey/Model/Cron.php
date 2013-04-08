@@ -237,11 +237,11 @@ class Ebizmarts_MageMonkey_Model_Cron
 		if($jobStoreId){
 			$collection->addFieldToFilter('store_id', $jobStoreId);
 		}
-		
+
 		if($job->getDataSourceEntity() == 'newsletter_subscriber'):
 			$collection->addFieldToFilter('subscriber_status', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
 		endif;
-		
+
 		$collection->load();
 
 		//Update total count on first run
@@ -249,7 +249,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$allRows = $collection->getSize();
 			$job->setTotalCount($allRows)->save();
 		}
-		
+
 		$batch = array();
 
 		foreach($job->lists() as $listId){
@@ -409,4 +409,17 @@ class Ebizmarts_MageMonkey_Model_Cron
 
 		return $job->getFirstItem();
 	}
+
+	/** Send order to MailChimp Automatically by Order Status
+	 *
+	 *
+	 *
+	 */
+	public function processAutoExportJobs()
+	{
+		if (Mage::helper('monkey')->config('ecommerce360') == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
+			Mage::getModel('monkey/ecommerce360')->autoExportJobs();
+		}
+    }
+
 }
