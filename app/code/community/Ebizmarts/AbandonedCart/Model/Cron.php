@@ -31,26 +31,70 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $sendcoupondays = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_DAYS, $store);
         $sendcoupon = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SEND_COUPON, $store);
         $firstdate = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FIRST_DATE, $store);
+        $unit = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::UNIT, $store);
 
         if(!$days) {
             return;
         }
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
-        $from = new Zend_Db_Expr($expr);
+        if($unit == Ebizmarts_AbandonedCart_Model_Config::IN_DAYS) {
+            $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+            $from = new Zend_Db_Expr($expr);
 
-        // get a collection of abandoned carts
-        $collection = Mage::getResourceModel('reports/quote_collection');
-        $collection->addFieldToFilter('items_count', array('neq' => '0'))
-                   ->addFieldToFilter('main_table.is_active', '1')
-                   ->addFieldToFilter('main_table.store_id',array('eq'=>$store))
-                   ->addSubtotal($store)
-                   ->setOrder('updated_at');
+            // get a collection of abandoned carts
+            $collection = Mage::getResourceModel('reports/quote_collection');
+            $collection->addFieldToFilter('items_count', array('neq' => '0'))
+                       ->addFieldToFilter('main_table.is_active', '1')
+                       ->addFieldToFilter('main_table.store_id',array('eq'=>$store))
+                       ->addSubtotal($store)
+                       ->setOrder('updated_at');
 
-        $collection->addFieldToFilter('main_table.converted_at', array(array('null'=>true),$this->_getSuggestedZeroDate()))
-                   ->addFieldToFilter('main_table.updated_at', array('to' => $from,'from' => $firstdate))
-                   ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('lt' => $maxtimes));
+            $collection->addFieldToFilter('main_table.converted_at', array(array('null'=>true),$this->_getSuggestedZeroDate()))
+                       ->addFieldToFilter('main_table.updated_at', array('to' => $from,'from' => $firstdate))
+                       ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('lt' => $maxtimes));
 
-        $collection->addFieldToFilter('main_table.customer_email', array('neq' => ''));
+            $collection->addFieldToFilter('main_table.customer_email', array('neq' => ''));
+        } else {
+            // make the collection for first run
+            $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'HOUR'));
+            $from = new Zend_Db_Expr($expr);
+
+            // get a collection of abandoned carts
+            $collection1 = Mage::getResourceModel('reports/quote_collection');
+            $collection1->addFieldToFilter('items_count', array('neq' => '0'))
+                ->addFieldToFilter('main_table.is_active', '1')
+                ->addFieldToFilter('main_table.store_id',array('eq'=>$store))
+                ->addSubtotal($store)
+                ->setOrder('updated_at');
+
+            $collection1->addFieldToFilter('main_table.converted_at', array(array('null'=>true),$this->_getSuggestedZeroDate()))
+                ->addFieldToFilter('main_table.updated_at', array('to' => $from,'from' => $firstdate))
+                ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('eq' => 0));
+
+            $collection1->addFieldToFilter('main_table.customer_email', array('neq' => ''));
+
+            $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql(1, 'DAY'));
+            $from = new Zend_Db_Expr($expr);
+
+            // get a collection of abandoned carts who aren't the first run
+            $collection2 = Mage::getResourceModel('reports/quote_collection');
+            $collection2->addFieldToFilter('items_count', array('neq' => '0'))
+                ->addFieldToFilter('main_table.is_active', '1')
+                ->addFieldToFilter('main_table.store_id',array('eq'=>$store))
+                ->addSubtotal($store)
+                ->setOrder('updated_at');
+
+            $collection2->addFieldToFilter('main_table.converted_at', array(array('null'=>true),$this->_getSuggestedZeroDate()))
+                ->addFieldToFilter('main_table.updated_at', array('to' => $from,'from' => $firstdate))
+                ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('from' => 1,'to' => $maxtimes));
+
+            $collection2->addFieldToFilter('main_table.customer_email', array('neq' => ''));
+
+
+            $collection = $collection1;
+            foreach($collection2 as $quote) {
+                $collection->addItem($quote);
+            }
+        }
 
         // for each cart
         foreach($collection as $quote)
@@ -117,6 +161,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $coupontype = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_TYPE, $store);
         $couponlength = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_LENGTH, $store);
         $couponlabel = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_LABEL, $store);
+        $websiteid =  Mage::getModel('core/store')->load($store)->getWebsiteId();
 
         $fromDate = date("Y-m-d");
         $toDate = date('Y-m-d', strtotime($fromDate. " + $couponexpiredays day"));
@@ -151,7 +196,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     ->setSimpleFreeShipping('0')
                     ->setApplyToShipping('0')
                     ->setIsRss(0)
-                    ->setWebsiteIds($store);
+                    ->setWebsiteIds($websiteid);
         $uniqueId = $coupon_rule->getCouponCodeGenerator()->generateCode();
         $coupon_rule->setCouponCode($uniqueId);
         $coupon_rule->save();

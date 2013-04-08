@@ -11,6 +11,7 @@ class Ebizmarts_AbandonedCart_Model_Config
     const EMAIL_TEMPLATE_XML_PATH           = 'ebizmarts_abandonedcart/general/template';
     const EMAIL_TEMPLATE_XML_PATH_W_COUPON  = 'ebizmarts_abandonedcart/general/coupon_template';
     const DAYS                              = "ebizmarts_abandonedcart/general/days";
+    const UNIT                              = "ebizmarts_abandonedcart/general/unit";
     const SENDER                            = "ebizmarts_abandonedcart/general/identity";
     const MAXTIMES                          = "ebizmarts_abandonedcart/general/max";
     const COUPON_DAYS                       = "ebizmarts_abandonedcart/coupon/sendon";
@@ -23,4 +24,6 @@ class Ebizmarts_AbandonedCart_Model_Config
     const COUPON_TYPE                       = "ebizmarts_abandonedcart/coupon/discounttype";
     const COUPON_LENGTH                     = "ebizmarts_abandonedcart/coupon/length";
     const COUPON_LABEL                      = "ebizmarts_abandonedcart/coupon/couponlabel";
+    const IN_DAYS                           = 0;
+    const IN_HOURS                          = 1;
 }
