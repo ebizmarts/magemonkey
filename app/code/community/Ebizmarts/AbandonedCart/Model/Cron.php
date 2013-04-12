@@ -110,7 +110,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 continue;
             }
             //
-            $url = Mage::getBaseUrl('web').'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
+            //$url = Mage::getBaseUrl('web').'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
+            $url = Mage::getModel('core/url')->setStore($store)->getUrl().'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
 
             $data = array('AbandonedURL'=>$url, 'AbandonedDate' => $quote->getUpdatedAt());
             // send email
