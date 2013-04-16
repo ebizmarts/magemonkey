@@ -46,7 +46,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
         }
         $adapter = $this->getConnection();
 
-        if (Mage::getStoreConfig('sales/dashboard/use_aggregated_data')) {
+        if (Mage::getStoreConfig('sales/dashboard/use_aggregated_data')==8) {
             $this->setMainTable('sales/order_aggregated_created');
             $this->removeAllFieldsFromSelect();
             $averageExpr = $adapter->getCheckSql(
