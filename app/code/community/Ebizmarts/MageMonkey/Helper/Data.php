@@ -380,8 +380,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$request = Mage::app()->getRequest();
 
 		//Add Customer data to Subscriber if is Newsletter_Subscriber is Customer
-		if($customer->getCustomerId()){
-			$customer->addData(Mage::getModel('customer/customer')->load($customer->getCustomerId())
+		if(!$customer->getDefaultShipping() && $customer->getEntityId()){
+			$customer->addData(Mage::getModel('customer/customer')->load($customer->getEntityId())
+									->setStoreId($customer->getStoreId())
 									->toArray());
 		}
 

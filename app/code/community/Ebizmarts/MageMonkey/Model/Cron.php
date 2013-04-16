@@ -261,7 +261,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 				$processedCount += 1;
 				$batch []= $this->_helper()->getMergeVars($item, TRUE);
 			}
-
 			if(count($batch) > 0){
 
 				$job->setStatus('chunk_running')
@@ -335,8 +334,6 @@ class Ebizmarts_MageMonkey_Model_Cron
             				->showStoreInfo();
 				break;
 			case 'customer':
-
-				//TODO: Add default Billing and Shipping address data
 
 				$model = Mage::getResourceModel('customer/customer_collection')
 							->addNameToSelect()
