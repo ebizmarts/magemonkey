@@ -66,7 +66,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 			Mage::getSingleton('monkey/api')
 								->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
 
-        }else{
+        }
+        // This code unsubscribe users if it's on MailChimp and the status it's unconfirmed
+        /*else{
             if(($isOnMailChimp == 1) && ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)){
                 $rs = Mage::getSingleton('monkey/api')
                                 ->listUnsubscribe($listId, $email);
@@ -74,7 +76,7 @@ class Ebizmarts_MageMonkey_Model_Observer
                     Mage::throwException($rs);
                 }
             }
-        }
+        }*/
 
 	}
 
