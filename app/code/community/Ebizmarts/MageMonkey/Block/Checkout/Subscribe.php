@@ -20,9 +20,16 @@ class Ebizmarts_MageMonkey_Block_Checkout_Subscribe extends Ebizmarts_MageMonkey
     	$alreadySubscribed = Mage::getModel('newsletter/subscriber')
 							->loadByEmail($this->getQuote()->getCustomerEmail())
 							->isSubscribed();
+		/**
+		 * If you don't want to show the lists in the checkout when the user it's already subscribed.
+		 * Replace the code below for the condition below
+		 *
+		 * 	if ( !$this->helper('monkey')->canCheckoutSubscribe() OR $alreadySubscribed ) {
+		 *
+		 *
+		 * **/
 
-        if ( !$this->helper('monkey')->canCheckoutSubscribe() OR
-              $alreadySubscribed ) {
+        if ( !$this->helper('monkey')->canCheckoutSubscribe() ) {
             return '';
         }
 
