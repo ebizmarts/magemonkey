@@ -30,6 +30,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if( $subscriber->getBulksync() ){
 			return $observer;
 		}
+		$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
+		if($sessionFlag){
+			return $observer;
+		}
 
 		$email  = $subscriber->getSubscriberEmail();
 		if($subscriber->getMcStoreId()){
@@ -388,7 +392,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 			if($campaign_id){
 				$order->setEbizmartsMagemonkeyCampaignId($campaign_id);
 			}
-			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
+			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout();
 			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
 			if($sessionFlag || $forceSubscription == 3){
 				//Guest Checkout
@@ -398,6 +402,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 				try{
 					$subscriber = Mage::getModel('newsletter/subscriber')
+						->setImportMode(TRUE)
 						->subscribe($order->getCustomerEmail());
 				}catch(Exception $e){
 					Mage::logException($e);

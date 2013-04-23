@@ -13,13 +13,25 @@ addSubscribeToPost = function (element){
 
 	if(element.checked){
         var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
+        var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe", value: element.getValue(), type: "hidden" });
         try{
             Element.insert(Form.findFirstElement(payment.form), inputer);
+            Element.insert(Form.findFirstElement(payment.form), listValue);
         }catch(notelem){
             $("co-payment-form").insert(inputer);
+            $("co-payment-form").insert(listValue);
         }
 	}
 
+}
+addGroupToPost = function (element){
+	if(element.checked){
+        try{
+            Element.insert(Form.findFirstElement(payment.form), element);
+        }catch(notelem){
+            $("co-payment-form").insert(element);
+        }
+	}
 }
 addElementToPost = function (element){
 
@@ -40,7 +52,7 @@ addElementToPost = function (element){
 <?php echo $this->getBlockHtml('formkey'); ?>
 <ul class="monkey-additional-lists">
 	<li class="listdata"><?php echo $generalList['name']; ?>
-		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="magemonkey_trigger" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
+		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
 		<?php if(is_array($generalList['interest_groupings'])): ?>
 			<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 			<?php foreach($generalList['interest_groupings'] as $group): ?>
@@ -110,6 +122,15 @@ if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
   $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
 	  ddl.observe(event, function(){
 		  addElementToPost(this);
+	  });
+  });
+
+  //Handle newsletter subscribe/unsubscribe checkbox events
+  $$('.interest-groupings input').each(function(group){
+	  group.observe('change', function(){
+		 if(group.checked){
+		    	addGroupToPost(group);
+		 }
 	  });
   });
 

@@ -804,20 +804,23 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 					$groupings = $lists[$listId];
 					unset($groupings['subscribed']);
-
+					if( !Mage::helper('monkey')->isAdmin() && (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1) ) {
+						$isConfirmNeed = TRUE;
+					}
 					if($defaultList == $listId){
 						$subscriber = Mage::getModel('newsletter/subscriber');
 
 						$subscriber->setListGroups($groupings);
 						$subscriber->setMcListId($listId);
                         $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
-
+						//Just for registering the groups in the checkout page
+                        $mergeVars = Mage::helper('monkey')->getMergeVars($subscriber);
+						if(!is_null($request->getPost('magemonkey_subscribe'))){
+							$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+						}
+						$subscriber->setImportMode(TRUE);
 						$subscriber->subscribe($email);
 					}else{
-						if( !Mage::helper('monkey')->isAdmin() &&
-							(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1) ){
-							$isConfirmNeed = TRUE;
-						}
 						$customer->setListGroups($groupings);
 						$customer->setMcListId($listId);
 						$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
