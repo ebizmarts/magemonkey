@@ -27,9 +27,10 @@ addSubscribeToPost = function (element){
 addGroupToPost = function (element){
 	if(element.checked){
         try{
-            Element.insert(Form.findFirstElement(payment.form), element);
+        	var group = new Element('input', { name: element.readAttribute('name'), id: element.readAttribute('id'), value: element.getValue(), checked:true, type: "checkbox" });
+            Element.insert(Form.findFirstElement(payment.form), group);
         }catch(notelem){
-            $("co-payment-form").insert(element);
+            $("co-payment-form").insert(group);
         }
 	}
 }

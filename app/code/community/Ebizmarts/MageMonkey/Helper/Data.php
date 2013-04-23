@@ -734,10 +734,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$defaultList = $this->getDefaultList(Mage::app()->getStore());
 
 		$api       = Mage::getSingleton('monkey/api');
-		$customer  = Mage::helper('customer')->getCustomer();
-		$email     =  $guestEmail ? $guestEmail : $customer->getEmail();
-
 		$loggedIn = Mage::helper('customer')->isLoggedIn();
+		if($loggedIn){
+			$customer  = Mage::helper('customer')->getCustomer();
+		}else{
+			$customer = Mage::registry('mc_guest_customer');
+		}
+		$email     =  $guestEmail ? $guestEmail : $customer->getEmail();
 
 		if( !empty($curlists) ){
 
@@ -809,17 +812,17 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					}
 					if($defaultList == $listId){
 						$subscriber = Mage::getModel('newsletter/subscriber');
-
 						$subscriber->setListGroups($groupings);
 						$subscriber->setMcListId($listId);
                         $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
+						$subscriber->setImportMode(TRUE);
+						$subscriber->subscribe($email);
 						//Just for registering the groups in the checkout page
-                        $mergeVars = Mage::helper('monkey')->getMergeVars($subscriber);
+                        $customer->setListGroups($groupings);
+                        $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 						if(!is_null($request->getPost('magemonkey_subscribe'))){
 							$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
 						}
-						$subscriber->setImportMode(TRUE);
-						$subscriber->subscribe($email);
 					}else{
 						$customer->setListGroups($groupings);
 						$customer->setMcListId($listId);

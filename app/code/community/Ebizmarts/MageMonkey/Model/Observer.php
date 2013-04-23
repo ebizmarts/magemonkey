@@ -30,8 +30,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if( $subscriber->getBulksync() ){
 			return $observer;
 		}
-		$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
-		if($sessionFlag){
+
+		if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
 			return $observer;
 		}
 
@@ -67,8 +67,7 @@ class Ebizmarts_MageMonkey_Model_Observer
        			Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
  			}
 
-			Mage::getSingleton('monkey/api')
-								->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
+			Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
 
         }
         // This code unsubscribe users if it's on MailChimp and the status it's unconfirmed
