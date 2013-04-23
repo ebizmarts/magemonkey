@@ -126,14 +126,13 @@ if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
 	  });
   });
 
-  //Handle newsletter subscribe/unsubscribe checkbox events
-  $$('.interest-groupings input').each(function(group){
-	  group.observe('change', function(){
-		 if(group.checked){
-		    	addGroupToPost(group);
-		 }
-	  });
-  });
-
 }
+//Handle newsletter subscribe/unsubscribe checkbox events
+$$('.interest-groupings input').each(function(group){
+  group.observe('change', function(){
+	 if(group.checked){
+	    	addGroupToPost(group);
+	 }
+  });
+});
 </script>
