@@ -821,7 +821,12 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $customer->setListGroups($groupings);
                         $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 						if(!is_null($request->getPost('magemonkey_subscribe'))){
-							$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+							$isOnList = Mage::helper('monkey')->subscribedToList($email, $listId);
+							if(!$isOnList){
+								$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+							} else {
+								$api->listUpdateMember($listId, $email, $mergeVars);
+							}
 						}
 					}else{
 						$customer->setListGroups($groupings);
