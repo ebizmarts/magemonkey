@@ -31,7 +31,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-		if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
+		if(Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE)){
 			return $observer;
 		}
 
