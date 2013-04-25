@@ -10,10 +10,8 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->run("
-
-		ALTER TABLE `{$this->getTable('sales_flat_order')}`
-				add column ebizmarts_abandonedcart_flag int(1) default '0'
-	");
+$installer->getConnection()->addColumn(
+    $installer->getTable('sales_flat_order'), 'ebizmarts_abandonedcart_flag', 'int(1)', null, array('default' => '0')
+);
 
 $installer->endSetup();
