@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Ebizmarts_Autoresponder>
+            <version>0.1.0</version>
+        </Ebizmarts_Autoresponder>
+    </modules>
+    <global>
+        <models>
+            <ebizmarts_autoresponder>
+                <class>Ebizmarts_Autoresponder_Model</class>
+            </ebizmarts_autoresponder>
+        </models>
+        <blocks>
+            <ebizmarts_autoresponder>
+                <class>Ebizmarts_Autoresponder_Block</class>
+            </ebizmarts_autoresponder>
+        </blocks>
+        <helpers>
+            <ebizmarts_autoresponder>
+                <class>Ebizmarts_Autoresponder_Helper</class>
+            </ebizmarts_autoresponder>
+        </helpers>
+        <resources>
+            <ebizmarts_autoresponder_setup>
+                <setup>
+                    <module>Ebizmarts_Autoresponder</module>
+                </setup>
+            </ebizmarts_autoresponder_setup>
+        </resources>
+    </global>
+</config>

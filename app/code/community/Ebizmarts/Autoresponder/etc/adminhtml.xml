@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <ebizmarts_autoresponder translate="title" module="ebizmarts_autoresponder">
+                                        <title>Ebizmarts Autoresponder</title>
+                                    </ebizmarts_autoresponder>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <translate>
+        <modules>
+            <Ebizmarts_Autoresponder>
+                <files>
+                    <default>Ebizmarts_Autoresponder.csv</default>
+                </files>
+            </Ebizmarts_Autoresponder>
+        </modules>
+    </translate>
+</config>
