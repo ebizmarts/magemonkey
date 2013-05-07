@@ -52,6 +52,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 			$isConfirmNeed = TRUE;
 		}
 
+		if($isConfirmNeed){
+       		$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
+		}
+
         //Check if customer is not yet subscribed on MailChimp
 		$isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
 
