@@ -98,8 +98,6 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         try {
 
             $message = array (
-            				'html'        => $text,
-					        'text'        => $text,
 					        'subject'     => $this->getProcessedTemplateSubject($variables),
 					        'from_name'   => $this->getSenderName(),
 					        'from_email'  => $this->getSenderEmail(),
@@ -108,6 +106,12 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 					        'bcc_address' => $bccEmail,
 					        'headers'	  => array('Reply-To' => $this->replyTo)
 				        );
+
+			if($this->isPlain()) {
+		 		$message['text'] = $text;
+			} else {
+				$message['html'] = $text;
+			}
 
 			$tTags = $this->_getTemplateTags();
 			if(!empty($tTags)){

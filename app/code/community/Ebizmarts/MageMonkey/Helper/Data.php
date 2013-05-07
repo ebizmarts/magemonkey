@@ -761,7 +761,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 							$item->unsubscribe();
 						}
 
-					}else{
 						//Unsubscribe Email
 						$api->listUnsubscribe($listId, $email);
 					}
