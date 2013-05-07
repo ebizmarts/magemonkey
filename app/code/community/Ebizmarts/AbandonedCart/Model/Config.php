@@ -24,6 +24,7 @@ class Ebizmarts_AbandonedCart_Model_Config
     const COUPON_TYPE                       = "ebizmarts_abandonedcart/coupon/discounttype";
     const COUPON_LENGTH                     = "ebizmarts_abandonedcart/coupon/length";
     const COUPON_LABEL                      = "ebizmarts_abandonedcart/coupon/couponlabel";
+    const CUSTOMER_GROUPS                   = "ebizmarts_abandonedcart/general/customer";
     const IN_DAYS                           = 0;
     const IN_HOURS                          = 1;
 }

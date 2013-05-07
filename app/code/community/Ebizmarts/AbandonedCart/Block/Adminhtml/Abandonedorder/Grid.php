@@ -60,6 +60,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedorder_Grid extends Mage_A
             $this->addColumn('store_id', array(
                 'header'    => Mage::helper('sales')->__('Purchased From (Store)'),
                 'index'     => 'store_id',
+                'filter_index' => 'main_table.store_id',
                 'type'      => 'store',
                 'store_view'=> true,
                 'display_deleted' => true,

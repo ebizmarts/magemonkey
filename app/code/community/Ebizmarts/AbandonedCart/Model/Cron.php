@@ -32,6 +32,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $sendcoupon = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SEND_COUPON, $store);
         $firstdate = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FIRST_DATE, $store);
         $unit = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::UNIT, $store);
+        $customergroups = explode(",",Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::CUSTOMER_GROUPS, $store));
 
         if(!$days) {
             return;
@@ -53,6 +54,9 @@ class Ebizmarts_AbandonedCart_Model_Cron
                        ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('lt' => $maxtimes));
 
             $collection->addFieldToFilter('main_table.customer_email', array('neq' => ''));
+            if(count($customergroups)) {
+                $collection->addFieldToFilter('main_table.customer_group_id', array('in', $customergroups));
+            }
         } else {
             // make the collection for first run
             $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'HOUR'));
@@ -66,15 +70,18 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 ->addSubtotal($store)
                 ->setOrder('updated_at');
 
+
             $collection1->addFieldToFilter('main_table.converted_at', array(array('null'=>true),$this->_getSuggestedZeroDate()))
                 ->addFieldToFilter('main_table.updated_at', array('to' => $from,'from' => $firstdate))
                 ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('eq' => 0));
 
             $collection1->addFieldToFilter('main_table.customer_email', array('neq' => ''));
+            if(count($customergroups)) {
+                $collection1->addFieldToFilter('main_table.customer_group_id', array('in', $customergroups));
+            }
 
             $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql(1, 'DAY'));
             $from = new Zend_Db_Expr($expr);
-
             // get a collection of abandoned carts who aren't the first run
             $collection2 = Mage::getResourceModel('reports/quote_collection');
             $collection2->addFieldToFilter('items_count', array('neq' => '0'))
@@ -88,6 +95,9 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 ->addFieldToFilter('main_table.ebizmarts_abandonedcart_counter',array('from' => 1,'to' => $maxtimes-1));
 
             $collection2->addFieldToFilter('main_table.customer_email', array('neq' => ''));
+            if(count($customergroups)) {
+                $collection2->addFieldToFilter('main_table.customer_group_id', array('in', $customergroups));
+            }
 
             Mage::log((string)$collection1->getSelect());
             Mage::log((string)$collection2->getSelect());
