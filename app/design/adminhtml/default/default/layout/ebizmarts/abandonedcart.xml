@@ -11,6 +11,9 @@
         </reference>
     </adminhtml_abandonedorder_index>
     <adminhtml_abandonedorder_dashboard>
+    	<reference name="head">
+				<action method="addCss"><stylesheet>abandonedcart/abandonedcart.css</stylesheet></action>
+		</reference>
         <reference name="content">
             <block type="ebizmarts_abandonedcart/adminhtml_dashboard" name="ebizmarts_abandonedcart_abandonedorder.dashboard">
                 <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher" template="store/switcher.phtml">
