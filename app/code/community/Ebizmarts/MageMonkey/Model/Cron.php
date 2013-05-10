@@ -140,26 +140,27 @@ class Ebizmarts_MageMonkey_Model_Cron
 	{
 
 		$subscriber = $this->_getSubscriberObject($member['email']);
-
 		if( $createCustomer ){
+			$alreadyExist = false;
+			$websites = Mage::getModel('core/website')->getCollection()->getData();
+	        foreach($websites as $website){
+	        	$customer = Mage::getModel('customer/customer')->setWebsiteId($website['website_id'])
+															   ->loadByEmail($member['email']);
+				if($customer->getId()){
+			   		$alreadyExist = true;
+			   	}
+	        }
 
-			$customer = Mage::getModel('customer/customer')->setWebsiteId($websiteId)
-															->loadByEmail($member['email']);
-
-			//Create customer if not exists, and subscribe
-			if( is_null($customer->getId()) ){
+			if($alreadyExist == false){
+				//Create customer if not exists, and subscribe
 				$customer = $this->_helper()->createCustomerAccount($member, $websiteId);
 			}
-
 			$subscriber
-            ->setCustomerId($customer->getId())
-            ->save();
-
+	            ->setCustomerId($customer->getId())
+	            ->save();
 		}else{
-
 			//Just subscribe email
 			$subscriber->save();
-
 		}
 
 	}
