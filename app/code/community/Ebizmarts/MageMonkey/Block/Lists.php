@@ -225,7 +225,11 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
 		$fieldType = $group['form_field'];
 
-		$memberInfo = $this->_memberInfo($list['id']);
+		if($this->_getEmail()){
+			$memberInfo = $this->_memberInfo($list['id']);
+		} else {
+			$memberInfo['success'] = 0;
+		}
 
 		$myGroups = array();
 		if($memberInfo['success'] == 1){
