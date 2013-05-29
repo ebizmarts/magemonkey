@@ -209,7 +209,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     ->setApplyToShipping('0')
                     ->setIsRss(0)
                     ->setWebsiteIds($websiteid);
-        $uniqueId = $coupon_rule->getCouponCodeGenerator()->generateCode();
+        $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
         $coupon_rule->setCouponCode($uniqueId);
         $coupon_rule->save();
         return array($uniqueId,$discount,$toDate);
