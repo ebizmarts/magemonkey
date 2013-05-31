@@ -1,4 +1,4 @@
-ul.tabs a.monkey-section:hover { background-color:#D8E6E6; background-image:url(images/tabs_link_over_bg.gif); }
+ul.tabs a.monkey-section:hover { background-color:#D8E6E6; background-image:url(../images/tabs_link_over_bg.gif); }
 ul.tabs a.monkey-section,
 ul.tabs a.monkey-section:hover { padding:0.5em 0.5em 0 1.5em; text-indent:-9999px; border-bottom:1px solid #BEBEBE; }
 ul.tabs a.monkey-section span,
