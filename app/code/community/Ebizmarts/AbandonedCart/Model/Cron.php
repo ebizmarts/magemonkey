@@ -33,6 +33,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $firstdate = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FIRST_DATE, $store);
         $unit = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::UNIT, $store);
         $customergroups = explode(",",Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::CUSTOMER_GROUPS, $store));
+        $mailsubject = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SUBJECT, $store);
 
         if(!$days) {
             return;
@@ -125,7 +126,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
             $data = array('AbandonedURL'=>$url, 'AbandonedDate' => $quote->getUpdatedAt());
             // send email
-            $mailsubject = 'Abandoned Cart';
 
             $senderid =  Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SENDER, $store);
             $sender = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderid/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderid/email"));
@@ -185,7 +185,12 @@ class Ebizmarts_AbandonedCart_Model_Cron
             $action = 'by_percent';
             $discount = "$couponamount%";
         }
-
+        $customer_group = new Mage_Customer_Model_Group();
+        $allGroups  = $customer_group->getCollection()->toOptionHash();
+        $groups = array();
+        foreach($allGroups as $groupid=>$name) {
+            $groups[] = $groupid;
+        }
         $coupon_rule = Mage::getModel('salesrule/rule');
         $coupon_rule->setName("Abandoned coupon $email")
                     ->setDescription("Abandoned coupon $email")
@@ -195,7 +200,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     ->setCouponType(2)
                     ->setUsesPerCoupon(1)
                     ->setUsesPerCustomer(1)
-                    ->setCustomerGroupIds(array(0,1))
+                    ->setCustomerGroupIds($groups)
                     ->setProductIds('')
                     ->setLengthMin($couponlength)
                     ->setLengthMax($couponlength)
