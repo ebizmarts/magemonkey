@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.13</version>
+            <version>0.1.14</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -10,12 +10,14 @@
             <email>
                 <ebizmarts_abandonedcart_general_template translate="label" module="ebizmarts_abandonedcart">
                     <label>Abandoned Cart Mail</label>
-                    <mandrill-tag>AbandonedCart</mandrill-tag>
                     <file>sales/abandoned_cart.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template>
             </email>
         </template>
+        <ebizmarts_abandonedcart>
+            <mandrill-tag>AbandonedCart</mandrill-tag>
+        </ebizmarts_abandonedcart>
         <models>
             <ebizmarts_abandonedcart>
                 <class>Ebizmarts_AbandonedCart_Model</class>

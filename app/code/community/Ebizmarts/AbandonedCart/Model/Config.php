@@ -26,6 +26,7 @@ class Ebizmarts_AbandonedCart_Model_Config
     const COUPON_LABEL                      = "ebizmarts_abandonedcart/coupon/couponlabel";
     const CUSTOMER_GROUPS                   = "ebizmarts_abandonedcart/general/customer";
     const SUBJECT                           = "ebizmarts_abandonedcart/general/subject";
+    const ABANDONED_TAGS                    = 'global/ebizmarts_abandonedcart/mandrill-tag';
     const IN_DAYS                           = 0;
     const IN_HOURS                          = 1;
 }
