@@ -384,6 +384,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			$customer->addData(Mage::getModel('customer/customer')->load($customer->getEntityId())
 									->setStoreId($customer->getStoreId())
 									->toArray());
+		} elseif($customer->getCustomerId()){
+			$customer->addData(Mage::getModel('customer/customer')->load($customer->getCustomerId())
+									->setStoreId($customer->getStoreId())
+									->toArray());
 		}
 
 		foreach($maps as $map){
@@ -415,6 +419,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 						$addr = explode('_', $customAtt);
 						$address = $customer->{'getPrimary'.ucfirst($addr[0]).'Address'}();
+						if(!$address){
+							if($customer->{'getDefault' .ucfirst($addr[0])}()) {
+								$address = Mage::getModel('customer/address')->load($customer->{'getDefault' .ucfirst($addr[0])}());
+							}
+						}
 						if($address){
 							$merge_vars[$key] = array(
 																	'addr1'   => $address->getStreet(1),
