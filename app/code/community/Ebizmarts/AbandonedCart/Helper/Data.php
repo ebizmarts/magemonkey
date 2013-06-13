@@ -25,5 +25,11 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract {
             'lifetime' => $this->__('Lifetime'),
         );
     }
+    public function log($message)
+    {
+        if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::LOG)) {
+            Mage::log($message);
+        }
+    }
 
 }
