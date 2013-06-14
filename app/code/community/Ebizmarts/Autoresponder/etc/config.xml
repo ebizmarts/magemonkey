@@ -28,5 +28,113 @@
                 </setup>
             </ebizmarts_autoresponder_setup>
         </resources>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_neworder_template translate="label" module="ebizmarts_autoresponder">
+                    <label>New Order Email</label>
+                    <file>sales/ebizmarts/autoresponder/neworder.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_neworder_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_neworder>
+            <mandrill-tag>Autoresponder_NewOrder</mandrill-tag>
+        </ebizmarts_autoresponder_neworder>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_related_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Related Products Email</label>
+                    <file>sales/ebizmarts/autoresponder/relatedproducts.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_related_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_relatedproducts>
+            <mandrill-tag>Autoresponder_RelatedProducts</mandrill-tag>
+        </ebizmarts_autoresponder_relatedproducts>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_review_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Review Email</label>
+                    <file>sales/ebizmarts/autoresponder/review.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_review_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_productreview>
+            <mandrill-tag>Autoresponder_ProductReview</mandrill-tag>
+        </ebizmarts_autoresponder_productreview>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_birthday_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Customer Birthday Email</label>
+                    <file>sales/ebizmarts/autoresponder/birthday.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_birthday_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_birthday>
+            <mandrill-tag>Autoresponder_CustomerBirthday</mandrill-tag>
+        </ebizmarts_autoresponder_birthday>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_registration_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Registration Email</label>
+                    <file>sales/ebizmarts/autoresponder/registration.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_registration_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_newregistration>
+            <mandrill-tag>Autoresponder_NewRegistration</mandrill-tag>
+        </ebizmarts_autoresponder_newregistration>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_newsletter_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Newsletter Registration Email</label>
+                    <file>sales/ebizmarts/autoresponder/newletter.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_newsletter_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_newsletter>
+            <mandrill-tag>Autoresponder_Newsletter</mandrill-tag>
+        </ebizmarts_autoresponder_newsletter>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_noactivity_template translate="label" module="ebizmarts_autoresponder">
+                    <label>No Customer Activity Email</label>
+                    <file>sales/ebizmarts/autoresponder/noactivity.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_noactivity_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_noactivity>
+            <mandrill-tag>Autoresponder_NoActivity</mandrill-tag>
+        </ebizmarts_autoresponder_noactivity>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_wishlist_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Wishlist Email</label>
+                    <file>sales/ebizmarts/autoresponder/wishlist.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_wishlist_template>
+            </email>
+        </template>
+        <ebizmarts_autoresponder_wishlist>
+            <mandrill-tag>Autoresponder_WishList</mandrill-tag>
+        </ebizmarts_autoresponder_wishlist>
     </global>
+    <crontab>
+        <jobs>
+            <ebizmarts_autoresponder>
+                <schedule>
+                    <cron_expr>0 */1 * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ebizmarts_autoresponder/cron::process</model>
+                </run>
+            </ebizmarts_autoresponder>
+        </jobs>
+    </crontab>
 </config>
