@@ -9,6 +9,7 @@ class Ebizmarts_AbandonedCart_Model_Config
 {
     const ACTIVE                            = "ebizmarts_abandonedcart/general/active";
     const EMAIL_TEMPLATE_XML_PATH           = 'ebizmarts_abandonedcart/general/template';
+    const MANDRILL_TAG                      = 'ebizmarts_abandonedcart/general/mandrill-tag';
     const EMAIL_TEMPLATE_XML_PATH_W_COUPON  = 'ebizmarts_abandonedcart/general/coupon_template';
     const DAYS                              = "ebizmarts_abandonedcart/general/days";
     const UNIT                              = "ebizmarts_abandonedcart/general/unit";

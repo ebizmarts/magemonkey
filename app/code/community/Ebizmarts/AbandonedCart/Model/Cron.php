@@ -34,6 +34,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $unit = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::UNIT, $store);
         $customergroups = explode(",",Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::CUSTOMER_GROUPS, $store));
         $mailsubject = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SUBJECT, $store);
+        $mandrillTag = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MANDRILL_TAG, $store)."_$store";
 
         if(!$days) {
             return;
@@ -110,7 +111,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         // for each cart
         foreach($collection as $quote)
         {
-            // ckeck if they are any order from the customer with date >=
+            // check if they are any order from the customer with date >=
             $collection2 = Mage::getResourceModel('reports/quote_collection');
             $collection2->addFieldToFilter('main_table.is_active', '0')
                         ->addFieldToFilter('main_table.reserved_order_id',array('neq' => 'NULL' ))
@@ -139,11 +140,12 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 // create a new coupon
                 if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AUTOMATIC)==2) {
                     list($couponcode,$discount,$toDate) = $this->_createNewCoupon($store,$email);
-                    $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name);
+                    $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode,'discount' => $discount,
+                                'todate' => $toDate, 'name' => $name,'tags'=>array($mandrillTag));
                 }
                 else {
                     $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_CODE);
-                    $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode, 'name' => $name);
+                    $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode, 'name' => $name,'tags'=>array($mandrillTag));
                 }
             }
             else {

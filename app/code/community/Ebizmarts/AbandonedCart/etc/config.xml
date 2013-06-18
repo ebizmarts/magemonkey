@@ -46,7 +46,9 @@
         </resources>
         <fieldsets>
             <sales_convert_quote>
-                <ebizmarts_abandonedcart_flag><to_order>*</to_order></ebizmarts_abandonedcart_flag>
+                <ebizmarts_abandonedcart_flag>
+                    <to_order>*</to_order>
+                </ebizmarts_abandonedcart_flag>
             </sales_convert_quote>
         </fieldsets>
     </global>
@@ -56,7 +58,8 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <Ebizmarts_Abandonedcart before="Mage_Adminhtml">Ebizmarts_AbandonedCart_Adminhtml</Ebizmarts_Abandonedcart>
+                        <Ebizmarts_Abandonedcart before="Mage_Adminhtml">Ebizmarts_AbandonedCart_Adminhtml
+                        </Ebizmarts_Abandonedcart>
                     </modules>
                 </args>
             </adminhtml>
@@ -112,4 +115,12 @@
             </ebizmarts_abandoned_cart>
         </jobs>
     </crontab>
+    <default>
+        <ebizmarts_abandonedcart>
+            <general>
+                <subject>Abandoned Cart Email</subject>
+                <mandrill-tag>AbandonedCart</mandrill-tag>
+            </general>
+        </ebizmarts_abandonedcart>
+    </default>
 </config>
