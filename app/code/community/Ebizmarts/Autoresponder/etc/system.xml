@@ -176,14 +176,26 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </template>
+                        <subject translate="label comment">
+                            <label>Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the related email]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </subject>
                         <mandrill-tag translate="label">
                             <label>Mandrill Tag</label>
-                            <frontend_type>textarea</frontend_type>
+                            <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>A separated comma list of tags</comment>
                             <depends>
                                 <active>1</active>
                             </depends>
@@ -202,6 +214,18 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </customer>
+                        <max-related translate="label">
+                            <label>Max related products</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Max related product, 0 means no max</comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </max-related>
                     </fields>
                 </related>
                 <review translate="label comment">
@@ -360,6 +384,9 @@ Module : Ebizmarts_Magemonkey
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
                         </coupon>
                         <customer_coupon translate="label comment">
                             <label>Customer Groups for coupon</label>
@@ -373,6 +400,7 @@ Module : Ebizmarts_Magemonkey
                             <comment><![CDATA[]]></comment>
                             <depends>
                                 <active>1</active>
+                                <coupon>1</coupon>
                             </depends>
                         </customer_coupon>
                         <automatic translate="label">
@@ -384,7 +412,8 @@ Module : Ebizmarts_Magemonkey
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <create>1</create>
+                                <active>1</active>
+                                <coupon>1</coupon>
                             </depends>
                         </automatic>
                         <coupon_code>
@@ -397,7 +426,8 @@ Module : Ebizmarts_Magemonkey
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The code of an existing coupon]]></comment>
                             <depends>
-                                <create>1</create>
+                                <active>1</active>
+                                <coupon>1</coupon>
                                 <automatic>1</automatic>
                             </depends>
                         </coupon_code>
@@ -411,7 +441,8 @@ Module : Ebizmarts_Magemonkey
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The coupon expiration in days]]></comment>
                             <depends>
-                                <create>1</create>
+                                <active>1</active>
+                                <coupon>1</coupon>
                                 <automatic>2</automatic>
                             </depends>
                         </expire>
@@ -424,7 +455,8 @@ Module : Ebizmarts_Magemonkey
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
                             <depends>
-                                <create>1</create>
+                                <active>1</active>
+                                <coupon>1</coupon>
                                 <automatic>2</automatic>
                             </depends>
                         </length>
@@ -439,7 +471,8 @@ Module : Ebizmarts_Magemonkey
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[Select percentage or fixed discount]]></comment>
                             <depends>
-                                <create>1</create>
+                                <active>1</active>
+                                <coupon>1</coupon>
                                 <automatic>2</automatic>
                             </depends>
                         </discounttype>
@@ -453,7 +486,8 @@ Module : Ebizmarts_Magemonkey
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[Amount]]></comment>
                             <depends>
-                                <create>1</create>
+                                <active>1</active>
+                                <coupon>1</coupon>
                                 <automatic>2</automatic>
                             </depends>
                         </discount>
@@ -467,7 +501,8 @@ Module : Ebizmarts_Magemonkey
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[]]></comment>
                             <depends>
-                                <create>1</create>
+                                <active>1</active>
+                                <coupon>1</coupon>
                                 <automatic>2</automatic>
                             </depends>
                         </couponlabel>

@@ -126,15 +126,19 @@
         <ebizmarts_autoresponder>
             <neworder>
                 <mandrill-tag>Autoresponder_NewOrder</mandrill-tag>
+                <subject>Thanks for your order</subject>
             </neworder>
             <related>
                 <mandrill-tag>Autoresponder_RelatedProducts</mandrill-tag>
+                <max-related>5</max-related>
+                <subject>Products of your interest</subject>
             </related>
             <review>
                 <mandrill-tag>Autoresponder_Review</mandrill-tag>
             </review>
             <birthday>
                 <mandrill-tag>Autoresponder_Birthday</mandrill-tag>
+                <subject>Happy birthday</subject>
             </birthday>
             <registration>
                 <mandrill-tag>Autoresponder_Registration</mandrill-tag>

@@ -112,6 +112,9 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 			} else {
 				$message['html'] = $text;
 			}
+            if(isset($variables['tags']) && count($variables['tags'])) {
+                $message ['tags'] = $variables['tags'];
+            }
 
 //			$tTags = $this->_getTemplateTags($variables['store']);
 //			if(!empty($tTags)){

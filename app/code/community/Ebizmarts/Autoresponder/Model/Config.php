@@ -23,6 +23,8 @@ class Ebizmarts_Autoresponder_Model_Config
     const RELATED_CUSTOMER_GROUPS       = 'ebizmarts_autoresponder/related/customer';
     const RELATED_TEMPLATE              = 'ebizmarts_autoresponder/related/template';
     const RELATED_MANDRILL_TAG          = 'ebizmarts_autoresponder/related/mandrill-tag';
+    const RELATED_SUBJECT               = 'ebizmarts_autoresponder/related/mailsubject';
+    const RELATED_MAX                   = 'ebizmarts_autoresponder/related/max-related';
 
     const REVIEW_ACTIVE                 = 'ebizmarts_autoresponder/review/active';
     const REVIEW_DAYS                   = 'ebizmarts_autoresponder/review/days';

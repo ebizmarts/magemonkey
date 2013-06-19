@@ -27,22 +27,39 @@ class Ebizmarts_Autoresponder_Model_Cron
      */
     protected function _processStore($storeId)
     {
-        if(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE) {
+        if(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE) { // done
             $this->_processNewOrders($storeId);
         }
-        if(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE) {
+        if(Ebizmarts_Autoresponder_Model_Config::RELATED_ACTIVE) {
+            $this->_processRelated($storeId);
+        }
+        if(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE) {
+            $this->_processReview($storeId);
+        }
+        if(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE) { // done
             $this->_processBirthday($storeId);
         }
-        if(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE) {
+        if(Ebizmarts_Autoresponder_Model_Config::REGISTRATION_ACTIVE) {
+            $this->_processRegistration($storeId);
+        }
+        if(Ebizmarts_Autoresponder_Model_Config::NEWSLETTER_ACTIVE) {
+            $this->_processSubscription($storeId);
+        }
+        if(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE) { // done
             $this->_processNoActivity($storeId);
         }
+        if(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE) {
+            $this->_processWishlist($storeId);
+        }
+
+
     }
     protected function _processNewOrders($storeId)
     {
         Mage::log(__METHOD__);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CUSTOMER_GROUPS, $storeId));
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_DAYS,$storeId);
-        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_MANDRILL_TAG,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_MANDRILL_TAG,$storeId)."_$storeId";
         $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_SUBJECT,$storeId);
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
@@ -64,7 +81,7 @@ class Ebizmarts_Autoresponder_Model_Cron
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
             $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
-            $vars = array();
+            $vars = array('tags'=>array($tags));
 
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
             $translate->setTranslateInLine(true);
@@ -80,7 +97,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_TEMPLATE,$storeId);
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_SUBJECT,$storeId);
-        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_MANDRILL_TAG,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_MANDRILL_TAG,$storeId)."_$storeId";
         $sendCoupon     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON,$storeId);
         $customerGroupsCoupon = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_COUPON, $storeId));
 
@@ -106,11 +123,11 @@ class Ebizmarts_Autoresponder_Model_Cron
             if($sendCoupon && in_array($customer->getGroupId,$customerGroupsCoupon)) {
                 if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_AUTOMATIC,$storeId)) {
                     list($couponcode,$discount,$toDate) = $this->_createNewCoupon($storeId,$email);
-                    $vars = array('couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name);
+                    $vars = array('couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name,'tags'=>array($tags));
                 }
                 else {
                     $couponcode = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_CODE);
-                    $vars = array('couponcode'=>$couponcode, 'name' => $name);
+                    $vars = array('couponcode'=>$couponcode, 'name' => $name,'tags'=>array($tags));
                 }
 
             }
@@ -128,7 +145,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_TEMPLATE,$storeId);
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_SUBJECT,$storeId);
-        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_MANDRILL_TAG,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_MANDRILL_TAG,$storeId)."_$storeId";
 
         $collection     = Mage::getModel('customer/customer')->getCollection();
 
@@ -148,13 +165,76 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $lastVisited = $logCustomer->getLoginAt();
                 $limit = date("Y-m-d H:i:s",strtotime(" - $days days"));
                 if($limit>$lastVisited) {
-
+                    $translate = Mage::getSingleton('core/translate');
+                    $email = $customer->getEmail();
+                    $name = $customer->getFirstname().' '.$customer->getLastname();
+                    $vars = array('name' => $name,'tags'=>array($tags),'lastlogin'=>$lastVisited);
+                    $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+                    $translate->setTranslateInLine(true);
                 }
             }
         }
 
     }
+    protected function _processRelated($storeId)
+    {
+        Mage::log(__METHOD__);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CUSTOMER_GROUPS, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_DAYS,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MANDRILL_TAG,$storeId)."_$storeId";
+        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_TEMPLATE,$storeId);
+        $maxRelated     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MAX,$storeId);
 
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+        $from = new Zend_Db_Expr($expr);
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days+1, 'DAY'));
+        $to = new Zend_Db_Expr($expr);
+        $collection = Mage::getResourceModel('sales/order_collection');
+        $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
+            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to));
+        if(count($customerGroups)) {
+            $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
+        }
+        $counter = 0;
+        foreach($collection as $order) {
+            if($maxRelated && $maxRelated > $counter) {
+                break;
+            }
+            foreach($order->getAllItems() as $itemId => $item) {
+                if($maxRelated && $maxRelated > $counter) {
+                    break;
+                }
+                foreach($item-> $item->getRelatedLinkCollection() as $related) {
+                    if($maxRelated && $maxRelated > $counter) {
+                        break;
+                    }
+
+                }
+
+            }
+        }
+
+    }
+    protected function _processReview($storeId)
+    {
+
+    }
+    protected function _processRegistration($storeId)
+    {
+
+    }
+    protected function _processSubscription($storeId)
+    {
+
+    }
+    protected function _processWishlist($storeId)
+    {
+
+    }
     protected function _createNewCoupon($store,$email)
     {
         $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
