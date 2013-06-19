@@ -162,11 +162,8 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
     {
         $mandrill = Mage::helper('mandrill')->api();
         $mandrill->setApiKey(Mage::helper('mandrill')->getApiKey($store));
-        $tags = explode(',',(string)Mage::getConfig()->getNode(Ebizmarts_AbandonedCart_Model_Config::ABANDONED_TAGS));
-        foreach($tags as $key => $value) {
-            $tags[$key] = $value."_$store";
-        }
-        $tags = $mandrill->tagsInfo(implode(',',$tags));
+        $mandrillTag = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MANDRILL_TAG, $store)."_$store";
+        $tags = $mandrill->tagsInfo($mandrillTag);
         if(!$tags) {
             return false;
         }
