@@ -84,7 +84,7 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </days>
-                        <mailsubject translate="label">
+                        <subject translate="label">
                             <label>Mail Subject</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>25</sort_order>
@@ -94,7 +94,7 @@ Module : Ebizmarts_Magemonkey
                             <depends>
                                 <active>1</active>
                             </depends>
-                        </mailsubject>
+                        </subject>
                         <template translate="label">
                             <label>Email Template</label>
                             <frontend_type>select</frontend_type>
@@ -269,14 +269,26 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </template>
+                        <subject translate="label comment">
+                            <label>Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the review email]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </subject>
                         <mandrill-tag translate="label">
                             <label>Mandrill Tag</label>
-                            <frontend_type>textarea</frontend_type>
+                            <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>A separated comma list of tags</comment>
                             <depends>
                                 <active>1</active>
                             </depends>
@@ -549,14 +561,26 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </template>
+                        <subject translate="label comment">
+                            <label>Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the registration email]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </subject>
                         <mandrill-tag translate="label">
                             <label>Mandrill Tag</label>
-                            <frontend_type>textarea</frontend_type>
+                            <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>A separated comma list of tags</comment>
                             <depends>
                                 <active>1</active>
                             </depends>
@@ -618,14 +642,26 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </template>
+                        <subject translate="label comment">
+                            <label>Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the newsletter email]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </subject>
                         <mandrill-tag translate="label">
                             <label>Mandrill Tag</label>
-                            <frontend_type>textarea</frontend_type>
+                            <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>A separated comma list of tags</comment>
                             <depends>
                                 <active>1</active>
                             </depends>
@@ -768,14 +804,26 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </template>
+                        <subject translate="label comment">
+                            <label>Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the wishlist email]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </subject>
                         <mandrill-tag translate="label">
                             <label>Mandrill Tag</label>
-                            <frontend_type>textarea</frontend_type>
+                            <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>A separated comma list of tags</comment>
                             <depends>
                                 <active>1</active>
                             </depends>

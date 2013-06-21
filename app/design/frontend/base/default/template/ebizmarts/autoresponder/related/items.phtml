@@ -1,0 +1,9 @@
+<?php $products = $this->getProducts(); ?>
+<table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #EAEAEA;">
+<?php foreach($products as $product): ?>
+    <tr>
+        <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo $product->getProductUrl(); ?>" alt="<?php echo $product->getName(); ?>" target="_blank"><img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $product->getName(); ?>"/></a></td>
+        <td valign="top" align="left" style="padding:3px 9px"><p><?php echo $product->getName(); ?></p><?php echo $product->getShortDescription(); ?></td>
+    </tr>
+<?php endforeach; ?>
+</table>

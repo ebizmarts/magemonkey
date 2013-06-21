@@ -9,21 +9,21 @@
 class Ebizmarts_Autoresponder_Model_Config
 {
     const GENERAL_ACTIVE                = 'ebizmarts_autoresponder/general/active';
-    const GENERAL_SENDER                = 'ebizmarts_autoresponder/general/sender';
+    const GENERAL_SENDER                = 'ebizmarts_autoresponder/general/identity';
 
     const NEWORDER_ACTIVE               = 'ebizmarts_autoresponder/neworder/active';
     const NEWORDER_DAYS                 = 'ebizmarts_autoresponder/neworder/days';
     const NEWORDER_CUSTOMER_GROUPS      = 'ebizmarts_autoresponder/neworder/customer';
     const NEWORDER_TEMPLATE             = 'ebizmarts_autoresponder/neworder/template';
     const NEWORDER_MANDRILL_TAG         = 'ebizmarts_autoresponder/neworder/mandrill-tag';
-    const NEWORDER_SUBJECT              = 'ebizmarts_autoresponder/neworder/mailsubject';
+    const NEWORDER_SUBJECT              = 'ebizmarts_autoresponder/neworder/subject';
 
     const RELATED_ACTIVE                = 'ebizmarts_autoresponder/related/active';
     const RELATED_DAYS                  = 'ebizmarts_autoresponder/related/days';
     const RELATED_CUSTOMER_GROUPS       = 'ebizmarts_autoresponder/related/customer';
     const RELATED_TEMPLATE              = 'ebizmarts_autoresponder/related/template';
     const RELATED_MANDRILL_TAG          = 'ebizmarts_autoresponder/related/mandrill-tag';
-    const RELATED_SUBJECT               = 'ebizmarts_autoresponder/related/mailsubject';
+    const RELATED_SUBJECT               = 'ebizmarts_autoresponder/related/subject';
     const RELATED_MAX                   = 'ebizmarts_autoresponder/related/max-related';
 
     const REVIEW_ACTIVE                 = 'ebizmarts_autoresponder/review/active';
@@ -31,6 +31,7 @@ class Ebizmarts_Autoresponder_Model_Config
     const REVIEW_CUSTOMER_GROUPS        = 'ebizmarts_autoresponder/review/customer';
     const REVIEW_TEMPLATE               = 'ebizmarts_autoresponder/review/template';
     const REVIEW_MANDRILL_TAG           = 'ebizmarts_autoresponder/review/mandrill-tag';
+    const REVIEW_SUBJECT                = 'ebizmarts_autoresponder/review/subject';
 
     const BIRTHDAY_ACTIVE               = 'ebizmarts_autoresponder/birthday/active';
     const BIRTHDAY_DAYS                 = 'ebizmarts_autoresponder/birthday/days';
@@ -65,12 +66,16 @@ class Ebizmarts_Autoresponder_Model_Config
     const NOACTIVITY_CUSTOMER_GROUPS    = 'ebizmarts_autoresponder/noactivity/customer';
     const NOACTIVITY_TEMPLATE           = 'ebizmarts_autoresponder/noactivity/template';
     const NOACTIVITY_MANDRILL_TAG       = 'ebizmarts_autoresponder/noactivity/mandrill-tag';
-    const NOACTIVITY_SUBJECT            = 'ebizmarts_autoresponder/noactivity/mailsubject';
+    const NOACTIVITY_SUBJECT            = 'ebizmarts_autoresponder/noactivity/subject';
 
     const WISHLIST_ACTIVE             = 'ebizmarts_autoresponder/wishlist/active';
     const WISHLIST_DAYS               = 'ebizmarts_autoresponder/wishlist/days';
     const WISHLIST_CUSTOMER_GROUPS    = 'ebizmarts_autoresponder/wishlist/customer';
     const WISHLIST_TEMPLATE           = 'ebizmarts_autoresponder/wishlist/template';
     const WISHLIST_MANDRILL_TAG       = 'ebizmarts_autoresponder/wishlist/mandrill-tag';
+    const WISHLIST_SUBJECT            = 'ebizmarts_autoresponder/wishlist/subject';
 
+
+    const COUPON_AUTOMATIC            = 2;
+    const COUPON_MANUAL               = 1;
 }

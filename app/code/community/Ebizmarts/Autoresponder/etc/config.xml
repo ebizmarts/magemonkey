@@ -86,7 +86,7 @@
             <email>
                 <ebizmarts_autoresponder_newsletter_template translate="label" module="ebizmarts_autoresponder">
                     <label>Newsletter Registration Email</label>
-                    <file>sales/ebizmarts/autoresponder/newsletter.html</file>
+                    <file>ebizmarts/autoresponder/newsletter.html</file>
                     <type>html</type>
                 </ebizmarts_autoresponder_newsletter_template>
             </email>
@@ -95,7 +95,7 @@
             <email>
                 <ebizmarts_autoresponder_noactivity_template translate="label" module="ebizmarts_autoresponder">
                     <label>No Customer Activity Email</label>
-                    <file>sales/ebizmarts/autoresponder/noactivity.html</file>
+                    <file>ebizmarts/autoresponder/noactivity.html</file>
                     <type>html</type>
                 </ebizmarts_autoresponder_noactivity_template>
             </email>
@@ -104,7 +104,7 @@
             <email>
                 <ebizmarts_autoresponder_wishlist_template translate="label" module="ebizmarts_autoresponder">
                     <label>Wishlist Email</label>
-                    <file>sales/ebizmarts/autoresponder/wishlist.html</file>
+                    <file>ebizmarts/autoresponder/wishlist.html</file>
                     <type>html</type>
                 </ebizmarts_autoresponder_wishlist_template>
             </email>
@@ -135,6 +135,7 @@
             </related>
             <review>
                 <mandrill-tag>Autoresponder_Review</mandrill-tag>
+                <subject>Please review your purchased products</subject>
             </review>
             <birthday>
                 <mandrill-tag>Autoresponder_Birthday</mandrill-tag>
@@ -142,15 +143,19 @@
             </birthday>
             <registration>
                 <mandrill-tag>Autoresponder_Registration</mandrill-tag>
+                <subject>Registration Subject</subject>
             </registration>
             <newsletter>
                 <mandrill-tag>Autoresponder_NewsLetter</mandrill-tag>
+                <subject>NewsLetter Subject</subject>
             </newsletter>
             <noactivity>
                 <mandrill-tag>Autoresponder_NoCustomerActivity</mandrill-tag>
+                <subject>You don't have any activity</subject>
             </noactivity>
             <wishlist>
                 <mandrill-tag>Autoresponder_WishlistAdd</mandrill-tag>
+                <subject>Wishlist Subject</subject>
             </wishlist>
         </ebizmarts_autoresponder>
     </default>
