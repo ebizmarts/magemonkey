@@ -39,16 +39,10 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId)) { // done
             $this->_processBirthday($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REGISTRATION_ACTIVE,$storeId)) {
-            $this->_processRegistration($storeId);
-        }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWSLETTER_ACTIVE,$storeId)) {
-            $this->_processSubscription($storeId);
-        }
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE,$storeId)) { // done
             $this->_processNoActivity($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId)) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId)) { // done
             $this->_processWishlist($storeId);
         }
     }
@@ -294,20 +288,47 @@ class Ebizmarts_Autoresponder_Model_Cron
         $to = new Zend_Db_Expr($expr);
 
         $collection = Mage::getModel('wishlist/item')->getCollection();
-        $collection->addFieldToFilter('main_table.added_at',array('from'=>$from,'to'=>$to));
-        Mage::log((string)$collection->getSelect());
+        $collection->addFieldToFilter('main_table.added_at',array('from'=>$from,'to'=>$to))
+                    ->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
+                    ->setOrder('main_table.wishlist_id');
+        $wishlist_ant = -1;
+        $wishlistId = $collection->getFirstItem()->getWishlistId();
+        $products = array();
         foreach($collection as $item) {
-            $customer = Mage::getModel('customer/customer')->load($item->getCustomerId());
-            if(in_array($customer->getGroupId(),$customerGroups)) {
-                $translate = Mage::getSingleton('core/translate');
-                $email = $customer->getEmail();
-                $name = $customer->getFirstname().' '.$customer->getLastname();
-                $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                $vars = array('name' => $name,'tags'=>array($tags),'product'=>$product);
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
-                $translate->setTranslateInLine(true);
+            Mage::log('entre al foreach');
+            if($wishlistId != $wishlist_ant) {
+                Mage::log('primer if');
+                if($wishlist_ant != -1 && count($products) > 0) {
+                    Mage::log('mando mail');
+                    $translate  = Mage::getSingleton('core/translate');
+                    $email      = $customer->getEmail();
+                    $name       = $customer->getFirstname().' '.$customer->getLastname();
+                    $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products);
 
+                    $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+                    $translate->setTranslateInLine(true);
+
+                }
+                Mage::log('cambio la wishlist');
+                $wishlist_ant   = $wishlistId;
+                $wishlistId     = $item->getWishlistId();
+                $wishlist       = Mage::getModel('wishlist/wishlist')->load($wishlistId);
+                $customer       = Mage::getModel('customer/customer')->load($wishlist->getCustomerId());
+                $products       = array();
             }
+            if(in_array($customer->getGroupId(),$customerGroups)) {
+                $products[]     = Mage::getModel('catalog/product')->load($item->getProductId());
+            }
+        }
+        if(count($products)) {
+            Mage::log('mando mail');
+            $translate  = Mage::getSingleton('core/translate');
+            $email      = $customer->getEmail();
+            $name       = $customer->getFirstname().' '.$customer->getLastname();
+            $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products);
+
+            $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+            $translate->setTranslateInLine(true);
         }
 
     }

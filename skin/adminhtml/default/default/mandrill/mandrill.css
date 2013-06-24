@@ -3,7 +3,7 @@ ul.tabs a.mandrill-section {border-bottom: 1px; border-bottom-style: dotted;}
 ul.tabs a.mandrill-section:hover {border-bottom: 1px; border-bottom-style: dotted;}
 ul.tabs a.mandrill-section span,
 ul.tabs a.mandrill-section:hover span { background:url(mandrill-tab.png) no-repeat 20px 0; overflow:hidden; padding:0; padding-left:45px; width:120px; height:22px;}
-ul.tabs a.mandrill-section.active, ul.tabs a.mandrill-section.active:hover {background-color: white;}
+ul.tabs a.mandrill-section.active, ul.tabs a.mandrill-section.active:hover {background-color: white;border-bottom-color: #8BA5A5;}
 
 small { font-size: 9px; }
 

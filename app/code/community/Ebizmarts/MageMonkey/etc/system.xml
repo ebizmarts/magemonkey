@@ -2,10 +2,8 @@
 <config>
     <tabs>
         <monkey translate="label" module="monkey">
-            <label><![CDATA[Monkey]]></label>
+            <label><![CDATA[MageMonkey]]></label>
             <sort_order>400</sort_order>
-            <header_css>ebizmarts-header</header_css>
-            <class>ebizmarts-section</class>
         </monkey>
     </tabs>
     <sections>

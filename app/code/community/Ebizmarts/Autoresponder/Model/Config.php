@@ -49,17 +49,6 @@ class Ebizmarts_Autoresponder_Model_Config
     const BIRTHDAY_DISCOUNT             = 'ebizmarts_autoresponder/birthday/discount';
     const BIRTHDAY_COUPON_LABEL         = 'ebizmarts_autoresponder/birthday/couponlabel';
 
-    const REGISTRATION_ACTIVE           = 'ebizmarts_autoresponder/registration/active';
-    const REGISTRATION_DAYS             = 'ebizmarts_autoresponder/registration/days';
-    const REGISTRATION_CUSTOMER_GROUPS  = 'ebizmarts_autoresponder/registration/customer';
-    const REGISTRATION_TEMPLATE         = 'ebizmarts_autoresponder/registration/template';
-    const REGISTRATION_MANDRILL_TAG     = 'ebizmarts_autoresponder/registration/mandrill-tag';
-
-    const NEWSLETTER_ACTIVE             = 'ebizmarts_autoresponder/newsletter/active';
-    const NEWSLETTER_DAYS               = 'ebizmarts_autoresponder/newsletter/days';
-    const NEWSLETTER_CUSTOMER_GROUPS    = 'ebizmarts_autoresponder/newsletter/customer';
-    const NEWSLETTER_TEMPLATE           = 'ebizmarts_autoresponder/newsletter/template';
-    const NEWSLETTER_MANDRILL_TAG       = 'ebizmarts_autoresponder/newsletter/mandrill-tag';
 
     const NOACTIVITY_ACTIVE             = 'ebizmarts_autoresponder/noactivity/active';
     const NOACTIVITY_DAYS               = 'ebizmarts_autoresponder/noactivity/days';

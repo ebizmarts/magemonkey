@@ -2,9 +2,7 @@
 <config>
     <sections>
         <ebizmarts_abandonedcart translate="label" module="ebizmarts_abandonedcart">
-            <label><![CDATA[Abandoned Cart]]></label>
-            <class>ebizmarts-section</class>
-            <header_css>ebizmarts-header</header_css>
+            <label><![CDATA[Abandoned Carts Recovery]]></label>
             <tab>monkey</tab>
             <sort_order>300</sort_order>
             <show_in_default>1</show_in_default>

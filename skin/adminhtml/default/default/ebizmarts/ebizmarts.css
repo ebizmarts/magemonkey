@@ -2,8 +2,9 @@ ul.tabs a.ebizmarts-section:hover { background-color:#D8E6E6; background-image:u
 ul.tabs a.ebizmarts-section {border-bottom: 1px; border-bottom-style: dotted;}
 ul.tabs a.ebizmarts-section:hover {border-bottom:1px; border-bottom-style: dotted;}
 ul.tabs a.ebizmarts-section span,
-ul.tabs a.ebizmarts-section:hover span {background:url(ebizmarts-tab.png) no-repeat 20px 0;overflow:hidden; padding-top:5px; padding-left:100px;}
-ul.tabs a.ebizmarts-section.active, ul.tabs a.ebizmarts-section.active:hover {background-color: white;}
+ul.tabs a.ebizmarts-section:hover span {overflow:hidden; padding-top:5px;}
+ul.tabs a.ebizmarts-section.active, ul.tabs a.ebizmarts-section.active.last, ul.tabs a.ebizmarts-section.active:hover {background-color: white;border-bottom-color: #8BA5A5;}
+ul.tabs a.ebizmarts-section.last {border-bottom: none;}
 
 small { font-size: 9px; }
 
@@ -15,7 +16,6 @@ div.ebizmarts-notice {
 }
 
 h3.ebizmarts-header {
-    background: url("ebizmarts-tab.png") no-repeat scroll 0 0 transparent;
     height: 22px;
     overflow: hidden;
     padding: 0;

@@ -1,10 +1,5 @@
 <?xml version="1.0"?>
 <layout>
-    <adminhtml_system_config_edit>
-        <reference name="head">
-            <action method="addCss"><stylesheet>ebizmarts/ebizmarts.css</stylesheet></action>
-        </reference>
-    </adminhtml_system_config_edit>
     <adminhtml_abandonedorder_grid>
         <update handle="formkey"/>
         <block type="ebizmarts_abandonedcart/adminhtml_abandonedorder_grid" name="ebizmarts_abandonedcart_abandonedorder.grid" output="toHtml"></block>
