@@ -3,10 +3,10 @@
     <sections>
         <mandrill translate="label" module="mandrill">
             <label><![CDATA[Mandrill]]></label>
-            <class>mandrill-section</class>
+            <class>mandrill-section separator-top</class>
             <header_css>mandrill-header</header_css>
-            <tab>advanced</tab>
-            <sort_order>609</sort_order>
+            <tab>monkey</tab>
+            <sort_order>200</sort_order>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>

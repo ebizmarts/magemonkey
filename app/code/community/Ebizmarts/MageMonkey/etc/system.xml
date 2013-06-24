@@ -1,12 +1,20 @@
 <?xml version="1.0"?>
 <config>
+    <tabs>
+        <monkey translate="label" module="monkey">
+            <label><![CDATA[Monkey]]></label>
+            <sort_order>400</sort_order>
+            <header_css>ebizmarts-header</header_css>
+            <class>ebizmarts-section</class>
+        </monkey>
+    </tabs>
     <sections>
         <monkey translate="label" module="monkey">
             <class>monkey-section</class>
             <label>Mailchimp Configuration</label>
             <header_css>mailchimp-header</header_css>
-            <tab>customer</tab>
-            <sort_order>404</sort_order>
+            <tab>monkey</tab>
+            <sort_order>100</sort_order>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
