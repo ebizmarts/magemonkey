@@ -110,6 +110,18 @@
             </email>
         </template>
     </global>
+    <adminhtml>
+        <events>
+            <admin_system_config_changed_section_ebizmarts_autoresponder>
+                <observers>
+                    <ebizmarts_autoresponder_save_config>
+                        <class>ebizmarts_autoresponder/eventObserver</class>
+                        <method>saveConfig</method>
+                    </ebizmarts_autoresponder_save_config>
+                </observers>
+            </admin_system_config_changed_section_ebizmarts_autoresponder>
+        </events>
+    </adminhtml>
     <crontab>
         <jobs>
             <ebizmarts_autoresponder>

@@ -48,7 +48,6 @@ class Ebizmarts_Autoresponder_Model_Cron
     }
     protected function _processNewOrders($storeId)
     {
-        Mage::log(__METHOD__);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CUSTOMER_GROUPS, $storeId));
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_DAYS,$storeId);
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_MANDRILL_TAG,$storeId)."_$storeId";
@@ -68,7 +67,6 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(count($customerGroups)) {
             $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }
-        Mage::log((string)$collection->getSelect());
         foreach($collection as $order) {
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
@@ -82,7 +80,6 @@ class Ebizmarts_Autoresponder_Model_Cron
     }
     protected function _processBirthday($storeId)
     {
-        Mage::log(__METHOD__);
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DAYS,$storeId);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_GROUPS, $storeId));
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
@@ -136,7 +133,6 @@ class Ebizmarts_Autoresponder_Model_Cron
     }
     protected function _processNoActivity($storeId)
     {
-        Mage::log(__METHOD__);
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_DAYS,$storeId);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CUSTOMER_GROUPS, $storeId));
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
@@ -177,7 +173,6 @@ class Ebizmarts_Autoresponder_Model_Cron
     }
     protected function _processRelated($storeId)
     {
-        Mage::log(__METHOD__);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CUSTOMER_GROUPS, $storeId));
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_DAYS,$storeId);
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MANDRILL_TAG,$storeId)."_$storeId";
@@ -227,7 +222,6 @@ class Ebizmarts_Autoresponder_Model_Cron
     }
     protected function _processReview($storeId)
     {
-        Mage::log(__METHOD__);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CUSTOMER_GROUPS, $storeId));
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_DAYS,$storeId);
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_MANDRILL_TAG,$storeId)."_$storeId";
@@ -262,17 +256,8 @@ class Ebizmarts_Autoresponder_Model_Cron
         }
 
     }
-    protected function _processRegistration($storeId)
-    {
-
-    }
-    protected function _processSubscription($storeId)
-    {
-
-    }
     protected function _processWishlist($storeId)
     {
-        Mage::log(__METHOD__);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_CUSTOMER_GROUPS, $storeId));
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_DAYS,$storeId);
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_MANDRILL_TAG,$storeId)."_$storeId";
@@ -295,11 +280,8 @@ class Ebizmarts_Autoresponder_Model_Cron
         $wishlistId = $collection->getFirstItem()->getWishlistId();
         $products = array();
         foreach($collection as $item) {
-            Mage::log('entre al foreach');
             if($wishlistId != $wishlist_ant) {
-                Mage::log('primer if');
                 if($wishlist_ant != -1 && count($products) > 0) {
-                    Mage::log('mando mail');
                     $translate  = Mage::getSingleton('core/translate');
                     $email      = $customer->getEmail();
                     $name       = $customer->getFirstname().' '.$customer->getLastname();
@@ -309,7 +291,6 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $translate->setTranslateInLine(true);
 
                 }
-                Mage::log('cambio la wishlist');
                 $wishlist_ant   = $wishlistId;
                 $wishlistId     = $item->getWishlistId();
                 $wishlist       = Mage::getModel('wishlist/wishlist')->load($wishlistId);
@@ -321,7 +302,6 @@ class Ebizmarts_Autoresponder_Model_Cron
             }
         }
         if(count($products)) {
-            Mage::log('mando mail');
             $translate  = Mage::getSingleton('core/translate');
             $email      = $customer->getEmail();
             $name       = $customer->getFirstname().' '.$customer->getLastname();
