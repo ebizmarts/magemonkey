@@ -1,0 +1,24 @@
+<?php
+    $lists = $this->getLists();
+?>
+<div>
+    <div class="page-title">
+        <h1><?php echo $this->__('Autoresponders Subscription'); ?></h1>
+    </div>
+    <form action="<?php echo $this->getSaveUrl(); ?>" name="autoresponder_list" id="autoresponder_list" method="post">
+        <div class="fieldset">
+            <ul>
+            <?php foreach($lists as $key => $list): ?>
+                <li class="listdata">
+                    <input type="checkbox" name="<?php echo $key;?>" id="<?php echo $key;?>" value="1" <?php if($list['checked']=='checked') { echo 'checked="checked"';}?>/>
+                    <label for="<?php echo $key;?>"><?php echo $list['listname']; ?></label>
+                </li>
+
+            <?php endforeach; ?>
+            </ul>
+            <div class="buttons-set">
+                <button type="submit" title="<?php echo $this->__('Save') ?>" class="button"><span><span><?php echo $this->__('Save') ?></span></span></button>
+            </div>
+        </div>
+    </form>
+</div>

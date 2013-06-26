@@ -97,7 +97,7 @@
         <layout>
             <updates>
                 <ebizmarts_abandonedcart>
-                    <file>ebizmarts_abandonedcart.xml</file>
+                    <file>ebizmarts/abandonedcart.xml</file>
                 </ebizmarts_abandonedcart>
             </updates>
         </layout>

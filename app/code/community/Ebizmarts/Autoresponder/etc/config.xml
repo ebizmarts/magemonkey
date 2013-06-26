@@ -40,7 +40,6 @@
                 <class>Ebizmarts_Autoresponder_Helper</class>
             </ebizmarts_autoresponder>
         </helpers>
-
         <resources>
             <ebizmarts_autoresponder_setup>
                 <setup>
@@ -122,13 +121,6 @@
         </template>
     </global>
     <adminhtml>
-        <layout>
-            <updates>
-                <ebizmarts_autoresponder>
-                    <file>ebizmarts/autoresponder.xml</file>
-                </ebizmarts_autoresponder>
-            </updates>
-        </layout>
         <events>
             <admin_system_config_changed_section_ebizmarts_autoresponder>
                 <observers>
@@ -144,7 +136,7 @@
         <layout>
             <updates>
                 <ebizmarts_autoresponder>
-                    <file>ebizmarts_autoresponder.xml</file>
+                    <file>ebizmarts/autoresponder.xml</file>
                 </ebizmarts_autoresponder>
             </updates>
         </layout>
@@ -176,35 +168,33 @@
             <neworder>
                 <mandrill-tag>Autoresponder_NewOrder</mandrill-tag>
                 <subject>Thanks for your order</subject>
+                <listname>New Order List</listname>
             </neworder>
             <related>
                 <mandrill-tag>Autoresponder_RelatedProducts</mandrill-tag>
                 <max-related>5</max-related>
                 <subject>Products of your interest</subject>
+                <listname>Related Product List</listname>
             </related>
             <review>
                 <mandrill-tag>Autoresponder_Review</mandrill-tag>
                 <subject>Please review your purchased products</subject>
+                <listname>Review Product List</listname>
             </review>
             <birthday>
                 <mandrill-tag>Autoresponder_Birthday</mandrill-tag>
                 <subject>Happy birthday</subject>
+                <listname>Happy Birthday List</listname>
             </birthday>
-            <registration>
-                <mandrill-tag>Autoresponder_Registration</mandrill-tag>
-                <subject>Registration Subject</subject>
-            </registration>
-            <newsletter>
-                <mandrill-tag>Autoresponder_NewsLetter</mandrill-tag>
-                <subject>NewsLetter Subject</subject>
-            </newsletter>
             <noactivity>
                 <mandrill-tag>Autoresponder_NoCustomerActivity</mandrill-tag>
                 <subject>You don't have any activity</subject>
+                <listname>No Activity List</listname>
             </noactivity>
             <wishlist>
                 <mandrill-tag>Autoresponder_WishlistAdd</mandrill-tag>
                 <subject>Wishlist Subject</subject>
+                <listname>Wishlist List</listname>
             </wishlist>
         </ebizmarts_autoresponder>
     </default>

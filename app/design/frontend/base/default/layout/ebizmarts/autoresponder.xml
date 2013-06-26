@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="0.1.0">
+    <ebizmarts_autoresponder_autoresponder_unsubscribe>
+        <reference name="root">
+            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="ebizmarts_autoresponder/unsubscribe" name="ebizmarts_autoresponder_unsubscribe" template="ebizmarts/autoresponder/unsubscribe.phtml"/>
+        </reference>
+    </ebizmarts_autoresponder_autoresponder_unsubscribe>
+
+    <ebizmarts_autoresponder_autoresponder_index translate="label">
+        <label>Customer My Account Autoresponder lists</label>
+        <update handle="customer_account"/>
+        <reference name="my.account.wrapper">
+            <block type="ebizmarts_autoresponder/customer_account_list" name="autoresponderlists" template="ebizmarts/autoresponder/customer/list.phtml" />
+            <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
+        </reference>
+    </ebizmarts_autoresponder_autoresponder_index>
+
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" ifconfig="ebizmarts_autoresponder/general/active" translate="label" module="ebizmarts_autoresponder">
+                <name>autoresponderlists</name>
+                <path>ebizautoresponder/autoresponder/index</path>
+                <label>Autoresponder lists</label>
+            </action>
+        </reference>
+    </customer_account>
+</layout>
