@@ -17,7 +17,12 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         $store  = is_null($o->getEvent()->getStore()) ? 'default': $o->getEvent()->getStore();
         if(!Mage::helper('mandrill')->useTransactionalService()) {
             $config =  new Mage_Core_Model_Config();
-            $config->saveConfig('ebizmarts_autoresponder/general/active',false,"default",$store);
+            $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE,false,"default",$store);
+            Mage::getConfig()->cleanCache();
+        }
+        if(!Mage::getStoreConfig('customer/address/dob_show')) {
+            $config =  new Mage_Core_Model_Config();
+            $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,false,"default",$store);
             Mage::getConfig()->cleanCache();
         }
     }

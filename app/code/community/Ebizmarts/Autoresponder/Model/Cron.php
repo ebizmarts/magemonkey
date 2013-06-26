@@ -71,7 +71,8 @@ class Ebizmarts_Autoresponder_Model_Cron
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
             $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
-            $vars = array('tags'=>array($tags));
+            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizmarts_autoresponder/autoresponder/unsubscribe?list=neworder&email='.$email;
+            $vars = array('tags'=>array($tags),'url'=>$url);
 
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
             $translate->setTranslateInLine(true);
@@ -285,7 +286,9 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $translate  = Mage::getSingleton('core/translate');
                     $email      = $customer->getEmail();
                     $name       = $customer->getFirstname().' '.$customer->getLastname();
-                    $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products);
+                    $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizmarts_autoresponder/autoresponder/unsubscribe?list=wishlist&email='.$email;
+                    Mage::log($url);
+                    $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
 
                     $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                     $translate->setTranslateInLine(true);
@@ -305,7 +308,9 @@ class Ebizmarts_Autoresponder_Model_Cron
             $translate  = Mage::getSingleton('core/translate');
             $email      = $customer->getEmail();
             $name       = $customer->getFirstname().' '.$customer->getLastname();
-            $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products);
+            $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizmarts_autoresponder/autoresponder/unsubscribe?list=wishlist&email='.$email;
+            Mage::log($url);
+            $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
 
             $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
             $translate->setTranslateInLine(true);

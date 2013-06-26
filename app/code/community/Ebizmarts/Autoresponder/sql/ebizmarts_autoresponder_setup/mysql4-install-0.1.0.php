@@ -11,6 +11,16 @@ $installer = $this;
 
 $installer->startSetup();
 
+$installer->run("
 
+	CREATE TABLE IF NOT EXISTS `{$this->getTable('ebizmarts_autoresponder_unsubscribe')}` (
+	  `id` int(10) unsigned NOT NULL auto_increment,
+	  `email` varchar(255),
+	  `list`  varchar(255),
+	  `unsubscribed_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+	  PRIMARY KEY  (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+");
 
 $installer->endSetup();

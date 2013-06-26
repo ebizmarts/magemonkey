@@ -18,7 +18,17 @@
         <models>
             <ebizmarts_autoresponder>
                 <class>Ebizmarts_Autoresponder_Model</class>
+                <resourceModel>ebizmarts_autoresponder_resource</resourceModel>
             </ebizmarts_autoresponder>
+            <ebizmarts_autoresponder_resource>
+                <class>Ebizmarts_Autoresponder_Model_Resource</class>
+                <deprecatedNode>ebizmarts_autoresponder_mysql4</deprecatedNode>
+                <entities>
+                    <unsubscribe>
+                        <table>ebizmarts_autoresponder_unsubscribe</table>
+                    </unsubscribe>
+                </entities>
+            </ebizmarts_autoresponder_resource>
         </models>
         <blocks>
             <ebizmarts_autoresponder>
@@ -30,6 +40,7 @@
                 <class>Ebizmarts_Autoresponder_Helper</class>
             </ebizmarts_autoresponder>
         </helpers>
+
         <resources>
             <ebizmarts_autoresponder_setup>
                 <setup>
@@ -111,6 +122,13 @@
         </template>
     </global>
     <adminhtml>
+        <layout>
+            <updates>
+                <ebizmarts_autoresponder>
+                    <file>ebizmarts/autoresponder.xml</file>
+                </ebizmarts_autoresponder>
+            </updates>
+        </layout>
         <events>
             <admin_system_config_changed_section_ebizmarts_autoresponder>
                 <observers>
@@ -122,6 +140,25 @@
             </admin_system_config_changed_section_ebizmarts_autoresponder>
         </events>
     </adminhtml>
+    <frontend>
+        <layout>
+            <updates>
+                <ebizmarts_autoresponder>
+                    <file>ebizmarts_autoresponder.xml</file>
+                </ebizmarts_autoresponder>
+            </updates>
+        </layout>
+        <routers>
+            <ebizmarts_autoresponder>
+                <use>standard</use>
+                <args>
+                    <module>Ebizmarts_Autoresponder</module>
+                    <frontName>ebizautoresponder</frontName>
+                </args>
+            </ebizmarts_autoresponder>
+        </routers>
+    </frontend>
+
     <crontab>
         <jobs>
             <ebizmarts_autoresponder>
