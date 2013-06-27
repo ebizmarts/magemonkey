@@ -27,6 +27,8 @@ class Ebizmarts_Autoresponder_Model_Cron
      */
     protected function _processStore($storeId)
     {
+        Mage::app()->setCurrentStore($storeId);
+
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE,$storeId)) { // done
             $this->_processNewOrders($storeId);
         }
@@ -54,7 +56,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_SUBJECT,$storeId);
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
-        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TEMPLATE,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
@@ -85,7 +87,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DAYS,$storeId);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_GROUPS, $storeId));
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
-        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_TEMPLATE,$storeId);
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_SUBJECT,$storeId);
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_MANDRILL_TAG,$storeId)."_$storeId";
@@ -141,7 +143,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_DAYS,$storeId);
         $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CUSTOMER_GROUPS, $storeId));
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
-        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_TEMPLATE,$storeId);
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_SUBJECT,$storeId);
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_MANDRILL_TAG,$storeId)."_$storeId";
@@ -187,7 +189,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_SUBJECT,$storeId);
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
-        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_TEMPLATE,$storeId);
         $maxRelated     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MAX,$storeId);
 
@@ -239,7 +241,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_SUBJECT,$storeId);
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
-        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_TEMPLATE,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
@@ -278,7 +280,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_SUBJECT,$storeId);
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
-        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name"), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email"));
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_TEMPLATE,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
