@@ -17,6 +17,7 @@ $installer->run("
 	  `id` int(10) unsigned NOT NULL auto_increment,
 	  `email` varchar(255),
 	  `list`  varchar(255),
+	  `store_id` smallint(5),
 	  `unsubscribed_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 	  PRIMARY KEY  (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;

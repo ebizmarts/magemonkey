@@ -23,14 +23,16 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
     }
     public function unsubscribeAction(){
         $params = $this->getRequest()->getParams();
-        if(isset($params['email'])&&isset($params['list'])) {
+        if(isset($params['email'])&&isset($params['list'])&&$params['store']) {
             $collection = Mage::getModel('ebizmarts_autoresponder/unsubscribe')->getCollection();
             $collection->addFieldToFilter('main_table.email',array('eq'=>$params['email']))
-                        ->addFieldToFilter('main_table.list',array('eq'=>$params['list']));
+                        ->addFieldToFilter('main_table.list',array('eq'=>$params['list']))
+                        ->addFieldToFilter('main_table.store_id',array('eq'=>$params['store']));
             if($collection->getSize() == 0) {
                 $unsubscribe = Mage::getModel('ebizmarts_autoresponder/unsubscribe');
                 $unsubscribe->setEmail($params['email'])
-                            ->setList($params['list']);
+                            ->setList($params['list'])
+                            ->setStoreId($params['store']);
                 $unsubscribe->save();
             }
         }
@@ -45,20 +47,23 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
         $params = $this->getRequest()->getParams();
         $lists = Mage::helper('ebizmarts_autoresponder')->getLists();
         $email = Mage::helper('customer')->getCustomer()->getEmail();
+        $storeId = Mage::app()->getStore()->getStoreId();
+
         foreach($lists as $key => $list) {
             $collection = Mage::getModel('ebizmarts_autoresponder/unsubscribe')->getCollection();
-            $collection->addFieldtoFilter('main_table.email',array('eq'=>$email))
-                        ->addFieldtoFilter('main_table.list',array('eq'=>$key));
+            $collection->addFieldToFilter('main_table.email',array('eq'=>$email))
+                        ->addFieldToFilter('main_table.list',array('eq'=>$key))
+                        ->addFieldToFilter('main_table.store_id',array('eq'=>$storeId));
             if(array_key_exists($key,$params) && $collection->getSize() > 0) { //try to remove
-                Mage::log("voy a borrar $key");
                 $collection->getFirstItem()->delete();
             }
             else if(!array_key_exists($key,$params)&&$collection->getSize() == 0){
-                Mage::log("voy a dar de alta $key");
                 $unsubscribe = Mage::getModel('ebizmarts_autoresponder/unsubscribe');
                 $unsubscribe->setEmail($email)
                             ->setList($key)
-                            ->save();
+                            ->setStoreId($storeId);
+                Mage::log($unsubscribe);
+                $unsubscribe->save();
             }
         }
         Mage::getSingleton('core/session')
