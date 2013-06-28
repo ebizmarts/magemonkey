@@ -236,6 +236,13 @@ Module : Ebizmarts_Magemonkey
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
+                        <hint>
+                            <frontend_model>ebizmarts_autoresponder/adminhtml_system_config_review_fieldset_hint</frontend_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </hint>
                         <active translate="label">
                             <label>Enabled</label>
                             <frontend_type>select</frontend_type>
