@@ -212,6 +212,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		if(is_array($additionalLists)){
+			foreach($additionalLists as $additional) {
+				if($additional == $selectedLists[0]) {
+					$message = Mage::helper('monkey')->__('Be Careful! You have choosen the same list for "General Subscription" and "Additional Lists". Please change this values and save the configuration again');
+					Mage::getSingleton('adminhtml/session')->addWarning($message);
+				}
+			}
 			$selectedLists = array_merge($selectedLists, $additionalLists);
 		}
 
