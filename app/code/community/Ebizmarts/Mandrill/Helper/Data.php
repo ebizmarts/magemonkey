@@ -59,7 +59,7 @@ class Ebizmarts_Mandrill_Helper_Data extends Mage_Core_Helper_Abstract	 {
 	 * @return Mage_Core_Model_Log_Adapter
 	 */
 	public function log($data, $filename = 'Ebizmarts_Mandrill.log') {
-		return Mage::getModel('core/log_adapter', $filename)->log($data);
+		//return Mage::getModel('core/log_adapter', $filename)->log($data);
 	}
 
 }
