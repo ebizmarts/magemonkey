@@ -19,12 +19,15 @@ $canShowButton = $this->getCanShowButton();
 				<!-- General Subscription -->
 				<li class="listdata"><?php echo $this->listLabel($generalList); ?>
 					<?php if(is_array($generalList['interest_groupings'])): ?>
+
 						<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 						<?php foreach($generalList['interest_groupings'] as $group): ?>
-							<div class="grouping">
-								<strong><?php echo $group['name']; ?></strong>
-								<?php echo $this->renderGroup($group, $generalList); ?>
-							</div>
+							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+								<div class="grouping">
+									<strong><?php echo $group['name']; ?></strong>
+									<?php echo $this->renderGroup($group, $generalList); ?>
+								</div>
+							<?php endif; ?>
 						<?php endforeach; ?>
 						</div>
 
@@ -48,10 +51,12 @@ $canShowButton = $this->getCanShowButton();
 					<?php if(is_array($igroups)): ?>
 						<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
 						<?php foreach($igroups as $group): ?>
-							<div class="grouping">
-								<strong><?php echo $group['name']; ?></strong>
-								<?php echo $this->renderGroup($group, $list); ?>
-							</div>
+							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+								<div class="grouping">
+									<strong><?php echo $group['name']; ?></strong>
+									<?php echo $this->renderGroup($group, $list); ?>
+								</div>
+							<?php endif; ?>
 						<?php endforeach; ?>
 						</div>
 

@@ -164,7 +164,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	public function log($data, $filename = 'Monkey.log')
 	{
-		return Mage::getModel('core/log_adapter', $filename)->log($data);
+		if($this->config('enable_log') != 0) {
+			return Mage::getModel('core/log_adapter', $filename)->log($data);
+		}
 	}
 
 	/**

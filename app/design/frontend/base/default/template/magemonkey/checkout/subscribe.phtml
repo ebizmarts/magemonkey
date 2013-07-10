@@ -50,6 +50,9 @@ addElementToPost = function (element){
 </script>
 <div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
 <!-- General Subscription -->
+<div class="page-title">
+	<h1><?php echo $this->__('Newsletter Subscription'); ?></h1>
+</div>
 <?php echo $this->getBlockHtml('formkey'); ?>
 <ul class="monkey-additional-lists">
 	<li class="listdata"><?php echo $generalList['name']; ?>
@@ -68,11 +71,43 @@ addElementToPost = function (element){
 	</li>
 </ul>
 <!-- General Subscription -->
+
+<!-- Additional Lists -->
+<div class="monkey-multisubscribe">
+	<ul class="monkey-additional-lists">
+		<?php
+		foreach($lists as $list):
+
+			if($this->notInMyAccount() && in_array($list['id'], $myLists)){
+				continue;
+			}
+
+			$igroups = $list['interest_groupings'];
+		?>
+		<li class="listdata"><?php echo $this->listLabel($list); ?>
+		<?php if(is_array($igroups)): ?>
+			<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
+			<?php foreach($igroups as $group): ?>
+				<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+					<div class="grouping">
+						<strong><?php echo $group['name']; ?></strong>
+						<?php echo $this->renderGroup($group, $list); ?>
+					</div>
+				<?php endif; ?>
+			<?php endforeach; ?>
+			</div>
+
+		<?php endif; ?>
+		</li>
+		<?php endforeach; ?>
+	</ul>
+</div>
+<!-- Additional Lists -->
 </div>
 <?php
 //Check if there's additional list selected, if not Dont show this section
 if(count($lists) > 0):
-	echo $this->getChildHtml('left.monkeysignup');
+	//echo $this->getChildHtml('left.monkeysignup');
 endif;
 ?>
 
