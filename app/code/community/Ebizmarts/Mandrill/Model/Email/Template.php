@@ -121,11 +121,6 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
                 $message ['tags'] =  substr($templates[$templateId]['label'], 0, 50);
             }
 
-//			$tTags = $this->_getTemplateTags($variables['store']);
-//			if(!empty($tTags)){
-//				$message ['tags'] = $tTags;
-//			}
-
             $sent = $mail->sendEmail($message);
             if($mail->errorCode){
 				return false;
@@ -138,17 +133,6 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 
         return true;
     }
-
-//    protected function _getTemplateTags($store) {
-//
-//	    $tags = array();
-//        $tags = explode(',',(string)Mage::getConfig()->getNode(Ebizmarts_AbandonedCart_Model_Config::ABANDONED_TAGS));
-//        $storeid = $store->getId();
-//        foreach($tags as $key => $value) {
-//            $tags[$key] = $value."_$storeid";
-//        }
-//		return $tags;
-//    }
 
     public function setReplyTo($email) {
         if(FALSE === Mage::helper('mandrill')->useTransactionalService()) {

@@ -151,7 +151,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 }
                 else {
                     $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
-                    $vars = array('quote'=>$quote,'url'=>$url,'unsubscribeurl'=>$unsubscribeUrl);
+                    $vars = array('quote'=>$quote,'url'=>$url,'unsubscribeurl'=>$unsubscribeUrl,'tags'=>array($mandrillTag));
 
                 }
                 $translate = Mage::getSingleton('core/translate');

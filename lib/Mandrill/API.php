@@ -357,8 +357,6 @@ class Mandrill_API {
     }
     public function addAttachment(Zend_Mime_Part $attachment)
     {
-        Mage::log(__METHOD__);
-        Mage::log($attachment);
         $att = array();
         $att['type'] = $attachment->type;
         $att['name'] = $attachment->filename;
