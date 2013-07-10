@@ -1,6 +1,7 @@
 <?php
 	$lists = $this->getLists();
 	$check = $this->checkStatus();
+	$myLists       = $this->getSubscribedLists();
 	$generalList   = $this->getGeneralList();
 	$auto  = (($check === 1) OR ($check === 3));
 ?>
@@ -60,10 +61,12 @@ addElementToPost = function (element){
 		<?php if(is_array($generalList['interest_groupings'])): ?>
 			<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 			<?php foreach($generalList['interest_groupings'] as $group): ?>
-				<div class="grouping">
-					<strong><?php echo $group['name']; ?></strong>
-					<?php echo $this->renderGroup($group, $generalList); ?>
-				</div>
+				<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+					<div class="grouping">
+						<strong><?php echo $group['name']; ?></strong>
+						<?php echo $this->renderGroup($group, $generalList); ?>
+					</div>
+				<?php endif; ?>
 			<?php endforeach; ?>
 			</div>
 
