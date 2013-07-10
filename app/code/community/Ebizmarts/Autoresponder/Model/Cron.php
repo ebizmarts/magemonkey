@@ -16,7 +16,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeId => $val)
         {
-            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeId)) {
+            if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE,$storeId)) {
                 $this->_processStore($storeId);
             }
         }

@@ -115,6 +115,11 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
             if(isset($variables['tags']) && count($variables['tags'])) {
                 $message ['tags'] = $variables['tags'];
             }
+            else {
+                $templateId = (string)$this->getId();
+                $templates = parent::getDefaultTemplates();
+                $message ['tags'] =  substr($templates[$templateId]['label'], 0, 50);
+            }
 
 //			$tTags = $this->_getTemplateTags($variables['store']);
 //			if(!empty($tTags)){
@@ -159,6 +164,10 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
                                      $disposition = Zend_Mime::DISPOSITION_ATTACHMENT,
                                      $encoding    = Zend_Mime::ENCODING_BASE64,
                                      $filename    = null)
+    {
+
+    }
+    public function addAttachment(Zend_Mime_Part $att)
     {
 
     }
