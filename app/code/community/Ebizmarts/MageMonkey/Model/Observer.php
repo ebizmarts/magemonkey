@@ -137,15 +137,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-		$myRewrite = 'Ebizmarts_MageMonkey_Model_Email_Template';
-		$modelName = Mage::app()->getConfig()->getModelClassName('core/email_template');
-
-		if(Mage::helper('monkey')->useTransactionalService() && ($myRewrite !== $modelName)){
-			Mage::getSingleton('adminhtml/session')->addError(
-                Mage::helper('monkey')->__('Transactional Emails via MailChimp are not working because of a conflict with: "%s"', $modelName)
-            );
-		}
-
 		return $observer;
 	}
 
