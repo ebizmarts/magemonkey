@@ -135,6 +135,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $name = $quote->getCustomerFirstname().' '.$quote->getCustomerLastname();
                 $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
                 $unsubscribeUrl = Mage::getModel('core/url')->setStore($store)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=abandonedcart&email='.$email.'&store='.$store;
+                $couponcode = '';
                 if($sendcoupon && $quote2->getEbizmartsAbandonedcartCounter() + 1 == $sendcoupondays)
                 {
                     $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
@@ -159,6 +160,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $translate->setTranslateInLine(true);
                 $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
                 $quote2->save();
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('abandoned cart',$email,$name,$couponcode);
             }
         }
 

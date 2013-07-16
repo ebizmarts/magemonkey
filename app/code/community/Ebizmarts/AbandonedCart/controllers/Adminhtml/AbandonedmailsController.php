@@ -25,10 +25,10 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedmailsController  extends Mage_A
     {
         $this->loadLayout()
             // Make the active menu match the menu config nodes (without 'children' inbetween)
-            ->_setActiveMenu('sales/ebizmarts_abandonedcart')
-            ->_title($this->__('Sales'))->_title($this->__('Abandoned'))
-            ->_addBreadcrumb($this->__('Sales'), $this->__('Sales'))
-            ->_addBreadcrumb($this->__('abandonedorder'), $this->__('Abandoned'));
+            ->_setActiveMenu('newsletter/ebizmarts_emails')
+            ->_title($this->__('Newsletter'))->_title($this->__('Emails Sent'))
+            ->_addBreadcrumb($this->__('Newsletter'), $this->__('Newsletter'))
+            ->_addBreadcrumb($this->__('abandonedorder'), $this->__('Mails'));
 
         return $this;
     }

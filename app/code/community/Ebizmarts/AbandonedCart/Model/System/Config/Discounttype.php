@@ -13,4 +13,10 @@ class Ebizmarts_AbandonedCart_Model_System_Config_Discounttype
         );
         return $options;
     }
+    public function options()
+    {
+        $options[1] = Mage::helper('ebizmarts_abandonedcart')->__('Fixed amount');
+        $options[2] = Mage::helper('ebizmarts_abandonedcart')->__('Percentage');
+        return $options;
+    }
 }

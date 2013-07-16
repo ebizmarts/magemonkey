@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.18</version>
+            <version>0.1.19</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -25,6 +25,12 @@
             </ebizmarts_abandonedcart>
             <ebizmarts_abandonedcart_resource>
                 <class>Ebizmarts_AbandonedCart_Model_Resource</class>
+                <deprecatedNode>ebizmarts_autoresponder_mysql4</deprecatedNode>
+                <entities>
+                    <mailssent>
+                        <table>magemonkey_mails_sent</table>
+                    </mailssent>
+                </entities>
             </ebizmarts_abandonedcart_resource>
         </models>
         <blocks>
