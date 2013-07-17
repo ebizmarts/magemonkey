@@ -11,7 +11,6 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_A
     public function __construct()
     {
         parent::__construct();
-        // Set some defaults for our grid
         $this->setDefaultSort('id');
         $this->setId('ebizmarts_abandonedcart_abandonedmails_grid');
         $this->setUseAjax(true);
@@ -34,28 +33,11 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_A
     protected function _prepareColumns()
     {
 
-//        $this->addColumn('mail_id', array(
-//            'header'=> Mage::helper('ebizmarts_abandonedcart')->__('Mail #'),
-//            'width' => '80px',
-//            'type'  => 'text',
-//            'index' => 'id',
-//        ));
         $this->addColumn('store', array(
             'header' => Mage::helper('ebizmarts_abandonedcart')->__('Store'),
             'type' => 'store',
             'index' => 'store_id'
         ));
-
-//        if (!Mage::app()->isSingleStoreMode()) {
-//            $this->addColumn('store_id', array(
-//                'header'    => Mage::helper('sales')->__('Purchased From (Store)'),
-//                'index'     => 'store_id',
-//                'filter_index' => 'main_table.store_id',
-//                'type'      => 'store',
-//                'store_view'=> true,
-//                'display_deleted' => true,
-//            ));
-//        }
 
         $this->addColumn('sent_at', array(
             'header' => Mage::helper('ebizmarts_abandonedcart')->__('Sent At'),

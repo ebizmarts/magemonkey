@@ -25,7 +25,7 @@
             </ebizmarts_abandonedcart>
             <ebizmarts_abandonedcart_resource>
                 <class>Ebizmarts_AbandonedCart_Model_Resource</class>
-                <deprecatedNode>ebizmarts_autoresponder_mysql4</deprecatedNode>
+                <deprecatedNode>ebizmarts_abandonedcart_mysql4</deprecatedNode>
                 <entities>
                     <mailssent>
                         <table>magemonkey_mails_sent</table>
