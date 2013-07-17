@@ -40,6 +40,11 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_A
             'type'  => 'text',
             'index' => 'id',
         ));
+        $this->addColumn('store', array(
+            'header' => Mage::helper('ebizmarts_abandonedcart')->__('Store'),
+            'type' => 'store',
+            'index' => 'store_id'
+        ));
 
 //        if (!Mage::app()->isSingleStoreMode()) {
 //            $this->addColumn('store_id', array(

@@ -79,7 +79,7 @@ class Ebizmarts_Autoresponder_Model_Cron
 
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('new order',$email,$name,"");
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('new order',$email,$name,"",$storeId);
             }
         }
     }
@@ -137,7 +137,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 }
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('happy birthday',$email,$name,$couponcode);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('happy birthday',$email,$name,$couponcode,$storeId);
             }
         }
 
@@ -180,7 +180,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                         $vars = array('name' => $name,'tags'=>array($tags),'lastlogin'=>$lastVisited,'url'=>$url);
                         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                         $translate->setTranslateInLine(true);
-                        Mage::helper('ebizmarts_abandonedcart')->saveMail('no activity',$email,$name,"");
+                        Mage::helper('ebizmarts_abandonedcart')->saveMail('no activity',$email,$name,"",$storeId);
                     }
                 }
             }
@@ -234,7 +234,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $vars = array('name' => $name,'tags'=>array($tags),'related'=>$allRelated,'url'=>$url);
                     $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                     $translate->setTranslateInLine(true);
-                    Mage::helper('ebizmarts_abandonedcart')->saveMail('related products',$email,$name,"");
+                    Mage::helper('ebizmarts_abandonedcart')->saveMail('related products',$email,$name,"",$storeId);
                 }
             }
         }
@@ -275,7 +275,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $vars = array('name' => $name,'tags'=>array($tags),'products'=>$products,'ordernum'=>$orderNum,'url'=>$url);
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('product review',$email,$name,"");
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('product review',$email,$name,"",$storeId);
             }
         }
 
@@ -314,7 +314,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                         $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
                         $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                         $translate->setTranslateInLine(true);
-                        Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist',$email,$name,"");
+                        Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist',$email,$name,"",$storeId);
                     }
 
                 }
@@ -337,7 +337,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
                 $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist',$email,$name,"");
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist',$email,$name,"",$storeId);
             }
         }
 

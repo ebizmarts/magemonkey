@@ -13,6 +13,7 @@ $installer->startSetup();
 $installer->run("
 	CREATE TABLE IF NOT EXISTS `{$this->getTable('magemonkey_mails_sent')}` (
 	  `id` INT(10) unsigned NOT NULL auto_increment,
+	  `store_id` smallint(5),
 	  `mail_type` ENUM('abandoned cart','happy birthday','new order', 'related products', 'product review', 'no activity', 'wishlist') NOT NULL,
 	  `customer_email` varchar(255),
 	  `customer_name` varchar(255),

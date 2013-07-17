@@ -160,7 +160,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $translate->setTranslateInLine(true);
                 $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
                 $quote2->save();
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('abandoned cart',$email,$name,$couponcode);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('abandoned cart',$email,$name,$couponcode,$store);
             }
         }
 

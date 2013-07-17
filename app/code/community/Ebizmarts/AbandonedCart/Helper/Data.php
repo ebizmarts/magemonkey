@@ -31,7 +31,7 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract {
             Mage::log($message);
         }
     }
-    public function saveMail($mailType,$mail,$name,$couponCode)
+    public function saveMail($mailType,$mail,$name,$couponCode,$storeId)
     {
         if($couponCode!='') {
             $coupon = Mage::getModel('salesrule/coupon')->load($couponCode, 'code');
@@ -52,6 +52,7 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract {
         }
         $sent = Mage::getModel('ebizmarts_abandonedcart/mailssent');
         $sent->setMailType($mailType)
+             ->setStoreId($storeId)
              ->setCustomerEmail($mail)
              ->setCustomerName($name)
              ->setCouponNumber($couponCode)
