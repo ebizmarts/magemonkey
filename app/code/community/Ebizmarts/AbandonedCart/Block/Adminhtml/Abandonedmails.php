@@ -14,7 +14,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails extends Mage_Adminh
         // ie. foo_bar/adminhtml_baz
         $this->_blockGroup = 'ebizmarts_abandonedcart';
         $this->_controller = 'adminhtml_abandonedmails';
-        $this->_headerText = $this->__('Mails sent');
+        $this->_headerText = $this->__('Mails sent from autoresponders and abandoned carts');
 
         parent::__construct();
         $this->removeButton('add');
