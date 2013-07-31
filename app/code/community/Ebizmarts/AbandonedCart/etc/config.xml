@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.19</version>
+            <version>0.1.20</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -125,6 +125,7 @@
             <general>
                 <subject>Abandoned Cart Email</subject>
                 <mandrill-tag>AbandonedCart</mandrill-tag>
+                <autologin>0</autologin>
             </general>
         </ebizmarts_abandonedcart>
     </default>
