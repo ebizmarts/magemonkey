@@ -122,7 +122,9 @@ class Ebizmarts_AbandonedCart_Model_Cron
             }
             //
             //$url = Mage::getBaseUrl('web').'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
-            $url = Mage::getModel('core/url')->setStore($store)->getUrl().'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
+            srand((double)microtime()*1000000);
+            $token = md5(rand(0,9999999));
+            $url = Mage::getModel('core/url')->setStore($store)->getUrl().'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId().'&token='.$token;
 
             $data = array('AbandonedURL'=>$url, 'AbandonedDate' => $quote->getUpdatedAt());
             // send email
@@ -159,6 +161,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$store);
                 $translate->setTranslateInLine(true);
                 $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
+                $quote2->setEbizmartsAbandonedcartToken($token);
                 $quote2->save();
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('abandoned cart',$email,$name,$couponcode,$store);
             }

@@ -16,28 +16,33 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
 //            Mage::log($params['id']);
 
             $quote = Mage::getModel('sales/quote')->load($params['id']);
-            $quote->setEbizmartsAbandonedcartFlag(1);
-            $quote->save();
-            if(!$quote->getCustomerId()) {
-                $this->_getSession()->setQuoteId($quote->getId());
-                $this->_redirect('checkout/cart');
+            if(!isset($params['token']) || (isset($params['token'])&&$params['token']!=$quote->getEbizmartsAbandonedcartToken())) {
+                $this->_redirect('/');
             }
             else {
-                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AUTOLOGIN,$quote->getStoreId())) {
-                    $customer = Mage::getModel('customer/customer')->load($quote->getCustomerId());
-                    if($customer->getId())
-                    {
-                        Mage::getSingleton('customer/session')->setCustomerAsLoggedIn($customer);
-                    }
+                $quote->setEbizmartsAbandonedcartFlag(1);
+                $quote->save();
+                if(!$quote->getCustomerId()) {
+                    $this->_getSession()->setQuoteId($quote->getId());
                     $this->_redirect('checkout/cart');
                 }
                 else {
-                    if(Mage::helper('customer')->isLoggedIn()) {
+                    if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AUTOLOGIN,$quote->getStoreId())) {
+                        $customer = Mage::getModel('customer/customer')->load($quote->getCustomerId());
+                        if($customer->getId())
+                        {
+                            Mage::getSingleton('customer/session')->setCustomerAsLoggedIn($customer);
+                        }
                         $this->_redirect('checkout/cart');
                     }
                     else {
-                        Mage::getSingleton('customer/session')->addNotice("Login to complete your order");
-                        $this->_redirect('customer/account');
+                        if(Mage::helper('customer')->isLoggedIn()) {
+                            $this->_redirect('checkout/cart');
+                        }
+                        else {
+                            Mage::getSingleton('customer/session')->addNotice("Login to complete your order");
+                            $this->_redirect('customer/account');
+                        }
                     }
                 }
             }
