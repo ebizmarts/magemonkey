@@ -17,6 +17,7 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
 
             $quote = Mage::getModel('sales/quote')->load($params['id']);
             if(!isset($params['token']) || (isset($params['token'])&&$params['token']!=$quote->getEbizmartsAbandonedcartToken())) {
+                Mage::getSingleton('customer/session')->addNotice("Your token cart is incorrect");
                 $this->_redirect('/');
             }
             else {
