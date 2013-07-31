@@ -8,6 +8,11 @@
 
 class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Reports_Model_Mysql4_Order_Collection
 {
+    public function isLive()
+    {
+        return true;
+    }
+
     /**
      * @param string $period
      * @return Ebizmarts_AbandonedCart_Model_Resource_Order_Collection|Mage_Reports_Model_Resource_Order_Collection
