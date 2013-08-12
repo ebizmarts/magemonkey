@@ -268,7 +268,11 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
                 $products = array();
                 foreach($order->getAllItems() as $item) {
-                    $products[] = Mage::getModel('catalog/product')->load($item->getProductId());
+                    $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                    if($product->isConfigurable()) {
+                        continue;
+                    }
+                    $products[] = $product;
                 }
                 $orderNum = $order->getIncrementId();
                 $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=review&email='.$email.'&store='.$storeId;
