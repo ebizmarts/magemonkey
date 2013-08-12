@@ -2,16 +2,13 @@
 <table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #EAEAEA;">
     <?php foreach($products as $product): ?>
     <tr>
-        <?php $parentId = $product->loadParentProductIds()->getData('parent_product_ids');
+        <?php $parentId = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
               if(isset($parentId[0])) {
-                  $id = $parentId[0];
-              }
-              else {
-                  $id = $product->getId();
+                  $product = Mage::getModel('catalog/product')->load($parentId[0]);
               }
         ?>
-        <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $id));; ?>" alt="<?php echo $product->getName(); ?>" target="_blank"><img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $product->getName(); ?>"/></a></td>
-        <td valign="top" align="left" style="padding:3px 9px"><p><h2><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $id)); ?>"> Rate <?php echo $product->getName(); ?></a></h2></p><?php echo $product->getShortDescription(); ?></td>
+        <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $product->getId()));; ?>" alt="<?php echo $product->getName(); ?>" target="_blank"><img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $product->getName(); ?>"/></a></td>
+        <td valign="top" align="left" style="padding:3px 9px"><p><h2><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $product->getId())); ?>"> Rate <?php echo $product->getName(); ?></a></h2></p><?php echo $product->getShortDescription(); ?></td>
 
     </tr>
     <?php endforeach; ?>
