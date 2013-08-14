@@ -21,11 +21,12 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
                 $this->_redirect('/');
             }
             else {
+                $url = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::PAGE,$quote->getStoreId());
                 $quote->setEbizmartsAbandonedcartFlag(1);
                 $quote->save();
                 if(!$quote->getCustomerId()) {
                     $this->_getSession()->setQuoteId($quote->getId());
-                    $this->_redirect('checkout/cart');
+                    $this->_redirect($url);
                 }
                 else {
                     if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AUTOLOGIN,$quote->getStoreId())) {
@@ -34,11 +35,11 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
                         {
                             Mage::getSingleton('customer/session')->setCustomerAsLoggedIn($customer);
                         }
-                        $this->_redirect('checkout/cart');
+                        $this->_redirect($url);
                     }
                     else {
                         if(Mage::helper('customer')->isLoggedIn()) {
-                            $this->_redirect('checkout/cart');
+                            $this->_redirect($url);
                         }
                         else {
                             Mage::getSingleton('customer/session')->addNotice("Login to complete your order");

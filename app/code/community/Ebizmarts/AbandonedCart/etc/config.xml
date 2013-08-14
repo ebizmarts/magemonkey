@@ -126,6 +126,7 @@
                 <subject>Abandoned Cart Email</subject>
                 <mandrill-tag>AbandonedCart</mandrill-tag>
                 <autologin>0</autologin>
+                <page>checkout/cart</page>
             </general>
         </ebizmarts_abandonedcart>
     </default>

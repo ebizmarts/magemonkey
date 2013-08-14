@@ -97,7 +97,20 @@
                                 <active>1</active>
                             </depends>
                         </subject>
-
+                        <page translate="label comment">
+                            <label>Redirect page</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/page</config_path>
+                            <source_model>ebizmarts_abandonedcart/system_config_cmspage</source_model>
+                            <sort_order>26</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Where to redirect the customer]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </page>
                         <mandrill-tag translate="label">
                             <label>Mandrill Tag</label>
                             <frontend_type>text</frontend_type>
