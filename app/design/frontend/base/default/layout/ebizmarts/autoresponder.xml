@@ -27,4 +27,9 @@
             </action>
         </reference>
     </customer_account>
+    <catalog_product_view>
+        <reference name="head">
+            <action method="addJs"><script>ebizmarts/autoresponders/visitedproducts.js</script></action>
+        </reference>
+    </catalog_product_view>
 </layout>

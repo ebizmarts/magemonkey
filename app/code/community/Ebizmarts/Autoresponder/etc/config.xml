@@ -11,7 +11,7 @@
 <config>
     <modules>
         <Ebizmarts_Autoresponder>
-            <version>0.1.3</version>
+            <version>0.1.4</version>
         </Ebizmarts_Autoresponder>
     </modules>
     <global>
@@ -27,6 +27,9 @@
                     <unsubscribe>
                         <table>ebizmarts_autoresponder_unsubscribe</table>
                     </unsubscribe>
+                    <visited>
+                        <table>ebizmarts_autoresponder_visited</table>
+                    </visited>
                 </entities>
             </ebizmarts_autoresponder_resource>
         </models>
@@ -44,6 +47,7 @@
             <ebizmarts_autoresponder_setup>
                 <setup>
                     <module>Ebizmarts_Autoresponder</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class>
                 </setup>
             </ebizmarts_autoresponder_setup>
         </resources>
@@ -117,6 +121,15 @@
                     <file>ebizmarts/autoresponder/wishlist.html</file>
                     <type>html</type>
                 </ebizmarts_autoresponder_wishlist_template>
+            </email>
+        </template>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_visitedproducts_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Visited Products Email</label>
+                    <file>ebizmarts/autoresponder/visitedproducts.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_visitedproducts_template>
             </email>
         </template>
     </global>
@@ -196,6 +209,11 @@
                 <subject>Wishlist Subject</subject>
                 <listname>Wishlist List</listname>
             </wishlist>
+            <visitedproducts>
+                <mandrill-tag>Autoresponder_VisitedProducts</mandrill-tag>
+                <subject>Visited Product Subject</subject>
+                <listname>Visited Product List</listname>
+            </visitedproducts>
         </ebizmarts_autoresponder>
     </default>
 </config>

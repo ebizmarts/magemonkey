@@ -78,4 +78,43 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
             return $customerData->getId();
         }
     }
+    public function getVisitedProductsConfigAction()
+    {
+        $params = $this->getRequest()->getParams();
+        $storeId = Mage::app()->getStore()->getStoreId();
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId)&&Mage::getSingleton('customer/session')->isLoggedIn()) {
+            if(isset($params['product_id'])) {
+                $product = Mage::getModel('catalog/product')->load($params['product_id']);
+                $mark = $product->getAttributeText('ebizmarts_mark_visited');
+                if($mark == 'Yes') {
+                    $resp['time'] = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TIME,$storeId);
+                }
+                else {
+                    $resp['time'] = -1;
+                }
+            }
+        }
+        else {
+            $resp['time'] = -1;
+        }
+        $this->getResponse()->setHeader('Content-type', 'application/json');
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($resp));
+        return;
+    }
+    public function markVisitedProductsAction()
+    {
+        $params = $this->getRequest()->getParams();
+        if(!isset($params['product_id'])||!Mage::getSingleton('customer/session')->isLoggedIn()) {
+            return;
+        }
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        Mage::log("$storeId $customerId");
+        $visited = Mage::getModel('ebizmarts_autoresponder/visited')->loadByCustomerProduct($customerId,$params['product_id'],$storeId);
+        $visited->setCustomerId($customerId)
+                ->setProductId($params['product_id'])
+                ->setStoreId($storeId)
+                ->setVisitedAt(Mage::getModel('core/date')->gmtDate())
+                ->save();
+    }
 }
