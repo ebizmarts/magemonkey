@@ -67,10 +67,11 @@ class Ebizmarts_Autoresponder_Model_Config
     const VISITED_ACTIVE              = 'ebizmarts_autoresponder/visitedproducts/active';
     const VISITED_DAYS                = 'ebizmarts_autoresponder/visitedproducts/days';
     const VISITED_TEMPLATE            = 'ebizmarts_autoresponder/visitedproducts/template';
-    const VISITED_MADRILL_TAG         = 'ebizmarts_autoresponder/visitedproducts/mandrill_tag';
+    const VISITED_MANDRILL_TAG        = 'ebizmarts_autoresponder/visitedproducts/mandrill_tag';
     const VISITED_SUBJECT             = 'ebizmarts_autoresponder/visitedproducts/subject';
     const VISITED_CUSTOMER_GROUPS     = 'ebizmarts_autoresponder/visitedproducts/customer';
     const VISITED_TIME                = 'ebizmarts_autoresponder/visitedproducts/time';
+    const VISITED_MAX                 = 'ebizmarts_autoresponder/visitedproducts/max_visited';
 
     const COUPON_AUTOMATIC            = 2;
     const COUPON_MANUAL               = 1;

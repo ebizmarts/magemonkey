@@ -47,6 +47,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId)) { // done
             $this->_processWishlist($storeId);
         }
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId)) { // done
+            $this->_processVisited($storeId);
+        }
     }
     protected function _processNewOrders($storeId)
     {
@@ -342,6 +345,81 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist',$email,$name,"",$storeId);
+            }
+        }
+
+    }
+    protected function _processVisited($storeId)
+    {
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CUSTOMER_GROUPS, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_DAYS,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MANDRILL_TAG,$storeId)."_$storeId";
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TEMPLATE,$storeId);
+        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
+        $max            = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MAX,$storeId);
+
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+        $from = new Zend_Db_Expr($expr);
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days-1, 'DAY'));
+        $to = new Zend_Db_Expr($expr);
+
+        $collection = Mage::getModel('ebizmarts_autoresponder/visited')->getCollection();
+        $collection
+            ->addFieldToFilter('main_table.visited_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.store_id',array('eq'=>$storeId));
+        $collection->getSelect()->order('main_table.customer_id asc')->order('main_table.visited_at desc');
+
+        $customerIdPrev = 0;
+        $products = array();
+        foreach($collection as $item) {
+            if($customerIdPrev!=$item->getCustomerId()) {
+                if($customerIdPrev != 0 && count($products) > 0) {
+                    $email      = $customer->getEmail();
+                    if($this->_isSubscribed($email,'visitedproducts',$storeId)) {
+                        $translate  = Mage::getSingleton('core/translate');
+                        $name       = $customer->getFirstname().' '.$customer->getLastname();
+                        $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email='.$email.'&store='.$storeId;
+                        $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
+                        $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+                        $translate->setTranslateInLine(true);
+                        Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts',$email,$name,"",$storeId);
+                    }
+                }
+                $products       = array();
+                $customer       = Mage::getModel('customer/customer')->load($item->getCustomerId());
+                $customerIdPrev = $item->getCustomerId();
+            }
+            if(count($products) > $max||!in_array($customer->getGroupId(),$customerGroups)) {
+                continue;
+            }
+            $itemscollection = Mage::getModel('sales/order_item')->getCollection();
+            $itemscollection->addFieldToFilter('main_table.created_at',array('from'=>$from))
+                            ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
+            if($itemscollection->getSize() == 0) {                                                  // if not orders from date which include this product
+                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeId)) {   // if the abandoned cart module is active
+                    $itemscollection2 = Mage::getModel('sales/quote_item')->getCollection();
+                    $itemscollection2->addFieldToFilter('main_table.created_at',array('from'=>$from))
+                                    ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
+                    if($itemscollection2->getSize() > 0) {                                          // if there are an abandoned cart which include this product
+                        continue;
+                    }
+                }
+                $products[]= Mage::getModel('catalog/product')->load($item->getProductId());
+            }
+        }
+        if(count($products)) {
+            $email      = $customer->getEmail();
+            if($this->_isSubscribed($email,'visitedproducts',$storeId)) {
+                $translate  = Mage::getSingleton('core/translate');
+                $name       = $customer->getFirstname().' '.$customer->getLastname();
+                $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email='.$email.'&store='.$storeId;
+                $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
+                $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+                $translate->setTranslateInLine(true);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts',$email,$name,"",$storeId);
             }
         }
 

@@ -109,7 +109,6 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
         }
         $storeId = Mage::app()->getStore()->getStoreId();
         $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-        Mage::log("$storeId $customerId");
         $visited = Mage::getModel('ebizmarts_autoresponder/visited')->loadByCustomerProduct($customerId,$params['product_id'],$storeId);
         $visited->setCustomerId($customerId)
                 ->setProductId($params['product_id'])
