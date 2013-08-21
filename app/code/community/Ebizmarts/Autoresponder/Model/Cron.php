@@ -172,8 +172,10 @@ class Ebizmarts_Autoresponder_Model_Cron
             if($orderCollection->getSize()>0) { // if the customer has any order for this store
                 $logCustomer = Mage::getModel('log/customer')->loadByCustomer($customer);
                 $lastVisited = $logCustomer->getLoginAt();
-                $limit = date("Y-m-d H:i:s",strtotime(" - $days days"));
-                if($limit>$lastVisited) {
+                $limitup = date("Y-m-d H:i:s",strtotime(" - $days days"));
+                $daysAux = $days +1;
+                $limitdown = date("Y-m-d H:i:s",strtotime(" - $daysAux days"));
+                if($limitup>$lastVisited&&$limitdown<$lastVisited) {
                     $translate = Mage::getSingleton('core/translate');
                     $cust = Mage::getModel('customer/customer')->load($customerId);
                     $email = $cust->getEmail();
