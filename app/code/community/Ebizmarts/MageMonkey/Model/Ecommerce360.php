@@ -90,6 +90,9 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
 	public function run(Varien_Event_Observer $observer)
 	{
+		if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
         $order = $observer->getEvent()->getOrder();
 		if ( ( ($this->_getCampaignCookie() &&
 				$this->_getEmailCookie()) || Mage::helper('monkey')->config('ecommerce360') == 2 ) &&
@@ -107,53 +110,52 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
 	public function logSale($order)
 	{
-
 		$this->_order = $order;
-		$api = Mage::getSingleton('monkey/api', array('store' => $this->_order->getStoreId()));
-		if(!$api){
-			return false;
-		}
+		try {
+			$api = Mage::getSingleton('monkey/api', array('store' => $this->_order->getStoreId()));
+			if(!$api){
+				return false;
+			}
 
-		$subtotal = $this->_order->getSubtotal();
-		$discount = (float)$this->_order->getDiscountAmount();
-		if ($discount != 0) {
-			$subtotal = $subtotal + ($discount);
-		}
+			$subtotal = $this->_order->getSubtotal();
+			$discount = (float)$this->_order->getDiscountAmount();
+			if ($discount != 0) {
+				$subtotal = $subtotal + ($discount);
+			}
 
-        $this->_info = array(
-				                'id'          => $this->_order->getIncrementId(),
-				                'total'       => $subtotal,
-				                'shipping'    => $this->_order->getShippingAmount(),
-				                'tax'         => $this->_order->getTaxAmount(),
-				                'store_id'    => $this->_order->getStoreId(),
-				                'store_name'  => $this->_order->getStoreName(),
-				                'plugin_id'   => 1215,
-				                'items'       => array()
-                			);
+	        $this->_info = array(
+					                'id'          => $this->_order->getIncrementId(),
+					                'total'       => $subtotal,
+					                'shipping'    => $this->_order->getShippingAmount(),
+					                'tax'         => $this->_order->getTaxAmount(),
+					                'store_id'    => $this->_order->getStoreId(),
+					                'store_name'  => $this->_order->getStoreName(),
+					                'plugin_id'   => 1215,
+					                'items'       => array()
+	                			);
 
-		$emailCookie    = $this->_getEmailCookie();
-		$campaignCookie = $this->_getCampaignCookie();
+			$emailCookie    = $this->_getEmailCookie();
+			$campaignCookie = $this->_getCampaignCookie();
 
-		$this->setItemstoSend();
+			$this->setItemstoSend();
 
-		if($emailCookie && $campaignCookie){
-			$this->_info ['email_id']= $emailCookie;
-			$this->_info ['campaign_id']= $campaignCookie;
+			if($emailCookie && $campaignCookie){
+				$this->_info ['email_id']= $emailCookie;
+				$this->_info ['campaign_id']= $campaignCookie;
+			}else{
+				$this->_info ['email']= $this->_order->getCustomerEmail();
+			}
+			$rs = $api->call('ecomm/order-add', array('order' => $this->_info));
 
-			//Send order to MailChimp
-	    	$rs = $api->campaignEcommOrderAdd($this->_info);
-		}else{
-			$this->_info ['email']= $this->_order->getCustomerEmail();
-			$rs = $api->ecommOrderAdd($this->_info);
-		}
-
-		if ( $rs === TRUE ){
-			$this->_logCall();
-			return true;
-		}else{
-			return $rs;
-		}
-
+			if ( $rs === TRUE ){
+				$this->_logCall();
+				return true;
+			}else{
+				return $rs;
+			}
+		} catch (Exception $ex) {
+        	Mage::logException($ex);
+        }
     }
 
 	/**
@@ -245,6 +247,11 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 *
 	 */
 	 public function autoExportJobs(){
+
+	 	if(!Mage::helper('monkey')->canMonkey()){
+			return;
+		}
+
 		$allow_sent = false;
 		$orderIds[] = '0';
 		$ecommerceOrders = Mage::getModel('monkey/ecommerce')
@@ -295,15 +302,12 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 				$this->setItemstoSend();
 
 				if($email && $campaign){
-					$this->_info ['email_id']= $email;
-					$this->_info ['campaign_id']= $campaign;
-
-					//Send order to MailChimp
-			    	$rs = $api->campaignEcommOrderAdd($this->_info);
+					$this->_info ['email_id'] = $email;
+					$this->_info ['campaign_id'] = $campaign;
 				}else{
-					$this->_info ['email']= $email;
-					$rs = $api->ecommOrderAdd($this->_info);
+					$this->_info ['email']= $this->_order->getCustomerEmail();
 				}
+				$rs = $api->call('ecomm/order-add', array('order' => $this->_info));
 				$allow_sent = false;
 				if ( $rs === TRUE ){
 					$this->_logCall();

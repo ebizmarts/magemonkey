@@ -17,15 +17,15 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      * @access protected
      */
     protected $_cacheableCommands = array(
-        'getAccountDetails',
-        'listInterestGroupings',
-        'listMemberActivity',
-        'listMemberInfo',
-        'listMergeVars',
-        'lists',
-        'listsForEmail'
-    );    
-    
+        'helper/account-details',
+        'lists/interest-groupings',
+        'lists/member-activity',
+        'lists/member-info',
+        'lists/merge-vars',
+        'lists/list',
+        'helper/lists-for-email'
+    );
+
     /**
      * Cache tags unique param ID
      *
@@ -33,11 +33,11 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      * @access protected
      */
     protected $_cacheTagId = array(
-        'listMemberInfo' => array('id', 'email_address'),
-        'listMemberActivity' => array('id', 'email_address'),
-        'listsForEmail' => array( 'email_address'),
-    );    
-    
+        'lists/member-info' => array('id', 'email_address'),
+        'lists/member-activity' => array('id', 'email_address'),
+        'helper/lists-for-email' => array( 'email_address'),
+    );
+
     /**
      * Clear cache callbacks
      *
@@ -45,10 +45,10 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      * @access protected
      */
     protected $_cacheClearCallbacks = array(
-        'listUnsubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail', 'lists'),
-        'listSubscribe' => array('listMemberInfo', 'listMembers', 'listMemberActivity',  'listsForEmail', 'lists'),
-        'listUpdateMember' => array('listMemberInfo', 'listMembers', 'listMemberActivity', 'listsForEmail', 'lists'),
-    );    
+        'lists/unsubscribe' => array('lists/member-info', 'lists/member-activity',  'helper/lists-for-email', 'lists/list'),
+        'lists/subscribe' => array('lists/member-info', 'lists/member-activity',  'helper/lists-for-email', 'lists/list'),
+        'lists/update-member' => array('lists/member-info', 'lists/member-activity', 'helper/lists-for-email', 'lists/list'),
+    );
 
     /**
      * Retrieve cache key to save data in cache storage
@@ -69,8 +69,8 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
         }
 
         return md5($command . serialize($args) . $apiKey);
-    }    
-    
+    }
+
     /**
      * Clear data from Cache
      *
@@ -78,37 +78,37 @@ class Ebizmarts_MageMonkey_Helper_Cache extends Mage_Core_Helper_Abstract
      * @param object $object Request object
      * @return Ebizmarts_MageMonkey_Helper_Cache
      */
-    public function clearCache($command, $object) {
+    public function clearCache($command, $args) {
         if (FALSE === array_key_exists($command, $this->_cacheClearCallbacks)) {
             return FALSE;
         }
 
         foreach ($this->_cacheClearCallbacks[$command] as $cmd) {
-            Mage::app()->cleanCache($this->cacheTagForCommand($cmd, $object));
+            Mage::app()->cleanCache($this->cacheTagForCommand($cmd, $args));
         }
 
         return $this;
-    }    
-    
+    }
+
     /**
      * Return cache TAG for given command
-     * 
+     *
      * @param string $command
      * @param object $object Request object
      * @return array
      */
-    public function cacheTagForCommand($command, $object) {
+    public function cacheTagForCommand($command, $args) {
         $tag = $command;
 
         if (isset($this->_cacheTagId[$command])) {
             foreach ($this->_cacheTagId[$command] as $param) {
-                $tag .= $object->requestParams[$param];
+                $tag .= $param;
             }
         }
 
         $tag = array(strtoupper($tag));
-        
+
         return $tag;
     }
-    
+
 }

@@ -27,7 +27,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_Fieldset_Hint
     }
 
 	public function getPxParams() {
-    $plan = Mage::getSingleton('monkey/api')->getAccountDetails();
+    $plan = Mage::getSingleton('monkey/api')->call('helper/account-details');
     if(!is_array($plan)||!isset($plan['plan_type'])) {
         $plan = array();
         $plan['plan_type'] = '';

@@ -87,10 +87,17 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 			if(empty($this->_generalList)){
 
 				$api      = $this->getApi();
-				$listData = $api->lists(array('list_id' => $list));
+				$listData = $api->call('lists/list', array('filters' => array('list_id' => $list)));
 
 				if(empty($this->_myLists)){
-					$this->_myLists = $api->listsForEmail($this->_getEmail());
+					if($this->_getEmail()) {
+						$listForEmail = $api->call('helper/lists-for-email',array('email' => array('email' => $this->_getEmail())));
+						if(is_array($listForEmail)) {
+							foreach($listForEmail as $_list) {
+								$this->_myLists[] = $_list['id'];
+							}
+						}
+					}
 				}
 
 				if($listData['total'] > 0){
@@ -103,7 +110,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 					$this->_generalList = array(
 												'id'   => $listData['data'][0]['id'],
 												'name' => $listName,
-												'interest_groupings' => $this->helper('monkey')->filterShowGroupings($api->listInterestGroupings($listData['data'][0]['id'])),
+												'interest_groupings' => ($listData['data'][0]['stats']['grouping_count'] !=0 ? $this->helper('monkey')->filterShowGroupings($api->call('lists/interest-groupings',array('id' => $listData['data'][0]['id']))) : null)
 											   );
 				}
 			}
@@ -127,17 +134,22 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 				$api     = $this->getApi();
 
 				if(empty($this->_myLists)){
-					$this->_myLists = $api->listsForEmail($this->_getEmail());
+					if($this->_getEmail()) {
+						$listForEmail = $api->call('helper/lists-for-email', array('email' => array('email' => $this->_getEmail())));
+						foreach($listForEmail as $_list) {
+							$this->_myLists[] = $_list['id'];
+						}
+					}
 				}
 
-				$lists   = $api->lists(array('list_id' => $additionalLists));
+				$lists   = $api->call('lists/list', array('filters' => array('list_id' => $additionalLists)));
 
 				if($lists['total'] > 0){
 					foreach($lists['data'] as $list){
 						$this->_lists []= array(
 												'id'   => $list['id'],
 												'name' => $list['name'],
-												'interest_groupings' => $this->helper('monkey')->filterShowGroupings($api->listInterestGroupings($list['id'])),
+												'interest_groupings' => ($list['stats']['grouping_count'] !=0 ? $this->helper('monkey')->filterShowGroupings($api->call('lists/interest-groupings', array('id' => $list['id']))) : null)
 											   );
 
 					}
@@ -207,7 +219,8 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	protected function _memberInfo($listId)
 	{
 		if( FALSE === array_key_exists($listId, $this->_info) ){
-			$this->_info[$listId] = $this->getApi()->listMemberInfo($listId, $this->_getEmail());
+			$emails[] = array('email' => $this->_getEmail());
+			$this->_info[$listId] = $this->getApi()->call('lists/member-info', array('id' => $listId, 'emails' => $emails));
 		}
 
 		return $this->_info[$listId];
@@ -225,26 +238,27 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
 		$fieldType = $group['form_field'];
 
-		if($this->_getEmail()){
+		if($this->_getEmail() && Mage::helper('monkey')->subscribedToList($this->_getEmail(), $list)){
 			$memberInfo = $this->_memberInfo($list['id']);
 		} else {
-			$memberInfo['success'] = 0;
+			$memberInfo['success_count'] = 0;
 		}
 
 		$myGroups = array();
-		if($memberInfo['success'] == 1){
+		if($memberInfo['success_count'] != 0){
 			$groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
 
 			foreach($groupings as $_group){
 				if(!empty($_group['groups'])){
 
-					if($fieldType == 'checkboxes'){
-						$myGroups[$_group['id']] = explode(', ', $_group['groups']);
-					}elseif($fieldType == 'radio'){
-						$myGroups[$_group['id']] = array($_group['groups']);
-					}else{
-						$myGroups[$_group['id']] = $_group['groups'];
+					$myOptions = array();
+					foreach($_group['groups'] as $option){
+
+						if($option['interested'] == 1) {
+							$myOptions[] = $option['name'];
+						}
 					}
+					$myGroups[$_group['id']] = $myOptions;
 
 				}
 			}

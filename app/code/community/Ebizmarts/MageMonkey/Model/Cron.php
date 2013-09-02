@@ -55,20 +55,20 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$websiteId = Mage::app()->getStore($store)->getWebsiteId();
 			$this->_store = Mage::app()->getStore($store);
 
-			$exportapi = Mage::getModel('monkey/api', array('store' => $store, '_export_' => TRUE));
 			$api = Mage::getModel('monkey/api', array('store' => $store));
+			$exportapi = Mage::getModel('monkey/MCEXPORTAPI', $api->api_key);
 
-			$mergevars = $api->listMergeVars($listId);
+			$mergevars = $api->call('lists/merge-vars', array('id' => array($listId)));
 
 			foreach($job->statuses() as $status){
 
 				$members = $exportapi->listExport($listId, $status, NULL, $job->getSince());
 
-				if(is_null($exportapi->errorCode) && $members){
+				if($members){
 					if( !isset($toImport[$status]) ){
 						$toImport [$status] = array();
 					}
-					$mdata = $this->_helper('export')->parseMembers($members, $mergevars, $store);
+					$mdata = $this->_helper('export')->parseMembers($members, $mergevars['data'][0]['merge_vars'], $store);
 
 					$toImport[$status] = array_merge($toImport[$status], $mdata);
 
@@ -260,15 +260,30 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$processedCount = 0;
 			foreach($collection as $item){
 				$processedCount += 1;
-				$batch []= $this->_helper()->getMergeVars($item, TRUE);
+				$batch[] = $this->_helper()->getMergeVars($item, TRUE);
 			}
+
+			$customers = array();
+			foreach($batch as $merge){
+				$mergeVars = array();
+				$email = array();
+				foreach($merge as $label => $value){
+					if($label == 'EMAIL'){
+						 $email[strtolower($label)] = $value;
+					} else {
+						$mergeVars[$label] = $value;
+					}
+				}
+				array_push($customers,array('email' => $email, 'email_type' => 'html', 'merge_vars' => $mergeVars));
+			}
+
 			if(count($batch) > 0){
 
 				$job->setStatus('chunk_running')
 					->setUpdatedAt($this->_dbDate())
 					->save();
 
-				$vals = $api->listBatchSubscribe($listId, $batch, FALSE, TRUE, FALSE);
+				$vals = $api->call('lists/batch-subscribe', array('id' => $listId, 'batch' => $customers, 'double_optin' => FALSE, 'update_existing' => TRUE, 'replace_interests' => FALSE));
 
 				if ( is_null($api->errorCode) ){
 
@@ -276,9 +291,9 @@ class Ebizmarts_MageMonkey_Model_Cron
 					$job->setLastProcessedId($lastId);
 					$job->setProcessedCount( ( $processedCount+$job->getProcessedCount() ));
 
-					/*if( $processedCount < $this->_limit ){
+					if( $processedCount < $this->_limit ){
 						$job->setStatus('finished');
-					}*/
+					}
 
 					$job
 					->setUpdatedAt($this->_dbDate())

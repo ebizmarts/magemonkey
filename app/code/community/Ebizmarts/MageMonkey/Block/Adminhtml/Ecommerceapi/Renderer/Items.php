@@ -12,7 +12,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerceapi_Renderer_Items extends M
 
     public function render(Varien_Object $row)
     {
-        $lines = $row->getLines();
+        $lines = $row->getItems();
 
         $skus = array();
         foreach($lines as $item){

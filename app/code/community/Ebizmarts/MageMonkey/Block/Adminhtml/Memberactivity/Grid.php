@@ -25,20 +25,20 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
 
     	$api      = Mage::getSingleton('monkey/api', array('apikey' => Mage::helper('monkey')->getApiKey($customer->getStore())));
     	$activity = array();
-    	$lists    = $api->listsForEmail($email);
+    	$lists = $api->call('helper/lists-for-email',array('email' => array('email' => $email)));
 
 		$activityData = array();
 		if(is_array($lists)){
 			foreach($lists as $list){
-				$activity []= $api->listMemberActivity($list, $email);
+				$activity[] = $api->call('lists/member-activity',array('id' => $list['id'], 'emails' => array(array('email' => $email))) );
 			}
 			if(!empty($activity)){
 				foreach($activity as $act){
 
-					if(empty($act['data'][0])){
+					if(empty($act['data'][0]['activity'])){
 						continue;
 					}
-					$activityData []= $act['data'];
+					$activityData []= $act['data']['activity'];
 				}
 			}
 		}
