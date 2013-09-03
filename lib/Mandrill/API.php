@@ -284,8 +284,8 @@ class Mandrill_API {
 
 		$url = $this->apiUrl . $method . '.' . $this->_output;
 
-		Mage::helper('mandrill')->log($url, 'MageMonkey_ApiCall.log');
-		Mage::helper('mandrill')->log($params, 'MageMonkey_ApiCall.log');
+		Mage::helper('mandrill')->log($url, 'Ebizmarts_Mandrill.log');
+		Mage::helper('mandrill')->log($params, 'Ebizmarts_Mandrill.log');
 
         $curlSession = curl_init();
 
@@ -322,7 +322,7 @@ class Mandrill_API {
 
 		$resultObject = json_decode($result);
 
-		Mage::helper('mandrill')->log($resultObject, 'MageMonkey_ApiCall.log');
+		Mage::helper('mandrill')->log($resultObject, 'Ebizmarts_Mandrill.log');
 
 		//You can consider any non-200 HTTP response code an error
 		//the returned data will contain more detailed information

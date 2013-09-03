@@ -45,11 +45,21 @@
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Your API Key]]></comment>
                         </apikey>
+                        <enable_log translate="label comment">
+                            <label>Enable Log</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>File is {{base_dir}}/var/log/Ebizmarts_Mandrill.log</comment>
+                        </enable_log>
                         <user_info translate="label comment">
                             <label>Account Info</label>
                             <frontend_model>mandrill/adminhtml_system_config_userinfo</frontend_model>
                             <source_model>mandrill/system_config_source_userinfo</source_model>
-                            <sort_order>30</sort_order>
+                            <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
