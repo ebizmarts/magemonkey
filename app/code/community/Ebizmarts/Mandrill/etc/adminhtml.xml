@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<config> 
+<config>
     <menu>
         <system>
             <children>
@@ -11,14 +11,14 @@
 				                <users_senders translate="title" module="mandrill">
 				                    <title>Senders</title>
 						            <action>adminhtml/mandrill_users/senders</action>
-				                </users_senders>		               
+				                </users_senders>
 		                    </children>
 		                </mandrill>
             		</children>
-            	</email_template>            		               
+            	</email_template>
             </children>
         </system>
-    </menu>   
+    </menu>
 	<acl>
 	    <resources>
 	      <admin>
@@ -27,7 +27,7 @@
 		            <children>
 		                <config>
 		                    <children>
-		                        <mandrill translate="title" module="monkey">
+		                        <mandrill translate="title" module="mandrill">
 		                            <title>Mandrill Configuration</title>
 		                        </mandrill>
 		                    </children>
