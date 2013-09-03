@@ -68,8 +68,8 @@ class Ebizmarts_MageMonkey_Model_Api {
 
         //Create actual API URL using API key, borrowed from MCAPI.php
         $dc = "us1";
-        if (strstr($this->_mcapi->api_key, "-")) {
-            list($key, $dc) = explode("-", $this->_mcapi->api_key, 2);
+        if (strstr($this->_mcapi->apikey, "-")) {
+            list($key, $dc) = explode("-", $this->_mcapi->apikey, 2);
             if (!$dc)
                 $dc = "us1";
         }
@@ -98,7 +98,7 @@ class Ebizmarts_MageMonkey_Model_Api {
      * @param array $args OPTIONAL call parameters
      * @return mixed
      */
-    public function call($command, $args) {
+    public function call($command, $args = null) {
         try {
 			$cacheKey = $this->_cacheHelper->cacheKey($command, $args, $this->_mcapi->apikey);
 
