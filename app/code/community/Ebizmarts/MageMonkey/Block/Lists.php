@@ -238,7 +238,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
 		$fieldType = $group['form_field'];
 
-		if($this->_getEmail() && Mage::helper('monkey')->subscribedToList($this->_getEmail(), $list)){
+		if($this->_getEmail() && Mage::helper('monkey')->subscribedToList($this->_getEmail(), $list['id'])){
 			$memberInfo = $this->_memberInfo($list['id']);
 		} else {
 			$memberInfo['success_count'] = 0;

@@ -208,16 +208,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	public function subscribedToList($email, $listId = null)
 	{
 		$on = FALSE;
-		if(is_array($listId)){
-			$listId = $listId['id'];
-		}
+
 		if($email){
-			$lists = Mage::getSingleton('monkey/api')->call('helper/lists-for-email', array('email' => array('email' => $email)));
-			foreach($lists as $list_id) {
-				if($list_id['id'] == $listId){
-					$on = TRUE;
-				}
-			}
+			$emails[] = array('email' => $email);
+			$member = Mage::getSingleton('monkey/api')->call('lists/member-info', array('id' => $listId, 'emails' => $emails));
+	        if(!is_string($member) && $member['success_count'] && ($member['data'][0]['status'] == 'subscribed' || $member['data'][0]['status'] == 'pending')){
+	            $on = TRUE;
+	        }
 		}
 
         return $on;
