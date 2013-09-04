@@ -162,7 +162,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @param string $filename log filename, default is <Monkey.log>
 	 * @return Mage_Core_Model_Log_Adapter
 	 */
-	public function log($data, $filename = 'Monkey.log')
+	public function log($data, $filename = 'MageMonkey_ApiCall.log')
 	{
 		if($this->config('enable_log') != 0) {
 			return Mage::getModel('core/log_adapter', $filename)->log($data);
