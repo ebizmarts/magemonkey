@@ -25,6 +25,7 @@ addSubscribeToPost = function (element){
 	}
 
 }
+
 addGroupToPost = function (element){
 	if(element.checked){
         try{
@@ -35,18 +36,25 @@ addGroupToPost = function (element){
         }
 	}
 }
+
+addDropToPost = function (element){
+	if(element.selected){
+        try{
+        	var drop = new Element('input', { name: element.parentElement.readAttribute('name'), id: element.parentElement.readAttribute('id'), value: element.value, checked:true, type: "checkbox" });
+            Element.insert(Form.findFirstElement(payment.form), drop);
+        }catch(notelem){
+            $("co-payment-form").insert(drop);
+        }
+	}
+}
+
 addElementToPost = function (element){
-
 	var formInputId = element.readAttribute('id') + '-serialize';
-
 	if($(formInputId)){
 	 $(formInputId).remove();
 	}
-
 	var inp = new Element('input', { name: element.readAttribute('name'), id: formInputId, value: element.getValue(), type: "hidden" });
-
 	Element.insert( Form.findFirstElement(payment.form), inp);
-
 }
 </script>
 <div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
@@ -165,11 +173,21 @@ if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
   });
 
 }
-//Handle newsletter subscribe/unsubscribe checkbox events
+
+//Handle newsletter subscribe/unsubscribe checkbox and radio button events
 $$('.interest-groupings input').each(function(group){
   group.observe('change', function(){
 	 if(group.checked){
 	    	addGroupToPost(group);
+	 }
+  });
+});
+
+//Handle newsletter subscribe/unsubscribe dropdown events
+$$('.interest-groupings select option').each(function(drop){
+  drop.observe('click', function(){
+	 if(drop.selected){
+	    	addDropToPost(drop);
 	 }
   });
 });
