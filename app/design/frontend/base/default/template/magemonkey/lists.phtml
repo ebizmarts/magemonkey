@@ -22,7 +22,7 @@ $canShowButton = $this->getCanShowButton();
 
 						<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 						<?php foreach($generalList['interest_groupings'] as $group): ?>
-							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS' && $group['form_field'] != 'hidden'): ?>
 								<div class="grouping">
 									<strong><?php echo $group['name']; ?></strong>
 									<?php echo $this->renderGroup($group, $generalList); ?>
@@ -51,7 +51,7 @@ $canShowButton = $this->getCanShowButton();
 					<?php if(is_array($igroups)): ?>
 						<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
 						<?php foreach($igroups as $group): ?>
-							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS' && $group['form_field'] != 'hidden'): ?>
 								<div class="grouping">
 									<strong><?php echo $group['name']; ?></strong>
 									<?php echo $this->renderGroup($group, $list); ?>
