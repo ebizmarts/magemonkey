@@ -137,7 +137,7 @@ class Ebizmarts_MageMonkey_Model_Api {
 			return $result;
         } catch (Exception $ex) {
         	$this->_logApiCall($ex->getMessage());
-            return $ex;
+            return $ex->getMessage();
         }
     }
 
