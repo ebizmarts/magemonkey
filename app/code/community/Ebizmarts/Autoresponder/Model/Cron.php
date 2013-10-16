@@ -27,7 +27,10 @@ class Ebizmarts_Autoresponder_Model_Cron
      */
     protected function _processStore($storeId)
     {
-        Mage::app()->setCurrentStore($storeId);
+        //Mage::app()->setCurrentStore($storeId);
+        Mage::unregister('_singleton/core/design_package' );
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        Mage::getSingleton('core/design_package' )->setStore($storeId);
 
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE,$storeId)) { // done
             $this->_processNewOrders($storeId);
