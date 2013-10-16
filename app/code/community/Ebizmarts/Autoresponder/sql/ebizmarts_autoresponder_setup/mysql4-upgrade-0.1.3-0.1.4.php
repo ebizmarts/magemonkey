@@ -40,7 +40,7 @@ $installer->addAttribute(
         'source'            => 'eav/entity_attribute_source_boolean',
         'global'            => Mage_Catalog_Model_Resource_Eav_Attribute::SCOPE_WEBSITE,
         'required'          => false,
-        'user_defined'      => false,
+        'user_defined'      => true,
         'default'           => '0',
         'searchable'        => false,
         'filterable'        => false,
