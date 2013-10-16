@@ -193,6 +193,7 @@
                 <mandrill-tag>Autoresponder_Review</mandrill-tag>
                 <subject>Please review your purchased products</subject>
                 <listname>Review Product List</listname>
+                <status>complete</status>
             </review>
             <birthday>
                 <mandrill-tag>Autoresponder_Birthday</mandrill-tag>

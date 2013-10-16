@@ -262,7 +262,8 @@ class Ebizmarts_Autoresponder_Model_Cron
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
-            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to));
+            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.status',array('eq'=>Mage_Sales_Model_Order::STATE_COMPLETE));
         if(count($customerGroups)) {
             $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }
