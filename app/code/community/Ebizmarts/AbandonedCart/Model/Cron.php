@@ -23,7 +23,10 @@ class Ebizmarts_AbandonedCart_Model_Cron
      */
     protected function _proccess($store)
     {
-        Mage::app()->setCurrentStore($store);
+        //Mage::app()->setCurrentStore($store);
+        Mage::unregister('_singleton/core/design_package' );
+        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        Mage::getSingleton('core/design_package' )->setStore($store);
 
         $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $days = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::DAYS, $store);

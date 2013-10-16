@@ -48,6 +48,9 @@
                 <setup>
                     <module>Ebizmarts_AbandonedCart</module>
                 </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
             </ebizmarts_abandonedcart_setup>
         </resources>
         <fieldsets>
