@@ -41,8 +41,6 @@ class Ebizmarts_MageMonkey_Model_Api {
      */
     public $errorCode = null;
 
-	public $api_key;
-
     /**
      * MC API error message if any
      *
@@ -60,20 +58,23 @@ class Ebizmarts_MageMonkey_Model_Api {
     public function __construct($args) {
         $storeId = isset($args['store']) ? $args['store'] : null;
         $apikey = (!isset($args['apikey']) ? Mage::helper('monkey')->getApiKey($storeId) : $args['apikey']);
-		$this->api_key = $apikey;
 
-        $this->_mcapi = new Mailchimp($apikey);
+        if (isset($args['_export_'])) {
+            $this->_mcapi = new Ebizmarts_MageMonkey_Model_MCEXPORTAPI($apikey);
+        } else {
+            $this->_mcapi = new Ebizmarts_MageMonkey_Model_MCAPI($apikey);
+        }
 
         $this->_cacheHelper = Mage::helper('monkey/cache');
 
         //Create actual API URL using API key, borrowed from MCAPI.php
         $dc = "us1";
-        if (strstr($this->_mcapi->apikey, "-")) {
-            list($key, $dc) = explode("-", $this->_mcapi->apikey, 2);
+        if (strstr($this->_mcapi->api_key, "-")) {
+            list($key, $dc) = explode("-", $this->_mcapi->api_key, 2);
             if (!$dc)
                 $dc = "us1";
         }
-        $this->_apihost = $dc . "." . $this->_mcapi->root;
+        $this->_apihost = $dc . "." . $this->_mcapi->apiUrl["host"];
     }
 
     /**
@@ -98,14 +99,15 @@ class Ebizmarts_MageMonkey_Model_Api {
      * @param array $args OPTIONAL call parameters
      * @return mixed
      */
-    public function call($command, $args = null) {
+    public function call($command, $args) {
         try {
-			$cacheKey = $this->_cacheHelper->cacheKey($command, $args, $this->_mcapi->apikey);
 
+            $cacheKey = $this->_cacheHelper->cacheKey($command, $args, $this->_mcapi->api_key);
+
+            $this->_logApiCall($this->_apihost);
+            $this->_logApiCall($this->_mcapi->api_key);
             $this->_logApiCall($command);
-			$this->_logApiCall($args);
-
-			$args['apikey'] = $args;
+            $this->_logApiCall($args);
 
             //If there is NO cache key it means that we cannot cache methods data
             if ($cacheKey) {
@@ -124,21 +126,41 @@ class Ebizmarts_MageMonkey_Model_Api {
                 }
             }
 
-            $result = $this->_mcapi->call($command, $args);
-            $this->_logApiCall($result);
-
-            if ($cacheKey) {
-                $cache->saveCacheData(serialize($result), $cacheKey, $this->_cacheHelper->cacheTagForCommand($command, $args));
+            if ($args) {
+                $result = call_user_func_array(array($this->_mcapi, $command), $args);
+            } else {
+                $result = $this->_mcapi->{$command}();
             }
 
-            //Clear associated cache for this call, for example clear cache for helper/lists-for-email when executing lists/unsubscribe
-            $this->_cacheHelper->clearCache($command, $args);
+            $this->_logApiCall($result);
 
-			return $result;
+            if ($this->_mcapi->errorMessage) {
+                $this->_logApiCall("Error: {$this->_mcapi->errorMessage}, code {$this->_mcapi->errorCode}");
+
+                $this->errorCode = $this->_mcapi->errorCode;
+                $this->errorMessage = $this->_mcapi->errorMessage;
+
+                //Clear associated cache for this call, for example clear cache for listsForEmail when executing listUnsubscribe
+                $this->_cacheHelper->clearCache($command, $this->_mcapi);
+
+                return (string) $this->_mcapi->errorMessage;
+            }
+
+            if ($cacheKey) {
+                $cache->saveCacheData(serialize($result), $cacheKey, $this->_cacheHelper->cacheTagForCommand($command, $this->_mcapi));
+            }
+
+            //Clear associated cache for this call, for example clear cache for listsForEmail when executing listUnsubscribe
+            $this->_cacheHelper->clearCache($command, $this->_mcapi);
+
+            return $result;
         } catch (Exception $ex) {
-        	$this->_logApiCall($ex->getMessage());
+
+            Mage::logException($ex);
+
             return $ex->getMessage();
         }
+        return FALSE;
     }
 
     /**

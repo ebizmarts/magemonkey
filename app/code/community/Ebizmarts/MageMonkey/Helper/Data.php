@@ -162,7 +162,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @param string $filename log filename, default is <Monkey.log>
 	 * @return Mage_Core_Model_Log_Adapter
 	 */
-	public function log($data, $filename = 'MageMonkey_ApiCall.log')
+	public function log($data, $filename = 'Monkey.log')
 	{
 		if($this->config('enable_log') != 0) {
 			return Mage::getModel('core/log_adapter', $filename)->log($data);
@@ -210,9 +210,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$on = FALSE;
 
 		if($email){
-			$emails[] = array('email' => $email);
-			$member = Mage::getSingleton('monkey/api')->call('lists/member-info', array('id' => $listId, 'emails' => $emails));
-	        if(!is_string($member) && $member['success_count'] && ($member['data'][0]['status'] == 'subscribed' || $member['data'][0]['status'] == 'pending')){
+			$member = Mage::getSingleton('monkey/api')
+										->listMemberInfo($listId, $email);
+
+	        if(!is_string($member) && $member['success'] && ($member['data'][0]['status'] == 'subscribed' || $member['data'][0]['status'] == 'pending')){
 	            $on = TRUE;
 	        }
 		}
@@ -266,21 +267,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	}
 
 	/**
-	 * Get Send Welcome Email property for given storeId
-	 *
-	 * @param string $store
-	 * @return boolean $isWelcomeNeed
-	 */
-	public function getWelcomeNeed($store)
-	{
-		$curstore = Mage::app()->getStore();
-		Mage::app()->setCurrentStore($store);
-		$isWelcomeNeed = $this->config('welcome_email', $store);
-		Mage::app()->setCurrentStore($curstore);
-		return $isWelcomeNeed;
-	}
-
-	/**
 	 * Get additional Lists by storeId
 	 *
 	 * @param string $store
@@ -310,6 +296,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $store = null;
         if($list->getId()){
 
+        	//$isDefault = (bool)($list->getScope() == 'default');
         	$isDefault = (bool)($list->getScope() == Mage::app()->getDefaultStoreView()->getCode());
         	if(!$isDefault && !$includeDefault){
         		$store = (string)Mage::app()->getStore($list->getScopeId())->getCode();
@@ -368,6 +355,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$html = "<div id=\"bar-progress-bar\" class=\"bar-all-rounded\">\n";
 		$html .= "<div id=\"bar-progress-bar-percentage\" class=\"bar-all-rounded\"$barStyle>";
 		$html .= "$percentage% ($complete of $total)";
+		//<progress value="75" max="100">3/4 complete</progress>
+			//if ($percentage > 5) {$html .= "$percentage% ($complete of $total)";} else {$html .= "<div class=\"bar-spacer\">&nbsp;</div>";}
 		$html .= "</div></div>";
 
 		return $html;
@@ -539,7 +528,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			foreach($groups as $groupId => $grupoptions){
 				$groupings[] = array(
 									 'id' => $groupId,
-								     'groups' => (is_array($grupoptions) ? $grupoptions : array($grupoptions))
+								     'groups' => (is_array($grupoptions) ? implode(', ', $grupoptions) : $grupoptions)
 								    );
 			}
 		}
@@ -750,7 +739,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		//before submission, we need to parse it as a request in order to save it to $odata and process it
 		parse_str($request->getPost('state'), $odata);
 		$isConfirmNeed = FALSE;
-		$isWelcomeNeed = FALSE;
 		$curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
 		$lists    = $request->getPost('list', array());
 
@@ -785,15 +773,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 						}
 
 						//Unsubscribe Email
-						$api->call('lists/unsubscribe', array('id' => $listId, 'email' => array('email' => $email)));
+						$api->listUnsubscribe($listId, $email);
 					}
 
 				}else{
 
 					$groupings = $lists[$listId];
 					unset($groupings['subscribed']);
-					$emails[] = array('email' => $email);
-					$customerLists = $api->call('lists/member-info', array('id' => $listId, 'emails' => $emails));
+					$customerLists = $api->listMemberInfo($listId,$email);
 					$customerLists = isset($customerLists['data'][0]['merges']['GROUPINGS']) ?$customerLists['data'][0]['merges']['GROUPINGS'] :array();
 
 					foreach ($customerLists as $clkey => $cl)
@@ -809,7 +796,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 
 					//Handle groups update
-					$api->call('lists/update-member', array('id' => $listId, 'email' => array('email' => $email), 'merge_vars' => $mergeVars));
+					$api->listUpdateMember($listId, $email, $mergeVars);
 
 				}
 
@@ -830,16 +817,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 					$groupings = $lists[$listId];
 					unset($groupings['subscribed']);
-					if(!Mage::helper('monkey')->isAdmin()) {
-						if(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1) {
-							$isConfirmNeed = TRUE;
-						}
-
-						if($this->getWelcomeNeed(Mage::app()->getStore()->getId()) == 1) {
-							$isWelcomeNeed = TRUE;
-						}
+					if( !Mage::helper('monkey')->isAdmin() && (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1) ) {
+						$isConfirmNeed = TRUE;
 					}
-
 					if($defaultList == $listId){
 						$subscriber = Mage::getModel('newsletter/subscriber');
 						$subscriber->setListGroups($groupings);
@@ -851,7 +831,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 						$customer->setListGroups($groupings);
 						$customer->setMcListId($listId);
 						$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
-						Mage::getSingleton('monkey/api')->call('lists/subscribe', array('id' => $listId, 'email' => array('email' => $email), 'merge_vars' => $mergeVars, 'email_type' => 'html', 'double_optin' => $isConfirmNeed, 'update_existing' => false, 'replace_interests' => true, 'send_welcome' => $isWelcomeNeed));
+						$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+
 					}
 
 				}

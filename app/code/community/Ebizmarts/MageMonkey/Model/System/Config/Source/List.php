@@ -26,7 +26,8 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_List
 	public function __construct()
 	{
 		if( is_null($this->_lists) ){
-			$this->_lists = Mage::getSingleton('monkey/api')->call('lists/list');
+			$this->_lists = Mage::getSingleton('monkey/api')
+							->lists();
 		}
 	}
 

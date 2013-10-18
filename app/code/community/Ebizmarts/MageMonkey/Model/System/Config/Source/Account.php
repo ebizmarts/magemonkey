@@ -26,7 +26,8 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_Account
     public function __construct()
     {
         if (!$this->_account_details) {
-            $this->_account_details = Mage::getSingleton('monkey/api')->call('helper/account-details');
+            $this->_account_details = Mage::getSingleton('monkey/api')
+                    ->getAccountDetails();
         }
     }
 

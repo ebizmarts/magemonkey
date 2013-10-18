@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-             <version>2.0.0</version>
+             <version>1.1.19</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -77,15 +77,6 @@
                 <class>Ebizmarts_MageMonkey_Helper</class>
             </monkey>
         </helpers>
-        <cache>
-	        <types>
-	             <monkey module="monkey" translate="label description">
-	                <label>Ebizmarts MailChimp Data</label>
-	                <description>MailChimp Data Requested to the API.</description>
-	                <tags>MONKEY_GENERAL_CACHE_TAG</tags>
-	             </monkey>
-	        </types>
-	    </cache>
     </global>
     <frontend>
         <translate>

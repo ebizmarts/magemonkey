@@ -29,11 +29,7 @@ class Ebizmarts_MageMonkey_Block_Checkout_Subscribe extends Ebizmarts_MageMonkey
 		 *
 		 * **/
 
-        if (!$this->helper('monkey')->canCheckoutSubscribe()) {
-            return '';
-        }
-
-		if (!$this->helper('monkey')->canMonkey()) {
+        if ( !$this->helper('monkey')->canCheckoutSubscribe() ) {
             return '';
         }
 

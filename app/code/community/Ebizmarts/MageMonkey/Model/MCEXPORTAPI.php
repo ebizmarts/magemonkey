@@ -10,8 +10,6 @@
 class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_MCAPI
 {
     var $version = "1.0";
-	public $api_key;
-	public $root = 'https://api.mailchimp.com/1.0';
 
     /**
      * Connect to the MailChimp API for a given list.
@@ -46,12 +44,12 @@ class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_
      */
     function callServer($method, $params) {
 	    $dc = "us1";
-	    if (strstr($this->apikey,"-")){
-        	list($key, $dc) = explode("-",$this->apikey, 2);
+	    if (strstr($this->api_key,"-")){
+        	list($key, $dc) = explode("-",$this->api_key, 2);
             if (!$dc) $dc = "us1";
         }
         $host = $dc.".".$this->apiUrl["host"];
-		$params["apikey"] = $this->apikey;
+		$params["apikey"] = $this->api_key;
 
         $this->errorMessage = "";
         $this->errorCode = "";

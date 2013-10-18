@@ -44,15 +44,15 @@ class Ebizmarts_MageMonkey_Model_Monkey {
         switch ($data['type']) {
             case 'subscribe':
 				$this->_subscribe($data);
-                    $cacheHelper->clearCache('lists/subscribe', $object);
+                    $cacheHelper->clearCache('listSubscribe', $object);
                 break;
             case 'unsubscribe':
                 $this->_unsubscribe($data);
-                    $cacheHelper->clearCache('lists/unsubscribe', $object);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
                 break;
             case 'cleaned':
                 $this->_clean($data);
-                    $cacheHelper->clearCache('lists/unsubscribe', $object);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
                 break;
             case 'campaign':
                 $this->_campaign($data);
@@ -60,7 +60,7 @@ class Ebizmarts_MageMonkey_Model_Monkey {
             //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
             case 'upemail':
                 $this->_updateEmail($data);
-                    $cacheHelper->clearCache('lists/update-member', $object);
+                    $cacheHelper->clearCache('listUpdateMember', $object);
                 break;
         }
 
