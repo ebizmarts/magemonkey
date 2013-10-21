@@ -7,8 +7,8 @@
                   $product = Mage::getModel('catalog/product')->load($parentId[0]);
               }
         ?>
-        <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $product->getId()));; ?>" alt="<?php echo $product->getName(); ?>" target="_blank"><img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $product->getName(); ?>"/></a></td>
-        <td valign="top" align="left" style="padding:3px 9px"><p><h2><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $product->getId())); ?>"> Rate <?php echo $product->getName(); ?></a></h2></p><?php echo $product->getShortDescription(); ?></td>
+        <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $product->getId()));; ?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>" target="_blank"><img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a></td>
+        <td valign="top" align="left" style="padding:3px 9px"><p><h2><a href="<?php echo Mage::getUrl('review/product/list', array('id'=> $product->getId())); ?>"> Rate <?php echo $this->escapeHtml($product->getName()); ?></a></h2></p><?php echo $this->escapeHtml($product->getShortDescription()); ?></td>
 
     </tr>
     <?php endforeach; ?>
