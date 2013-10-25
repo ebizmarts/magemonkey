@@ -54,4 +54,16 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             Mage::getConfig()->cleanCache();
         }
     }
+    public function actionAfter(Varien_Event_Observer $o)
+    {
+        if($o->getEvent()->getControllerAction()->getFullActionName() == 'review_product_post') {
+            Mage::dispatchEvent("review_product_post_after", array('request' => $o->getControllerAction()->getRequest()));
+        }
+    }
+    public function reviewProductPostAfter(Varien_Event_Observer $o)
+    {
+        Mage::log(__METHOD__);
+        $params = Mage::app()->getRequest()->getParams();
+        Mage::log($params);
+    }
 }

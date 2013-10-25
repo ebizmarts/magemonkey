@@ -25,6 +25,7 @@ class Ebizmarts_Autoresponder_Model_Config
     const RELATED_MANDRILL_TAG          = 'ebizmarts_autoresponder/related/mandrill-tag';
     const RELATED_SUBJECT               = 'ebizmarts_autoresponder/related/subject';
     const RELATED_MAX                   = 'ebizmarts_autoresponder/related/max-related';
+    const RELATED_STATUS                = 'ebizmarts_autoresponder/related/status';
 
     const REVIEW_ACTIVE                 = 'ebizmarts_autoresponder/review/active';
     const REVIEW_DAYS                   = 'ebizmarts_autoresponder/review/days';
@@ -32,6 +33,16 @@ class Ebizmarts_Autoresponder_Model_Config
     const REVIEW_TEMPLATE               = 'ebizmarts_autoresponder/review/template';
     const REVIEW_MANDRILL_TAG           = 'ebizmarts_autoresponder/review/mandrill-tag';
     const REVIEW_SUBJECT                = 'ebizmarts_autoresponder/review/subject';
+    const REVIEW_STATUS                 = 'ebizmarts_autoresponder/review/status';
+    const REVIEW_HAS_COUPON             = 'ebizmarts_autoresponder/review/coupon';
+    const REVIEW_COUPON_CUSTOMER_GROUP  = 'ebizmarts_autoresponder/review/customer_coupon';
+    const REVIEW_COUPON_AUTOMATIC       = 'ebizmarts_autoresponder/review/automatic';
+    const REVIEW_COUPON_CODE            = 'ebizmarts_autoresponder/review/coupon_code';
+    const REVIEW_COUPON_EXPIRE          = 'ebizmarts_autoresponder/review/expire';
+    const REVIEW_COUPON_LENGTH          = 'ebizmarts_autoresponder/review/length';
+    const REVIEW_COUPON_DISCOUNT_TYPE   = 'ebizmarts_autoresponder/review/discounttype';
+    const REVIEW_COUPON_DISCOUNT        = 'ebizmarts_autoresponder/review/discount';
+    const REVIEW_COUPON_LABEL           = 'ebizmarts_autoresponder/review/couponlabel';
 
     const BIRTHDAY_ACTIVE               = 'ebizmarts_autoresponder/birthday/active';
     const BIRTHDAY_DAYS                 = 'ebizmarts_autoresponder/birthday/days';

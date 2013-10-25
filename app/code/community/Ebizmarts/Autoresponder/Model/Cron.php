@@ -206,6 +206,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_TEMPLATE,$storeId);
         $maxRelated     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MAX,$storeId);
+        $status         = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_STATUS,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $from = new Zend_Db_Expr($expr);
@@ -213,7 +214,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
-            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to));
+            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.status',array('eq'=>$status));
+
         if(count($customerGroups)) {
             $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }
@@ -258,6 +261,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
         $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_TEMPLATE,$storeId);
+        $status         = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_STATUS,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $from = new Zend_Db_Expr($expr);
@@ -265,8 +269,10 @@ class Ebizmarts_Autoresponder_Model_Cron
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
-            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
-            ->addFieldToFilter('main_table.status',array('eq'=>Mage_Sales_Model_Order::STATE_COMPLETE));
+//            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.updated_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.status',array('eq'=>$status));
+        Mage::log((string)$collection->getSelect());
         if(count($customerGroups)) {
             $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }
@@ -274,6 +280,18 @@ class Ebizmarts_Autoresponder_Model_Cron
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
             if($this->_isSubscribed($email,'review',$storeId)) {
+                if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON,$storeId)) {
+                    srand((double)microtime()*1000000);
+                    $token = md5(rand(0,9999999));
+                    $review = Mage::getModel('ebizmarts_autoresponder/review');
+                    $review->setCustomerId($order->getCustomerId())
+                            ->setStoreId($storeId)
+                            ->setItems($order->getTotalItemCount())
+                            ->setCounter(0)
+                            ->setToken($token)
+                            ->setOrderId($order->getIncrementId())
+                            ->save();
+                }
                 $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
                 $products = array();
                 foreach($order->getAllItems() as $item) {
@@ -285,7 +303,12 @@ class Ebizmarts_Autoresponder_Model_Cron
                 }
                 $orderNum = $order->getIncrementId();
                 $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=review&email='.$email.'&store='.$storeId;
-                $vars = array('name' => $name,'tags'=>array($tags),'products'=>$products,'ordernum'=>$orderNum,'url'=>$url);
+                if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON,$storeId)) {
+                    $vars = array('name' => $name,'tags'=>array($tags),'products'=>$products,'ordernum'=>$orderNum,'url'=>$url, 'token' =>$token);
+                }
+                else {
+                    $vars = array('name' => $name,'tags'=>array($tags),'products'=>$products,'ordernum'=>$orderNum,'url'=>$url);
+                }
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('product review',$email,$name,"",$storeId);
