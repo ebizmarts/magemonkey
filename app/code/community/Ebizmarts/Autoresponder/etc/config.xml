@@ -11,7 +11,7 @@
 <config>
     <modules>
         <Ebizmarts_Autoresponder>
-            <version>0.1.4</version>
+            <version>0.1.5</version>
         </Ebizmarts_Autoresponder>
     </modules>
     <global>
@@ -30,6 +30,9 @@
                     <visited>
                         <table>ebizmarts_autoresponder_visited</table>
                     </visited>
+                    <review>
+                        <table>ebizmarts_autoresponder_review</table>
+                    </review>
                 </entities>
             </ebizmarts_autoresponder_resource>
         </models>
@@ -162,6 +165,24 @@
                 </args>
             </ebizmarts_autoresponder>
         </routers>
+        <events>
+            <controller_action_postdispatch>
+                <observers>
+                    <ebizmarts_autoresponder_controller_action_after>
+                        <class>ebizmarts_autoresponder/eventObserver</class>
+                        <method>actionAfter</method>
+                    </ebizmarts_autoresponder_controller_action_after>
+                </observers>
+            </controller_action_postdispatch>
+            <review_product_post_after>
+                <observers>
+                    <ebizmarts_autoresponder_review_product_post_after>
+                        <class>ebizmarts_autoresponder/eventObserver</class>
+                        <method>reviewProductPostAfter</method>
+                    </ebizmarts_autoresponder_review_product_post_after>
+                </observers>
+            </review_product_post_after>
+        </events>
     </frontend>
 
     <crontab>
@@ -188,6 +209,7 @@
                 <max-related>5</max-related>
                 <subject>Products of your interest</subject>
                 <listname>Related Product List</listname>
+                <status>complete</status>
             </related>
             <review>
                 <mandrill-tag>Autoresponder_Review</mandrill-tag>
