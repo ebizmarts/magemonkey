@@ -32,4 +32,20 @@
             <action method="addJs"><script>ebizmarts/autoresponders/visitedproducts.js</script></action>
         </reference>
     </catalog_product_view>
+    <review_product_list>
+        <reference name="product.review.form">
+            <block type="ebizmarts_autoresponder/review_form" name="product.review.form" as="review_form">
+                <block type="page/html_wrapper" name="product.review.form.fields.before" as="form_fields_before"
+                       translate="label">
+                    <label>Review Form Fields Before</label>
+                    <action method="setMayBeInvisible">
+                        <value>1</value>
+                    </action>
+                </block>
+            </block>
+        </reference>
+    </review_product_list>
+    <!--review_product_list>
+        <update handle="ebizmarts_review_form"></update>
+    </review_product_list-->
 </layout>
