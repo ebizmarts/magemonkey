@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.24</version>
+            <version>0.1.25</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -140,6 +140,7 @@
                 <mandrill-tag>AbandonedCart</mandrill-tag>
                 <autologin>0</autologin>
                 <page>checkout/cart</page>
+                <incremental>0</incremental>
             </general>
         </ebizmarts_abandonedcart>
     </default>
