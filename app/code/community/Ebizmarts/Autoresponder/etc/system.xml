@@ -344,7 +344,7 @@ Module : Ebizmarts_Magemonkey
                             <label>Create Coupon?</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>100</sort_order>
+                            <sort_order>70</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -352,6 +352,90 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </coupon>
+                        <coupon_counter translate="label comment">
+                            <label>Coupon counter</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_autoresponder/system_config_couponcounter</source_model>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[How you count the reviews<br>Keep in mind, General only work for registered customers]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                            </depends>
+                        </coupon_counter>
+                        <coupon_general_quantity trasnslate="label comment">
+                            <label>Required Quantity</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <coupon_counter>2</coupon_counter>
+                            </depends>
+                        </coupon_general_quantity>
+                        <coupon_general_type translate="label comment">
+                            <label>How many coupons</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_autoresponder/system_config_generaltype</source_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Each means, every "Required Quantity" multiple is reach a new coupon is sent<br>Only once, means only the first time "Required Quantity" is reached a coupon is generated]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <coupon_counter>2</coupon_counter>
+                            </depends>
+                        </coupon_general_type>
+                        <coupon_specific_quantity translate="lable comment">
+                            <label>Specify # of coupons</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>105</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <coupon_counter>2</coupon_counter>
+                                <coupon_general_type>3</coupon_general_type>
+                            </depends>
+                        </coupon_specific_quantity>
+                        <coupon_order_counter>
+                            <label>Items per order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[How many item reviews per order wins a coupon (0 means all items]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <coupon_counter>1</coupon_counter>
+                            </depends>
+                        </coupon_order_counter>
+                        <coupon_order_almost translate="label comment">
+                            <label>Items almost</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[If the order have almost this items quantity(0 means no minimum)]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <coupon_counter>1</coupon_counter>
+                            </depends>
+                        </coupon_order_almost>
                         <customer_coupon translate="label comment">
                             <label>Customer Groups for coupon</label>
                             <frontend_type>multiselect</frontend_type>

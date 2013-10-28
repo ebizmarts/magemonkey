@@ -10,7 +10,6 @@ class Ebizmarts_Autoresponder_Block_Review_Form extends Mage_Review_Block_Form
 {
     public function getAction()
     {
-        Mage::log(__METHOD__);
         $productId = Mage::app()->getRequest()->getParam('id', false);
         $token = Mage::app()->getRequest()->getParam('token', false);
         return Mage::getUrl('review/product/post', array('id' => $productId, 'token' => $token));

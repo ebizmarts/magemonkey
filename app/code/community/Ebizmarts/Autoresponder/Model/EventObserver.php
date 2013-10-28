@@ -62,8 +62,19 @@ class Ebizmarts_Autoresponder_Model_EventObserver
     }
     public function reviewProductPostAfter(Varien_Event_Observer $o)
     {
-        Mage::log(__METHOD__);
         $params = Mage::app()->getRequest()->getParams();
-        Mage::log($params);
+        if(isset($params['token'])) {
+            $token = $params['token'];
+            Mage::log($token);
+            $data = Mage::getModel('ebizmarts_autoresponder/review')->loadByToken($token);
+            $counter = $data->getCounter();
+            if($counter < $data->getItems()) {
+                $counter++;
+                $data->setCounter($counter)->save();
+                if($counter == $data->getItems()) {
+                    //generate coupon
+                }
+            }
+        }
     }
 }

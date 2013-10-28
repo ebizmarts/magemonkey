@@ -1,0 +1,20 @@
+<?php
+/**
+ * Author : Ebizmarts <info@ebizmarts.com>
+ * Date   : 10/27/13
+ * Time   : 11:00 AM
+ * File   : Generaltype.php
+ * Module : Ebizmarts_Magemonkey
+ */
+class Ebizmarts_Autoresponder_Model_System_Config_Generaltype
+{
+    public function toOptionArray()
+    {
+        $options = array(
+            array('value'=> 1, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Each')),
+            array('value'=> 2, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Only once')),
+            array('value'=> 3, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Specific'))
+        );
+        return $options;
+    }
+}
