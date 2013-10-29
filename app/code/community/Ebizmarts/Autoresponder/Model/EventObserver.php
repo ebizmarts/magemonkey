@@ -63,18 +63,67 @@ class Ebizmarts_Autoresponder_Model_EventObserver
     public function reviewProductPostAfter(Varien_Event_Observer $o)
     {
         $params = Mage::app()->getRequest()->getParams();
+        $storeId = Mage::app()->getStore()->getId();
         if(isset($params['token'])) {
             $token = $params['token'];
-            Mage::log($token);
-            $data = Mage::getModel('ebizmarts_autoresponder/review')->loadByToken($token);
-            $counter = $data->getCounter();
-            if($counter < $data->getItems()) {
-                $counter++;
-                $data->setCounter($counter)->save();
-                if($counter == $data->getItems()) {
-                    //generate coupon
-                }
+            $reviewData = Mage::getModel('ebizmarts_autoresponder/review')->loadByToken($token);
+            if(Mage::helper('ebizmarts_autoresponder')->generateReviewCoupon($reviewData)) {
+                //generate coupon
+                list($couponcode,$discount,$toDate) = $this->_createNewCoupon($storeId,$email);
             }
         }
+    }
+    protected function _createNewCoupon($store,$email)
+    {
+        $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_DISCOUNT, $store);
+        $couponexpiredays = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_EXPIRE, $store);
+        $coupontype = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_DISCOUNT_TYPE, $store);
+        $couponlength = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_LENGTH, $store);
+        $couponlabel = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_LABEL, $store);
+        $websiteid =  Mage::getModel('core/store')->load($store)->getWebsiteId();
+
+        $fromDate = date("Y-m-d");
+        $toDate = date('Y-m-d', strtotime($fromDate. " + $couponexpiredays day"));
+        if($coupontype == 1) {
+            $action = 'cart_fixed';
+            $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()."$couponamount";
+        }
+        elseif($coupontype == 2) {
+            $action = 'by_percent';
+            $discount = "$couponamount%";
+        }
+        $customer_group = new Mage_Customer_Model_Group();
+        $allGroups  = $customer_group->getCollection()->toOptionHash();
+        $groups = array();
+        foreach($allGroups as $groupid=>$name) {
+            $groups[] = $groupid;
+        }
+        $coupon_rule = Mage::getModel('salesrule/rule');
+        $coupon_rule->setName("Review coupon $email")
+            ->setDescription("Review coupon $email")
+            ->setFromDate($fromDate)
+            ->setToDate($toDate)
+            ->setIsActive(1)
+            ->setCouponType(2)
+            ->setUsesPerCoupon(1)
+            ->setUsesPerCustomer(1)
+            ->setCustomerGroupIds($groups)
+            ->setProductIds('')
+            ->setLengthMin($couponlength)
+            ->setLengthMax($couponlength)
+            ->setSortOrder(0)
+            ->setStoreLabels(array($couponlabel))
+            ->setSimpleAction($action)
+            ->setDiscountAmount($couponamount)
+            ->setDiscountQty(0)
+            ->setDiscountStep('0')
+            ->setSimpleFreeShipping('0')
+            ->setApplyToShipping('0')
+            ->setIsRss(0)
+            ->setWebsiteIds($websiteid);
+        $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
+        $coupon_rule->setCouponCode($uniqueId);
+        $coupon_rule->save();
+        return array($uniqueId,$discount,$toDate);
     }
 }

@@ -43,6 +43,13 @@ class Ebizmarts_Autoresponder_Model_Config
     const REVIEW_COUPON_DISCOUNT_TYPE   = 'ebizmarts_autoresponder/review/discounttype';
     const REVIEW_COUPON_DISCOUNT        = 'ebizmarts_autoresponder/review/discount';
     const REVIEW_COUPON_LABEL           = 'ebizmarts_autoresponder/review/couponlabel';
+    const REVIEW_COUPON_COUNTER         = 'ebizmarts_autoresponder/review/coupon_counter';
+    const REVIEW_COUPON_GENERAL_QUANTITY = 'ebizmarts_autoresponder/review/coupon_general_quantity';
+    const REVIEW_COUPON_GENERAL_TYPE    = 'ebizmarts_autoresponder/review/coupon_general_type';
+    const REVIEW_COUPON_SPECIFIC_QUANTITY = 'ebizmarts_autoresponder/review/coupon_specific_quantity';
+    const REVIEW_COUPON_ORDER_COUNTER   = 'ebizmarts_autoresponder/review/coupon_order_counter';
+    const REVIEW_COUPON_ORDER_ALMOST    = 'ebizmarts_autoresponder/review/coupon_order_almost';
+    const REVIEW_COUPON_ORDER_MAX       = 'ebizmarts_autoresponder/review/coupon_order_max';
 
     const BIRTHDAY_ACTIVE               = 'ebizmarts_autoresponder/birthday/active';
     const BIRTHDAY_DAYS                 = 'ebizmarts_autoresponder/birthday/days';
@@ -86,4 +93,9 @@ class Ebizmarts_Autoresponder_Model_Config
 
     const COUPON_AUTOMATIC            = 2;
     const COUPON_MANUAL               = 1;
+    const COUPON_GENERAL              = 2;
+    const COUPON_PER_ORDER            = 1;
+    const TYPE_EACH                   = 1;
+    const TYPE_ONCE                   = 2;
+    const TYPE_SPECIFIC               = 3;
 }

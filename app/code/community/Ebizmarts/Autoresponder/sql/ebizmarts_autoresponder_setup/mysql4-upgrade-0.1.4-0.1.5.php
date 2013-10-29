@@ -24,4 +24,29 @@ $installer->run("
 
 ");
 
+$installer->addAttribute(
+    'customer',
+    'ebizmarts_reviews_counter_total',
+    array(
+        'type'                 => 'int',
+        'input'                => 'hidden',
+        'required'             => 0,
+        'default'              => 0,
+        'visible_on_front'     => 0,
+        'user_defined'         => true,
+    )
+);
+$installer->addAttribute(
+    'customer',
+    'ebizmarts_reviews_coupon_total',
+    array(
+        'type'                 => 'int',
+        'input'                => 'hidden',
+        'required'             => 0,
+        'default'              => 0,
+        'visible_on_front'     => 0,
+        'user_defined'         => true,
+    )
+);
+
 $installer->endSetup();

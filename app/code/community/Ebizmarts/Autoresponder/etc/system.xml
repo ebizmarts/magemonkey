@@ -436,6 +436,19 @@ Module : Ebizmarts_Magemonkey
                                 <coupon_counter>1</coupon_counter>
                             </depends>
                         </coupon_order_almost>
+                        <coupon_order_max translate="label comment">
+                            <label>Max coupons for customer</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>105</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <coupon_counter>1</coupon_counter>
+                            </depends>
+                        </coupon_order_max>
                         <customer_coupon translate="label comment">
                             <label>Customer Groups for coupon</label>
                             <frontend_type>multiselect</frontend_type>
