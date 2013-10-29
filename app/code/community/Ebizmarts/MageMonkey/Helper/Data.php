@@ -504,13 +504,16 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 
 		//GUEST
-		if( !$customer->getId() && (!$request->getPost('firstname') || !$request->getPost('lastname'))){
+		if( !$customer->getId() && !$request->getPost('firstname') ){
 			$guestFirstName = $this->config('guest_name', $customer->getStoreId());
-			$guestLastName  = $this->config('guest_lastname', $customer->getStoreId());
 
 			if($guestFirstName){
 				$merge_vars['FNAME'] = $guestFirstName;
 			}
+		}
+		if( !$customer->getId() && !$request->getPost('lastname') ){
+			$guestLastName  = $this->config('guest_lastname', $customer->getStoreId());
+			
 			if($guestLastName){
 				$merge_vars['LNAME'] = $guestLastName;
 			}

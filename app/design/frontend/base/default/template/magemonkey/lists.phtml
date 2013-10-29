@@ -24,7 +24,7 @@ $canShowButton = $this->getCanShowButton();
 						<?php foreach($generalList['interest_groupings'] as $group): ?>
 							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
 								<div class="grouping">
-									<strong><?php echo $group['name']; ?></strong>
+									<?php if ($group['form_field'] != 'hidden'): ?><strong><?php echo $group['name']; ?></strong><?php endif; ?>
 									<?php echo $this->renderGroup($group, $generalList); ?>
 								</div>
 							<?php endif; ?>
