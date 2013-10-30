@@ -67,12 +67,78 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         if(isset($params['token'])) {
             $token = $params['token'];
             $reviewData = Mage::getModel('ebizmarts_autoresponder/review')->loadByToken($token);
-            if(Mage::helper('ebizmarts_autoresponder')->generateReviewCoupon($reviewData)) {
+            if($this->_generateReviewCoupon($reviewData)) {
                 //generate coupon
-                list($couponcode,$discount,$toDate) = $this->_createNewCoupon($storeId,$email);
+                $customer = Mage::getModel('customer/customer')->load($$reviewData->getCustomerId());
+                list($couponcode,$discount,$toDate) = $this->_createNewCoupon($storeId,$customer->getEmail());
+                // send the mail
+
             }
         }
     }
+
+    protected function _generateReviewCoupon($reviewData)
+    {
+        $store = Mage::app()->getStore()->getId();
+        if(!Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON,$store)) {
+            return false;
+        }
+        $rc = false;
+        // check if is a registered customer if not, return false
+        if(!$reviewData->getCustomerId()) {
+            return false;
+        }
+        // if the customer is registered the counter is in the customer account, so load the customer
+        $customer = Mage::getModel('customer/customer')->load($$reviewData->getCustomerId());
+        $couponTotal = $customer->getEbizmartsReviewsCouponTotal();
+        switch(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_COUNTER,$store)) {
+            case Ebizmarts_Autoresponder_Model_Config::COUPON_GENERAL:
+                // update the counter
+                $counter = $customer->getEbizmartsReviewsCounterTotal();
+                $counter++;
+                $customer->setEbizmartsReviewCounterTotal($counter)->save();
+                // check if coupon must be generated
+                $generalQuantity = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_GENERAL_QUANTITY,$store);
+                switch(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_GENERAL_TYPE)) {
+                    case Ebizmarts_Autoresponder_Model_Config::TYPE_EACH:
+                        if($counter&&$counter%$generalQuantity) {
+                            $rc = true;
+                        }
+                        break;
+                    case Ebizmarts_Autoresponder_Model_Config::TYPE_ONCE:
+                        if($counter==$generalQuantity) {
+                            $rc = true;
+                        }
+                        break;
+                    case Ebizmarts_Autoresponder_Model_Config::TYPE_SPECIFIC:
+                        if($counter&&$counter%$generalQuantity&&$customer->getEbizmartsReviewsCouponTotal()<=Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_SPECIFIC_QUANTITY)) {
+                            $rc = true;
+                        }
+                        break;
+                }
+                break;
+            case Ebizmarts_Autoresponder_Model_Config::COUPON_PER_ORDER:
+                // update the counter
+                $counter = $reviewData->getCounter();
+                $counter++;
+                $reviewData->setCounter($counter)->save();
+                if($couponTotal >= Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_MAX)) {
+                    $rc = false;
+                }
+                else {
+                    if($counter == Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_COUNTER) &&
+                        $reviewData->getItems() >= Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_ALMOST)) {
+                        $rc = true;
+                    }
+                }
+                break;
+        }
+        if($rc) { // increase the count of coupons in the customer
+            $customer->setEbizmartsReviewsCouponTotal($couponTotal+1)->save();
+        }
+        return $rc;
+    }
+
     protected function _createNewCoupon($store,$email)
     {
         $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_DISCOUNT, $store);
