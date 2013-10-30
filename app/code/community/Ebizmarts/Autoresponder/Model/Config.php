@@ -50,6 +50,9 @@ class Ebizmarts_Autoresponder_Model_Config
     const REVIEW_COUPON_ORDER_COUNTER   = 'ebizmarts_autoresponder/review/coupon_order_counter';
     const REVIEW_COUPON_ORDER_ALMOST    = 'ebizmarts_autoresponder/review/coupon_order_almost';
     const REVIEW_COUPON_ORDER_MAX       = 'ebizmarts_autoresponder/review/coupon_order_max';
+    const REVIEW_COUPON_MANDRILL_TAG    = 'ebizmarts_autoresponder/review/coupon_mandrill_tag';
+    const REVIEW_COUPON_SUBJECT         = 'ebizmarts_autoresponder/review/coupon_mail_subject';
+    const REVIEW_COUPON_EMAIL           = 'ebizmarts_autoresponder/review/coupon_template';
 
     const BIRTHDAY_ACTIVE               = 'ebizmarts_autoresponder/birthday/active';
     const BIRTHDAY_DAYS                 = 'ebizmarts_autoresponder/birthday/days';

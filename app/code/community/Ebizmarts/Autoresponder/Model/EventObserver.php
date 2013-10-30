@@ -64,15 +64,33 @@ class Ebizmarts_Autoresponder_Model_EventObserver
     {
         $params = Mage::app()->getRequest()->getParams();
         $storeId = Mage::app()->getStore()->getId();
+        $customerGroupsCoupon = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_CUSTOMER_GROUP, $storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_EMAIL,$storeId);
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_SUBJECT,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_MANDRILL_TAG,$storeId)."_$storeId";
+
         if(isset($params['token'])) {
             $token = $params['token'];
             $reviewData = Mage::getModel('ebizmarts_autoresponder/review')->loadByToken($token);
             if($this->_generateReviewCoupon($reviewData)) {
                 //generate coupon
                 $customer = Mage::getModel('customer/customer')->load($$reviewData->getCustomerId());
-                list($couponcode,$discount,$toDate) = $this->_createNewCoupon($storeId,$customer->getEmail());
-                // send the mail
+                $email = $customer->getEmail();
+                $name = $customer->getFirstname().' '.$customer->getLastname();
+                if(in_array($customer->getGroupId(),$customerGroupsCoupon)) {
+                    if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_AUTOMATIC,$storeId)==Ebizmarts_Autoresponder_Model_Config::COUPON_AUTOMATIC) {
+                        list($couponcode,$discount,$toDate) = $this->_createNewCoupon($storeId,$email);
+                        $vars = array('couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name,'tags'=>array($tags));
+                    }
+                    else {
+                        $couponcode = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_CODE);
+                        $vars = array('couponcode'=>$couponcode, 'name' => $name,'tags'=>array($tags),'url'=>$url);
+                    }
 
+                }
+                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+                $translate->setTranslateInLine(true);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon',$email,$name,$couponcode,$storeId);
             }
         }
     }

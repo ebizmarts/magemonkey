@@ -352,6 +352,43 @@ Module : Ebizmarts_Magemonkey
                                 <active>1</active>
                             </depends>
                         </coupon>
+                        <coupon_mandrill_tag translate="label comment">
+                            <label>Coupon mail Mandrill tag</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>72</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                            </depends>
+                        </coupon_mandrill_tag>
+                        <coupon_mail_subject translate="label comment">
+                            <label>Coupon mail Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>74</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                            </depends>
+                        </coupon_mail_subject>
+                        <coupon_template translate="label">
+                            <label>Coupon Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_autoresponder/reviewcoupon/template</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </coupon_template>
                         <coupon_counter translate="label comment">
                             <label>Coupon counter</label>
                             <frontend_type>select</frontend_type>
