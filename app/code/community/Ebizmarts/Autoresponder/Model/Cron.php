@@ -238,8 +238,8 @@ class Ebizmarts_Autoresponder_Model_Cron
             }
             if($counter > 0) {
                 $translate = Mage::getSingleton('core/translate');
+                $email = $order->getCustomerEmail();
                 if($this->_isSubscribed($email,'related',$storeId)) {
-                    $email = $order->getCustomerEmail();
                     $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
                     $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=related&email='.$email.'&store='.$storeId;
                     $vars = array('name' => $name,'tags'=>array($tags),'related'=>$allRelated,'url'=>$url);
