@@ -2,7 +2,7 @@ ul.tabs a.mandrill-section:hover { background-color:#D8E6E6; background-image:ur
 ul.tabs a.mandrill-section {border-bottom: 1px; border-bottom-style: dotted;}
 ul.tabs a.mandrill-section:hover {border-bottom: 1px; border-bottom-style: dotted;}
 ul.tabs a.mandrill-section span,
-ul.tabs a.mandrill-section:hover span { background:url(mandrill-tab.png) no-repeat 20px 0; overflow:hidden; padding:0; padding-left:45px; width:120px; height:22px;}
+ul.tabs a.mandrill-section:hover span { background:url(mandrill-tab.png) no-repeat 17px 3px; overflow:hidden; padding:0; padding-left:43px; width:120px; height:24px; line-height:24px; }
 ul.tabs a.mandrill-section.active, ul.tabs a.mandrill-section.active:hover {background-color: white;border-bottom-color: #8BA5A5;}
 
 small { font-size: 9px; }
