@@ -21,7 +21,12 @@ $installer->run("
 	  `order_id` int(10) unsigned not null,
 	  PRIMARY KEY  (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+");
 
+$installer->run("
+    ALTER TABLE `{$this->getTable('magemonkey_mails_sent')}`
+     CHANGE `mail_type` `mail_type` ENUM( 'abandoned cart', 'happy birthday', 'new order', 'related products', 'product review', 'no activity', 'wishlist', 'review coupon' )
+     CHARACTER SET utf8 NOT NULL;
 ");
 
 $installer->addAttribute(

@@ -272,7 +272,7 @@ class Ebizmarts_Autoresponder_Model_Cron
 //            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
             ->addFieldToFilter('main_table.updated_at',array('from'=>$from,'to'=>$to))
             ->addFieldToFilter('main_table.status',array('eq'=>$status));
-        Mage::log((string)$collection->getSelect());
+//        Mage::log((string)$collection->getSelect());
         if(count($customerGroups)) {
             $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }

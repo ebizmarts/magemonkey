@@ -68,13 +68,15 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_EMAIL,$storeId);
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_SUBJECT,$storeId);
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_MANDRILL_TAG,$storeId)."_$storeId";
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
 
         if(isset($params['token'])) {
             $token = $params['token'];
             $reviewData = Mage::getModel('ebizmarts_autoresponder/review')->loadByToken($token);
             if($this->_generateReviewCoupon($reviewData)) {
                 //generate coupon
-                $customer = Mage::getModel('customer/customer')->load($$reviewData->getCustomerId());
+                $customer = Mage::getModel('customer/customer')->load($reviewData->getCustomerId());
                 $email = $customer->getEmail();
                 $name = $customer->getFirstname().' '.$customer->getLastname();
                 if(in_array($customer->getGroupId(),$customerGroupsCoupon)) {
@@ -84,13 +86,13 @@ class Ebizmarts_Autoresponder_Model_EventObserver
                     }
                     else {
                         $couponcode = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_CODE);
-                        $vars = array('couponcode'=>$couponcode, 'name' => $name,'tags'=>array($tags),'url'=>$url);
+                        $vars = array('couponcode'=>$couponcode, 'name' => $name,'tags'=>array($tags));
                     }
-
+                    $translate = Mage::getSingleton('core/translate');
+                    $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+                    $translate->setTranslateInLine(true);
+                    Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon',$email,$name,$couponcode,$storeId);
                 }
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
-                $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon',$email,$name,$couponcode,$storeId);
             }
         }
     }
@@ -107,7 +109,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             return false;
         }
         // if the customer is registered the counter is in the customer account, so load the customer
-        $customer = Mage::getModel('customer/customer')->load($$reviewData->getCustomerId());
+        $customer = Mage::getModel('customer/customer')->load($reviewData->getCustomerId());
         $couponTotal = $customer->getEbizmartsReviewsCouponTotal();
         switch(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_COUNTER,$store)) {
             case Ebizmarts_Autoresponder_Model_Config::COUPON_GENERAL:

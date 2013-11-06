@@ -379,7 +379,7 @@ Module : Ebizmarts_Magemonkey
                         <coupon_template translate="label">
                             <label>Coupon Email Template</label>
                             <frontend_type>select</frontend_type>
-                            <config_path>ebizmarts_autoresponder/reviewcoupon/template</config_path>
+                            <config_path>ebizmarts_autoresponder/review/coupon_template</config_path>
                             <source_model>adminhtml/system_config_source_email_template</source_model>
                             <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>

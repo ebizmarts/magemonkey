@@ -137,11 +137,11 @@
         </template>
         <template>
             <email>
-                <ebizmarts_autoresponder_reviewcoupon_template translate="label" module="ebizmarts_autoresponder">
+                <ebizmarts_autoresponder_review_coupon_template translate="label" module="ebizmarts_autoresponder">
                     <label>Review Coupon Email</label>
                     <file>ebizmarts/autoresponder/reviewcoupon.html</file>
                     <type>html</type>
-                </ebizmarts_autoresponder_reviewcoupon_template>
+                </ebizmarts_autoresponder_review_coupon_template>
             </email>
         </template>
     </global>
