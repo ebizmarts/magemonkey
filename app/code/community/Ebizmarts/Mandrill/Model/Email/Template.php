@@ -74,7 +74,8 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $emails = array_values((array)$email);
 
 		if(count($this->_bcc) > 0){
-			$bccEmail = $this->_bcc[0];
+//			$bccEmail = $this->_bcc[0];
+            $bccEmail = $this->_bcc;
 		}else{
 			$bccEmail = '';
 		}
