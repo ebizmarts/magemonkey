@@ -170,13 +170,17 @@ class Mandrill_API {
                             'type'  => 'to'
 						 );
 		}
-        foreach($message['bcc_address'] as $bccmail) {
-            $to []= array(
-                'email' => $bccmail,
-                'type'  => 'bcc'
-            );
 
-        }
+		if(isset($message['bcc_address']) && !empty($message['bcc_address'])) {
+			foreach($message['bcc_address'] as $bccmail) {
+				$to []= array(
+					'email' => $bccmail,
+					'type'  => 'bcc'
+				);
+
+			}
+		}
+
         unset($message['bcc_address']);
         if(count($this->_attachments)) {
             $message['attachments'] = $this->_attachments;
