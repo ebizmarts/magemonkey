@@ -31,7 +31,7 @@ $installer->run("
 
 $installer->addAttribute(
     'customer',
-    'ebizmarts_reviews_counter_total',
+    'ebizmarts_reviews_cntr_total',
     array(
         'type'                 => 'int',
         'input'                => 'hidden',

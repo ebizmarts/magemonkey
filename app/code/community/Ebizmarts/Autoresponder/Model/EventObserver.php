@@ -114,9 +114,9 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         switch(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_COUNTER,$store)) {
             case Ebizmarts_Autoresponder_Model_Config::COUPON_GENERAL:
                 // update the counter
-                $counter = $customer->getEbizmartsReviewsCounterTotal();
+                $counter = $customer->getEbizmartsReviewsCntrTotal();
                 $counter++;
-                $customer->setEbizmartsReviewCounterTotal($counter)->save();
+                $customer->setEbizmartsReviewsCntrTotal($counter)->save();
                 // check if coupon must be generated
                 $generalQuantity = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_GENERAL_QUANTITY,$store);
                 switch(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_GENERAL_TYPE)) {
