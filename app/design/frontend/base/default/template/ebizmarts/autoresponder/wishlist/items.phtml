@@ -2,7 +2,7 @@
 <table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #EAEAEA;">
     <?php foreach($products as $product): ?>
         <tr>
-            <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo $product->getProductUrl(); ?>" alt="<?php echo $this->escapeHml($product->getName()); ?>" target="_blank"><img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a></td>
+            <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo $product->getProductUrl(); ?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>" target="_blank"><img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a></td>
             <td valign="top" align="left" style="padding:3px 9px"><p><h2><a href="<?php echo $product->getProductUrl(); ?>"> <?php echo $this->escapeHtml($product->getName()); ?></a></h2></p><?php echo $this->escapeHtml($product->getShortDescription()); ?></td>
         </tr>
     <?php endforeach; ?>
