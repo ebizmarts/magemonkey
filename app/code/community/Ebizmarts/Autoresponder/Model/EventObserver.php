@@ -142,13 +142,25 @@ class Ebizmarts_Autoresponder_Model_EventObserver
                 $counter = $reviewData->getCounter();
                 $counter++;
                 $reviewData->setCounter($counter)->save();
-                if($couponTotal >= Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_MAX)) {
+                if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_MAX) != 0 && $couponTotal >= Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_MAX)) {
                     $rc = false;
                 }
                 else {
-                    if($counter == Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_COUNTER) &&
-                        $reviewData->getItems() >= Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_ALMOST)) {
-                        $rc = true;
+                    if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_COUNTER,$store)==0) {
+                        if($counter == $reviewData->getItems()) {
+                            $rc = true;
+                        }
+                        else {
+                            $rc = false;
+                        }
+                    }
+                    elseif(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_COUNTER,$store) == $counter) {
+                        if($reviewData->getItems() >= Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_ORDER_ALMOST,$store)) {
+                            $rc = true;
+                        }
+                        else {
+                            $rc = false;
+                        }
                     }
                 }
                 break;

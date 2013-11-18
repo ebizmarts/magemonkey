@@ -480,6 +480,7 @@ Module : Ebizmarts_Magemonkey
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <comment><![CDATA[0 means no max coupons]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
