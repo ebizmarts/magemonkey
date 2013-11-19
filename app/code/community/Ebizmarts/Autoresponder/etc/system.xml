@@ -390,21 +390,21 @@ Module : Ebizmarts_Magemonkey
                             </depends>
                         </coupon_template>
                         <coupon_counter translate="label comment">
-                            <label>Coupon counter</label>
+                            <label>Coupon Counter</label>
                             <frontend_type>select</frontend_type>
                             <source_model>ebizmarts_autoresponder/system_config_couponcounter</source_model>
                             <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[How you count the reviews<br>Keep in mind, General only work for registered customers]]></comment>
+                            <comment><![CDATA[How do you want to count reviews<br>Keep in mind, <em>General</em> only work for registered customers]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
                             </depends>
                         </coupon_counter>
                         <coupon_general_quantity trasnslate="label comment">
-                            <label>Required Quantity</label>
+                            <label>Required Reviews qty</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
@@ -424,7 +424,7 @@ Module : Ebizmarts_Magemonkey
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[Each means, every "Required Quantity" multiple is reach a new coupon is sent<br>Only once, means only the first time "Required Quantity" is reached a coupon is generated]]></comment>
+                            <comment><![CDATA[<em>Each</em>: every "Required Review qty" multiple is reached, a new coupon will be sent.<br><em>Only once</em>: a coupon is sent only the first time that "Required Review qty" is reached.<br><em>Specific</em>: same as <em>Each</em> but also defines a fixed qty of coupons to be sent.]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
@@ -432,7 +432,7 @@ Module : Ebizmarts_Magemonkey
                             </depends>
                         </coupon_general_type>
                         <coupon_specific_quantity translate="lable comment">
-                            <label>Specify # of coupons</label>
+                            <label>Specific coupons qty</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>105</sort_order>
                             <show_in_default>1</show_in_default>
@@ -446,13 +446,13 @@ Module : Ebizmarts_Magemonkey
                             </depends>
                         </coupon_specific_quantity>
                         <coupon_order_counter>
-                            <label>Items per order</label>
+                            <label>Min. items reviewed per order</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[How many item reviews per order wins a coupon (0 means all items]]></comment>
+                            <comment><![CDATA[How many items needs to be reviewed per order to win a coupon (0 means all items requires a review).]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
@@ -460,13 +460,13 @@ Module : Ebizmarts_Magemonkey
                             </depends>
                         </coupon_order_counter>
                         <coupon_order_almost translate="label comment">
-                            <label>Items almost</label>
+                            <label>Min. item qty in Order</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[If the order have almost this items quantity(0 means no minimum)]]></comment>
+                            <comment><![CDATA[Order needs to have at least this quantity of items to apply for a coupon (0 means all Orders applies, no matter how many items were ordered).]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
@@ -474,13 +474,13 @@ Module : Ebizmarts_Magemonkey
                             </depends>
                         </coupon_order_almost>
                         <coupon_order_max translate="label comment">
-                            <label>Max coupons for customer</label>
+                            <label>Max. coupons for Customer</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>105</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[0 means no max coupons]]></comment>
+                            <comment><![CDATA[0 means there's no limit of coupons that a Customer can win.]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
@@ -523,7 +523,7 @@ Module : Ebizmarts_Magemonkey
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The code of an existing coupon]]></comment>
+                            <comment><![CDATA[Existing coupon code.]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
@@ -531,14 +531,14 @@ Module : Ebizmarts_Magemonkey
                             </depends>
                         </coupon_code>
                         <expire>
-                            <label>Expire on</label>
+                            <label>Expires on</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>120</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The coupon expiration in days]]></comment>
+                            <comment><![CDATA[Coupon expiration in days.]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
@@ -568,7 +568,7 @@ Module : Ebizmarts_Magemonkey
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[Select percentage or fixed discount]]></comment>
+                            <comment><![CDATA[Select percentage or fixed discount.]]></comment>
                             <depends>
                                 <active>1</active>
                                 <coupon>1</coupon>
