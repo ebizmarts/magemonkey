@@ -25,10 +25,10 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract {
             'lifetime' => $this->__('Lifetime'),
         );
     }
-    public function log($message)
+    public function log($message, $filename = 'Ebizmarts_AbandonedCart.log')
     {
         if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::LOG)) {
-            Mage::log($message);
+            Mage::log($message, null, $filename);
         }
     }
     public function saveMail($mailType,$mail,$name,$couponCode,$storeId)
