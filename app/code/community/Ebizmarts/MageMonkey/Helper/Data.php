@@ -46,6 +46,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$crypt = md5((string)Mage::getConfig()->getNode('global/crypt/key'));
 		$key   = substr($crypt, 0, (strlen($crypt)/2));
 
+        // Prevent most cases to attach default in webhook url
+        if($store == 'default') $store = '';
+
 		return ($key . $store);
 	}
 
