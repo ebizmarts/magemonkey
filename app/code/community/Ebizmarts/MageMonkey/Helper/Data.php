@@ -455,6 +455,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         	->addFieldToFilter('customer_email', $customer->getEmail())
                         	->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
                         	->setOrder('created_at', 'desc')
+                            ->setPageSize(1)
                         	->getFirstItem();
 	                    if ( $last_order->getId() ){
 	                    	$merge_vars[$key] = Mage::helper('core')->formatDate($last_order->getCreatedAt());
