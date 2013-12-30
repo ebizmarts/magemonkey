@@ -148,8 +148,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function saveConfig(Varien_Event_Observer $observer)
 	{
-
-		$scope = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
+        $scope = is_null($observer->getEvent()->getStore()) ? 'default' : $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
 
