@@ -531,13 +531,30 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$groups = $customer->getListGroups();
 		$groupings = array();
 
-		if(is_array($groups) && count($groups)){
-			foreach($groups as $groupId => $grupoptions){
-				$groupings[] = array(
-									 'id' => $groupId,
-								     'groups' => (is_array($grupoptions) ? implode(', ', $grupoptions) : $grupoptions)
-								    );
-			}
+		if(is_array($groups) && count($groups)) {
+            foreach($groups as $groupId => $grupoptions)
+            {
+                if (is_array($grupoptions))
+                {
+                    $grupOptionsEscaped = array();
+                    foreach($grupoptions as $gopt)
+                    {
+                        $gopt = str_replace(",","%C%",$gopt);
+                        $grupOptionsEscaped[] = $gopt;
+                    }
+                    $groupings[] = array(
+                        'id' => $groupId,
+                        'groups' => str_replace('%C%','\\,',implode(', ', $grupOptionsEscaped))
+                    );
+                }
+                else
+                {
+                    $groupings[] = array(
+                        'id' => $groupId,
+                        'groups' => str_replace(',','\\,',$grupoptions)
+                    );
+                }
+            }
 		}
 
 		$merge_vars['GROUPINGS'] = $groupings;
