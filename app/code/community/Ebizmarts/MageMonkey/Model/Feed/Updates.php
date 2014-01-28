@@ -112,7 +112,10 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates {
             }
 
             if (count($feedData)) {
-                Mage::getModel('adminnotification/inbox')->parse($feedData);
+                $inbox = Mage::getModel('adminnotification/inbox');
+                if ($inbox){
+                    $inbox->parse($feedData);
+                }
             }
 
             Mage::app()->saveCache(time(), $this->_key . $resource . '_updates_feed_lastcheck');
