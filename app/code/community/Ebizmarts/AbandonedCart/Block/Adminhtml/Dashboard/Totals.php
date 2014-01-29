@@ -90,7 +90,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         $this->addTotal($this->__('Generated Conv. Rate'),$convrate.'%',true);
         // get Mandrill statistics
         if(Mage::helper('core')->isModuleEnabled('Ebizmarts_Mandrill')
-            && Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version > '1.0.4'
+            && (version_compare(Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version, '1.0.4', '>'))
             && Mage::helper('mandrill')->useTransactionalService()) {
             if(!$isFilter) {
                 $stores = Mage::app()->getStores();

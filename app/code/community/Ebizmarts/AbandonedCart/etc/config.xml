@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.25</version>
+            <version>0.1.26</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
