@@ -1,11 +1,13 @@
 <?php
+
 /**
- * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 6/24/13
- * Time   : 5:27 PM
- * File   : EventObserver.php
- * Module : Ebizmarts_Magemonkey
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_Autoresponder
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_Autoresponder_Model_EventObserver
 {
     /**

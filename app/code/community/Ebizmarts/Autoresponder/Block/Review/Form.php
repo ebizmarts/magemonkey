@@ -1,11 +1,13 @@
 <?php
+
 /**
- * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 10/24/13
- * Time   : 7:34 PM
- * File   : Form.php
- * Module : Ebizmarts_Magemonkey
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_Autoresponder
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_Autoresponder_Block_Review_Form extends Mage_Review_Block_Form
 {
     public function getAction()

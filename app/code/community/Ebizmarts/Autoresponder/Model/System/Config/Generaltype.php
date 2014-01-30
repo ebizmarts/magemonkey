@@ -1,11 +1,12 @@
 <?php
 /**
- * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 10/27/13
- * Time   : 11:00 AM
- * File   : Generaltype.php
- * Module : Ebizmarts_Magemonkey
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_Autoresponder
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_Autoresponder_Model_System_Config_Generaltype
 {
     public function toOptionArray()
