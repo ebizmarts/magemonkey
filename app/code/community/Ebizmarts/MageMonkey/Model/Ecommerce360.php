@@ -246,21 +246,14 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 *
 	 *
 	 */
-	 public function autoExportJobs(){
-		$allow_sent = false;
-		$orderIds[] = '0';
-		$ecommerceOrders = Mage::getModel('monkey/ecommerce')
-    					->getCollection()->getData();
-    	if($ecommerceOrders) {
-	        foreach($ecommerceOrders as $ecommerceOrder){
-	        	$orderIds[] = $ecommerceOrder['order_id'];
-	        }
-    	}
-		$orders = Mage::getResourceModel('sales/order_collection');
-		//Get ALL orders which has not been sent to MailChimp
-		$orders->getSelect()->where('main_table.entity_id NOT IN(?)', $orderIds);
-		//Get status options selected in the Configuration
-		$states = explode(',', Mage::helper('monkey')->config('order_status'));
+    public function autoExportJobs(){
+        $allow_sent = false;
+        $orders = Mage::getResourceModel('sales/order_collection');
+        $orders->getSelect()->joinLeft( array('ecommerce'=> Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null');
+
+        //Get status options selected in the Configuration
+        $states = explode(',', Mage::helper('monkey')->config('order_status'));
+
 		foreach($orders as $order){
 			foreach($states as $state){
 				if($order->getStatus() == $state || $state == 'all_status'){
@@ -307,7 +300,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 					$rs = $api->ecommOrderAdd($this->_info);
 				}
 				$allow_sent = false;
-				if ( $rs === TRUE ){
+                if ( isset($rs['complete']) && $rs['complete'] == TRUE ) {
 					$this->_logCall();
 				}
 			}
