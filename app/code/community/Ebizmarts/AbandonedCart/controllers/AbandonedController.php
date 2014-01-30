@@ -1,5 +1,13 @@
 <?php
 
+/**
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_AbandonedCart
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
+ */
+
 require_once Mage::getModuleDir('controllers','Mage_Checkout').DS.'CartController.php';
 
 class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartController

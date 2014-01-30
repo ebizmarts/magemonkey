@@ -1,11 +1,13 @@
 <?php
+
 /**
- * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 5/7/13
- * Time   : 11:08 PM
- * File   : Grid.php
- * Module : Ebizmarts_Magemonkey
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_AbandonedCart
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     public function __construct()
