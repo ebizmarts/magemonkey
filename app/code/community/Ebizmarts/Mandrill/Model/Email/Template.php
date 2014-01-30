@@ -6,7 +6,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_Mandrill
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Template {
 
 	protected $_mandrill = null;

@@ -1,11 +1,13 @@
 <?php
+
 /**
- * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 4/28/13
- * Time   : 11:20 AM
- * File   : Data.php
- * Module : Ebizmarts_Magemonkey
- */ 
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_Autoresponder
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
+ */
+
 class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
 
     public function getLists()

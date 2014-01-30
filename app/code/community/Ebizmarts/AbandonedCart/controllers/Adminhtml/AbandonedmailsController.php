@@ -1,11 +1,13 @@
 <?php
+
 /**
- * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 5/7/13
- * Time   : 11:33 PM
- * File   : AbandonedmailsController.php
- * Module : Ebizmarts_Magemonkey
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_AbandonedCart
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_AbandonedCart_Adminhtml_AbandonedmailsController  extends Mage_Adminhtml_Controller_Action
 {
     /**
