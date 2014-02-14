@@ -129,6 +129,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 				                'tax'         => $this->_order->getTaxAmount(),
 				                'store_id'    => $this->_order->getStoreId(),
 				                'store_name'  => $this->_order->getStoreName(),
+                                'order_date'  => $this->_order->getCreatedAt(),
 				                'plugin_id'   => 1215,
 				                'items'       => array()
                 			);
@@ -281,6 +282,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 						                'tax'         => $this->_order->getTaxAmount(),
 						                'store_id'    => $this->_order->getStoreId(),
 						                'store_name'  => $this->_order->getStoreName(),
+                                        'order_date'  => $this->_order->getCreatedAt(),
 						                'plugin_id'   => 1215,
 						                'items'       => array()
 		                			);
