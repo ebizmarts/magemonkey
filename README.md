@@ -1,7 +1,8 @@
-# MailChimp official Magento extension
+MailChimp official Magento extension
+====================================
 
-----
 ## Features
+
 * Send transactional emails using Mandrill (free up to 12K emails/month)
 * Support for Autoresponders emails (customer birthday, related products, product review, no customer activity)
 * Support for Abandoned Carts Recovery via Mandrill
@@ -18,8 +19,14 @@
 
 The latest stable version of the extension can be installed via the [Magento Connect](http://www.magentocommerce.com/magento-connect/ebizmarts-magemonkey-official-mailchimp-and-mandrill-integration.html).
 
-----
+
 ## Support
+
 Need support? [Click here](http://ebizmarts.com/forums/view/1)
 
 To Install configure and see most common troubleshootings visit our [wiki](http://wiki.ebizmarts.com/)
+
+## License
+
+[Open Software License (OSL 3.0)](http://opensource.org/licenses/osl-3.0.php)
+
