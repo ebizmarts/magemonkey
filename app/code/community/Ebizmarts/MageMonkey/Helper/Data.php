@@ -32,6 +32,17 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         return is_object(Mage::getConfig()->getNode('global/models/enterprise_enterprise'));
     }
 
+
+	/**
+	 * Whether Admin Notifications should be displayed or not in backend Admin
+	 *
+	 * @return bool
+	 */
+	public function isAdminNotificationEnabled()
+	{
+		return $this->config('adminhtml_notification');
+	}
+
 	/**
 	 * Return Webhooks security key for given store
 	 *
