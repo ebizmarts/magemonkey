@@ -104,12 +104,15 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @return void
      */
     protected function _clean(array $data) {
-        $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
 
-        $this->_getInbox()
-                ->setTitle($text)
-                ->setDescription($text)
-                ->save();
+        if(Mage::helper('monkey')->isAdminNotificationEnabled()) {
+            $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
+
+            $this->_getInbox()
+            ->setTitle($text)
+            ->setDescription($text)
+            ->save();
+        }
 
         //Delete subscriber from Magento
         $s = $this->loadByEmail($data['data']['email']);
@@ -130,12 +133,16 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @return void
      */
     protected function _campaign(array $data) {
-        $text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
 
-        $this->_getInbox()
-                ->setTitle($text)
-                ->setDescription($text)
-                ->save();
+        if(Mage::helper('monkey')->isAdminNotificationEnabled()) {
+            $text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
+
+            $this->_getInbox()
+                    ->setTitle($text)
+                    ->setDescription($text)
+                    ->save();
+        }
+
     }
 
     /**
