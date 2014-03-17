@@ -51,4 +51,29 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
         }
 //        $this->_redirect('checkout/cart');
     }
+
+    public function captureEmailAction()
+    {
+        $oSession = Mage::getSingleton('checkout/session');
+        $oQuote = $oSession->getQuote();
+
+        $vCustomerEmail = $this->getRequest()->getParam('customer_email');
+
+        if(Zend_Validate::is($vCustomerEmail, 'EmailAddress')){
+            try{
+                $oQuote->setCustomerEmail($vCustomerEmail)
+                       ->setCouponCode('10OFF')
+                       ->save();
+
+                $jResponse = json_encode(Array('success' => true, 'message' => 'Your discount has been applied to your cart.'));
+            }catch(Exception $e){
+                Mage::logException($e);
+                $jResponse = json_encode(Array('success' => false, 'message' => 'Session failed to save.'));
+            }
+        }else{
+            $jResponse = json_encode(Array('success' => false, 'message' => 'Email validation failed, please enter a valid email address.'));
+        }
+
+        echo $jResponse;
+    }
 }
