@@ -1,0 +1,5 @@
+app/etc/modules/Ebizmarts_Mandrill.xml
+app/code/community/Ebizmarts/Mandrill
+lib/Mandrill
+app/design/adminhtml/default/default/layout/mandrill.xml
+app/design/adminhtml/default/default/template/mandrill

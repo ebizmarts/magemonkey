@@ -18,6 +18,15 @@
             	</email_template>
             </children>
         </system>
+        <newsletter>
+            <children>
+                <ebizmarts_mandrill>
+                    <title>Mandrill Settings</title>
+                    <sort_order>999</sort_order>
+                    <action>adminhtml/system_config/edit/section/mandrill</action>
+                </ebizmarts_mandrill>
+            </children>
+        </newsletter>
     </menu>
 	<acl>
 	    <resources>
