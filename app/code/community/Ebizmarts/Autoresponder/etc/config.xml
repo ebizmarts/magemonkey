@@ -245,6 +245,12 @@
                 <subject>Visited Product Subject</subject>
                 <listname>Visited Product List</listname>
             </visitedproducts>
+            <backtostock>
+                <subject>Back To Stock Notification</subject>
+                <mandrill-tag>Autoresponder_BackToStock</mandrill-tag>
+                <allow-guests>1</allow-guests>
+                <listname>Back To Stock List</listname>
+            </backtostock>
         </ebizmarts_autoresponder>
     </default>
 </config>
