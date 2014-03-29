@@ -96,6 +96,12 @@ class Ebizmarts_Autoresponder_Model_Config
     const VISITED_TIME                = 'ebizmarts_autoresponder/visitedproducts/time';
     const VISITED_MAX                 = 'ebizmarts_autoresponder/visitedproducts/max_visited';
 
+    const BACKTOSTOCK_ACTIVE            = 'ebizmarts_autoresponder/backtostock/active';
+    const BACKTOSTOCK_TEMPLATE          = 'ebizmarts_autoresponder/backtostock/template';
+    const BACKTOSTOCK_SUBJECT           = 'ebizmarts_autoresponder/backtostock/subject';
+    const BACKTOSTOCK_MANDRILL_TAG      = 'ebizmarts_autoresponder/backtostock/mandrill_tag';
+    const BACKTOSTOCK_ALLOW_GUESTS      = 'ebizmarts_autoresponder/backtostock/allow_guests';
+
     const COUPON_AUTOMATIC            = 2;
     const COUPON_MANUAL               = 1;
     const COUPON_GENERAL              = 2;
