@@ -60,4 +60,10 @@
     <!--review_product_list>
         <update handle="ebizmarts_review_form"></update>
     </review_product_list-->
+
+    <catalog_product_view>
+        <reference name="product.info.additional">
+            <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.notice" as="backtostock_notice" template="ebizmarts/autoresponder/backtostock/catalog/product/notice.phtml" />
+        </reference>
+    </catalog_product_view>
 </layout>
