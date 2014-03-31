@@ -19,7 +19,7 @@ class Ebizmarts_Autoresponder_BacktostockController extends Mage_Core_Controller
             $email = $params['subscriber_email'];
             $productId = $params['product_id'];
 
-            // do stuffs
+            //@TODO: record subscriber into database for further processing
 
             Mage::getSingleton('core/session')
                 ->addSuccess($this->__('You have been subscribed successfully!'));
