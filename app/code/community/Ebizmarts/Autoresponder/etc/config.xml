@@ -143,6 +143,15 @@
                 </ebizmarts_autoresponder_review_coupon_template>
             </email>
         </template>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_backtostock_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Back to Stock</label>
+                    <file>ebizmarts/autoresponder/backtostock.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_backtostock_template>
+            </email>
+        </template>
     </global>
     <adminhtml>
         <events>
@@ -246,10 +255,10 @@
                 <listname>Visited Product List</listname>
             </visitedproducts>
             <backtostock>
-                <subject>Back To Stock Notification</subject>
-                <mandrill-tag>Autoresponder_BackToStock</mandrill-tag>
+                <subject>Back to Stock Notification</subject>
+                <mandrill-tag>Autoresponder_BacktoStock</mandrill-tag>
                 <allow-guests>1</allow-guests>
-                <listname>Back To Stock List</listname>
+                <listname>Back to Stock List</listname>
             </backtostock>
         </ebizmarts_autoresponder>
     </default>

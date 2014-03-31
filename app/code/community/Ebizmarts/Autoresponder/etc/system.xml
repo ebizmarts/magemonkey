@@ -1100,7 +1100,7 @@
                     </fields>
                 </visitedproducts>
                 <backtostock>
-                    <label>Back To Stock Notifications</label>
+                    <label>Back to Stock Notifications</label>
                     <sort_order>25</sort_order>
                     <frontend_type>text</frontend_type>
                     <show_in_default>1</show_in_default>
@@ -1149,7 +1149,7 @@
                                 <active>1</active>
                             </depends>
                         </subject>
-                        <mandrill-tag translate="label">
+                        <mandrill_tag translate="label">
                             <label>Mandrill Tag</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>40</sort_order>
@@ -1159,8 +1159,8 @@
                             <depends>
                                 <active>1</active>
                             </depends>
-                        </mandrill-tag>
-                        <allow-guests translate="label comment">
+                        </mandrill_tag>
+                        <allow_guests translate="label comment">
                             <label>Allow Guests to be notified</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
@@ -1171,7 +1171,7 @@
                             <depends>
                                 <active>1</active>
                             </depends>
-                        </allow-guests>
+                        </allow_guests>
                     </fields>
                 </backtostock>
             </groups>
