@@ -55,6 +55,10 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId)) { // done
             $this->_processVisited($storeId);
         }
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId)){
+            //@TODO: remains processBackToStock function
+//            $this->_processBackToStock($storeId);
+        }
     }
     protected function _processNewOrders($storeId)
     {
@@ -455,6 +459,45 @@ class Ebizmarts_Autoresponder_Model_Cron
         }
 
     }
+
+    public function _processBackToStock($storeId)
+    {
+//        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE, $storeId));
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_MANDRILL_TAG,$storeId)."_$storeId";
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_TEMPLATE,$storeId);
+
+
+        // fixed
+        $customer = Mage::getModel('customer/customer')->load(1);
+        $product = Mage::getModel('catalog/product')->load(1);
+
+        if(!$sender) {
+            Mage::helper('monkey')->log('ERROR - Back to Stock Notification: No sender is specified. Check System/Configuration/MageMonkey/Autoresponders/General');
+        }
+
+        if(!$templateId) {
+            Mage::helper('monkey')->log('ERROR - Back to Stock Notification: No templateId. Check System/Configuration/MageMonkey/Autoresponders/Back to Stock/Email Template');
+        }
+
+        if($product && $customer) {
+            $email = $customer->getEmail();
+
+            $translate  = Mage::getSingleton('core/translate');
+            $name       = $customer->getFirstname().' '.$customer->getLastname();
+            $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=backtostock&email='.$email.'&store='.$storeId;
+            $vars       = array('name' => $name,'tags'=>array($tags),'product'=>$product,'url'=>$url);
+
+            $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+
+            $translate->setTranslateInLine(true);
+            Mage::helper('ebizmarts_abandonedcart')->saveMail('backtostock',$email,$name,"",$storeId);
+        }
+
+    }
+
     protected function _createNewCoupon($store,$email)
     {
         $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
