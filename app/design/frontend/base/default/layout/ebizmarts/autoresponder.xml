@@ -62,8 +62,15 @@
     </review_product_list-->
 
     <catalog_product_view>
-        <reference name="product.info.additional">
-            <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.notice" as="backtostock_notice" template="ebizmarts/autoresponder/backtostock/catalog/product/notice.phtml" />
+        <reference name="content">
+            <reference name="product.info">
+                <reference name="alert.urls">
+                    <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.notice" as="backtostock_notice" template="ebizmarts/autoresponder/backtostock/catalog/product/notice.phtml" />
+                </reference>
+            </reference>
+            <reference name="product.info.additional">
+                <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.form" as="backtostock_form" template="ebizmarts/autoresponder/backtostock/catalog/product/form.phtml" />
+            </reference>
         </reference>
     </catalog_product_view>
 </layout>
