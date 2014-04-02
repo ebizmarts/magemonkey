@@ -14,6 +14,8 @@ class Ebizmarts_Autoresponder_BacktostockController extends Mage_Core_Controller
     public function subscribeAction()
     {
         $params = $this->getRequest()->getParams();
+        $redirect = '/';
+
         if(isset($params['subscriber_email']) && isset($params['product_id'])) {
 
             $email = $params['subscriber_email'];
@@ -26,8 +28,6 @@ class Ebizmarts_Autoresponder_BacktostockController extends Mage_Core_Controller
         }
 
         // Decide where the User will be redirected
-        $redirect = isset($params['redirect_url']) ? $params['redirect_url'] : '/';
-
         $this->_redirectUrl($redirect);
     }
 
