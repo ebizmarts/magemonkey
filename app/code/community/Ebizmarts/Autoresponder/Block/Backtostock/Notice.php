@@ -21,9 +21,11 @@ class Ebizmarts_Autoresponder_Block_Backtostock_Notice extends Mage_Core_Block_T
         return Mage::helper('customer')->isLoggedIn();
     }
 
+
     public function getCustomerEmail()
     {
         $email = false;
+
         if(!$this->isLoggedIn()) {
             return $email;
         }
