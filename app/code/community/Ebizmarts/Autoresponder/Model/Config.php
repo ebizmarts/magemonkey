@@ -101,6 +101,7 @@ class Ebizmarts_Autoresponder_Model_Config
     const BACKTOSTOCK_SUBJECT           = 'ebizmarts_autoresponder/backtostock/subject';
     const BACKTOSTOCK_MANDRILL_TAG      = 'ebizmarts_autoresponder/backtostock/mandrill_tag';
     const BACKTOSTOCK_ALLOW_GUESTS      = 'ebizmarts_autoresponder/backtostock/allow_guests';
+    const BACKTOSTOCK_MAIL_TYPE_NAME    = 'back to stock';
 
     const COUPON_AUTOMATIC            = 2;
     const COUPON_MANUAL               = 1;
