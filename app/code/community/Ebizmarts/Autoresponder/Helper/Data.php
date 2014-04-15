@@ -11,6 +11,25 @@
 class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
 
     /**
+     * Get module configuration value
+     *
+     * @param string $value
+     * @param string $store
+     * @return mixed Configuration setting
+     */
+    public function config($value, $store = null)
+    {
+        $store = is_null($store) ? Mage::app()->getStore() : $store;
+
+        $configscope = Mage::app()->getRequest()->getParam('store');
+        if( $configscope && ($configscope !== 'undefined') ){
+            $store = $configscope;
+        }
+
+        return Mage::getStoreConfig("ebizmarts_autoresponder/$value", $store);
+    }
+
+    /**
      * Logging facility
      *
      * @param mixed $data Message to save to file
@@ -19,7 +38,7 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
      */
     public function log($data, $filename = 'Ebizmarts_Autoresponder.log')
     {
-        if($this->config('enable_log') != 0) {
+        if($this->config('general/enable_log') != 0) {
             return Mage::getModel('core/log_adapter', $filename)->log($data);
         }
     }
