@@ -230,7 +230,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
 
     /**
      * Method that checks if saved Product is Back To Stock to save a new Alert
-     * 
+     *
      * @param Varien_Event_Observer $observer
      * @return Varien_Event_Observer
      */
@@ -256,7 +256,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         // We're validating if product is now InStock and his previous status was out-of-stock
         // this means that product is now available
         if ($stock->getIsInStock() == 1 && $stock->getOrigData('is_in_stock') == 0) {
-            $this->_saveStockAlert($product->getId);
+            $this->_saveStockAlert($product->getId());
         }
 
         return $observer;
@@ -265,10 +265,18 @@ class Ebizmarts_Autoresponder_Model_EventObserver
     /**
      * BackToStock: Saves new Alert
      * @param $productId
+     * @return bool
      */
     protected function _saveStockAlert($productId)
     {
-        Mage::helper('monkey')->log(__METHOD__);
-        Mage::helper('monkey')->log('Product ID: ' . $productId);
+        if(!$productId) {
+            return false;
+        }
+
+        $alert = Mage::getModel('ebizmarts_autoresponder/backtostockalert');
+        $alert->setProductId($productId);
+        $alert->save();
+
+        return true;
     }
 }

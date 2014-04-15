@@ -57,7 +57,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         }
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId)){
             //@TODO: remains processBackToStock function
-//            $this->_processBackToStock($storeId);
+            $this->_processBackToStock($storeId);
         }
     }
     protected function _processNewOrders($storeId)
@@ -494,47 +494,109 @@ class Ebizmarts_Autoresponder_Model_Cron
             return;
         }
 
+        // Retrieve those Products ids that came back to stock and are active
+        // (is_active=1 means we didn't loop through all subscribers in ebizmarts_autoresponder_backtostock)
+        $alert = Mage::getModel('ebizmarts_autoresponder/backtostockalert');
+        $alert->getCollection()->addFieldToFilter('is_active', array('eq'=>1));
 
-        $collection = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
-        $collection->addFieldToFilter('is_active', array('eq'=>1));
+        if($alert->count() > 0) {
 
-        if($collection->count() > 0) {
+            // Loop through all products that came back to stock
+            foreach($alert as $stockAlert) {
 
-            foreach($collection as $notification) {
+                // We'll select all subscribers that has the same product_id and are active
+                // (is_active=1 means we didn't contact subscribers)
+                $collection = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
+                $collection
+                    ->addFieldToFilter('is_active', array('eq' => 1))
+                    ->addFieldToFilter('product_id', array('eq' => $stockAlert->getProductId()))
+                ;
 
-                $email = $notification->getEmail();
-                $productId = $notification->getProductId();
+                if($collection->count() > 0) {
 
-                $product = Mage::getModel('catalog/product')->load($productId);
+                    // Loop through all subscribers that signed in to receive an email
+                    // when this product become available again
+                    foreach($collection as $notification) {
 
+                        $email = $notification->getEmail();
+                        $productId = $notification->getProductId();
 
-                if($product && $email) {
+                        $product = Mage::getModel('catalog/product')->load($productId);
 
-                    $translate  = Mage::getSingleton('core/translate');
+                        if($product && $email) {
 
-                    $customer = Mage::getModel('customer/customer');
-                    $customer->setStore(Mage::app()->getStore($storeId));
-                    $customer->loadByEmail($email);
+                            $translate  = Mage::getSingleton('core/translate');
 
-                    $name       = $customer->getFirstname() ? $customer->getFirstname() .' '. $customer->getLastname() : '';
+                            $customer = Mage::getModel('customer/customer');
+                            $customer->setStore(Mage::app()->getStore($storeId));
+                            $customer->loadByEmail($email);
 
-                    $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=backtostock&email='.$email.'&store='.$storeId;
-                    $vars       = array('name' => $name,'tags'=>array($tags),'product'=>$product,'url'=>$url);
+                            $name   = $customer->getFirstname() ? $customer->getFirstname() .' '. $customer->getLastname() : '';
 
-                    $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+                            $url    = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=backtostock&email='.$email.'&store='.$storeId;
+                            $vars   = array('name' => $name,'tags'=>array($tags),'product'=>$product,'url'=>$url);
 
+                            $mail   = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
 
-                    $translate->setTranslateInLine(true);
-                    Mage::helper('ebizmarts_abandonedcart')->saveMail($mailType,$email,$name,"",$storeId);
+                            $translate->setTranslateInLine(true);
+                            Mage::helper('ebizmarts_abandonedcart')->saveMail($mailType, $email, $name, "", $storeId);
 
-                    // Flag/Disable notification that we already send
-                    $notification->setIsActive(0);
-                    $notification->save();
+                            // Flag/Disable notification that we already send
+                            $notification->setIsActive(0);
+                            $notification->save();
+                        }
+                    }
+
                 }
+
+                // Since there's no subscribers to contact -or all of them have been already contacted-
+                // we'll deactivate this alert so another cron parses this an deletes it.
+                $stockAlert->setIsActive(0);
+                $stockAlert->save();
             }
+
         }
 
     }
+
+
+    /**
+     * Remove records from BackToStock tables which were flagged as is_active=0
+     *
+     */
+    protected function cleanupBackToStock()
+    {
+        // Retrieve all records that were deactivated
+        $stockAlert = Mage::getModel('ebizmarts_autoresponder/backtostockalert')->getCollection();
+        $stockAlert->addFieldToFilter('is_active', array('eq' => 0));
+
+        if($stockAlert->count() > 0) {
+            Mage::helper('ebizmarts_autoresponder')->log('BackToStock Alert Cleanup: cleaning out ' . $stockAlert->count() . ' records.');
+            foreach($stockAlert as $alert) {
+                $alert->delete();
+            }
+            Mage::helper('ebizmarts_autoresponder')->log('BackToStock Alert Cleanup: finished.');
+        }
+
+
+        // Retrieve all records that were deactivated
+        $backToStock = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
+        $backToStock->addFieldToFilter('is_active', array('eq' => 0));
+
+        if($backToStock->count() > 0) {
+
+            Mage::helper('ebizmarts_autoresponder')->log('BackToStock Cleanup: cleaning out ' . $backToStock->count() . ' records.');
+            foreach($backToStock as $subscriber) {
+                $subscriber->delete();
+            }
+
+            Mage::helper('ebizmarts_autoresponder')->log('BackToStock Cleanup: finished.');
+        }
+
+        $stockAlert = null;
+        $backToStock = null;
+    }
+
 
     protected function _createNewCoupon($store,$email)
     {

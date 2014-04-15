@@ -35,6 +35,9 @@
                     <backtostock>
                         <table>ebizmarts_autoresponder_backtostock</table>
                     </backtostock>
+                    <backtostockalert>
+                        <table>ebizmarts_autoresponder_backtostock_alert</table>
+                    </backtostockalert>
                 </entities>
             </ebizmarts_autoresponder_resource>
         </models>
@@ -223,6 +226,14 @@
                     <model>ebizmarts_autoresponder/cron::process</model>
                 </run>
             </ebizmarts_autoresponder>
+            <ebizmarts_autoresponder_backtostock_cleanup>
+                <schedule>
+                    <cron_expr>0 0 1 * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ebizmarts_autoresponder/cron::cleanupBackToStock</model>
+                </run>
+            </ebizmarts_autoresponder_backtostock_cleanup>
         </jobs>
     </crontab>
     <default>

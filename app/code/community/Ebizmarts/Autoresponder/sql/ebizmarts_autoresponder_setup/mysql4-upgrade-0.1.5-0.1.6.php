@@ -24,6 +24,16 @@ $installer->run("
 ");
 
 $installer->run("
+
+	CREATE TABLE IF NOT EXISTS `{$this->getTable('ebizmarts_autoresponder_backtostock_alert')}` (
+	  `alert_id` int(10) unsigned NOT NULL auto_increment,
+	  `product_id` int(10),
+	  `is_active` smallint(5) unsigned NOT NULL DEFAULT '1',
+	  PRIMARY KEY  (`alert_id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+");
+
+$installer->run("
     ALTER TABLE `{$this->getTable('magemonkey_mails_sent')}`
      CHANGE `mail_type` `mail_type` ENUM( 'abandoned cart', 'happy birthday', 'new order', 'related products', 'product review', 'no activity', 'wishlist', 'review coupon', 'back to stock' )
      CHARACTER SET utf8 NOT NULL;
