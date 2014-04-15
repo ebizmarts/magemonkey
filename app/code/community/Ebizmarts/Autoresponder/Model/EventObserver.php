@@ -227,27 +227,44 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         return array($uniqueId,$discount,$toDate);
     }
 
+    /**
+     * Method that checks if saved Product is Back To Stock to save a new Alert
+     * @param $observer
+     */
     public function productStockCheckAfterSave($observer)
     {
-        Mage::helper('monkey')->log(__METHOD__);
+
+        if(!Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE) {
+            return false;
+        }
+
 
         $product = $observer->getEvent()->getProduct();
+
+        if(!$product) {
+            Mage::helper('monkey')->log('Ebizmarts_Autoresponder_Backtostock: Could not retrieve Product after save.');
+            Mage::helper('monkey')->log(__METHOD__);
+            return;
+        }
+
+        // Retrieve Stock data from Product
         $stock = $product->getStockItem();
 
         // We're validating if product is now InStock and his previous status was out-of-stock
         // this means that product is now available
         if ($stock->getIsInStock() == 1 && $stock->getOrigData('is_in_stock') == 0) {
-//            $this->_saveStockAlert();
+            $this->_saveStockAlert($product->getId);
         }
 
     }
 
     /**
-     * Saves new product alert
+     * BackToStock: Saves new Alert
      * @param $productId
      */
-    private function _saveStockAlert($productId)
+    protected function _saveStockAlert($productId)
     {
-
+        Mage::helper('monkey')->log(__METHOD__);
+        Mage::helper('monkey')->log('Product ID: ' . $productId);
     }
 }
