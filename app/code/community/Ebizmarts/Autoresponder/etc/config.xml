@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_Autoresponder>
-            <version>0.1.5</version>
+            <version>0.1.6</version>
         </Ebizmarts_Autoresponder>
     </modules>
     <global>
@@ -32,6 +32,9 @@
                     <review>
                         <table>ebizmarts_autoresponder_review</table>
                     </review>
+                    <backtostock>
+                        <table>ebizmarts_autoresponder_backtostock</table>
+                    </backtostock>
                 </entities>
             </ebizmarts_autoresponder_resource>
         </models>
@@ -163,6 +166,14 @@
                     </ebizmarts_autoresponder_save_config>
                 </observers>
             </admin_system_config_changed_section_ebizmarts_autoresponder>
+            <catalog_product_save_after>
+                <observers>
+                    <ebizmarts_autoresponder_backtostock>
+                    <class>ebizmarts_autoresponder/eventStockObserver</class>
+                    <method>checkStockChange</method>
+                    </ebizmarts_autoresponder_backtostock>
+                </observers>
+            </catalog_product_save_after>
         </events>
     </adminhtml>
     <frontend>
