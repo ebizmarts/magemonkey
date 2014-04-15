@@ -226,4 +226,28 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         $coupon_rule->save();
         return array($uniqueId,$discount,$toDate);
     }
+
+    public function productStockCheckAfterSave($observer)
+    {
+        Mage::helper('monkey')->log(__METHOD__);
+
+        $product = $observer->getEvent()->getProduct();
+        $stock = $product->getStockItem();
+
+        // We're validating if product is now InStock and his previous status was out-of-stock
+        // this means that product is now available
+        if ($stock->getIsInStock() == 1 && $stock->getOrigData('is_in_stock') == 0) {
+//            $this->_saveStockAlert();
+        }
+
+    }
+
+    /**
+     * Saves new product alert
+     * @param $productId
+     */
+    private function _saveStockAlert($productId)
+    {
+
+    }
 }

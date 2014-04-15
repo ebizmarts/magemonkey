@@ -169,8 +169,8 @@
             <catalog_product_save_after>
                 <observers>
                     <ebizmarts_autoresponder_backtostock>
-                    <class>ebizmarts_autoresponder/eventStockObserver</class>
-                    <method>checkStockChange</method>
+                    <class>ebizmarts_autoresponder/eventObserver</class>
+                    <method>productStockCheckAfterSave</method>
                     </ebizmarts_autoresponder_backtostock>
                 </observers>
             </catalog_product_save_after>
