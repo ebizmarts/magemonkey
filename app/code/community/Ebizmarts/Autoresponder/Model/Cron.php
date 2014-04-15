@@ -460,6 +460,10 @@ class Ebizmarts_Autoresponder_Model_Cron
 
     }
 
+    /**
+     * Process and send all notifications of Back To Stock
+     * @param $storeId
+     */
     public function _processBackToStock($storeId)
     {
 //        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE, $storeId));
@@ -468,32 +472,66 @@ class Ebizmarts_Autoresponder_Model_Cron
         $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
         $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
         $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_TEMPLATE,$storeId);
+        $mailType       = Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_MAIL_TYPE_NAME;
 
-
-        // fixed
-        $customer = Mage::getModel('customer/customer')->load(1);
-        $product = Mage::getModel('catalog/product')->load(1);
+        $errorMessage = false;
 
         if(!$sender) {
-            Mage::helper('monkey')->log('ERROR - Back to Stock Notification: No sender is specified. Check System/Configuration/MageMonkey/Autoresponders/General');
+            $errorMessage = Mage::helper('ebizmarts_autoresponder')->__('ERROR - Back to Stock Notification: No sender is specified. Check System/Configuration/MageMonkey/Autoresponders/General');
+        }
+
+        if(!$storeId) {
+            $errorMessage = Mage::helper('ebizmarts_autoresponder')->__('ERROR - Back to Stock Notification: No Store ID is configured');
         }
 
         if(!$templateId) {
-            Mage::helper('monkey')->log('ERROR - Back to Stock Notification: No templateId. Check System/Configuration/MageMonkey/Autoresponders/Back to Stock/Email Template');
+            $errorMessage = Mage::helper('ebizmarts_autoresponder')->__('ERROR - Back to Stock Notification: No templateId. Check System/Configuration/MageMonkey/Autoresponders/Back to Stock/Email Template');
         }
 
-        if($product && $customer) {
-            $email = $customer->getEmail();
+        if($errorMessage) {
+            Mage::helper('monkey')->log($errorMessage);
+            Mage::throwException($errorMessage);
+            return;
+        }
 
-            $translate  = Mage::getSingleton('core/translate');
-            $name       = $customer->getFirstname().' '.$customer->getLastname();
-            $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=backtostock&email='.$email.'&store='.$storeId;
-            $vars       = array('name' => $name,'tags'=>array($tags),'product'=>$product,'url'=>$url);
 
-            $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+        $collection = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
+        $collection->addFieldToFilter('is_active', array('eq'=>1));
 
-            $translate->setTranslateInLine(true);
-            Mage::helper('ebizmarts_abandonedcart')->saveMail('backtostock',$email,$name,"",$storeId);
+        if($collection->count() > 0) {
+
+            foreach($collection as $notification) {
+
+                $email = $notification->getEmail();
+                $productId = $notification->getProductId();
+
+                $product = Mage::getModel('catalog/product')->load($productId);
+
+
+                if($product && $email) {
+
+                    $translate  = Mage::getSingleton('core/translate');
+
+                    $customer = Mage::getModel('customer/customer');
+                    $customer->setStore(Mage::app()->getStore($storeId));
+                    $customer->loadByEmail($email);
+
+                    $name       = $customer->getFirstname() ? $customer->getFirstname() .' '. $customer->getLastname() : '';
+
+                    $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=backtostock&email='.$email.'&store='.$storeId;
+                    $vars       = array('name' => $name,'tags'=>array($tags),'product'=>$product,'url'=>$url);
+
+                    $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
+
+
+                    $translate->setTranslateInLine(true);
+                    Mage::helper('ebizmarts_abandonedcart')->saveMail($mailType,$email,$name,"",$storeId);
+
+                    // Flag/Disable notification that we already send
+                    $notification->setIsActive(0);
+                    $notification->save();
+                }
+            }
         }
 
     }
