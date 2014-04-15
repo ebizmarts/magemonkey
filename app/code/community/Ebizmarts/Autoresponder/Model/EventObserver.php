@@ -227,15 +227,18 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         return array($uniqueId,$discount,$toDate);
     }
 
+
     /**
      * Method that checks if saved Product is Back To Stock to save a new Alert
-     * @param $observer
+     * 
+     * @param Varien_Event_Observer $observer
+     * @return Varien_Event_Observer
      */
-    public function productStockCheckAfterSave($observer)
+    public function productStockCheckAfterSave(Varien_Event_Observer $observer)
     {
 
         if(!Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE) {
-            return false;
+            return $observer;
         }
 
 
@@ -256,6 +259,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             $this->_saveStockAlert($product->getId);
         }
 
+        return $observer;
     }
 
     /**
