@@ -204,6 +204,25 @@
 
                     </fields>
                 </general>
+                <modalcoupon>
+                    <label>Modal Coupon Code</label>
+                    <sort_order>90</sort_order>
+                    <frontend_type>text</frontend_type>
+                    <frontend_type>text</frontend_type>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <modalcouponcode>
+                            <label>Code to be Applied</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </modalcouponcode>
+                    </fields>
+                </modalcoupon>
                 <coupon>
                     <label>Coupon</label>
                     <sort_order>99</sort_order>
