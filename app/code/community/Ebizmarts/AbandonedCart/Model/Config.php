@@ -15,6 +15,7 @@ class Ebizmarts_AbandonedCart_Model_Config
     const UNIT                              = "ebizmarts_abandonedcart/general/unit";
     const SENDER                            = "ebizmarts_abandonedcart/general/identity";
     const MAXTIMES                          = "ebizmarts_abandonedcart/general/max";
+    const MODAL_COUPON_CODE                 = "ebizmarts_abandonedcart/modalcoupon/modalcouponcode";
     const COUPON_DAYS                       = "ebizmarts_abandonedcart/coupon/sendon";
     const SEND_COUPON                       = "ebizmarts_abandonedcart/coupon/create";
     const FIRST_DATE                        = "ebizmarts_abandonedcart/general/firstdate";
