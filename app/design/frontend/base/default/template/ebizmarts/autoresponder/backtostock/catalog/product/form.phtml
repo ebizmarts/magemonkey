@@ -15,19 +15,20 @@
 ?>
 <?php if($_product): ?>
 
-    <?php if(!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest() ): ?>
+    <?php if( $this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest()) ): ?>
 
         <div class="box-collateral block-autoresponder-backtostock" style="padding: 20px 0 0;">
             <div class="form-add">
                 <form id="backtostock_form" action="<?php echo $formAction?>" method="post">
                     <div>
-                        <h2><?php echo $this->__('Be notified !'); ?></h2>
+                        <h2><?php echo $this->__('Get notified !'); ?></h2>
                         <p><?php echo $this->__('Subscribe to receive an email as soon as this product become available again!'); ?></p>
                         <ul class="form-list">
                             <li>
                                 <label for="subscriber_email"><?php echo $this->__('Enter your email address');?></label>
                                 <div class="input-box">
-                                    <input type="text" class="input-text validate-email required-entry" name="subscriber_email" id="subscriber_email" size="35" />
+                                    <?php $email = $this->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getEmail() : 'martin.hansen@gmail.com'; ?>
+                                    <input type="text" class="input-text validate-email required-entry" name="subscriber_email" id="subscriber_email" size="35" value="<?php echo $email; ?>" />
                                 </div>
                             </li>
                         </ul>

@@ -18,12 +18,7 @@
     <?php if($this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest()) ): ?>
         <div class="box-collateral block-autoresponder-backtostock">
             <div class="form-add">
-                <?php if($this->isLoggedIn()): ?>
-                    <?php $customerEmail = $this->getCustomerEmail(); ?>
-                    <a href="<?php echo $formAction . 'subscriber_email/' . $customerEmail . '/product_id/' . $_product->getId(); ?>"><?php echo $this->__('Sign up to be notified when this product is back to stock'); ?></a>
-                <?php else: ?>
-                    <a href="#" onclick="btsShowForm(); return false;"><?php echo $this->__('Sign up to be notified when this product is back to stock'); ?></a>
-                <?php endif; ?>
+                <a href="#" onclick="btsShowForm(); return false;"><?php echo $this->__('Sign up to be notified when this product is back to stock'); ?></a>
             </div>
         </div>
     <?php endif; ?>
