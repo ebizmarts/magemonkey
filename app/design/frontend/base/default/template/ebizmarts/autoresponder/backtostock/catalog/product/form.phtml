@@ -27,7 +27,7 @@
                             <li>
                                 <label for="subscriber_email"><?php echo $this->__('Enter your email address');?></label>
                                 <div class="input-box">
-                                    <?php $email = $this->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getEmail() : 'martin.hansen@gmail.com'; ?>
+                                    <?php $email = $this->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getEmail() : ''; ?>
                                     <input type="text" class="input-text validate-email required-entry" name="subscriber_email" id="subscriber_email" size="35" value="<?php echo $email; ?>" />
                                 </div>
                             </li>
