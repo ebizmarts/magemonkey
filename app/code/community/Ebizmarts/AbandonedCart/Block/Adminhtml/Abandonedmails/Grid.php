@@ -94,7 +94,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_A
     protected function getMailTypeOptions()
     {
         return array('abandoned cart'=>'abandoned cart','happy birthday'=>'happy birthday','new order'=>'new order', 'related products'=>'related products',
-            'product review'=>'product review', 'no activity'=>'no activity', 'wishlist'=>'wishlist', 'review coupon' => 'review coupon');
+            'product review'=>'product review', 'no activity'=>'no activity', 'wishlist'=>'wishlist', 'review coupon' => 'review coupon' , 'back to stock' => 'back to stock');
     }
 
 }
