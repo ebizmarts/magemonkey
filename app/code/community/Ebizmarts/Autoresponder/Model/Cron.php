@@ -466,8 +466,6 @@ class Ebizmarts_Autoresponder_Model_Cron
      */
     public function _processBackToStock($storeId)
     {
-        Mage::helper('ebizmarts_autoresponder')->log("1. start");
-
 //        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE, $storeId));
         $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_MANDRILL_TAG,$storeId)."_$storeId";
         $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_SUBJECT,$storeId);
@@ -506,20 +504,55 @@ class Ebizmarts_Autoresponder_Model_Cron
         ;
 
         if(count($alert) > 0) {
-            Mage::helper('ebizmarts_autoresponder')->log("2. start");
 
             // Loop through all products that came back to stock
             foreach($alert->getCollection() as $productStockAlert) {
 
-                //@TODO validate if product has stock, otherwise move on
-                Mage::helper('ebizmarts_autoresponder')->log("3. start");
+                // We'll validate if this products came back or not.
+                if($productStockAlert->getProductId()) {
+                    $inventory = Mage::getModel('cataloginventory/stock_item');
+                    $_product = Mage::getModel('catalog/product')->load($productStockAlert->getProductId());
+
+                    // Check if Product is loaded
+                    if(!$_product->getId()) {
+                        Mage::helper('ebizmarts_autoresponder')->log('ERROR - Cannot load product ID '. $productStockAlert->getProductId() .'. Existing alert and subscribers will now be disabled.');
+                        $this->disableStockAlertsForProduct($productStockAlert->getProductId());
+                        continue;
+                    }
+
+                    // Retrieve stock data for Product
+                    $_stock = $inventory->loadByProduct( $_product->getId() );
+
+                    if(!$_stock->getData()) {
+                        Mage::helper('ebizmarts_autoresponder')->log('Cannot load Product ID ' . $productStockAlert->getProductId() . ' stock info. Check if product still exists.');
+                        continue;
+                    }
+
+                    //@TODO check if this next two validations can be replaced with isSaleable()
+                    // Validate if Product has Stock
+                    if(!$_stock->getData('is_in_stock')) {
+                        Mage::helper('ebizmarts_autoresponder')->log('SKIPPED - Product ID '. $_product->getId() .' is not in stock yet.');
+                        continue;
+                    }
+
+                    // Validate if Product is Enabled
+                    if($_product->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED) {
+                        Mage::helper('ebizmarts_autoresponder')->log('SKIPPED - Product ID '. $_product->getId() .' is not enabled (status = disabled).');
+                        continue;
+                    }
+
+                } else {
+                    Mage::helper('ebizmarts_autoresponder')->log('ERROR - Cannot retrieve Product ID value from "' . $alert->getResource()->getMainTable() . '" table.');
+                    continue;
+                }
+
 
                 // We'll select all subscribers that has the same product_id and are active
                 // (is_active=1 means we didn't contact subscribers)
                 $collection = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
                 $collection
                     ->addFieldToFilter('is_active', array('eq' => 1))
-                    ->addFieldToFilter('product_id', array('eq' => $productStockAlert->getProductId()))
+                    ->addFieldToFilter('alert_id', array('eq' => $productStockAlert->getAlertId()))
                 ;
 
                 if(count($collection) > 0) {
@@ -527,14 +560,9 @@ class Ebizmarts_Autoresponder_Model_Cron
                     // Loop through all subscribers that signed in to receive an email
                     // when this product become available again
                     foreach($collection as $subscriber) {
-                        $_email     = $subscriber->getEmail();
-                        $productId  = $subscriber->getProductId();
+                        $_email = $subscriber->getEmail();
 
-                        $_product   = Mage::getModel('catalog/product')->load($productId);
-
-                        if($_product && $_email) {
-                            Mage::helper('ebizmarts_autoresponder')->log("4. start");
-
+                        if($_email) {
                             $translate  = Mage::getSingleton('core/translate');
 
                             $customer = Mage::getModel('customer/customer');
@@ -554,11 +582,16 @@ class Ebizmarts_Autoresponder_Model_Cron
                             // Flag/Disable notification that we already send
                             $subscriber->setIsActive(0);
                             $subscriber->save();
+                            Mage::helper('ebizmarts_autoresponder')->log($_email . ' notified sent for "' . $_product->getName() . '"');
+
+                            unset($mail);
                         }
+
                     }
 
                 }
 
+                unset($collection);
                 // Since there's no subscribers to contact -or all of them have been already contacted-
                 // we'll deactivate this alert so another cron parses this an deletes it.
                 $productStockAlert->setIsActive(0);
@@ -567,8 +600,43 @@ class Ebizmarts_Autoresponder_Model_Cron
 
         }
 
+        unset($alert);
     }
 
+    /**
+     * Back to Stock : Disable Alerts and Subscribers for a specific Product ID
+     * @param int $product_id
+     * @return bool
+     */
+    private function disableStockAlertsForProduct($product_id)
+    {
+        if(!$product_id) {
+            return false;
+        }
+
+        $stockAlert = Mage::getModel('ebizmarts_autoresponder/backtostockalert')->getCollection();
+        $stockAlert->addFieldToFilter('is_active', array('eq' => 1));
+        $stockAlert->addFieldToFilter('product_id', array('eq' => $product_id));
+
+        if($stockAlert->getSize() > 0) {
+            foreach($stockAlert as $alert) {
+                $alert_id = $alert->getAlertId();
+
+                $subscribers = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
+                $subscribers->addFieldToFilter('alert_id', array('eq'=> $alert_id));
+
+                foreach($subscribers as $subscriber) {
+                    $subscriber->setIsActive(0);
+                    $subscriber->save();
+                }
+
+                $alert->setIsActive(0);
+                $alert->save();
+            }
+        }
+
+        Mage::helper('ebizmarts_autoresponder')->log('Back to Stock Notifications deactivated in database for Product ID ' . $product_id);
+    }
 
     /**
      * Remove records from BackToStock tables which were flagged as is_active=0
@@ -603,11 +671,10 @@ class Ebizmarts_Autoresponder_Model_Cron
 
         }
 
-        $stockAlert = null;
-        $backToStock = null;
+        unset($stockAlert);
+        unset($backToStock);
 
         Mage::helper('ebizmarts_autoresponder')->log('MageMonkey Autoresponder BackToStock Cleanup - finished');
-
     }
 
 
