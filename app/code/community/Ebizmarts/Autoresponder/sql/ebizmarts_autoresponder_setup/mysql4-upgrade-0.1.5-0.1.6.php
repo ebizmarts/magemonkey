@@ -16,7 +16,7 @@ $installer->run("
 
 	CREATE TABLE IF NOT EXISTS `{$this->getTable('ebizmarts_autoresponder_backtostock')}` (
 	  `backtostock_id` int(10) unsigned NOT NULL auto_increment,
-	  `product_id` int(10),
+	  `alert_id` int(10),
 	  `email` varchar(255),
 	  `is_active` smallint(5) unsigned NOT NULL DEFAULT '1',
 	  PRIMARY KEY  (`backtostock_id`)
