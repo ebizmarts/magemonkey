@@ -74,4 +74,12 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
         return Mage::helper('customer')->getCustomer()->getEmail();
     }
 
+    public function isBacktoStockEnabledForGuest()
+    {
+        $storeId = Mage::app()->getStore()->getStoreId();
+        $allowGuests = Mage::getStoreConfig("ebizmarts_autoresponder/backtostock/allow_guests", $storeId);
+
+        return $allowGuests;
+    }
+
 }
