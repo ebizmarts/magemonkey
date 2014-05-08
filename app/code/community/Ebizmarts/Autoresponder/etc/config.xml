@@ -278,7 +278,7 @@
             </visitedproducts>
             <backtostock>
                 <subject>Back to Stock Notification</subject>
-                <mandrill-tag>Autoresponder_BacktoStock</mandrill-tag>
+                <mandrill_tag>Autoresponder_BacktoStock</mandrill_tag>
                 <allow-guests>1</allow-guests>
                 <listname>Back to Stock List</listname>
             </backtostock>
