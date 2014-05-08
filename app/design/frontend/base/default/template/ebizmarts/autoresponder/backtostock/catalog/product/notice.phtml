@@ -13,7 +13,7 @@
     $_product = $this->getProduct();
     $formAction = $this->getSubscribeUrl();
 ?>
-<?php if($_product): ?>
+<?php if($_product && !$_product->getStockItem()->getIsInStock()): ?>
 
     <?php if($this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest()) ): ?>
         <div class="box-collateral block-autoresponder-backtostock">
