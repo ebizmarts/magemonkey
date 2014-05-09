@@ -74,16 +74,6 @@
                 </Ebizmarts_Mandrill>
             </modules>
         </translate>
-        <events>
-            <admin_system_config_changed_section_mandrill>
-                <observers>
-                    <mandrill_save_config>
-                        <class>ebizmarts_autoresponder/eventObserver</class>
-                        <method>saveConfig</method>
-                    </mandrill_save_config>
-                </observers>
-            </admin_system_config_changed_section_mandrill>
-        </events>
     </adminhtml>
     <default>
     	<mandrill>
