@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <!--
-Configuration file for Ebizmarts_Autoresponder module, touch at you entire responsibility
+    Configuration file for Ebizmarts_Autoresponder module, touch at you entire responsibility
 
-Author : Ebizmarts <info@ebizmarts.com>
-Date   : 4/28/13
-Time   : 11:20 AM
-File   : system.xml
-Module : Ebizmarts_Magemonkey
+    @category   Ebizmarts
+    @package    Ebizmarts_Autoresponder
+    @author     Ebizmarts Team <info@ebizmarts.com>
+    @license    http://opensource.org/licenses/osl-3.0.php
 -->
 <config>
     <sections>
@@ -42,6 +41,16 @@ Module : Ebizmarts_Magemonkey
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </active>
+                        <enable_log translate="label">
+                            <label>Enable Log</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>11</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>File is {{base_dir}}/var/log/Ebzimarts_Autoresponder.log</comment>
+                        </enable_log>
                         <identity translate="label">
                             <label>Sender</label>
                             <frontend_type>select</frontend_type>
@@ -1100,6 +1109,81 @@ Module : Ebizmarts_Magemonkey
                         </max-visited>
                     </fields>
                 </visitedproducts>
+                <backtostock>
+                    <label>Back to Stock Notifications</label>
+                    <sort_order>25</sort_order>
+                    <frontend_type>text</frontend_type>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <hint>
+                            <frontend_model>ebizmarts_autoresponder/adminhtml_system_config_backtostock_fieldset_hint</frontend_model>
+                            <sort_order>0</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </hint>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </active>
+                        <template translate="label">
+                            <label>Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_autoresponder/backtostock/template</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </template>
+                        <subject translate="label comment">
+                            <label>Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Subject for Back To Stock email notification]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </subject>
+                        <mandrill_tag translate="label">
+                            <label>Mandrill Tag</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </mandrill_tag>
+                        <allow_guests translate="label comment">
+                            <label>Allow Guests to be notified</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </allow_guests>
+                    </fields>
+                </backtostock>
             </groups>
         </ebizmarts_autoresponder>
     </sections>

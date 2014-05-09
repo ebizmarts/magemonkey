@@ -1,0 +1,57 @@
+<?php
+
+/**
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_Autoresponder
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
+ */
+?>
+
+<?php
+    $_product = $this->getProduct();
+    $formAction = $this->getSubscribeUrl();
+?>
+<?php if($_product && !$_product->getStockItem()->getIsInStock()): ?>
+
+    <?php if( $this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest()) ): ?>
+
+        <div class="box-collateral block-autoresponder-backtostock" style="padding: 20px 0 0;">
+            <div class="form-add">
+                <form id="backtostock_form" action="<?php echo $formAction?>" method="post">
+                    <div>
+                        <h2><?php echo $this->__('Get notified !'); ?></h2>
+                        <p><?php echo $this->__('Subscribe to receive an email as soon as this product become available again!'); ?></p>
+                        <ul class="form-list">
+                            <li>
+                                <label for="subscriber_email"><?php echo $this->__('Enter your email address');?></label>
+                                <div class="input-box">
+                                    <?php $email = $this->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getEmail() : ''; ?>
+                                    <input type="text" class="input-text validate-email required-entry" name="subscriber_email" id="subscriber_email" size="35" value="<?php echo $email; ?>" />
+                                </div>
+                            </li>
+                        </ul>
+                        <button type="submit" class="button" title="<?php echo $this->__('Subscribe'); ?>">
+                            <span>
+                                <span><?php echo $this->__('Subscribe'); ?></span>
+                            </span>
+                        </button>
+                        <input type="hidden" name="redirect_url" value="<?php echo $_product->getProductUrl(); ?>" />
+                        <input type="hidden" name="product_id" value="<?php echo $_product->getId(); ?>" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            //<![CDATA[
+            var dataForm = new VarienForm('backtostock_form', false);
+
+            function btsShowForm() { $('backtostock_form').scrollTo(); }
+            //]]>
+        </script>
+
+    <?php endif; ?>
+
+<?php endif; ?>

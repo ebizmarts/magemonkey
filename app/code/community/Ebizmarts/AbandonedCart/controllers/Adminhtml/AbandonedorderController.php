@@ -1,9 +1,11 @@
 <?php
+
 /**
- * Created by Ebizmarts
- * User: gonzalo@ebizmarts.com
- * Date: 1/16/13
- * Time: 2:22 PM
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_AbandonedCart
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
 
 class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Adminhtml_Controller_Action

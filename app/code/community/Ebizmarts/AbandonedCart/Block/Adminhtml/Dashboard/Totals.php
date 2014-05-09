@@ -1,10 +1,13 @@
 <?php
+
 /**
- * Created by Ebizmarts
- * User: gonzalo@ebizmarts.com
- * Date: 1/18/13
- * Time: 5:11 PM
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_AbandonedCart
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Adminhtml_Block_Dashboard_Bar
 {
     /**
@@ -90,7 +93,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         $this->addTotal($this->__('Generated Conv. Rate'),$convrate.'%',true);
         // get Mandrill statistics
         if(Mage::helper('core')->isModuleEnabled('Ebizmarts_Mandrill')
-            && Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version > '1.0.4'
+            && (version_compare(Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version, '1.0.4', '>'))
             && Mage::helper('mandrill')->useTransactionalService()) {
             if(!$isFilter) {
                 $stores = Mage::app()->getStores();

@@ -7,7 +7,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_MageMonkey_Block_Adminhtml_Customer_Edit_Tab_Memberactivity
     extends Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid
     implements Mage_Adminhtml_Block_Widget_Tab_Interface

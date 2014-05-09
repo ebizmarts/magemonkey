@@ -1,9 +1,11 @@
 <?php
+
 /**
- * Created by Ebizmarts
- * User: gonzalo@ebizmarts.com
- * Date: 1/21/13
- * Time: 3:26 PM
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_AbandonedCart
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
 
 class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Reports_Model_Mysql4_Order_Collection
