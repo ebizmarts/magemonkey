@@ -56,7 +56,6 @@ class Ebizmarts_Autoresponder_Model_Cron
             $this->_processVisited($storeId);
         }
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId)){
-            //@TODO: remains processBackToStock function
             $this->_processBackToStock($storeId);
         }
     }
