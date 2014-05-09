@@ -169,14 +169,6 @@
                     </ebizmarts_autoresponder_save_config>
                 </observers>
             </admin_system_config_changed_section_ebizmarts_autoresponder>
-            <catalog_product_save_after>
-                <observers>
-                    <ebizmarts_autoresponder_backtostock>
-                    <class>ebizmarts_autoresponder/eventObserver</class>
-                    <method>productStockCheckAfterSave</method>
-                    </ebizmarts_autoresponder_backtostock>
-                </observers>
-            </catalog_product_save_after>
             <admin_system_config_changed_section_mandrill>
                 <observers>
                     <mandrill_save_config>
