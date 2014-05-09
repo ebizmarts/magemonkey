@@ -641,7 +641,7 @@ class Ebizmarts_Autoresponder_Model_Cron
      * Remove records from BackToStock tables which were flagged as is_active=0
      *
      */
-    protected function cleanupBackToStock()
+    public function cleanupBackToStock()
     {
         // Retrieve all records that were deactivated
         $stockAlert = Mage::getModel('ebizmarts_autoresponder/backtostockalert')->getCollection();
