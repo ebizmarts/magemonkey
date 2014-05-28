@@ -1,4 +1,12 @@
 <?xml version="1.0"?>
+<!--
+    Configuration file for Ebizmarts_Mandrill module, touch at you entire responsibility
+
+    @category   Ebizmarts
+    @package    Ebizmarts_Mandrill
+    @author     Ebizmarts Team <info@ebizmarts.com>
+    @license    http://opensource.org/licenses/osl-3.0.php
+-->
 <config>
     <modules>
         <Ebizmarts_Mandrill>
@@ -66,16 +74,6 @@
                 </Ebizmarts_Mandrill>
             </modules>
         </translate>
-        <events>
-            <admin_system_config_changed_section_mandrill>
-                <observers>
-                    <mandrill_save_config>
-                        <class>ebizmarts_autoresponder/eventObserver</class>
-                        <method>saveConfig</method>
-                    </mandrill_save_config>
-                </observers>
-            </admin_system_config_changed_section_mandrill>
-        </events>
     </adminhtml>
     <default>
     	<mandrill>

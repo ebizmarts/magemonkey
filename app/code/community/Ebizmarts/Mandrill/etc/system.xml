@@ -1,4 +1,12 @@
 <?xml version="1.0"?>
+<!--
+    Configuration file for Ebizmarts_Mandrill module, touch at you entire responsibility
+
+    @category   Ebizmarts
+    @package    Ebizmarts_Mandrill
+    @author     Ebizmarts Team <info@ebizmarts.com>
+    @license    http://opensource.org/licenses/osl-3.0.php
+-->
 <config>
     <sections>
         <mandrill translate="label" module="mandrill">

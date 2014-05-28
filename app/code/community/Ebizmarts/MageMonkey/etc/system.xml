@@ -1,4 +1,12 @@
 <?xml version="1.0"?>
+<!--
+    Configuration file for Ebizmarts_MageMonkey module, touch at you entire responsibility
+
+    @category   Ebizmarts
+    @package    Ebizmarts_MageMonkey
+    @author     Ebizmarts Team <info@ebizmarts.com>
+    @license    http://opensource.org/licenses/osl-3.0.php
+-->
 <config>
     <tabs>
         <monkey translate="label" module="monkey">
@@ -204,11 +212,21 @@
                             <show_in_store>1</show_in_store>
                             <comment></comment>
                         </webhook_delete>
+                        <adminhtml_notification translate="label comment">
+                            <label>Show Admin Notifications</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>124</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment>Notifications related to campaigns sent, cleaned emails, etc</comment>
+                        </adminhtml_notification>
                         <enable_log translate="label comment">
                             <label>Enable Log</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>124</sort_order>
+                            <sort_order>125</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>

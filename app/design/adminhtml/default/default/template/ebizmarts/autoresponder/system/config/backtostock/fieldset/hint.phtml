@@ -1,0 +1,6 @@
+<?php if(!Mage::getStoreConfig('cataloginventory/options/show_out_of_stock')) : ?>
+    <div class="box error-msg" style="padding-left:30px;">
+        <a href="<?php echo Mage::helper('adminhtml')->getUrl('/system_config/edit',array('section'=>'cataloginventory')); ?>">Manage your Catalog Inventory options</a>.<br/>
+        You must activate "Display Out of Stock Products" in System->Configuration->Catalog->Inventory->Stock Options->Display Out of Stock Products
+    </div>
+<?php endif; ?>

@@ -6,7 +6,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
@@ -29,6 +31,17 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return is_object(Mage::getConfig()->getNode('global/models/enterprise_enterprise'));
     }
+
+
+	/**
+	 * Whether Admin Notifications should be displayed or not in backend Admin
+	 *
+	 * @return bool
+	 */
+	public function isAdminNotificationEnabled()
+	{
+		return $this->config('adminhtml_notification');
+	}
 
 	/**
 	 * Return Webhooks security key for given store
@@ -535,13 +548,30 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$groups = $customer->getListGroups();
 		$groupings = array();
 
-		if(is_array($groups) && count($groups)){
-			foreach($groups as $groupId => $grupoptions){
-				$groupings[] = array(
-									 'id' => $groupId,
-								     'groups' => (is_array($grupoptions) ? implode(', ', $grupoptions) : $grupoptions)
-								    );
-			}
+		if(is_array($groups) && count($groups)) {
+            foreach($groups as $groupId => $grupoptions)
+            {
+                if (is_array($grupoptions))
+                {
+                    $grupOptionsEscaped = array();
+                    foreach($grupoptions as $gopt)
+                    {
+                        $gopt = str_replace(",","%C%",$gopt);
+                        $grupOptionsEscaped[] = $gopt;
+                    }
+                    $groupings[] = array(
+                        'id' => $groupId,
+                        'groups' => str_replace('%C%','\\,',implode(', ', $grupOptionsEscaped))
+                    );
+                }
+                else
+                {
+                    $groupings[] = array(
+                        'id' => $groupId,
+                        'groups' => str_replace(',','\\,',$grupoptions)
+                    );
+                }
+            }
 		}
 
 		$merge_vars['GROUPINGS'] = $groupings;

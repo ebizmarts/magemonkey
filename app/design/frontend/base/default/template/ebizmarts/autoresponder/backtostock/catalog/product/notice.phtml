@@ -1,0 +1,26 @@
+<?php
+
+/**
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_Autoresponder
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
+ */
+?>
+
+<?php
+    $_product = $this->getProduct();
+    $formAction = $this->getSubscribeUrl();
+?>
+<?php if($_product && !$_product->getStockItem()->getIsInStock()): ?>
+
+    <?php if($this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest()) ): ?>
+        <div class="box-collateral block-autoresponder-backtostock">
+            <div class="form-add">
+                <a href="#" onclick="btsShowForm(); return false;"><?php echo $this->__('Sign up to be notified when this product is back to stock'); ?></a>
+            </div>
+        </div>
+    <?php endif; ?>
+
+<?php endif; ?>

@@ -6,7 +6,9 @@
  * @category   Ebizmarts
  * @package    Ebizmarts_MageMonkey
  * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 {
 
@@ -235,19 +237,51 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 		if($memberInfo['success'] == 1){
 			$groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
 
-			foreach($groupings as $_group){
-				if(!empty($_group['groups'])){
+            foreach($groupings as $_group){
 
-					if($fieldType == 'checkboxes'){
-						$myGroups[$_group['id']] = explode(', ', $_group['groups']);
-					}elseif($fieldType == 'radio'){
-						$myGroups[$_group['id']] = array($_group['groups']);
-					}else{
-						$myGroups[$_group['id']] = $_group['groups'];
-					}
+                if(!empty($_group['groups'])){
+                    if($fieldType == 'checkboxes'){
 
-				}
-			}
+                        $currentGroup = str_replace('\\,','%C%',$_group['groups']);
+                        $currentGroupArray = explode(', ', $currentGroup);
+
+                        $myGroups[$_group['id']] = str_replace('%C%',',', $currentGroupArray);
+
+                    }elseif($fieldType == 'radio'){
+
+                        if(strpos($_group['groups'], ',')) {
+                            $currentGroup = str_replace('\\,','%C%',$_group['groups']);
+                            $currentGroupArray = explode(', ', $currentGroup);
+                            $collapsed = str_replace('%C%',',', $currentGroupArray);
+
+                            if(is_array($collapsed) && isset($collapsed[0])) {
+                                $myGroups[$_group['id']] = array($collapsed[0]);
+                            } else {
+                                $myGroups[$_group['id']] = array($collapsed);
+                            }
+                        } else {
+                            $myGroups[$_group['id']] = array($_group['groups']);
+                        }
+
+                    }else{
+                        if(strpos($_group['groups'], ',')) {
+                            $currentGroup = str_replace('\\,','%C%',$_group['groups']);
+                            $currentGroupArray = explode(', ', $currentGroup);
+                            $collapsed = str_replace('%C%',',', $currentGroupArray);
+
+                            if(is_array($collapsed) && isset($collapsed[0])) {
+                                $myGroups[$_group['id']] = array($collapsed[0]);
+                            } else {
+                                $myGroups[$_group['id']] = array($collapsed);
+                            }
+                        } else {
+                            $myGroups[$_group['id']] = array($_group['groups']);
+                        }
+
+                    }
+
+                }
+            }
 		}
 
 		switch ($fieldType) {

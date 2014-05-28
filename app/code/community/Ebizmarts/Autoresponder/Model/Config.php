@@ -1,11 +1,13 @@
 <?php
+
 /**
- * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 6/14/13
- * Time   : 5:10 PM
- * File   : Config.php
- * Module : Ebizmarts_Magemonkey
+ *
+ * @category   Ebizmarts
+ * @package    Ebizmarts_Autoresponder
+ * @author     Ebizmarts Team <info@ebizmarts.com>
+ * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_Autoresponder_Model_Config
 {
     const GENERAL_ACTIVE                = 'ebizmarts_autoresponder/general/active';
@@ -93,6 +95,13 @@ class Ebizmarts_Autoresponder_Model_Config
     const VISITED_CUSTOMER_GROUPS     = 'ebizmarts_autoresponder/visitedproducts/customer';
     const VISITED_TIME                = 'ebizmarts_autoresponder/visitedproducts/time';
     const VISITED_MAX                 = 'ebizmarts_autoresponder/visitedproducts/max_visited';
+
+    const BACKTOSTOCK_ACTIVE            = 'ebizmarts_autoresponder/backtostock/active';
+    const BACKTOSTOCK_TEMPLATE          = 'ebizmarts_autoresponder/backtostock/template';
+    const BACKTOSTOCK_SUBJECT           = 'ebizmarts_autoresponder/backtostock/subject';
+    const BACKTOSTOCK_MANDRILL_TAG      = 'ebizmarts_autoresponder/backtostock/mandrill_tag';
+    const BACKTOSTOCK_ALLOW_GUESTS      = 'ebizmarts_autoresponder/backtostock/allow_guests';
+    const BACKTOSTOCK_MAIL_TYPE_NAME    = 'back to stock';
 
     const COUPON_AUTOMATIC            = 2;
     const COUPON_MANUAL               = 1;

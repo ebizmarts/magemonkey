@@ -2,16 +2,15 @@
 <!--
     Configuration file for Ebizmarts_Autoresponder module, touch at you entire responsibility
 
-    Author : Ebizmarts <info@ebizmarts.com>
-    Date   : 4/28/13
-    Time   : 11:20 AM
-    File   : config.xml
-    Module : Ebizmarts_Magemonkey
+    @category   Ebizmarts
+    @package    Ebizmarts_Autoresponder
+    @author     Ebizmarts Team <info@ebizmarts.com>
+    @license    http://opensource.org/licenses/osl-3.0.php
 -->
 <config>
     <modules>
         <Ebizmarts_Autoresponder>
-            <version>0.1.5</version>
+            <version>0.1.6</version>
         </Ebizmarts_Autoresponder>
     </modules>
     <global>
@@ -33,6 +32,12 @@
                     <review>
                         <table>ebizmarts_autoresponder_review</table>
                     </review>
+                    <backtostock>
+                        <table>ebizmarts_autoresponder_backtostock</table>
+                    </backtostock>
+                    <backtostockalert>
+                        <table>ebizmarts_autoresponder_backtostock_alert</table>
+                    </backtostockalert>
                 </entities>
             </ebizmarts_autoresponder_resource>
         </models>
@@ -144,6 +149,15 @@
                 </ebizmarts_autoresponder_review_coupon_template>
             </email>
         </template>
+        <template>
+            <email>
+                <ebizmarts_autoresponder_backtostock_template translate="label" module="ebizmarts_autoresponder">
+                    <label>Back to Stock</label>
+                    <file>ebizmarts/autoresponder/backtostock.html</file>
+                    <type>html</type>
+                </ebizmarts_autoresponder_backtostock_template>
+            </email>
+        </template>
     </global>
     <adminhtml>
         <events>
@@ -155,6 +169,14 @@
                     </ebizmarts_autoresponder_save_config>
                 </observers>
             </admin_system_config_changed_section_ebizmarts_autoresponder>
+            <admin_system_config_changed_section_mandrill>
+                <observers>
+                    <mandrill_save_config>
+                        <class>ebizmarts_autoresponder/eventObserver</class>
+                        <method>saveConfig</method>
+                    </mandrill_save_config>
+                </observers>
+            </admin_system_config_changed_section_mandrill>
         </events>
     </adminhtml>
     <frontend>
@@ -204,6 +226,14 @@
                     <model>ebizmarts_autoresponder/cron::process</model>
                 </run>
             </ebizmarts_autoresponder>
+            <ebizmarts_autoresponder_backtostock_cleanup>
+                <schedule>
+                    <cron_expr>0 0 1 * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ebizmarts_autoresponder/cron::cleanupBackToStock</model>
+                </run>
+            </ebizmarts_autoresponder_backtostock_cleanup>
         </jobs>
     </crontab>
     <default>
@@ -246,6 +276,12 @@
                 <subject>Visited Product Subject</subject>
                 <listname>Visited Product List</listname>
             </visitedproducts>
+            <backtostock>
+                <subject>Back to Stock Notification</subject>
+                <mandrill_tag>Autoresponder_BacktoStock</mandrill_tag>
+                <allow-guests>1</allow-guests>
+                <listname>Back to Stock List</listname>
+            </backtostock>
         </ebizmarts_autoresponder>
     </default>
 </config>
