@@ -198,6 +198,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
         $configscope = Mage::app()->getRequest()->getParam('store');
         if( $configscope && ($configscope !== 'undefined') ){
+            // diglin - fix a bug with $configscope as an array
             if (is_array($configscope) && isset($configscope['code'])) {
                 $store = $configscope['code'];
             } else {
