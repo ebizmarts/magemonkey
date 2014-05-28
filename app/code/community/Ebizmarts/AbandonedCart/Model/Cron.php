@@ -123,6 +123,41 @@ class Ebizmarts_AbandonedCart_Model_Cron
         // for each cart
         foreach($collection as $quote)
         {
+            foreach($quote->getAllVisibleItems() as $item) {
+                $removeFromQuote = false;
+                $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                if(!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
+                {
+                    Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer iresent or enabled; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
+                    $removeFromQuote = true;
+                }
+                $stock = $product->getStockItem();
+                if(
+                    (
+                        $stock->getManageStock() ||
+                        ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId()))
+                    )
+                && $stock->getQty() < $item->getQty())
+                {
+                    Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer in stock; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
+                    $removeFromQuote = true;
+                }
+                if($removeFromQuote)
+                {
+                    $quote->removeItem($item->getId());
+                }
+            }
+            if(count($quote->getAllVisibleItems()) < 1)
+            {
+                srand((double)microtime()*1000000);
+                $token = md5(rand(0,9999999));
+                $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
+                $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
+                $quote2->setEbizmartsAbandonedcartToken($token);
+                $quote2->save();
+                continue;
+            }
+
             // check if they are any order from the customer with date >=
             $collection2 = Mage::getResourceModel('reports/quote_collection');
             $collection2->addFieldToFilter('main_table.is_active', '0')
