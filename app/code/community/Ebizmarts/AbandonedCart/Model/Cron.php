@@ -123,31 +123,51 @@ class Ebizmarts_AbandonedCart_Model_Cron
         // for each cart
         foreach($collection as $quote)
         {
-            foreach($quote->getAllVisibleItems() as $item) {
-                $removeFromQuote = false;
-                $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                if(!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
-                {
-                    Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer iresent or enabled; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
-                    $removeFromQuote = true;
+            /*
+            * Select order where quote_id is filled with this quote's id.
+            * It seems the converted_at field in sales_flat_quote isn't reliable for deciding whether
+            * or not an order has been converted from the quote.
+            */
+            $skipQuote = false;
+            $order = Mage::getModel('sales/order')->getResourceCollection()->addFieldToFilter('quote_id', $quote->getId())->getFirstItem();
+            if($order->getId())
+            {
+                Mage::log('AbandonedCart; quote ' . $quote->getId() . ' has already been converted to order  ' . $order->getId());
+                $skipQuote = true;
+            }
+
+            if(!$skipQuote) {
+                foreach($quote->getAllVisibleItems() as $item) {
+                    $removeFromQuote = false;
+                    $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                    if(!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
+                    {
+                        Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer iresent or enabled; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
+                        $removeFromQuote = true;
+                    }
+                    $stock = $product->getStockItem();
+                    if(
+                        (
+                            $stock->getManageStock() ||
+                            ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId()))
+                        )
+                    && $stock->getQty() < $item->getQty())
+                    {
+                        Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer in stock; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
+                        $removeFromQuote = true;
+                    }
+                    if($removeFromQuote)
+                    {
+                        $quote->removeItem($item->getId());
+                    }
                 }
-                $stock = $product->getStockItem();
-                if(
-                    (
-                        $stock->getManageStock() ||
-                        ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId()))
-                    )
-                && $stock->getQty() < $item->getQty())
+                if(count($quote->getAllVisibleItems()) < 1)
                 {
-                    Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer in stock; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
-                    $removeFromQuote = true;
-                }
-                if($removeFromQuote)
-                {
-                    $quote->removeItem($item->getId());
+                    $skipQuote = true;
                 }
             }
-            if(count($quote->getAllVisibleItems()) < 1)
+
+            if($skipQuote)
             {
                 srand((double)microtime()*1000000);
                 $token = md5(rand(0,9999999));
