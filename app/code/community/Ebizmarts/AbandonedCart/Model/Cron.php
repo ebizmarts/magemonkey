@@ -140,9 +140,9 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 foreach($quote->getAllVisibleItems() as $item) {
                     $removeFromQuote = false;
                     $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                    if(!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
+                    if(!$product->getId() || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
                     {
-                        Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer iresent or enabled; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
+                        Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer present or enabled; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
                         $removeFromQuote = true;
                     }
                     $stock = $product->getStockItem();
