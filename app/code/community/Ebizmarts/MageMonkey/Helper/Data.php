@@ -192,22 +192,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @param string $store
 	 * @return mixed Configuration setting
 	 */
-    public function config($value, $store = null)
-    {
-        $store = is_null($store) ? Mage::app()->getStore() : $store;
+	public function config($value, $store = null)
+	{
+		$store = is_null($store) ? Mage::app()->getStore() : $store;
 
-        $configscope = Mage::app()->getRequest()->getParam('store');
-        if( $configscope && ($configscope !== 'undefined') ){
-            // diglin - fix a bug with $configscope as an array
+		$configscope = Mage::app()->getRequest()->getParam('store');
+		if( $configscope && ($configscope !== 'undefined') ){
+            // rissip - fix a bug with $configscope as an array
             if (is_array($configscope) && isset($configscope['code'])) {
                 $store = $configscope['code'];
             } else {
-                $store = $configscope;
-            }
+			    $store = $configscope;
+		    }
         }
 
-        return Mage::getStoreConfig("monkey/general/$value", $store);
-    }
+		return Mage::getStoreConfig("monkey/general/$value", $store);
+	}
 
 	/**
 	 * Check if config setting <checkout_subscribe> is enabled

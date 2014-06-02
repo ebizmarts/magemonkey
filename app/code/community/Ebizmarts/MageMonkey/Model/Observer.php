@@ -150,7 +150,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function saveConfig(Varien_Event_Observer $observer)
 	{
-        // diglin - change $store by $scope and replace Mage::app()->getDefaultStoreView()->getCode() by 'default' because it is the value saved into DB configuration table
+        // rissip - change $store by $scope and replace Mage::app()->getDefaultStoreView()->getCode() by 'default' because it is the value saved into DB configuration table
 		$scope = is_null($observer->getEvent()->getStore()) ? 'default' : $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
