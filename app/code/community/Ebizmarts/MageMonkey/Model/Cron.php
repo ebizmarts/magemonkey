@@ -241,9 +241,22 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$collection->addFieldToFilter('store_id', $jobStoreId);
 		}
 
-		if($job->getDataSourceEntity() == 'newsletter_subscriber'):
+		/**
+		 * rissip - add a sort order to the query collection because:
+		 * In case of a process has been run, the process last id is set the subscriber_id = XYZ (or entity_id = XYZ in case of customer data source)
+		 * The second time the process is started, this script wants to start from the last process id but the collection list is not sorted, so we can have
+		 * 100% of subscribers which are already proceeded but the process could start again in the middle of the subscriber list, the collection is not sorted.
+		 */
+		if ($job->getDataSourceEntity() == 'newsletter_subscriber') {
 			$collection->addFieldToFilter('subscriber_status', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
-		endif;
+		    $orderBy = 'subscriber_id';
+		} elseif ($job->getDataSourceEntity() == 'customer') {
+		    $orderBy = 'entity_id';
+		}
+
+		if ($orderBy) {
+		    $collection->addOrder($orderBy, Varien_Data_Collection::SORT_ORDER_ASC);
+		};
 
 		$collection->load();
 
@@ -281,6 +294,11 @@ class Ebizmarts_MageMonkey_Model_Cron
 					/*if( $processedCount < $this->_limit ){
 						$job->setStatus('finished');
 					}*/
+
+					// rissip - set finished status
+					if($vals['add_count'] + $vals['update_count'] == $processedCount) {
+					    $job->setStatus('finished');
+					}
 
 					$job
 					->setUpdatedAt($this->_dbDate())
