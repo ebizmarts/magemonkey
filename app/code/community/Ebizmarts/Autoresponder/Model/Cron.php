@@ -286,7 +286,6 @@ class Ebizmarts_Autoresponder_Model_Cron
             $email = $order->getCustomerEmail();
             if($this->_isSubscribed($email,'review',$storeId)) {
                 if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON,$storeId)) {
-                    srand((double)microtime()*1000000);
                     $token = md5(rand(0,9999999));
                     $review = Mage::getModel('ebizmarts_autoresponder/review');
                     $review->setCustomerId($order->getCustomerId())
