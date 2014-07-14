@@ -36,7 +36,7 @@ class Ebizmarts_Autoresponder_Block_Adminhtml_System_Config_Fieldset_Hint
      */
     public function getPxParams() {
         $v = (string)Mage::getConfig()->getNode('modules/Ebizmarts_Autoresponder/version');
-        $ext = "Abandoned Cart;{$v}";
+        $ext = "Autoresponder Cart;{$v}";
 
         $modulesArray = (array)Mage::getConfig()->getNode('modules')->children();
         $aux = (array_key_exists('Enterprise_Enterprise', $modulesArray))? 'EE' : 'CE' ;
