@@ -134,7 +134,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
             }
             //
             //$url = Mage::getBaseUrl('web').'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
-            srand((double)microtime()*1000000);
             $token = md5(rand(0,9999999));
             $url = Mage::getModel('core/url')->setStore($store)->getUrl('',array('_nosid'=>true)).'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId().'&token='.$token;
 
