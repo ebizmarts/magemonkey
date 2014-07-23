@@ -471,7 +471,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             ->setPageSize(1)
                         	->getFirstItem();
 	                    if ( $last_order->getId() ){
-	                    	$merge_vars[$key] = Mage::helper('core')->formatDate($last_order->getCreatedAt());
+	                    	$merge_vars[$key] = date('m/d/Y', strtotime($last_order->getCreatedAt()));
 	                    }
 
 						break;
