@@ -25,12 +25,12 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             $scope = "default";
         }
         $store  = is_null($o->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $o->getEvent()->getStore();
-        if(!Mage::helper('mandrill')->useTransactionalService()) {
+        if(!Mage::helper('ebizmarts_mandrill')->useTransactionalService()) {
             $config =  new Mage_Core_Model_Config();
             $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE,false,$scope,$store);
             Mage::getConfig()->cleanCache();
         }
-        if(!Mage::helper('mandrill')->useTransactionalService()) {
+        if(!Mage::helper('ebizmarts_mandrill')->useTransactionalService()) {
             $config =  new Mage_Core_Model_Config();
             $config->saveConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,false,$scope,$store);
             Mage::getConfig()->cleanCache();

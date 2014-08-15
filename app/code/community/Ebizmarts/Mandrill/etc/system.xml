@@ -1,15 +1,7 @@
 <?xml version="1.0"?>
-<!--
-    Configuration file for Ebizmarts_Mandrill module, touch at you entire responsibility
-
-    @category   Ebizmarts
-    @package    Ebizmarts_Mandrill
-    @author     Ebizmarts Team <info@ebizmarts.com>
-    @license    http://opensource.org/licenses/osl-3.0.php
--->
 <config>
     <sections>
-        <mandrill translate="label" module="mandrill">
+        <mandrill translate="label" module="ebizmarts_mandrill">
             <label><![CDATA[Mandrill]]></label>
             <class>mandrill-section separator-top</class>
             <header_css>mandrill-header</header_css>
@@ -20,7 +12,7 @@
             <show_in_store>1</show_in_store>
             <groups>
                 <hint>
-                    <frontend_model>mandrill/adminhtml_system_config_fieldset_hint</frontend_model>
+                    <frontend_model>ebizmarts_mandrill/adminhtml_system_config_fieldset_hint</frontend_model>
                     <sort_order>0</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -52,6 +44,9 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Your API Key]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
                         </apikey>
                         <enable_log translate="label comment">
                             <label>Enable Log</label>
@@ -62,16 +57,22 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment>File is {{base_dir}}/var/log/Ebizmarts_Mandrill.log</comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
                         </enable_log>
                         <user_info translate="label comment">
                             <label>Account Info</label>
-                            <frontend_model>mandrill/adminhtml_system_config_userinfo</frontend_model>
-                            <source_model>mandrill/system_config_source_userinfo</source_model>
+                            <frontend_model>ebizmarts_mandrill/adminhtml_system_config_userinfo</frontend_model>
+                            <source_model>ebizmarts_mandrill/system_config_source_userinfo</source_model>
                             <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
                         </user_info>
                     </fields>
                 </general>

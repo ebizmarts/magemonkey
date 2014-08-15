@@ -3,19 +3,19 @@
     <menu>
         <system>
             <children>
-            	<email_template>
-            		<children>
-		                <mandrill translate="title" module="mandrill">
-		                    <title>Mandrill</title>
-		                    <children>
-				                <users_senders translate="title" module="mandrill">
-				                    <title>Senders</title>
-						            <action>adminhtml/mandrill_users/senders</action>
-				                </users_senders>
-		                    </children>
-		                </mandrill>
-            		</children>
-            	</email_template>
+                <email_template>
+                    <children>
+                        <mandrill translate="title" module="ebizmarts_mandrill">
+                            <title>Mandrill</title>
+                            <children>
+                                <users_senders translate="title" module="ebizmarts_mandrill">
+                                    <title>Senders</title>
+                                    <action>adminhtml/mandrill_users/senders</action>
+                                </users_senders>
+                            </children>
+                        </mandrill>
+                    </children>
+                </email_template>
             </children>
         </system>
         <newsletter>
@@ -27,24 +27,25 @@
                 </ebizmarts_mandrill>
             </children>
         </newsletter>
+
     </menu>
-	<acl>
-	    <resources>
-	      <admin>
-		    <children>
-		        <system>
-		            <children>
-		                <config>
-		                    <children>
-		                        <mandrill translate="title" module="mandrill">
-		                            <title>Mandrill Configuration</title>
-		                        </mandrill>
-		                    </children>
-		                </config>
-		            </children>
-		        </system>
-		    </children>
-		</admin>
-	    </resources>
-	</acl>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <mandrill translate="title" module="ebizmarts_mandrill">
+                                        <title>Mandrill Configuration</title>
+                                    </mandrill>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
 </config>

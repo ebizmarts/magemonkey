@@ -25,18 +25,15 @@ class Ebizmarts_Mandrill_Helper_Data extends Mage_Core_Helper_Abstract	 {
 		return ($active && (strlen($key)));
 	}
 
-	public function api() {
-		return new Mandrill_API();
-	}
-
 	/**
 	* Retrieves Mandrill API KEY from Magento's configuration
 	*
 	* @return string
 	*/
-	public function getApiKey($store = null) {
-		return Mage::getStoreConfig($this->_configPath . "apikey",$store);
-	}
+    public function getApiKey($storeId)
+    {
+        return Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId);
+    }
 
 	/**
 	 * Get module User-Agent to use on API requests

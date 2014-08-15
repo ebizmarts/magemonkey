@@ -1,52 +1,45 @@
 <?php
-
 /**
- * Mandrill source for User Info
- *
- * @category   Ebizmarts
- * @package    Ebizmarts_Mandrill
- * @author     Ebizmarts Team <info@ebizmarts.com>
- * @license    http://opensource.org/licenses/osl-3.0.php
+ * Author : Ebizmarts <info@ebizmarts.com>
+ * Date   : 8/6/14
+ * Time   : 12:16 AM
+ * File   : Userinfo.php
+ * Module : Ebizmarts_Mandrill
  */
-
 class Ebizmarts_Mandrill_Model_System_Config_Source_Userinfo
 {
 
-	/**
-	 * Account details storage
-	 *
-	 * @access protected
-	 * @var bool|array
-	 */
+    /**
+     * Account details storage
+     *
+     * @access protected
+     * @var bool|array
+     */
     protected $_account_details;
 
-	/**
-	 * Set AccountDetails on class attribute if not already set
-	 *
-	 * @return void
-	 */
+    /**
+     * Set AccountDetails on class attribute if not already set
+     *
+     * @return void
+     */
     public function __construct()
     {
-        if (!$this->_account_details) {
-            $helper = Mage::helper('mandrill');
-            $this->_account_details = $helper->api()
-                                             ->setApiKey($helper->getApiKey())
-                                             ->usersInfo();
+        $storeId = Mage::app()->getStore()->getId();
+        if (!$this->_account_details&&Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId)) {
+            $api = new Mandrill_Message(Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId));
+            $this->_account_details = $api->users->info();
         }
     }
 
-	/**
-	 * Return data if API key is entered
-	 *
-	 * @return array
-	 */
+    /**
+     * Return data if API key is entered
+     *
+     * @return array
+     */
     public function toOptionArray()
     {
-        $helper = Mage::helper('mandrill');
-        if(is_object($this->_account_details)){
-
-            $this->_account_details = (array)$this->_account_details;            
-
+        $helper = Mage::helper('ebizmarts_mandrill');
+        if(is_array($this->_account_details)){
             return array(
                 array('value' => 0, 'label' => $helper->__("<strong>Username</strong>: %s %s", $this->_account_details["username"], "<small>used for SMTP authentication</small>")),
 

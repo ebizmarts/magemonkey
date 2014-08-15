@@ -35,7 +35,7 @@
             extension to 1.0.5 or up and configure <a class="action-link-holder" href="http://mandrill.com/signup/?pid=ebizmart&source=website" target="_blank">Mandrill</a> is free
         </div>
         <?php else: ?>
-            <?php if(!Mage::helper('mandrill')->useTransactionalService()): ?>
+            <?php if(!Mage::helper('ebizmarts_mandrill')->useTransactionalService()): ?>
             <div class="warning-msg">
                 You may obtain more statistics if enable and configure <a class="action-link-holder" href="<?php echo Mage::helper("adminhtml")->getUrl("adminhtml/system_config/edit/section/mandrill"); ?>" >Mandrill</a> extension
             </div>

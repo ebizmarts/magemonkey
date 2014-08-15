@@ -1,23 +1,19 @@
 <?xml version="1.0"?>
-<!--
-    Configuration file for Ebizmarts_Mandrill module, touch at you entire responsibility
-
-    @category   Ebizmarts
-    @package    Ebizmarts_Mandrill
-    @author     Ebizmarts Team <info@ebizmarts.com>
-    @license    http://opensource.org/licenses/osl-3.0.php
--->
 <config>
     <modules>
         <Ebizmarts_Mandrill>
-             <version>1.0.10</version>
+            <version>2.0.0</version>
         </Ebizmarts_Mandrill>
     </modules>
     <global>
         <models>
-            <mandrill>
+            <ebizmarts_mandrill>
                 <class>Ebizmarts_Mandrill_Model</class>
-            </mandrill>
+                <resourceModel>ebizmarts_mandrill_resource</resourceModel>
+            </ebizmarts_mandrill>
+            <ebizmarts_mandrill_resource>
+                <class>Ebizmarts_Mandrill_Model_Resource</class>
+            </ebizmarts_mandrill_resource>
             <core>
                 <rewrite>
                     <email_template>Ebizmarts_Mandrill_Model_Email_Template</email_template>
@@ -25,15 +21,16 @@
             </core>
         </models>
         <blocks>
-            <mandrill>
+            <ebizmarts_mandrill>
                 <class>Ebizmarts_Mandrill_Block</class>
-            </mandrill>
+            </ebizmarts_mandrill>
         </blocks>
         <helpers>
-            <mandrill>
+            <ebizmarts_mandrill>
                 <class>Ebizmarts_Mandrill_Helper</class>
-            </mandrill>
+            </ebizmarts_mandrill>
         </helpers>
+
     </global>
     <frontend>
         <translate>
@@ -48,23 +45,23 @@
     </frontend>
     <admin>
         <routers>
-             <adminhtml>
-                 <args>
-                     <modules>
-                         <mandrill before="Mage_Adminhtml">Ebizmarts_Mandrill_Adminhtml</mandrill>
-                     </modules>
-                 </args>
-             </adminhtml>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <mandrill before="Mage_Adminhtml">Ebizmarts_Mandrill_Adminhtml</mandrill>
+                    </modules>
+                </args>
+            </adminhtml>
         </routers>
     </admin>
     <adminhtml>
-    	<layout>
-	        <updates>
-	            <mandrill>
-	                <file>mandrill.xml</file>
-	            </mandrill>
-	        </updates>
-    	</layout>
+        <layout>
+            <updates>
+                <mandrill>
+                    <file>ebizmarts/mandrill.xml</file>
+                </mandrill>
+            </updates>
+        </layout>
         <translate>
             <modules>
                 <Ebizmarts_Mandrill>
@@ -76,10 +73,10 @@
         </translate>
     </adminhtml>
     <default>
-    	<mandrill>
-    		<general>
-	    		<active>0</active>
-    		</general>
-    	</mandrill>
+        <mandrill>
+            <general>
+                <active>0</active>
+            </general>
+        </mandrill>
     </default>
 </config>
