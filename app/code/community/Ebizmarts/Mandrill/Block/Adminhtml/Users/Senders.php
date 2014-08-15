@@ -15,7 +15,7 @@ class Ebizmarts_Mandrill_Block_Adminhtml_Users_Senders extends Mage_Adminhtml_Bl
     public function __construct()
     {
         $this->_controller = 'adminhtml_users_senders';
-        $this->_blockGroup = 'mandrill';
+        $this->_blockGroup = 'ebizmarts_mandrill';
         $this->_headerText = Mage::helper('ebizmarts_mandrill')->__('Verified Email Addresses (%s)', "the senders that have tried to use this account, both verified and unverified.");
 
         parent::__construct();

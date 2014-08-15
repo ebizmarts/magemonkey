@@ -8,7 +8,7 @@
 
     <adminhtml_mandrill_users_senders>
         <reference name="content">
-            <block type="mandrill/adminhtml_users_senders" name="mc_transactionalemail_mandrill">
+            <block type="ebizmarts_mandrill/adminhtml_users_senders" name="mc_transactionalemail_mandrill">
                 <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
                     <action method="setUseConfirm"><params>0</params></action>
                 </block>

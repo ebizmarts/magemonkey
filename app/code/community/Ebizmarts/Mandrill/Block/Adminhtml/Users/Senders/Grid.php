@@ -24,31 +24,34 @@ class Ebizmarts_Mandrill_Block_Adminhtml_Users_Senders_Grid extends Mage_Adminht
 
     protected function _prepareCollection()
     {
-		$helper  = Mage::helper('ebizmarts_mandrill');
-        $mail    = $helper->api()->setApiKey($helper->getApiKey());
-		$emails  = $mail->usersSenders();
-
+//		$helper  = Mage::helper('ebizmarts_mandrill');
+//        $mail    = $helper->api()->setApiKey($helper->getApiKey());
+//		$emails  = $mail->usersSenders();
+        $storeId = Mage::app()->getStore()->getId();
+        $api  = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId));
+        $emails = $api->users->senders();
+        Mage::log($emails);
 		if($emails !== FALSE){
-			$_emails = array();
-			foreach($emails as $email){
-                
-                $email = new Varien_Object((array)$email);                
-				$_emails []= array(
-									'email'        => $email->getAddress(),
-                                    'sent'         => $email->getSent(),
-                                    'rejects'      => $email->getRejects(),
-                                    'complaints'   => $email->getComplaints(),
-                                    'unsubs'       => $email->getUnsubs(),
-                                    'opens'        => $email->getUniqueOpens(),
-                                    'clicks'       => $email->getUniqueClicks(),
-                                    'hard_bounces' => $email->getHardBounces(),
-                                    'soft_bounces' => $email->getSoftBounces(),
-									'created_at'   => $email->getCreatedAt(),									
-								  );
-			}
-			$collection = Mage::getModel('mandrill/customcollection', array($_emails));
+//			$_emails = array();
+//			foreach($emails as $email){
+//
+//                $email = new Varien_Object((array)$email);
+//				$_emails []= array(
+//									'email'        => $email->getAddress(),
+//                                    'sent'         => $email->getSent(),
+//                                    'rejects'      => $email->getRejects(),
+//                                    'complaints'   => $email->getComplaints(),
+//                                    'unsubs'       => $email->getUnsubs(),
+//                                    'opens'        => $email->getUniqueOpens(),
+//                                    'clicks'       => $email->getUniqueClicks(),
+//                                    'hard_bounces' => $email->getHardBounces(),
+//                                    'soft_bounces' => $email->getSoftBounces(),
+//									'created_at'   => $email->getCreatedAt(),
+//								  );
+//			}
+			$collection = Mage::getModel('ebizmarts_mandrill/customcollection', array($emails));
 		}else{
-			$collection = Mage::getModel('mandrill/customcollection', array(array()));
+			$collection = Mage::getModel('ebizmarts_mandrill/customcollection', array(array()));
 		}
 
         $this->setCollection($collection);
@@ -59,7 +62,7 @@ class Ebizmarts_Mandrill_Block_Adminhtml_Users_Senders_Grid extends Mage_Adminht
     {
         $this->addColumn('email', array(
             'header'=> Mage::helper('ebizmarts_mandrill')->__('Email Address'),
-            'index' => 'email',
+            'index' => 'address',
             'filter' => false,
             'sortable' => false
         ));
