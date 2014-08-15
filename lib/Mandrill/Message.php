@@ -74,8 +74,7 @@ class Mandrill_Message extends Mandrill_Mandrill
     {
         if ($this->_subject === null) {
             $subject = $this->_filterOther($subject);
-            $this->_subject = $this->_encodeHeader($subject);
-            $this->_storeHeader('Subject', $this->_subject);
+            $this->_subject = $subject;
         }
         return $this;
     }
@@ -83,5 +82,13 @@ class Mandrill_Message extends Mandrill_Mandrill
     {
         return $this->_subject;
     }
+    protected function _filterOther($data)
+    {
+        $rule = array("\r" => '',
+            "\n" => '',
+            "\t" => '',
+        );
 
+        return strtr($data, $rule);
+    }
 }
