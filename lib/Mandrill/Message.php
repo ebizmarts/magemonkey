@@ -10,6 +10,9 @@ class Mandrill_Message extends Mandrill_Mandrill
 {
     protected $_attachments = array();
     protected $_bcc = array();
+    protected $_bodyText = false;
+    protected $_bodyHtml = false;
+
     public function createAttachment($body,
                                      $mimeType    = Zend_Mime::TYPE_OCTETSTREAM,
                                      $disposition = Zend_Mime::DISPOSITION_ATTACHMENT,
@@ -50,4 +53,21 @@ class Mandrill_Message extends Mandrill_Mandrill
     {
         return $this->_bcc;
     }
+    public function setBodyHtml($html, $charset = null, $encoding = Zend_Mime::ENCODING_QUOTEDPRINTABLE)
+    {
+        $this->_bodyHtml = $html;
+    }
+    public function getBodyHtml()
+    {
+        return $this->_bodyHtml;
+    }
+    public function setBodyText($txt, $charset = null, $encoding = Zend_Mime::ENCODING_QUOTEDPRINTABLE)
+    {
+        $this->_bodyText = $txt;
+    }
+    public function getBodyText()
+    {
+        return $this->_bodyText;
+    }
+
 }
