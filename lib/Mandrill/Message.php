@@ -12,6 +12,7 @@ class Mandrill_Message extends Mandrill_Mandrill
     protected $_bcc = array();
     protected $_bodyText = false;
     protected $_bodyHtml = false;
+    protected $_subject = null;
 
     public function createAttachment($body,
                                      $mimeType    = Zend_Mime::TYPE_OCTETSTREAM,
@@ -68,6 +69,19 @@ class Mandrill_Message extends Mandrill_Mandrill
     public function getBodyText()
     {
         return $this->_bodyText;
+    }
+    public function setSubject($subject)
+    {
+        if ($this->_subject === null) {
+            $subject = $this->_filterOther($subject);
+            $this->_subject = $this->_encodeHeader($subject);
+            $this->_storeHeader('Subject', $this->_subject);
+        }
+        return $this;
+    }
+    public function getSubject()
+    {
+        return $this->_subject;
     }
 
 }
