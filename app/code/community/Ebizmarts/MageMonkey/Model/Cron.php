@@ -417,9 +417,21 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 */
 	public function processAutoExportJobs()
 	{
-		if (Mage::helper('monkey')->config('ecommerce360') == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
-			Mage::getModel('monkey/ecommerce360')->autoExportJobs();
-		}
+        $allStores = Mage::app()->getStores();
+        foreach($allStores as $storeId => $val) {
+            if (Mage::getStoreConfig("monkey/general/ecommerce360",$storeId) == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
+                Mage::getModel('monkey/ecommerce360')->autoExportJobs($storeId);
+            }
+        }
     }
-
+    public function processAutoExportOrders()
+    {
+        $allStores = Mage::app()->getStores();
+        foreach($allStores as $storeId => $val)
+        {
+            if(Mage::getStoreConfig("monkey/general/active",$storeId)) {
+                $this->_exportOrders($storeId);
+            }
+        }
+    }
 }
