@@ -28,10 +28,13 @@ class Ebizmarts_MageMonkey_WebhookController extends Mage_Core_Controller_Front_
             	->sendResponse();
         	return $this;
 		}
-		
+
 		Mage::helper('monkey')->log( print_r($this->getRequest()->getPost(), true) );
 
-		Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
+		if (Mage::getStoreConfig('web/url/use_store') != '1')
+		{
+			Mage::app()->setCurrentStore(Mage::app()->getDefaultStoreView());
+		}
 
 		$data  = $this->getRequest()->getPost('data');
 		$myKey = Mage::helper('monkey')->getWebhooksKey(null, $data['list_id']);
