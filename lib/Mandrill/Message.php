@@ -13,6 +13,9 @@ class Mandrill_Message extends Mandrill_Mandrill
     protected $_bodyText = false;
     protected $_bodyHtml = false;
     protected $_subject = null;
+    protected $_from = null;
+    protected $_to = array();
+
 
     public function createAttachment($body,
                                      $mimeType    = Zend_Mime::TYPE_OCTETSTREAM,
@@ -54,6 +57,23 @@ class Mandrill_Message extends Mandrill_Mandrill
     {
         return $this->_bcc;
     }
+    public function addTo($email, $name='')
+    {
+        if (!is_array($email)) {
+            $email = array($name => $email);
+        }
+
+        foreach ($email as $n => $recipient) {
+            $this->_to[] = $recipient;
+        }
+
+        return $this;
+    }
+    public function getTo()
+    {
+        return $this->_to;
+    }
+
     public function setBodyHtml($html, $charset = null, $encoding = Zend_Mime::ENCODING_QUOTEDPRINTABLE)
     {
         $this->_bodyHtml = $html;
@@ -82,6 +102,52 @@ class Mandrill_Message extends Mandrill_Mandrill
     {
         return $this->_subject;
     }
+    public function setFrom($email, $name = null)
+    {
+
+        $email = $this->_filterEmail($email);
+//        $name  = $this->_filterName($name);
+        $this->_from = $email;
+//        $this->_storeHeader('From', $this->_formatAddress($email, $name), true);
+
+        return $this;
+    }
+    public function getFrom()
+    {
+        return $this->_from;
+    }
+    protected function _filterEmail($email)
+    {
+        $rule = array("\r" => '',
+            "\n" => '',
+            "\t" => '',
+            '"'  => '',
+            ','  => '',
+            '<'  => '',
+            '>'  => '',
+        );
+
+        return strtr($email, $rule);
+    }
+
+    /**
+     * Filter of name data
+     *
+     * @param string $name
+     * @return string
+     */
+    protected function _filterName($name)
+    {
+        $rule = array("\r" => '',
+            "\n" => '',
+            "\t" => '',
+            '"'  => "'",
+            '<'  => '[',
+            '>'  => ']',
+        );
+
+        return trim(strtr($name, $rule));
+    }
     protected function _filterOther($data)
     {
         $rule = array("\r" => '',
@@ -91,4 +157,5 @@ class Mandrill_Message extends Mandrill_Mandrill
 
         return strtr($data, $rule);
     }
+
 }
