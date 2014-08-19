@@ -108,5 +108,23 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
 		}
 		$this->_redirect('*/*/index');
 	}
+    public function resetEcommerceAction()
+    {
+        $result = 0;
+        $store = $this->getRequest()->getParam('store');
+
+
+        $allStores = Mage::app()->getStores();
+        foreach($allStores as $_store)
+        {
+            if($store==$_store->getCode())
+                break;
+        }
+        $storeId = $_store->getId();
+
+
+
+        Mage::app()->getResponse()->setBody($result);
+    }
 
 }
