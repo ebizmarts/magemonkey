@@ -240,6 +240,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	         ->setMcCampaignId($this->_getCampaignCookie())
 	         ->setMcEmailId($this->_getEmailCookie())
 	         ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
+             ->setStoreId($this->_order->getStoreId())
 		     ->save();
 	}
 

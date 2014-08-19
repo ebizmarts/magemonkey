@@ -78,16 +78,27 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                         </account_details>
-                        <reset_ecommerce360 translate="label comment">
-                            <label>Reset Ecommerce360</label>
+                        <reset_localecommerce360 translate="label comment">
+                            <label>Reset Local Ecommerce360</label>
                             <frontend_type>button</frontend_type>
-                            <frontend_model>monkey/adminhtml_system_config_resetEcommerce</frontend_model>
+                            <frontend_model>monkey/adminhtml_system_config_resetLocalEcommerce</frontend_model>
                             <sort_order>26</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>Keep in mind, all your orders in Malchimp will be removed</comment>
-                        </reset_ecommerce360>
+                            <comment>Select carefully the correct scope</comment>
+                        </reset_localecommerce360>
+                        <reset_remoteecommerce360 translate="label comment">
+                            <label>Reset Remote Ecommerce360</label>
+                            <frontend_type>button</frontend_type>
+                            <frontend_model>monkey/adminhtml_system_config_resetRemoteEcommerce</frontend_model>
+                            <sort_order>28</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Keep in mind, all your orders in Malchimp will be removed.<br>Select carefully the correct scope]]></comment>
+
+                        </reset_remoteecommerce360>
                         <list translate="label comment">
                             <label>General Subscription</label>
                             <frontend_type>select</frontend_type>

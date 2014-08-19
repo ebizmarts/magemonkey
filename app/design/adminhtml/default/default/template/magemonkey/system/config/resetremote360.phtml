@@ -1,0 +1,20 @@
+<script type="text/javascript">
+    //<![CDATA[
+    function check() {
+        new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>', {
+            method:     'get',
+            onSuccess: function(transport){
+
+                if (transport.responseText == 1){
+                    alert('All remote orders for Ecommerce360 was deleted')
+                }
+                else {
+                    alert('En error happens deleting remote orders in Ecommerce360')
+                }
+            }
+        });
+    }
+    //]]>
+</script>
+
+<?php echo $this->getButtonHtml() ?>

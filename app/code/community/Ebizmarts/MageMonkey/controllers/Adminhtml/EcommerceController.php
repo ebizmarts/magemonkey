@@ -108,22 +108,63 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
 		}
 		$this->_redirect('*/*/index');
 	}
-    public function resetEcommerceAction()
+    public function resetLocalEcommerceAction()
     {
-        $result = 0;
+        $result = 1;
+        $store = $this->getRequest()->getParam('store');
+        if(!$store)
+        {
+            $collection = Mage::getModel('monkey/ecommerce')->getCollection();
+        }
+        else {
+            $allStores = Mage::app()->getStores();
+            foreach($allStores as $_store)
+            {
+                if($store==$_store->getCode())
+                    break;
+            }
+            $storeId = $_store->getId();
+            $collection = Mage::getModel('monkey/ecommerce')->getCollection();
+            $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId));
+        }
+        Mage::log((string)$collection->getSelect());
+        foreach($collection as $item)
+        {
+            try {
+                $item->delete();
+            }
+            catch(exception $e)
+            {
+                $result = 0;
+            }
+        }
+        Mage::app()->getResponse()->setBody($result);
+    }
+
+    public function resetRemoteEcommerceAction()
+    {
+        $result = 1;
         $store = $this->getRequest()->getParam('store');
 
-
-        $allStores = Mage::app()->getStores();
-        foreach($allStores as $_store)
+        if(!$store)
         {
-            if($store==$_store->getCode())
-                break;
+            $api = Mage::getSingleton('monkey/api');
         }
-        $storeId = $_store->getId();
-
-
-
+        else {
+            $api = Mage::getSingleton('monkey/api', array('store' => $store));
+        }
+        $start = 0;
+        $max = 500;
+        $orders = $api->ecommOrders($start,$max);
+        while($orders['total']>0)
+        {
+            $orders = $orders['data'];
+            foreach($orders as $order)
+            {
+                $api->ecommOrderDel($order['store_id'],$order['order_id']);
+            }
+            $orders = $api->ecommOrders($start,$max);
+        }
         Mage::app()->getResponse()->setBody($result);
     }
 
