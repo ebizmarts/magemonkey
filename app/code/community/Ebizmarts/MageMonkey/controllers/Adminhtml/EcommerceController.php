@@ -127,7 +127,6 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
             $collection = Mage::getModel('monkey/ecommerce')->getCollection();
             $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId));
         }
-        Mage::log((string)$collection->getSelect());
         foreach($collection as $item)
         {
             try {
@@ -145,12 +144,20 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
     {
         $result = 1;
         $store = $this->getRequest()->getParam('store');
+        $storeId = null;
 
         if(!$store)
         {
             $api = Mage::getSingleton('monkey/api');
         }
         else {
+            $allStores = Mage::app()->getStores();
+            foreach($allStores as $_store)
+            {
+                if($store==$_store->getCode())
+                    break;
+            }
+            $storeId = $_store->getId();
             $api = Mage::getSingleton('monkey/api', array('store' => $store));
         }
         $start = 0;
@@ -161,7 +168,12 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
             $orders = $orders['data'];
             foreach($orders as $order)
             {
-                $api->ecommOrderDel($order['store_id'],$order['order_id']);
+                if($order['store_id']==$storeId||$storeId==null) {
+                    $api->ecommOrderDel($order['store_id'],$order['order_id']);
+                }
+                else {
+                    $start++;
+                }
             }
             $orders = $api->ecommOrders($start,$max);
         }

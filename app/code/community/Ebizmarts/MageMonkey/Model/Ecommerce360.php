@@ -116,8 +116,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			return false;
 		}
 
-		$subtotal = $this->_order->getSubtotal();
-		$discount = (float)$this->_order->getDiscountAmount();
+		$subtotal = $this->_order->getBaseSubtotal();
+		$discount = (float)$this->_order->getBaseDiscountAmount();
 		if ($discount != 0) {
 			$subtotal = $subtotal + ($discount);
 		}
@@ -125,8 +125,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         $this->_info = array(
 				                'id'          => $this->_order->getIncrementId(),
 				                'total'       => $subtotal,
-				                'shipping'    => $this->_order->getShippingAmount(),
-				                'tax'         => $this->_order->getTaxAmount(),
+				                'shipping'    => $this->_order->getBaseShippingAmount(),
+				                'tax'         => $this->_order->getBaseTaxAmount(),
 				                'store_id'    => $this->_order->getStoreId(),
 				                'store_name'  => $this->_order->getStoreName(),
                                 'order_date'  => $this->_order->getCreatedAt(),
@@ -173,7 +173,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 
 			if(in_array($product->getTypeId(), $this->_productsToSkip) && $product->getPriceType() == 0){
 				if($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE){
-					$this->_auxPrice = $item->getPrice();
+					$this->_auxPrice = $item->getBasePrice();
 				}
 				continue;
 			}
@@ -274,8 +274,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 					return false;
 				}
 
-				$subtotal = $this->_order->getSubtotal();
-				$discount = (float)$this->_order->getDiscountAmount();
+				$subtotal = $this->_order->getBaseSubtotal();
+				$discount = (float)$this->_order->getBaseDiscountAmount();
 				if ($discount != 0) {
 					$subtotal = $subtotal + ($discount);
 				}
@@ -283,8 +283,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 		        $this->_info = array(
 						                'id'          => $this->_order->getIncrementId(),
 						                'total'       => $subtotal,
-						                'shipping'    => $this->_order->getShippingAmount(),
-						                'tax'         => $this->_order->getTaxAmount(),
+						                'shipping'    => $this->_order->getBaseShippingAmount(),
+						                'tax'         => $this->_order->getBaseTaxAmount(),
 						                'store_id'    => $this->_order->getStoreId(),
 						                'store_name'  => $this->_order->getStoreName(),
                                         'order_date'  => $this->_order->getCreatedAt(),
