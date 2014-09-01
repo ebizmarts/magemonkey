@@ -15,6 +15,7 @@ class Mandrill_Message extends Mandrill_Mandrill
     protected $_subject = null;
     protected $_from = null;
     protected $_to = array();
+    protected $_headers = array();
 
 
     public function createAttachment($body,
@@ -156,6 +157,35 @@ class Mandrill_Message extends Mandrill_Mandrill
         );
 
         return strtr($data, $rule);
+    }
+    public function setReplyTo($email, $name = null)
+    {
+        $email = $this->_filterEmail($email);
+        $name  = $this->_filterName($name);
+        $this->_headers[] = array('Reply-To'=>sprintf('%s <%s>',$name,$email));
+        return $this;
+    }
+    public function addHeader($name, $value, $append = false)
+    {
+        $prohibit = array('to', 'cc', 'bcc', 'from', 'subject',
+            'reply-to', 'return-path',
+            'date', 'message-id',
+        );
+        if (in_array(strtolower($name), $prohibit)) {
+            /**
+             * @see Zend_Mail_Exception
+             */
+            #require_once 'Zend/Mail/Exception.php';
+            throw new Zend_Mail_Exception('Cannot set standard header from addHeader()');
+        }
+
+        $this->_header[] = array($name=>$value);
+
+        return $this;
+    }
+    public function getHeaders()
+    {
+        return $this->_headers;
     }
 
 }
