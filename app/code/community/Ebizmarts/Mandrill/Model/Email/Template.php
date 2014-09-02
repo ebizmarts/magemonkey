@@ -115,6 +115,10 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
      */
     public function getMail()
     {
+        $storeId = Mage::app()->getStore()->getId();
+        if(!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE,$storeId)) {
+            return parent::getMail();
+        }
         if($this->_mail) {
             return $this->_mail;
         }
