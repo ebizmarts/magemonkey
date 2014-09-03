@@ -14,6 +14,48 @@
             }
         });
     }
+    function reloadGroups(evt) {
+        var $list = $('monkey_general_list').getValue();
+        $url = "<?php echo Mage::helper('adminhtml')->getUrl('monkey/adminhtml_config/getGroups') ?>"+"list/"+$list;
+        new Ajax.Request($url, {
+            method: 'get',
+            onSuccess: function (transport) {
+                $el = $('monkey_general_cutomergroup');
+                while($el.firstChild) {
+                    $el.removeChild($el.firstChild)
+                }
+                if(transport.responseJSON.length==0) {
+                    opt = document.createElement('option');
+                    opt.text = '--- No data ---';
+                    opt.value = -1;
+                    $el.options.add(opt);
+                }
+                else {
+                    transport.responseJSON.each(function(i) {
+                            opt = document.createElement('option');
+                            opt.text = i.label;
+                            opt.value = i.value;
+                            if(i.style) {
+                                opt.style = i.style;
+                            }
+                            if(i.disabled)
+                            {
+                                opt.disabled = 1;
+                            }
+                            opt.selected = i.selected;
+                            $el.options.add(opt);
+                        }
+                    );
+                }
+            }
+        });
+    }
+    document.observe("dom:loaded", function() {
+        if($('monkey_general_list')) {
+            Element.observe('monkey_general_list','change',reloadGroups);
+            Element.observe(window,'load',reloadGroups);
+        }
+    });
     //]]>
 </script>
 

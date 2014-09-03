@@ -470,7 +470,35 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$mergeVars = Mage::helper('monkey')->getMergeVars($customer, $includeEmail);
-
+        // add groups
+        Mage::log("armando grouping");
+        $groups = Mage::getStoreConfig('monkey/general/cutomergroup',$object->getStoreId());
+        $groups = explode(",",$groups);
+        Mage::log($groups);
+        if(is_array($groups)) {
+            $subscribeGroups = array();
+            $_prevGroup = null;
+            $checkboxes = array();
+            foreach($groups as $group) {
+                $item = explode("_",$group);
+                Mage::log($item);
+                $currentGroup = $item[0];
+                if($currentGroup==$_prevGroup||$_prevGroup==null) {
+                    $checkboxes[]=$item[1];
+                    $_prevGroup=$currentGroup;
+                }
+                else {
+                    $subscribeGroups[] = array('id'=>$_prevGroup,"groups"=>str_replace('%C%','\\,',implode(', ', $checkboxes)));
+                    $checkboxes = array();
+                    $_prevGroup = $currentGroup;
+                    $checkboxes[]=$item[1];
+                }
+            }
+            $subscribeGroups[] = array('id'=>$currentGroup,"groups"=>str_replace('%C%','\\,',implode(', ', $checkboxes)));
+            Mage::log($subscribeGroups);
+            $mergeVars["GROUPINGS"] = $subscribeGroups;
+        }
+        Mage::log($mergeVars);
 		return $mergeVars;
 	}
 

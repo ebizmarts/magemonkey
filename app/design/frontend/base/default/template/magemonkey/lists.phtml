@@ -4,6 +4,7 @@ $lists         = $this->getLists();
 $myLists       = $this->getSubscribedLists();
 $generalList   = $this->getGeneralList();
 $canShowButton = $this->getCanShowButton();
+$canmodify     = $this->getCanModify();
 
 ?>
 <div class="monkey-multisubscribe">
@@ -23,7 +24,7 @@ $canShowButton = $this->getCanShowButton();
 						<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 						<?php foreach($generalList['interest_groupings'] as $group): ?>
 							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
-								<div class="grouping">
+								<div class="grouping" <?php if(!$canmodify) echo 'style="display: none;"' ?>>
 									<?php if ($group['form_field'] != 'hidden'): ?><strong><?php echo $group['name']; ?></strong><?php endif; ?>
 									<?php echo $this->renderGroup($group, $generalList); ?>
 								</div>

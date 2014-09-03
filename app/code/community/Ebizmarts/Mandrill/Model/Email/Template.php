@@ -44,7 +44,6 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 
         $email = array( 'subject' => $this->getProcessedTemplateSubject( $variables ), 'to' => array() );
 
-
         $mail = $this->getMail();
 
         for ( $i = 0; $i < count( $emails ); $i++ ) {
@@ -72,7 +71,9 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $email['from_name'] = $this->getSenderName();
         $email['from_email'] = $this->getSenderEmail();
         $email['headers'] = $mail->getHeaders();
-
+        if(isset($variables['tags']) && count($variables['tags'])) {
+            $email ['tags'] = $variables['tags'];
+        }
 
         if(isset($variables['tags']) && count($variables['tags'])) {
             $email ['tags'] = $variables['tags'];
