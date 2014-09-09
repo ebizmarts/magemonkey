@@ -52,6 +52,7 @@
                     <ecommerce><table>magemonkey_ecommerce360</table></ecommerce>
                     <bulksync_export><table>magemonkey_bulksync_export</table></bulksync_export>
                     <bulksync_import><table>magemonkey_bulksync_import</table></bulksync_import>
+                    <async_subscribers><table>magemonkey_async_subscribers</table></async_subscribers>
                 </entities>
             </monkey_mysql4>
         </models>
@@ -235,6 +236,7 @@
 				<cron_export>1000</cron_export>
 				<order_status>all_status</order_status>
 				<enable_log>1</enable_log>
+                <checkout_async>1</checkout_async>
     		</general>
             <notifications>
                 <updates_url><![CDATA[http://store.ebizmarts.com/media/feeds/]]></updates_url>

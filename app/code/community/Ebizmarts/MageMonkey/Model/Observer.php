@@ -19,7 +19,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
-		if(!Mage::helper('monkey')->canMonkey()){
+        if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
 
@@ -72,7 +72,6 @@ class Ebizmarts_MageMonkey_Model_Observer
        			$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
        			Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
  			}
-
 			Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
 
         }
@@ -315,7 +314,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	{
 		$post = Mage::app()->getRequest()->getPost();
 		if(!Mage::helper('monkey')->canMonkey()){
-			return;
+			return $observer;
 		}
 
 		$customer = $observer->getEvent()->getCustomer();
@@ -327,7 +326,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if(!$oldEmail){
 			return $observer;
 		}
-
 		$mergeVars = $this->_mergeVars($customer, TRUE);
 		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 		$lists = $api->listsForEmail($oldEmail);
@@ -355,17 +353,19 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
+
 		if(!Mage::helper('monkey')->canMonkey()){
 			return;
 		}
 
 		if(Mage::app()->getRequest()->isPost()){
-			$subscribe = Mage::app()->getRequest()->getPost('magemonkey_subscribe');
+			$subscribe  = Mage::app()->getRequest()->getPost('magemonkey_subscribe');
+            $force      = Mage::app()->getRequest()->getPost('magemonkey_force');
 
 			Mage::getSingleton('core/session')->setMonkeyPost( serialize(Mage::app()->getRequest()->getPost()) );
 
-			if(!is_null($subscribe)){
-				Mage::getSingleton('core/session')->setMonkeyCheckout($subscribe);
+			if(!is_null($subscribe)||!is_null($force)){
+				Mage::getSingleton('core/session')->setMonkeyCheckout(true);
 			}
 		}
 	}
@@ -378,8 +378,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
+
 		if(!Mage::helper('monkey')->canMonkey()){
-			return;
+			return $observer;
 		}
 
 		$orderId = (int)current($observer->getEvent()->getOrderIds());
@@ -395,8 +396,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 				$order->setEbizmartsMagemonkeyCampaignId($campaign_id);
 			}
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout();
-			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
-			if($sessionFlag || $forceSubscription == 3){
+//			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
+//            if($sessionFlag || $forceSubscription == 3 || $forceSubscription == 4){
+			if($sessionFlag){
 				//Guest Checkout
 				if( (int)$order->getCustomerGroupId() === Mage_Customer_Model_Group::NOT_LOGGED_IN_ID ){
 					Mage::helper('monkey')->registerGuestCustomer($order);
@@ -413,7 +415,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 			}
 
 			//Multiple lists on checkout
-			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
+			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
 			if($monkeyPost){
 
 				$post = unserialize($monkeyPost);
@@ -437,7 +439,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	protected function _mergeVars($object = NULL, $includeEmail = FALSE)
 	{
-		//Initialize as GUEST customer
+
+        //Initialize as GUEST customer
 		$customer = new Varien_Object;
 
 		$regCustomer   = Mage::registry('current_customer');
@@ -471,17 +474,14 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$mergeVars = Mage::helper('monkey')->getMergeVars($customer, $includeEmail);
         // add groups
-        Mage::log("armando grouping");
         $groups = Mage::getStoreConfig('monkey/general/cutomergroup',$object->getStoreId());
         $groups = explode(",",$groups);
-        Mage::log($groups);
         if(is_array($groups)) {
             $subscribeGroups = array();
             $_prevGroup = null;
             $checkboxes = array();
             foreach($groups as $group) {
                 $item = explode("_",$group);
-                Mage::log($item);
                 $currentGroup = $item[0];
                 if($currentGroup==$_prevGroup||$_prevGroup==null) {
                     $checkboxes[]=$item[1];
@@ -495,11 +495,27 @@ class Ebizmarts_MageMonkey_Model_Observer
                 }
             }
             $subscribeGroups[] = array('id'=>$currentGroup,"groups"=>str_replace('%C%','\\,',implode(', ', $checkboxes)));
-            Mage::log($subscribeGroups);
             $mergeVars["GROUPINGS"] = $subscribeGroups;
         }
-        Mage::log($mergeVars);
-		return $mergeVars;
+        $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
+        if($monkeyPost) {
+            $post = unserialize($monkeyPost);
+            $force = Mage::getStoreConfig('monkey/general/checkout_subscribe',$object->getStoreId());
+            $map = Mage::getStoreConfig('monkey/general/markfield',$object->getStoreId());
+            if($post['magemonkey_subscribe']) {
+                if($force!=3) {
+                    $mergeVars[$map] = "Yes";
+                }
+                else {
+                    $mergeVars[$map] = "No";
+                }
+            }
+            else {
+                $mergeVars[$map] = "No";
+            }
+        }
+
+        return $mergeVars;
 	}
 
 	/** Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)

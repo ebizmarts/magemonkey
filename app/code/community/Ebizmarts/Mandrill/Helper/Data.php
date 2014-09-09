@@ -30,7 +30,7 @@ class Ebizmarts_Mandrill_Helper_Data extends Mage_Core_Helper_Abstract	 {
 	*
 	* @return string
 	*/
-    public function getApiKey($storeId)
+    public function getApiKey($storeId=null)
     {
         return Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId);
     }

@@ -3,7 +3,8 @@
 	$check = $this->checkStatus();
 	$myLists       = $this->getSubscribedLists();
 	$generalList   = $this->getGeneralList();
-	$auto  = (($check === 1) OR ($check === 3));
+	$auto  = (($check === 1) OR ($check === 3) or ($check ===4));
+    $force = $this->getForce();
 ?>
 <script type="text/javascript">
 addSubscribeToPost = function (element){
@@ -15,9 +16,13 @@ addSubscribeToPost = function (element){
 	if(element.checked){
         var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
         var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe", value: element.getValue(), type: "hidden" });
+        var force = new Element('input', { name: "magemonkey_force", id: "magemonkey-force", value: "1", type: "hidden" });
         try{
             Element.insert(Form.findFirstElement(payment.form), inputer);
             Element.insert(Form.findFirstElement(payment.form), listValue);
+            <?php if($force): ?>
+                Element.insert(Form.findFirstElement(payment.form), force);
+            <?php endif; ?>
         }catch(notelem){
             $("co-payment-form").insert(inputer);
             $("co-payment-form").insert(listValue);

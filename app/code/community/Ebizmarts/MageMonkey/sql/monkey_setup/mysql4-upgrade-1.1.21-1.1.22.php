@@ -14,5 +14,17 @@ UPDATE `{$installer->getTable('magemonkey_ecommerce360')}` A JOIN `{$installer->
   SET A.store_id = B.store_id
 ");
 
+$installer->run("
+
+	CREATE TABLE IF NOT EXISTS `{$this->getTable('magemonkey_async_subscribers')}` (
+	  `id` INT(10) unsigned NOT NULL auto_increment,
+      `lists` TEXT NOT NULL,
+      `mapfields` TEXT,
+      `created_at` DATETIME NOT NULL ,
+      `proccessed` smallint(1) default 0,
+	  PRIMARY KEY  (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+");
 $installer->endSetup();
 

@@ -103,7 +103,6 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 						$listName = $this->__('General Subscription');
 					}
                     $ig = $api->listInterestGroupings($listData['data'][0]['id']);
-                    MAge::log($ig);
 					$this->_generalList = array(
 												'id'   => $listData['data'][0]['id'],
 												'name' => $listName,
@@ -403,5 +402,13 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
     public function getCanModify()
     {
         return Mage::getStoreConfig('monkey/general/changecustomergroup');
+    }
+    public function getForce()
+    {
+        $force = Mage::getStoreConfig('monkey/general/checkout_subscribe');
+        if($force==3||$force==4) {
+            return true;
+        }
+        return false;
     }
 }
