@@ -10,17 +10,53 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.26</version>
+            <version>0.1.27</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
         <template>
             <email>
-                <ebizmarts_abandonedcart_general_template translate="label" module="ebizmarts_abandonedcart">
-                    <label>Abandoned Cart Mail</label>
-                    <file>sales/abandoned_cart.html</file>
+                <ebizmarts_abandonedcart_general_template1 translate="label" module="ebizmarts_abandonedcart">
+                    <label>First Abandoned Cart Mail</label>
+                    <file>sales/abandoned_cart_mail_1.html</file>
                     <type>html</type>
-                </ebizmarts_abandonedcart_general_template>
+                </ebizmarts_abandonedcart_general_template1>
+            </email>
+        </template>
+        <template>
+            <email>
+                <ebizmarts_abandonedcart_general_template2 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Second Abandoned Cart Mail</label>
+                    <file>sales/abandoned_cart_mail_2.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_general_template2>
+            </email>
+        </template>
+        <template>
+            <email>
+                <ebizmarts_abandonedcart_general_template3 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Third Abandoned Cart Mail</label>
+                    <file>sales/abandoned_cart_mail_3.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_general_template3>
+            </email>
+        </template>
+        <template>
+            <email>
+                <ebizmarts_abandonedcart_general_template4 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Fourth Abandoned Cart Mail</label>
+                    <file>sales/abandoned_cart_mail_generic.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_general_template4>
+            </email>
+        </template>
+        <template>
+            <email>
+                <ebizmarts_abandonedcart_general_template5 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Fifth Abandoned Cart Mail</label>
+                    <file>sales/abandoned_cart_mail_generic.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_general_template5>
             </email>
         </template>
         <ebizmarts_abandonedcart>
@@ -144,11 +180,18 @@
     <default>
         <ebizmarts_abandonedcart>
             <general>
-                <subject>Abandoned Cart Email</subject>
+                <max>2</max>
+                <subject1>Having trouble?</subject1>
+                <subject2>Limited stock</subject2>
+                <subject3>Coupon Discount!</subject3>
+                <unit>1</unit>
+                <days1>1</days1>
+                <days2>1</days2>
+                <days3>2</days3>
+                <sendon>3</sendon>
                 <mandrill-tag>AbandonedCart</mandrill-tag>
                 <autologin>0</autologin>
                 <page>checkout/cart</page>
-                <incremental>0</incremental>
             </general>
         </ebizmarts_abandonedcart>
     </default>

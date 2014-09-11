@@ -87,7 +87,8 @@ addElementToPost = function (element){
 
 			$igroups = $list['interest_groupings'];
 		?>
-		<li class="listdata"><?php echo $this->listLabel($list); ?>
+		<li class="listdata"><?php echo $list['name']; ?>
+        <input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $list['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $list['id']; ?>" title="<?php echo $list['name']; ?>" class="monkey-list-subscriber" />
 		<?php if(is_array($igroups)): ?>
 			<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
 			<?php foreach($igroups as $group): ?>
@@ -139,6 +140,7 @@ $$('input.monkey-list-subscriber').each(function(chk){
 
 		});
 });
+
 
 addSubscribeToPost($('magemonkey-trigger'));
 

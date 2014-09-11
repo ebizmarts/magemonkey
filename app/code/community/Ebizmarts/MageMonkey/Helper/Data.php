@@ -789,11 +789,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 			$customer = Mage::registry('mc_guest_customer');
 		}
 		$email     =  $guestEmail ? $guestEmail : $customer->getEmail();
-
 		if( !empty($curlists) ){
 
 			//Handle Unsubscribe and groups update actions
-			foreach($curlists as $listId => $list){
+            foreach($curlists as $listId => $list){
 
 				if(FALSE === array_key_exists($listId, $lists)){
 
@@ -865,9 +864,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 						$subscriber->setImportMode(TRUE);
 						$subscriber->subscribe($email);
 					}else{
-						$customer->setListGroups($groupings);
-						$customer->setMcListId($listId);
-						$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+                        if($customer){
+                            $customer->setListGroups($groupings);
+                            $customer->setMcListId($listId);
+                            $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+                        }
 						$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
 
 					}

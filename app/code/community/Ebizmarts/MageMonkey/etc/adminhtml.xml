@@ -45,6 +45,30 @@
                    <children>
                        <magemonkey translate="title" module="monkey">
                            <title>MailChimp</title>
+                                <children>
+                                    <ecommerce translate="title" module="monkey">
+                                        <title>Ecommerce 360 Orders</title>
+                                        <children>
+                                            <commerce translate="title" module="monkey">
+                                                <title>Magento sent orders</title>
+                                            </commerce>
+                                            <apicommerce translate="title" module="monkey">
+                                                <title>ALL orders from API</title>
+                                            </apicommerce>
+                                        </children>
+                                    </ecommerce>
+                                    <bulksync translate="title" module="monkey">
+                                        <title>Bulk Sync</title>
+                                        <children>
+                                            <mage_to_mc translate="title" module="monkey">
+                                                <title>Export</title>
+                                            </mage_to_mc>
+                                            <mc_to_mage translate="title" module="monkey">
+                                                <title>Import</title>
+                                            </mc_to_mage>
+                                        </children>
+                                    </bulksync>
+                                </children>
                        </magemonkey>
                    </children>
                 </newsletter>

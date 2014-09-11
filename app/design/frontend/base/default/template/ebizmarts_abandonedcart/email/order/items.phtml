@@ -4,6 +4,7 @@
     <tr>
         <th align="left" bgcolor="#EAEAEA" style="font-size:13px; padding:3px 9px"><?php echo $this->__('Item') ?></th>
         <th align="left" bgcolor="#EAEAEA" style="font-size:13px; padding:3px 9px"><?php echo $this->__('Sku') ?></th>
+        <th align="center" bgcolor="#EAEAEA" style="font-size:13px; padding:3px 9px"><?php echo $this->__('Image') ?></th>
         <th align="center" bgcolor="#EAEAEA" style="font-size:13px; padding:3px 9px"><?php echo $this->__('Qty') ?></th>
         <th align="right" bgcolor="#EAEAEA" style="font-size:13px; padding:3px 9px"><?php echo $this->__('Subtotal') ?></th>
     </tr>
@@ -57,11 +58,13 @@
         endif; ?>
         <tbody<?php echo $i%2 ? ' bgcolor="#F6F6F6"' : '' ?>>
 		    <tr>
-		        <?php echo '<td valign="top" align="left" style="padding:3px 9px">'. $_item['name'] .'</td>'; ?>
+		        <?php echo '<td valign="top" align="left" style="padding:3px 9px">'. $_item['name']; ?>
+                <?php if(isset($options) && is_array($options)) : foreach($options as $option) : echo '<br /><strong><em>'.$option['label'].'</em></strong> '.$option['value']; if(isset($option['sku'])) : echo ' ' . $option['sku']; endif; endforeach; $options = null; endif; ?>
 		        <?php echo '<td valign="top" align="left" style="padding:3px 9px">'. $_item['sku'] .'</td>'; ?>
+		        <?php echo '<td valign="top" align="left" style="padding:3px 9px"><img src="'.$this->getImage($_item).'"/></td>'; ?>
 		        <?php echo '<td valign="top" align="center" style="padding:3px 9px">'. $_item['qty'] .'</td>'; ?>
 		        <?php echo '<td valign="top" align="right" style="padding:3px 9px">' . $this->getTax($_item) .'</td>'; ?>
-		        <?php if(isset($options) && is_array($options)) : foreach($options as $option) : echo '<tr><td valign="top" align="left" style="padding:3px 9px" colspan="4"><strong><em>'.$option['label'].'</em></strong></td></tr>'.'<tr><td valign="top" align="left" style="padding:3px 19px">'.$option['value'].'</td>'; if(isset($option['sku'])) : echo '<td style="padding:3px 9px">' . $option['sku'] . '</td><td></td><td></td>'; else: echo '<td></td><td></td><td></td>'; endif; endforeach; $options = null; endif; '</tr>' ?>
+
 		    </tr>
     	</tbody>
         <?php endforeach; ?>

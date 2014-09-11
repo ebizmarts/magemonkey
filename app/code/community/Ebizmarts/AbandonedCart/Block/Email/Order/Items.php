@@ -27,4 +27,11 @@ class Ebizmarts_AbandonedCart_Block_Email_Order_Items extends Mage_Sales_Block_I
 		return $subtotal;
     }
 
+    public function getImage($_item)
+    {
+        $product = Mage::getModel('catalog/product')
+            ->load($_item->getProductId());
+        return Mage::helper('catalog/image')->init($product, 'image')->resize(115);
+    }
+
 }
