@@ -260,6 +260,14 @@
                 <schedule><cron_expr>0 * * * *</cron_expr></schedule>
                 <run><model>monkey/cron::processAutoExportJobs</model></run>
             </magemonkey_autoexport_subscribers>
+            <magemonkey_sendorders_asynch>
+                <schedule><cron_expr>*/15 * * * *</cron_expr></schedule>
+                <run><model>monkey/cron::sendordersAsync</model></run>
+            </magemonkey_sendorders_asynch>
+            <magemonkey_cleanorders_asynch>
+                <schedule><cron_expr>0 0 1 * *</cron_expr></schedule>
+                <run><model>monkey/cron::cleanordersAsync</model></run>
+            </magemonkey_cleanorders_asynch>
         </jobs>
     </crontab>
 </config>

@@ -144,6 +144,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			$this->_info ['campaign_id']= $campaignCookie;
             if(Mage::getStoreConfig('monkey/general/checkout_async')) {
                 $sync = Mage::getModel('monkey/asyncorders');
+                $this->_info['order_id'] = $this->_order->getId();
                 $sync->setInfo(serialize($this->_info))
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
                     ->setProccessed(0)
@@ -157,6 +158,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			$this->_info ['email']= $this->_order->getCustomerEmail();
             if(Mage::getStoreConfig('monkey/general/checkout_async')) {
                 $sync = Mage::getModel('monkey/asyncorders');
+                $this->_info['order_id'] = $this->_order->getId();
                 $sync->setInfo(serialize($this->_info))
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
                     ->setProccessed(0)

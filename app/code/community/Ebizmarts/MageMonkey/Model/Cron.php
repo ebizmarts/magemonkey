@@ -434,4 +434,46 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
         }
     }
+    public function sendordersAsync()
+    {
+        $collection = Mage::getModel('monkey/asyncorders')->getCollection();
+        $collection->addFieldToFilter('proccessed',array('eq'=>0));
+        $storeId = null;
+        foreach($collection as $item)
+        {
+            $info = (array)unserialize($item->getInfo());
+            $orderId = $info['order_id'];
+            unset($info['order_id']);
+            if($storeId!=$info['store_id']) {
+                $api = Mage::getSingleton('monkey/api',array('store' => $info['store_id']));
+                $storeId = $info['store_id'];
+            }
+            if(isset($info['campaign_id'])) {
+                $api->campaignEcommOrderAdd($info);
+            }
+            else {
+                $api->ecommOrderAdd($info);
+                $info['campaign_id'] = null;
+            }
+            $item->setProccessed(1)->save();
+
+            Mage::getModel('monkey/ecommerce')
+                ->setOrderIncrementId($info['id'])
+                ->setOrderId($orderId)
+                ->setMcCampaignId($info['campaign_id'])
+                ->setMcEmailId($info['email'])
+                ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
+                ->setStoreId($info['store_id'])
+                ->save();
+        }
+    }
+    public function cleanordersAsync()
+    {
+        $collection = Mage::getModel('monkey/asyncorders')->getCollection();
+        $collection->addFieldToFilter('proccessed',array('eq'=>1));
+        foreach($collection as $item)
+        {
+            $item->delete();
+        }
+    }
 }
