@@ -25,6 +25,14 @@ $installer->run("
 	  PRIMARY KEY  (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+	CREATE TABLE IF NOT EXISTS `{$this->getTable('magemonkey_async_orders')}` (
+	  `id` INT(10) unsigned NOT NULL auto_increment,
+      `info` TEXT NOT NULL,
+      `created_at` DATETIME NOT NULL ,
+      `proccessed` smallint(1) default 0,
+	  PRIMARY KEY  (`id`)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 ");
 $installer->endSetup();
 

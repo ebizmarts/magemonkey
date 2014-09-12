@@ -138,16 +138,33 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 		$campaignCookie = $this->_getCampaignCookie();
 
 		$this->setItemstoSend();
-
+        $rs = false;
 		if($emailCookie && $campaignCookie){
 			$this->_info ['email_id']= $emailCookie;
 			$this->_info ['campaign_id']= $campaignCookie;
-
-			//Send order to MailChimp
-	    	$rs = $api->campaignEcommOrderAdd($this->_info);
+            if(Mage::getStoreConfig('monkey/general/checkout_async')) {
+                $sync = Mage::getModel('monkey/asyncorders');
+                $sync->setInfo(serialize($this->_info))
+                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                    ->setProccessed(0)
+                    ->save();
+            }
+            else {
+                //Send order to MailChimp
+	    	    $rs = $api->campaignEcommOrderAdd($this->_info);
+            }
 		}else{
 			$this->_info ['email']= $this->_order->getCustomerEmail();
-			$rs = $api->ecommOrderAdd($this->_info);
+            if(Mage::getStoreConfig('monkey/general/checkout_async')) {
+                $sync = Mage::getModel('monkey/asyncorders');
+                $sync->setInfo(serialize($this->_info))
+                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                    ->setProccessed(0)
+                    ->save();
+            }
+            else {
+			    $rs = $api->ecommOrderAdd($this->_info);
+            }
 		}
 
 		if ( $rs === TRUE ){

@@ -72,7 +72,14 @@ class Ebizmarts_MageMonkey_Model_Observer
        			$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
        			Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
  			}
-			Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $this->_mergeVars($subscriber), 'html', $isConfirmNeed);
+            $mergeVars = $this->_mergeVars($subscriber);
+            if(Mage::getStoreConfig('monkey/general/checkout_async')) {
+
+                Mage::log('async');
+            }
+            else {
+			    Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+            }
 
         }
         // This code unsubscribe users if it's on MailChimp and the status it's unconfirmed
