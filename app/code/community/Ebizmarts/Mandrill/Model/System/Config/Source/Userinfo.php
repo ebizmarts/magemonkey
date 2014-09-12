@@ -27,7 +27,12 @@ class Ebizmarts_Mandrill_Model_System_Config_Source_Userinfo
         $storeId = Mage::app()->getStore()->getId();
         if (!$this->_account_details&&Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId)) {
             $api = new Mandrill_Message(Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId));
-            $this->_account_details = $api->users->info();
+            try {
+                $this->_account_details = $api->users->info();
+            }
+            catch(Exception $e) {
+                $this->_account_details = "Invalid API key";
+            }
         }
     }
 
