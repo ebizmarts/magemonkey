@@ -476,4 +476,28 @@ class Ebizmarts_MageMonkey_Model_Cron
             $item->delete();
         }
     }
+    public function sendSubscribersAsync()
+    {
+        $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
+        $collection->addFieldToFilter('proccessed',array('eq'=>0));
+        foreach($collection as $item)
+        {
+            $mergeVars = unserialize($item->getMapfields());
+            $listId = $item->getLists();
+            $email = $item->getEmail();
+            $isConfirmNeed = $item->getConfirm();
+            Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+            $item->setProccessed(1)->save();
+        }
+
+    }
+    public function cleanSubscribersAsync()
+    {
+        $collection = Mage::getModel('nmonkey/asyncsubscribers')->getCollection();
+        $collection->addFieldToFilter('proccessed',array('eq'=>1));
+        foreach($collection as $item)
+        {
+            $item->delete();
+        }
+    }
 }

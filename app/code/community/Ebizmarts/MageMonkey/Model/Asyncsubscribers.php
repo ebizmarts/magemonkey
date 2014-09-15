@@ -1,16 +1,15 @@
 <?php
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
- * Date   : 9/12/14
- * Time   : 1:19 AM
- * File   : Collection.php
+ * Date   : 9/15/14
+ * Time   : 12:46 PM
+ * File   : Asyncsubscribers.php
  * Module : Ebizmarts_MageMonkey
  */
-class Ebizmarts_MageMonkey_Model_Mysql4_Asyncsubscribers_Collection  extends Mage_Core_Model_Mysql4_Collection_Abstract
+class Ebizmarts_MageMonkey_Model_Asyncsubscribers  extends Mage_Core_Model_Abstract
 {
-
     /**
-     * Set resource type
+     * Initialize model
      *
      * @return void
      */

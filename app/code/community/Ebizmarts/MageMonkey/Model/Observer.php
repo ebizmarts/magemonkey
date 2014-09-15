@@ -73,9 +73,16 @@ class Ebizmarts_MageMonkey_Model_Observer
        			Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
  			}
             $mergeVars = $this->_mergeVars($subscriber);
-            if(Mage::getStoreConfig('monkey/general/checkout_async')) {
-
-                Mage::log('async');
+            if(Mage::getStoreConfig('monkey/general/checkout_async'))
+            {
+                $subs = Mage::getModel('monkey/asyncsubscribers');
+                $subs->setMapfields(serialize($mergeVars))
+                    ->setEmail($email)
+                    ->setLists($listId)
+                    ->setConfirm($isConfirmNeed)
+                    ->setProccessed(0)
+                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                    ->save();
             }
             else {
 			    Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
