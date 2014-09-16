@@ -218,7 +218,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             }
         	$mcitem['category_name'] = (count($names))? implode(" - ",array_reverse($names)) : 'None';
             $mcitem['qty'] = $item->getQtyOrdered();
-         	$mcitem['cost'] = ($this->_auxPrice > 0)? $this->_auxPrice : $item->getPrice();
+         	$mcitem['cost'] = ($this->_auxPrice > 0)? $this->_auxPrice : $item->getBasePrice();
             $this->_info['items'][] = $mcitem;
             $this->_auxPrice = 0;
 		}

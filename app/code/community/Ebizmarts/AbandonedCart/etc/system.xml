@@ -79,44 +79,6 @@
                                 <active>1</active>
                             </depends>
                         </identity>
-                        <template translate="label">
-                            <label>Email Template</label>
-                            <frontend_type>select</frontend_type>
-                            <config_path>ebizmarts_abandonedcart/general/template</config_path>
-                            <source_model>adminhtml/system_config_source_email_template</source_model>
-                            <sort_order>20</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends>
-                                <active>1</active>
-                            </depends>
-                        </template>
-                        <incremental translate="label">
-                            <label>Incrementals Templates</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>23</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <depends>
-                                <active>1</active>
-                            </depends>
-                        </incremental>
-                        <subject translate="label comment">
-                            <label>Email Subject</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>25</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The subject for the email abandoned cart]]></comment>
-                            <depends>
-                                <active>1</active>
-                            </depends>
-                        </subject>
                         <page translate="label comment">
                             <label>Redirect page</label>
                             <frontend_type>select</frontend_type>
@@ -142,37 +104,11 @@
                                 <active>1</active>
                             </depends>
                         </mandrill-tag>
-                        <days translate="label comment">
-                            <label>Send email after</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>30</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[This value depends of the next unit parameter]]></comment>
-                            <depends>
-                                <active>1</active>
-                            </depends>
-                        </days>
-                        <unit translate="label comment">
-                            <label>Unit</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>ebizmarts_abandonedcart/system_config_unit</source_model>
-                            <sort_order>35</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[Enter the unit for considering in the first email]]></comment>
-                            <depends>
-                                <active>1</active>
-                            </depends>
-                        </unit>
                         <max translate="label comment">
                             <label>Max number of email to send</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>40</sort_order>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_abandonedcart/system_config_maxemails</source_model>
+                            <sort_order>33</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -182,11 +118,236 @@
                                 <active>1</active>
                             </depends>
                         </max>
+                        <subject1 translate="label comment">
+                            <label>First Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the first email abandoned cart]]></comment>
+                            <depends>
+                                <max separator=",">0,1,2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </subject1>
+                        <template1 translate="label">
+                            <label>First Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/template1</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>36</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <max separator=",">0,1,2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </template1>
+                        <days1 translate="label comment">
+                            <label>Send email after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>37</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[This value depends of the next unit parameter]]></comment>
+                            <depends>
+                                <max separator=",">0,1,2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </days1>
+                        <unit translate="label comment">
+                            <label>Unit</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_abandonedcart/system_config_unit</source_model>
+                            <sort_order>38</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Enter the unit for considering in the first email]]></comment>
+                            <depends>
+                                <max separator=",">0,1,2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </unit>
+                        <subject2 translate="label comment">
+                            <label>Second Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>41</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the second email abandoned cart]]></comment>
+                            <depends>
+                                <max separator=",">1,2,3,4</max>
+                                    <active>1</active>
+                            </depends>
+                        </subject2>
+                        <template2 translate="label">
+                            <label>Second Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/template2</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>42</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <max separator=",">1,2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </template2>
+                        <days2 translate="label comment">
+                            <label>Send email after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>43</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <depends>
+                                <max separator=",">1,2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </days2>
+                        <subject3 translate="label comment">
+                            <label>Third Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>44</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the third email abandoned cart]]></comment>
+                            <depends>
+                                <max separator=",">2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </subject3>
+                        <template3 translate="label">
+                            <label>Third Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/template3</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <max separator=",">2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </template3>
+                        <days3 translate="label comment">
+                            <label>Send email after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>46</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <depends>
+                                <max separator=",">2,3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </days3>
+                        <subject4 translate="label comment">
+                            <label>Fourth Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>47</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
+                            <depends>
+                                <max separator=",">3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </subject4>
+                        <template4 translate="label">
+                            <label>Fourth Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/template4</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>48</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <max separator=",">3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </template4>
+                        <days4 translate="label comment">
+                            <label>Send email after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>49</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <depends>
+                                <max separator=",">3,4</max>
+                                <active>1</active>
+                            </depends>
+                        </days4>
+                        <subject5 translate="label comment">
+                            <label>Fourth Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
+                            <depends>
+                                <max separator=",">4</max>
+                                <active>1</active>
+                            </depends>
+                        </subject5>
+                        <template5 translate="label">
+                            <label>Fifth Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/general/template5</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>51</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <max separator=",">4</max>
+                                <active>1</active>
+                            </depends>
+                        </template5>
+                        <days5 translate="label comment">
+                            <label>Send email after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>52</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <depends>
+                                <max separator=",">4</max>
+                                <active>1</active>
+                            </depends>
+                        </days5>
                         <customer translate="label comment">
                             <label>Customer Groups</label>
                             <frontend_type>multiselect</frontend_type>
                             <source_model>ebizmarts_abandonedcart/system_config_customergroup</source_model>
-                            <sort_order>50</sort_order>
+                            <sort_order>55</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>

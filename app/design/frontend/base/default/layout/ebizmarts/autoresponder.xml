@@ -29,7 +29,7 @@
     </customer_account>
     <catalog_product_view>
         <reference name="head">
-            <action method="addJs"><script>ebizmarts/autoresponders/visitedproducts.js</script></action>
+            <action method="addJs" ifconfig="ebizmarts_autoresponder/visitedproducts/active"><script>ebizmarts/autoresponders/visitedproducts.js</script></action>
         </reference>
     </catalog_product_view>
     <!--review_product_list>
