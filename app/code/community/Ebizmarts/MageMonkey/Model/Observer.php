@@ -516,7 +516,7 @@ class Ebizmarts_MageMonkey_Model_Observer
             $post = unserialize($monkeyPost);
             $force = Mage::getStoreConfig('monkey/general/checkout_subscribe',$object->getStoreId());
             $map = Mage::getStoreConfig('monkey/general/markfield',$object->getStoreId());
-            if($post['magemonkey_subscribe']) {
+            if($post['magemonkey_subscribe']&&$map!="") {
                 if($force!=3) {
                     $mergeVars[$map] = "Yes";
                 }
