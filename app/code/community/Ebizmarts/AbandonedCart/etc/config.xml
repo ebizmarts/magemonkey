@@ -18,7 +18,7 @@
             <email>
                 <ebizmarts_abandonedcart_general_template1 translate="label" module="ebizmarts_abandonedcart">
                     <label>First Abandoned Cart Mail</label>
-                    <file>sales/abandoned_cart_mail_1.html</file>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_1.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template1>
             </email>
@@ -27,7 +27,7 @@
             <email>
                 <ebizmarts_abandonedcart_general_template2 translate="label" module="ebizmarts_abandonedcart">
                     <label>Second Abandoned Cart Mail</label>
-                    <file>sales/abandoned_cart_mail_2.html</file>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_2.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template2>
             </email>
@@ -36,7 +36,7 @@
             <email>
                 <ebizmarts_abandonedcart_general_template3 translate="label" module="ebizmarts_abandonedcart">
                     <label>Third Abandoned Cart Mail</label>
-                    <file>sales/abandoned_cart_mail_3.html</file>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_3.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template3>
             </email>
@@ -45,7 +45,7 @@
             <email>
                 <ebizmarts_abandonedcart_general_template4 translate="label" module="ebizmarts_abandonedcart">
                     <label>Fourth Abandoned Cart Mail</label>
-                    <file>sales/abandoned_cart_mail_generic.html</file>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template4>
             </email>
@@ -54,7 +54,7 @@
             <email>
                 <ebizmarts_abandonedcart_general_template5 translate="label" module="ebizmarts_abandonedcart">
                     <label>Fifth Abandoned Cart Mail</label>
-                    <file>sales/abandoned_cart_mail_generic.html</file>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template5>
             </email>
