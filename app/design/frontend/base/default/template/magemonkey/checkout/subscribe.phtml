@@ -9,21 +9,24 @@
 <script type="text/javascript">
 addSubscribeToPost = function (element){
 
-	/*if( $('magemonkey-subscribe') ){
-		$('magemonkey-subscribe').remove();
-	}*/
-    if($('#magemonkey-subscribe-'+element.readAttribute('value'))) {
-        $('#magemonkey-subscribe-'+element.readAttribute('value')).remove();
+    var value = "";
+    if(element.readAttribute('id') == 'magemonkey-trigger'){
+        if( $('magemonkey-subscribe') ){
+            $('magemonkey-subscribe').remove();
+        }
+    }else{
+        value = "-"+element.readAttribute('value');
+        if($('#magemonkey-subscribe-'+element.readAttribute('value'))) {
+            $('#magemonkey-subscribe-'+element.readAttribute('value')).remove();
+        }
+        if($('#subscribe-'+element.readAttribute('value'))) {
+            $('#subscribe-'+element.readAttribute('value')).remove();
+        }
     }
-    if($('#subscribe-'+element.readAttribute('value'))) {
-        $('#subscribe-'+element.readAttribute('value')).remove();
-    }
-
-
 	if(element.checked){
-        var inputer = new Element('input', { name: "magemonkey-subscribe-"+element.readAttribute('value'), id: "magemonkey-subscribe-"+element.readAttribute('value'), value: "1", type: "hidden" });
-        var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe-"+element.readAttribute('value'), value: element.getValue(), type: "hidden" });
-        var force = new Element('input', { name: "magemonkey_force-"+element.readAttribute('value'), id: "magemonkey-force-"+element.readAttribute('value'), value: "1", type: "hidden" });
+        var inputer = new Element('input', { name: "magemonkey_subscribe"+value, id: "magemonkey-subscribe"+value, value: "1", type: "hidden" });
+        var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe"+value, value: element.getValue(), type: "hidden" });
+        var force = new Element('input', { name: "magemonkey_force"+value, id: "magemonkey-force"+value, value: "1", type: "hidden" });
         try{
             Element.insert(Form.findFirstElement(payment.form), inputer);
             Element.insert(Form.findFirstElement(payment.form), listValue);
@@ -69,7 +72,7 @@ addElementToPost = function (element){
 <?php echo $this->getBlockHtml('formkey'); ?>
 <ul class="monkey-additional-lists">
 	<li class="listdata"><?php echo $generalList['name']; ?>
-		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger-"<?php echo $generalList['id']; ?> value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
+		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
 		<?php if(is_array($generalList['interest_groupings'])): ?>
 			<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 			<?php foreach($generalList['interest_groupings'] as $group): ?>
