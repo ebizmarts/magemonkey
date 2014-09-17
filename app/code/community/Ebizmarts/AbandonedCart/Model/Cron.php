@@ -54,6 +54,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $mandrillTag = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MANDRILL_TAG, $store)."_$store";
 
         // iterates one time for each mail number
+        Mage::log('Store '.$store, null, 'Santiago.log', true);
         for($run=0;$run<$maxtimes;$run++){
             if(!$days[$run]){
                 return;
@@ -94,14 +95,17 @@ class Ebizmarts_AbandonedCart_Model_Cron
             Mage::helper('ebizmarts_abandonedcart')->log((string)$collection->getSelect());
 
             // for each cart of the current run
+            Mage::log('Collection tiene '.count($collection), null, 'Santiago.log', true);
             foreach($collection as $quote)
             {
+                Mage::log('customer '. $quote->getCustomerEmail(), null, 'Santiago.log', true);
                 // check if they are any order from the customer with date >=
                 $collection2 = Mage::getResourceModel('reports/quote_collection');
                 $collection2->addFieldToFilter('main_table.is_active', '0')
                             ->addFieldToFilter('main_table.reserved_order_id',array('neq' => 'NULL' ))
                             ->addFieldToFilter('main_table.customer_email',array('eq' => $quote->getCustomerEmail()))
                             ->addFieldToFilter('main_table.updated_at',array('from'=>$quote->getUpdatedAt()));
+                Mage::log('collection 2 size '.$collection2->getSize(), null, 'Santiago.log', true);
                 if($collection2->getSize()) {
                     continue;
                 }
@@ -118,7 +122,10 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $sender = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderid/name",$store), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderid/email",$store));
 
                 $email = $quote->getCustomerEmail();
+                Mage::log('isSubscibed? '.$this->_isSubscribed($email,'abandonedcart',$store), null, 'Santiago.log', true);
+
                 if($this->_isSubscribed($email,'abandonedcart',$store)) {
+                    Mage::log('Esta subscripto', null, 'Santiago.log', true);
                     $name = $quote->getCustomerFirstname().' '.$quote->getCustomerLastname();
                     $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
                     $unsubscribeUrl = Mage::getModel('core/url')->setStore($store)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=abandonedcart&email='.$email.'&store='.$store;
@@ -134,6 +141,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
                     // if days have passed proceed to send mail
                     if($updatedAtDiff >= $diff){
+                        Mage::log('Esta mandnando', null, 'Santiago.log', true);
 
                         $mailsubject = $this->_getMailSubject($run, $store);
                         $templateId = $this->_getTemplateId($run);
