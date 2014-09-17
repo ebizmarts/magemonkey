@@ -9,14 +9,21 @@
 <script type="text/javascript">
 addSubscribeToPost = function (element){
 
-	if( $('magemonkey-subscribe') ){
+	/*if( $('magemonkey-subscribe') ){
 		$('magemonkey-subscribe').remove();
-	}
+	}*/
+    if($('#magemonkey-subscribe-'+element.readAttribute('value'))) {
+        $('#magemonkey-subscribe-'+element.readAttribute('value')).remove();
+    }
+    if($('#subscribe-'+element.readAttribute('value'))) {
+        $('#subscribe-'+element.readAttribute('value')).remove();
+    }
+
 
 	if(element.checked){
-        var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
-        var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe", value: element.getValue(), type: "hidden" });
-        var force = new Element('input', { name: "magemonkey_force", id: "magemonkey-force", value: "1", type: "hidden" });
+        var inputer = new Element('input', { name: "magemonkey-subscribe-"+element.readAttribute('value'), id: "magemonkey-subscribe-"+element.readAttribute('value'), value: "1", type: "hidden" });
+        var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe-"+element.readAttribute('value'), value: element.getValue(), type: "hidden" });
+        var force = new Element('input', { name: "magemonkey_force-"+element.readAttribute('value'), id: "magemonkey-force-"+element.readAttribute('value'), value: "1", type: "hidden" });
         try{
             Element.insert(Form.findFirstElement(payment.form), inputer);
             Element.insert(Form.findFirstElement(payment.form), listValue);
@@ -62,7 +69,7 @@ addElementToPost = function (element){
 <?php echo $this->getBlockHtml('formkey'); ?>
 <ul class="monkey-additional-lists">
 	<li class="listdata"><?php echo $generalList['name']; ?>
-		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
+		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger-"<?php echo $generalList['id']; ?> value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
 		<?php if(is_array($generalList['interest_groupings'])): ?>
 			<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 			<?php foreach($generalList['interest_groupings'] as $group): ?>
@@ -93,7 +100,7 @@ addElementToPost = function (element){
 			$igroups = $list['interest_groupings'];
 		?>
 		<li class="listdata"><?php echo $list['name']; ?>
-        <input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $list['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $list['id']; ?>" title="<?php echo $list['name']; ?>" class="monkey-list-subscriber" />
+        <input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $list['id'] ?>][subscribed]" id="magemonkey-trigger-"<?php echo $generalList['id']; ?> value="<?php echo $list['id']; ?>" title="<?php echo $list['name']; ?>" class="monkey-list-subscriber" />
 		<?php if(is_array($igroups)): ?>
 			<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
 			<?php foreach($igroups as $group): ?>
@@ -147,7 +154,7 @@ $$('input.monkey-list-subscriber').each(function(chk){
 });
 
 
-addSubscribeToPost($('magemonkey-trigger'));
+//addSubscribeToPost($('magemonkey-trigger'));
 
 if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
 
