@@ -118,6 +118,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $sender = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderid/name",$store), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderid/email",$store));
 
                 $email = $quote->getCustomerEmail();
+
                 if($this->_isSubscribed($email,'abandonedcart',$store)) {
                     $name = $quote->getCustomerFirstname().' '.$quote->getCustomerLastname();
                     $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
