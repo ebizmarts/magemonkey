@@ -1,181 +1,187 @@
 <?php
-	$lists = $this->getLists();
-	$check = $this->checkStatus();
-	$myLists       = $this->getSubscribedLists();
-	$generalList   = $this->getGeneralList();
-	$auto  = (($check === 1) OR ($check === 3) or ($check ===4));
-    $force = $this->getForce();
+$lists = $this->getLists();
+$check = $this->checkStatus();
+$myLists       = $this->getSubscribedLists();
+$generalList   = $this->getGeneralList();
+$auto  = (($check === 1) OR ($check === 3) or ($check ===4));
+$force = $this->getForce();
 ?>
 <script type="text/javascript">
-addSubscribeToPost = function (element){
+    addSubscribeToPost = function (element){
 
-	if( $('magemonkey-subscribe') ){
-		$('magemonkey-subscribe').remove();
-	}
+        if( $('magemonkey-subscribe') ){
+            $('magemonkey-subscribe').remove();
+        }
 
-	if(element.checked){
-        var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
-        var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe", value: element.getValue(), type: "hidden" });
-        var force = new Element('input', { name: "magemonkey_force", id: "magemonkey-force", value: "1", type: "hidden" });
-        try{
-            Element.insert(Form.findFirstElement(payment.form), inputer);
-            Element.insert(Form.findFirstElement(payment.form), listValue);
-            <?php if($force): ?>
+        if(element.checked){
+            var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
+            var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe", value: element.getValue(), type: "hidden" });
+            var force = new Element('input', { name: "magemonkey_force", id: "magemonkey-force", value: "1", type: "hidden" });
+            try{
+                Element.insert(Form.findFirstElement(payment.form), inputer);
+                Element.insert(Form.findFirstElement(payment.form), listValue);
+                <?php if($force): ?>
                 Element.insert(Form.findFirstElement(payment.form), force);
-            <?php endif; ?>
-        }catch(notelem){
-            $("co-payment-form").insert(inputer);
-            $("co-payment-form").insert(listValue);
+                <?php endif; ?>
+            }catch(notelem){
+                $("co-payment-form").insert(inputer);
+                $("co-payment-form").insert(listValue);
+            }
         }
-	}
 
-}
-addGroupToPost = function (element){
-	if(element.checked){
-        try{
-        	var group = new Element('input', { name: element.readAttribute('name'), id: element.readAttribute('id'), value: element.getValue(), checked:true, type: "checkbox" });
-            Element.insert(Form.findFirstElement(payment.form), group);
-        }catch(notelem){
-            $("co-payment-form").insert(group);
+    }
+    addGroupToPost = function (element){
+        if(element.checked){
+            try{
+                var group = new Element('input', { name: element.readAttribute('name'), id: element.readAttribute('id'), value: element.getValue(), checked:true, type: "checkbox" });
+                Element.insert(Form.findFirstElement(payment.form), group);
+            }catch(notelem){
+                $("co-payment-form").insert(group);
+            }
         }
-	}
-}
-addElementToPost = function (element){
+    }
+    addElementToPost = function (element){
 
-	var formInputId = element.readAttribute('id') + '-serialize';
+        var formInputId = element.readAttribute('id') + '-serialize';
 
-	if($(formInputId)){
-	 $(formInputId).remove();
-	}
+        if($(formInputId)){
+            $(formInputId).remove();
+        }
 
-	var inp = new Element('input', { name: element.readAttribute('name'), id: formInputId, value: element.getValue(), type: "hidden" });
+        var inp = new Element('input', { name: element.readAttribute('name'), id: formInputId, value: element.getValue(), type: "hidden" });
 
-	Element.insert( Form.findFirstElement(payment.form), inp);
+        Element.insert( Form.findFirstElement(payment.form), inp);
 
-}
+    }
 </script>
 <div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
-<!-- General Subscription -->
-<div class="page-title">
-	<h1><?php echo $this->__('Newsletter Subscription'); ?></h1>
-</div>
-<?php echo $this->getBlockHtml('formkey'); ?>
-<ul class="monkey-additional-lists">
-	<li class="listdata"><?php echo $generalList['name']; ?>
-		<input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
-		<?php if(is_array($generalList['interest_groupings'])): ?>
-			<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
-			<?php foreach($generalList['interest_groupings'] as $group): ?>
-				<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
-					<div class="grouping">
-						<?php if ($group['form_field'] != 'hidden'): ?><strong><?php echo $group['name']; ?></strong><?php endif; ?>
-						<?php echo $this->renderGroup($group, $generalList); ?>
-					</div>
-				<?php endif; ?>
-			<?php endforeach; ?>
-			</div>
+    <!-- General Subscription -->
+    <div class="page-title">
+        <h1><?php echo $this->__('Newsletter Subscription'); ?></h1>
+    </div>
+    <?php echo $this->getBlockHtml('formkey'); ?>
+    <ul class="monkey-additional-lists">
+        <li class="listdata"><?php echo $generalList['name']; ?>
+            <input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
+            <?php if(is_array($generalList['interest_groupings']) && $this->getCanModify() == 1): ?>
+                <div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
+                    <?php foreach($generalList['interest_groupings'] as $group): ?>
+                        <?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                            <div class="grouping">
+                                <?php if ($group['form_field'] != 'hidden'): ?><strong><?php echo $group['name']; ?></strong><?php endif; ?>
+                                <?php echo $this->renderGroup($group, $generalList); ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
 
-		<?php endif; ?>
-	</li>
-</ul>
-<!-- General Subscription -->
+            <?php endif; ?>
+        </li>
+    </ul>
+    <!-- General Subscription -->
 
-<!-- Additional Lists -->
-<div class="monkey-multisubscribe">
-	<ul class="monkey-additional-lists">
-		<?php
-		foreach($lists as $list):
+    <!-- Additional Lists -->
+    <div class="monkey-multisubscribe">
+        <ul class="monkey-additional-lists">
+            <?php
+            foreach($lists as $list):
 
-			if($this->notInMyAccount() && in_array($list['id'], $myLists)){
-				continue;
-			}
+                if($this->notInMyAccount() && in_array($list['id'], $myLists)){
+                    continue;
+                }
+                $igroups = $list['interest_groupings'];
+                ?>
+                <li class="listdata"><?php echo $list['name']; ?>
+                    <input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $list['id'] ?>][subscribed]" id="magemonkey-trigger-<?php echo $list['id']; ?>" value="<?php echo $list['id']; ?>" title="<?php echo $list['name']; ?>" class="monkey-list-subscriber" />
+                    <?php if(is_array($igroups)): ?>
+                        <div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
+                            <?php foreach($igroups as $group): ?>
+                                <?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                                    <div class="grouping">
+                                        <strong><?php echo $group['name']; ?></strong>
+                                        <?php echo $this->renderGroup($group, $list); ?>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
 
-			$igroups = $list['interest_groupings'];
-		?>
-		<li class="listdata"><?php echo $this->listLabel($list); ?>
-		<?php if(is_array($igroups)): ?>
-			<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
-			<?php foreach($igroups as $group): ?>
-				<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
-					<div class="grouping">
-						<strong><?php echo $group['name']; ?></strong>
-						<?php echo $this->renderGroup($group, $list); ?>
-					</div>
-				<?php endif; ?>
-			<?php endforeach; ?>
-			</div>
-
-		<?php endif; ?>
-		</li>
-		<?php endforeach; ?>
-	</ul>
-</div>
-<!-- Additional Lists -->
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <!-- Additional Lists -->
 </div>
 <?php
 //Check if there's additional list selected, if not Dont show this section
 if(count($lists) > 0):
-	//echo $this->getChildHtml('left.monkeysignup');
+    //echo $this->getChildHtml('left.monkeysignup');
 endif;
 ?>
 
 <script type="text/javascript">
-//Handle newsletter subscribe/unsubscribe checkbox events
-$$('input.monkey-list-subscriber').each(function(chk){
+    //Handle newsletter subscribe/unsubscribe checkbox events
+    $$('input.monkey-list-subscriber').each(function(chk){
 
-		if( !chk.checked ){
-			var groupings = $('interest_groupings_'+chk.value);
-			if(groupings){
-				groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
-			}
-		}
+        if( !chk.checked ){
+            var groupings = $('interest_groupings_'+chk.value);
+            if(groupings){
+                groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
+            }
+        }
 
-		chk.observe('change', function(){
+        chk.observe('change', function(){
 
-			var groupings = $('interest_groupings_'+this.value);
-			if(groupings){
-				var elements = groupings.select('select', 'input');
-				if(this.checked){
-					elements.invoke('removeAttribute', 'disabled');
-				}else{
-					elements.invoke('writeAttribute', 'disabled', 'disabled');
-				}
-			}
+            var groupings = $('interest_groupings_'+this.value);
+            if(groupings){
+                var elements = groupings.select('select', 'input');
+                if(this.checked){
+                    elements.invoke('removeAttribute', 'disabled');
+                }else{
+                    elements.invoke('writeAttribute', 'disabled', 'disabled');
+                }
+            }
 
-		});
-});
+        });
+    });
+<?php if($auto):?>addSubscribeToPost($('magemonkey-trigger'));<?php endif; ?>
+<?php if($auto):
+    foreach($lists as $list):
+        $string = "magemonkey-trigger-".$list['id'];
+        ?>addSubscribeToPost($(<?php Print(json_encode($string)); ?>));
+    <?php endforeach; ?>
+<?php endif; ?>
 
-addSubscribeToPost($('magemonkey-trigger'));
 
-if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
+    if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
 
-  var event = 'change';
+        var event = 'change';
 
-  //Radio||Checkbox
-  $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
+        //Radio||Checkbox
+        $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
 
-	  if(input.readAttribute('type') == 'radio'){
-		  event = 'click';
-	  }
+            if(input.readAttribute('type') == 'radio'){
+                event = 'click';
+            }
 
-	  input.observe(event, function(){
-		  addElementToPost(this);
-	  });
-  });
+            input.observe(event, function(){
+                addElementToPost(this);
+            });
+        });
 
-  $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
-	  ddl.observe(event, function(){
-		  addElementToPost(this);
-	  });
-  });
+        $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
+            ddl.observe(event, function(){
+                addElementToPost(this);
+            });
+        });
 
-}
-//Handle newsletter subscribe/unsubscribe checkbox events
-$$('.interest-groupings input').each(function(group){
-  group.observe('change', function(){
-	 if(group.checked){
-	    	addGroupToPost(group);
-	 }
-  });
-});
+    }
+    //Handle newsletter subscribe/unsubscribe checkbox events
+    $$('.interest-groupings input').each(function(group){
+        group.observe('change', function(){
+            if(group.checked){
+                addGroupToPost(group);
+            }
+        });
+    });
 </script>

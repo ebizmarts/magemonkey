@@ -2471,6 +2471,7 @@ class Ebizmarts_MageMonkey_Model_MCAPI
 
         list($headers, $response) = explode("\r\n\r\n", $response, 2);
         $headers = explode("\r\n", $headers);
+
         $errored = false;
         foreach($headers as $h){
             if (substr($h,0,26)==="X-MailChimp-API-Error-Code"){
