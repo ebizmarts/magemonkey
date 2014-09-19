@@ -178,6 +178,15 @@
                 </observers>
             </admin_system_config_changed_section_mandrill>
         </events>
+        <translate>
+            <modules>
+                <Ebizmarts_Autoresponder>
+                    <files>
+                        <default>Ebizmarts_Autoresponder.csv</default>
+                    </files>
+                </Ebizmarts_Autoresponder>
+            </modules>
+        </translate>
     </adminhtml>
     <frontend>
         <layout>
@@ -214,6 +223,15 @@
                 </observers>
             </review_product_post_after>
         </events>
+        <translate>
+            <modules>
+                <Ebizmarts_Autoresponder>
+                    <files>
+                        <default>Ebizmarts_Autoresponder.csv</default>
+                    </files>
+                </Ebizmarts_Autoresponder>
+            </modules>
+        </translate>
     </frontend>
 
     <crontab>
