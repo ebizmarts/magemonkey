@@ -864,11 +864,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 						$subscriber->setImportMode(TRUE);
 						$subscriber->subscribe($email);
 					}else{
-                        if($customer){
                             $customer->setListGroups($groupings);
                             $customer->setMcListId($listId);
                             $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
-                        }
 						$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
 
 					}

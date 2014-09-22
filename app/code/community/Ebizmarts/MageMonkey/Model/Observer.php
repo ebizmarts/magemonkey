@@ -38,7 +38,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
 		$email  = $subscriber->getSubscriberEmail();
-		if($subscriber->getMcStoreId()){
+		/*if($subscriber->getMcStoreId()){
 			$listId = Mage::helper('monkey')->getDefaultList($subscriber->getMcStoreId());
 		}
 		elseif($subscriber->getStoreId()){
@@ -46,7 +46,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 		else{
 			$listId = Mage::helper('monkey')->getDefaultList(Mage::app()->getStore()->getId());
-		}
+		}*/
 		$subscriber->setImportMode(TRUE);
 		$isConfirmNeed = FALSE;
 		if( !Mage::helper('monkey')->isAdmin() &&
@@ -59,11 +59,15 @@ class Ebizmarts_MageMonkey_Model_Observer
 		}
 
         //Check if customer is not yet subscribed on MailChimp
+        $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
+        if($monkeyPost) {
+            $post = unserialize($monkeyPost);
+            foreach($post['list'] as $listSubscribed){
+                $listId = $listSubscribed['subscribed'];
 		$isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
 
         //Flag only is TRUE when changing to SUBSCRIBE
         if( TRUE === $subscriber->getIsStatusChanged() ){
-
 			if($isOnMailChimp == 1){
 				return $observer;
 			}
@@ -72,7 +76,9 @@ class Ebizmarts_MageMonkey_Model_Observer
        			$subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
        			Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
  			}
-            $mergeVars = $this->_mergeVars($subscriber);
+
+            $mergeVars = $this->_mergeVars($subscriber, FALSE, $listId);
+
             if(Mage::getStoreConfig('monkey/general/checkout_async'))
             {
                 $subs = Mage::getModel('monkey/asyncsubscribers');
@@ -88,6 +94,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 			    Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
             }
 
+        }
+            }
+            Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
         }
         // This code unsubscribe users if it's on MailChimp and the status it's unconfirmed
         /*else{
@@ -451,7 +460,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 * @param bool $includeEmail
 	 * @return array
 	 */
-	protected function _mergeVars($object = NULL, $includeEmail = FALSE)
+	protected function _mergeVars($object = NULL, $includeEmail = FALSE, $currentList = NULL)
 	{
 
         //Initialize as GUEST customer
@@ -488,30 +497,51 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$mergeVars = Mage::helper('monkey')->getMergeVars($customer, $includeEmail);
         // add groups
-        $groups = Mage::getStoreConfig('monkey/general/cutomergroup',$object->getStoreId());
-        $groups = explode(",",$groups);
-        if(is_array($groups)) {
-            $subscribeGroups = array();
-            $_prevGroup = null;
-            $checkboxes = array();
-            foreach($groups as $group) {
-                $item = explode("_",$group);
-                $currentGroup = $item[0];
-                if($currentGroup==$_prevGroup||$_prevGroup==null) {
-                    $checkboxes[]=$item[1];
-                    $_prevGroup=$currentGroup;
+        $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
+        $defaultList = Mage::getStoreConfig('monkey/general/list',$object->getStoreId());
+
+        if($currentList && Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId()) == 1) {
+            if ($monkeyPost) {
+
+                $subscribeGroups = array(0=>array());
+                $post = unserialize($monkeyPost);
+                foreach($post['list'][$currentList] as $toGroups => $value){
+                    if(is_numeric($toGroups)){
+                        $subscribeGroups[0]['id'] = $toGroups;
+                        $subscribeGroups[0]['groups'] = implode(', ', array_unique($post['list'][$currentList][$subscribeGroups[0]['id']]));
+                    }
                 }
-                else {
-                    $subscribeGroups[] = array('id'=>$_prevGroup,"groups"=>str_replace('%C%','\\,',implode(', ', $checkboxes)));
-                    $checkboxes = array();
-                    $_prevGroup = $currentGroup;
-                    $checkboxes[]=$item[1];
-                }
+                $groups = NULL;
             }
-            $subscribeGroups[] = array('id'=>$currentGroup,"groups"=>str_replace('%C%','\\,',implode(', ', $checkboxes)));
+        }else {
+            $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $object->getStoreId());
+            $groups = explode(",",$groups);
+            if(is_array($groups)) {
+                $subscribeGroups = array();
+                $_prevGroup = null;
+                $checkboxes = array();
+                foreach($groups as $group) {
+                    $item = explode("_",$group);
+                    $currentGroup = $item[0];
+                    if($currentGroup==$_prevGroup||$_prevGroup==null) {
+                        $checkboxes[]=$item[1];
+                        $_prevGroup=$currentGroup;
+                    }
+                    else {
+                        $subscribeGroups[] = array('id'=>$_prevGroup,"groups"=>str_replace('%C%','\\,',implode(', ', $checkboxes)));
+                        $checkboxes = array();
+                        $_prevGroup = $currentGroup;
+                        $checkboxes[]=$item[1];
+                    }
+                }
+                $subscribeGroups[] = array('id'=>$currentGroup,"groups"=>str_replace('%C%','\\,',implode(', ', $checkboxes)));
+
+            }
+        }
+        if($subscribeGroups[0]['id'] && $subscribeGroups[0]['id'] != -1) {
             $mergeVars["GROUPINGS"] = $subscribeGroups;
         }
-        $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
+
         if($monkeyPost) {
             $post = unserialize($monkeyPost);
             $force = Mage::getStoreConfig('monkey/general/checkout_subscribe',$object->getStoreId());
