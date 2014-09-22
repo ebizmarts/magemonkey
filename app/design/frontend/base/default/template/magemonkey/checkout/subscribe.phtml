@@ -3,19 +3,27 @@ $lists = $this->getLists();
 $check = $this->checkStatus();
 $myLists       = $this->getSubscribedLists();
 $generalList   = $this->getGeneralList();
-$auto  = (($check === 1) OR ($check === 3) or ($check ===4));
+$auto  = (($check === 1) or ($check === 3) or ($check === 4));
 $force = $this->getForce();
 ?>
 <script type="text/javascript">
     addSubscribeToPost = function (element){
 
-        if( $('magemonkey-subscribe') ){
+        //save old clicked lists and then removes element
+        var subscribeValue = '';
+        if($('magemonkey-subscribe')){
+            var checkedLists = $('magemonkey-subscribe').getValue();
+            subscribeValue = checkedLists+',';
             $('magemonkey-subscribe').remove();
         }
-
+        var id = "subscribe-"+element.readAttribute('value');
+        if($(id)) {
+            $(id).remove();
+        }
+        //if checked add this element else remove it
         if(element.checked){
-            var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: "1", type: "hidden" });
-            var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe", value: element.getValue(), type: "hidden" });
+            var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: subscribeValue+element.readAttribute('value'), type: "hidden" });
+            var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe-"+element.readAttribute('value'), value: element.readAttribute('value'), type: "hidden" });
             var force = new Element('input', { name: "magemonkey_force", id: "magemonkey-force", value: "1", type: "hidden" });
             try{
                 Element.insert(Form.findFirstElement(payment.form), inputer);
@@ -27,11 +35,26 @@ $force = $this->getForce();
                 $("co-payment-form").insert(inputer);
                 $("co-payment-form").insert(listValue);
             }
+        }else{
+            var arrCheckedLists = checkedLists.split(',');
+            var pos = jQuery.inArray(element.readAttribute('value'), arrCheckedLists);
+            if(pos != -1) {
+                arrCheckedLists.splice(pos, 1);
+                checkedLists = arrCheckedLists.join(',');
+                var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: checkedLists, type: "hidden" });
+                try{
+                    Element.insert(Form.findFirstElement(payment.form), inputer);
+                }catch(notelem){
+                    $("co-payment-form").insert(inputer);
+                }
+            }
+
         }
 
     }
     addGroupToPost = function (element){
         if(element.checked){
+
             try{
                 var group = new Element('input', { name: element.readAttribute('name'), id: element.readAttribute('id'), value: element.getValue(), checked:true, type: "checkbox" });
                 Element.insert(Form.findFirstElement(payment.form), group);
@@ -41,9 +64,7 @@ $force = $this->getForce();
         }
     }
     addElementToPost = function (element){
-
         var formInputId = element.readAttribute('id') + '-serialize';
-
         if($(formInputId)){
             $(formInputId).remove();
         }
@@ -144,6 +165,7 @@ endif;
 
         });
     });
+    //If force subscription or checked by default set the elements as clicked
 <?php if($auto):?>addSubscribeToPost($('magemonkey-trigger'));<?php endif; ?>
 <?php if($auto):
     foreach($lists as $list):
@@ -158,7 +180,7 @@ endif;
         var event = 'change';
 
         //Radio||Checkbox
-        $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
+        /*$$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
 
             if(input.readAttribute('type') == 'radio'){
                 event = 'click';
@@ -167,7 +189,7 @@ endif;
             input.observe(event, function(){
                 addElementToPost(this);
             });
-        });
+        });*/
 
         $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
             ddl.observe(event, function(){
