@@ -91,11 +91,42 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $collection->addFieldToFilter('main_table.customer_group_id', array('in', $customergroups));
             }
             //is this necessary?
-            Mage::helper('ebizmarts_abandonedcart')->log((string)$collection->getSelect());
+//            Mage::helper('ebizmarts_abandonedcart')->log((string)$collection->getSelect());
 
             // for each cart of the current run
             foreach($collection as $quote)
             {
+                foreach($quote->getAllVisibleItems() as $item) {
+                    $removeFromQuote = false;
+                    $product = Mage::getModel('catalog/product')->load($item->getProductId());
+                    if(!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
+                    {
+                        Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer present or enabled; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
+                        $removeFromQuote = true;
+                    }
+                    $stock = $product->getStockItem();
+                    if(
+                        (
+                            $stock->getManageStock() ||
+                            ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId()))
+                        )
+                        && $stock->getQty() < $item->getQty())
+                    {
+                        Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer in stock; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
+                        $removeFromQuote = true;
+                    }
+                    if($removeFromQuote)
+                    {
+                        $quote->removeItem($item->getId());
+                    }
+                }
+                if(count($quote->getAllVisibleItems()) < 1)
+                {
+                    $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
+                    $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
+                    $quote2->save();
+                    continue;
+                }
                 // check if they are any order from the customer with date >=
                 $collection2 = Mage::getResourceModel('reports/quote_collection');
                 $collection2->addFieldToFilter('main_table.is_active', '0')
@@ -107,7 +138,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 }
                 //
                 //$url = Mage::getBaseUrl('web').'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId();
-                srand((double)microtime()*1000000);
+                //srand((double)microtime()*1000000);
                 $token = md5(rand(0,9999999));
                 $url = Mage::getModel('core/url')->setStore($store)->getUrl('',array('_nosid'=>true)).'ebizmarts_abandonedcart/abandoned/loadquote?id='.$quote->getEntityId().'&token='.$token;
 
