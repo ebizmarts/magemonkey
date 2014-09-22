@@ -840,40 +840,42 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		}
 
-		//Subscribe to new lists
-		if(is_array($lists) && is_array($curlists)){
-			$subscribe = array_diff_key($lists, $curlists);
-			if( !empty($subscribe) ){
+            //Subscribe to new lists
+            if (is_array($lists) && is_array($curlists)) {
+                $subscribe = array_diff_key($lists, $curlists);
+                if (!empty($subscribe)) {
 
-				foreach($subscribe as $listId => $slist){
+                    foreach ($subscribe as $listId => $slist) {
 
-					if(!isset($slist['subscribed'])){
-						continue;
-					}
+                        if (!isset($slist['subscribed'])) {
+                            continue;
+                        }
 
-					$groupings = $lists[$listId];
-					unset($groupings['subscribed']);
-					if( !Mage::helper('monkey')->isAdmin() && (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1) ) {
-						$isConfirmNeed = TRUE;
-					}
-					if($defaultList == $listId){
-						$subscriber = Mage::getModel('newsletter/subscriber');
-						$subscriber->setListGroups($groupings);
-						$subscriber->setMcListId($listId);
-                        $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
-						$subscriber->setImportMode(TRUE);
-						$subscriber->subscribe($email);
-					}else{
+                        $groupings = $lists[$listId];
+                        unset($groupings['subscribed']);
+                        if (!Mage::helper('monkey')->isAdmin() && (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1)) {
+                            $isConfirmNeed = TRUE;
+                        }
+                        if ($defaultList == $listId) {
+                            $subscriber = Mage::getModel('newsletter/subscriber');
+                            $subscriber->setListGroups($groupings);
+                            $subscriber->setMcListId($listId);
+                            $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
+                            $subscriber->setImportMode(TRUE);
+                            $subscriber->subscribe($email);
+                        } else {
                             $customer->setListGroups($groupings);
                             $customer->setMcListId($listId);
                             $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
-						$api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+                            if(!Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE) || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
+                                $api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+                            }
 
-					}
+                        }
 
-				}
+                    }
 
-			}
-		}
+                }
+            }
 	}
 }

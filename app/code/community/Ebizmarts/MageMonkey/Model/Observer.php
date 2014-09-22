@@ -33,7 +33,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-		if(Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE)){
+
+		if(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
 			return $observer;
 		}
 
@@ -376,7 +377,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
-
 		if(!Mage::helper('monkey')->canMonkey()){
 			return;
 		}
@@ -386,7 +386,6 @@ class Ebizmarts_MageMonkey_Model_Observer
             $force      = Mage::app()->getRequest()->getPost('magemonkey_force');
 
 			Mage::getSingleton('core/session')->setMonkeyPost( serialize(Mage::app()->getRequest()->getPost()) );
-
 			if(!is_null($subscribe)||!is_null($force)){
 				Mage::getSingleton('core/session')->setMonkeyCheckout(true);
 			}
@@ -438,7 +437,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 			}
 
 			//Multiple lists on checkout
-			/*$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
+			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
 			if($monkeyPost){
 
 				$post = unserialize($monkeyPost);
@@ -447,7 +446,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 				//Handle additional lists subscription on Customer Create Account
 				Mage::helper('monkey')->additionalListsSubscription($customer, $request);
-			}*/
+			}
 
 		}
 
