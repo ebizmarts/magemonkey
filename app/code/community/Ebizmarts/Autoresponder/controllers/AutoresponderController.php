@@ -87,8 +87,8 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId)&&Mage::getSingleton('customer/session')->isLoggedIn()) {
             if(isset($params['product_id'])) {
                 $product = Mage::getModel('catalog/product')->load($params['product_id']);
-                $mark = $product->getAttributeText('ebizmarts_mark_visited');
-                if($mark == 'Yes') {
+                $mark = $product->getEbizmartsMarkVisited();
+                if($mark == 1) {
                     $resp['time'] = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TIME,$storeId);
                 }
                 else {

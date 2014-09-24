@@ -6,7 +6,7 @@
  */
 (function () {
     function markVisited(productID) {
-        new Ajax.Request('../index.php/ebizautoresponder/autoresponder/markVisitedProducts?product_id=' + productID, {
+        new Ajax.Request('/ebizautoresponder/autoresponder/markVisitedProducts?product_id=' + productID, {
             method: 'get',
             onSuccess: function (transport) {
             }

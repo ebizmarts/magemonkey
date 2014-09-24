@@ -197,7 +197,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$store = is_null($store) ? Mage::app()->getStore() : $store;
 
 		$configscope = Mage::app()->getRequest()->getParam('store');
-		if( $configscope && ($configscope !== 'undefined') ){
+		if( $configscope && ($configscope !== 'undefined') && !is_array($configscope) ){
 			$store = $configscope;
 		}
 
@@ -471,7 +471,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             ->setPageSize(1)
                         	->getFirstItem();
 	                    if ( $last_order->getId() ){
-	                    	$merge_vars[$key] = Mage::helper('core')->formatDate($last_order->getCreatedAt());
+                            $merge_vars[$key] = date('m/d/Y', strtotime($last_order->getCreatedAt()));
 	                    }
 
 						break;
