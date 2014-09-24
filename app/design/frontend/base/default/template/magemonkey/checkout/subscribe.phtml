@@ -107,9 +107,9 @@ $force = $this->getForce();
             <?php
             foreach($lists as $list):
 
-                if($this->notInMyAccount() && in_array($list['id'], $myLists)){
-                    continue;
-                }
+//                if($this->notInMyAccount() && in_array($list['id'], $myLists)){
+//                    continue;
+//                }
                 $igroups = $list['interest_groupings'];
                 ?>
                 <li class="listdata"><?php echo $list['name']; ?>

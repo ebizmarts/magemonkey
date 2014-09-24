@@ -250,15 +250,15 @@
         <jobs>
             <magemonkey_bulksync_export_subscribers>
                 <schedule><cron_expr>0 * * * *</cron_expr></schedule>
-                <run><model>monkey/cron::processExportJobs</model></run>
+                <run><model>monkey/cron::bulksyncExportSubscribers</model></run>
             </magemonkey_bulksync_export_subscribers>
             <magemonkey_bulksync_import_subscribers>
                 <schedule><cron_expr>0 * * * *</cron_expr></schedule>
-                <run><model>monkey/cron::processImportJobs</model></run>
+                <run><model>monkey/cron::bulksyncImportSubscribers</model></run>
             </magemonkey_bulksync_import_subscribers>
             <magemonkey_autoexport_subscribers>
                 <schedule><cron_expr>0 * * * *</cron_expr></schedule>
-                <run><model>monkey/cron::processAutoExportJobs</model></run>
+                <run><model>monkey/cron::autoExportSubscribers</model></run>
             </magemonkey_autoexport_subscribers>
             <magemonkey_sendorders_asynch>
                 <schedule><cron_expr>*/15 * * * *</cron_expr></schedule>
