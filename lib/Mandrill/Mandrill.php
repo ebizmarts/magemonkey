@@ -1,21 +1,41 @@
 <?php
+if(defined("COMPILER_INCLUDE_PATH")) {
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Templates.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Exports.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Users.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Rejects.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Inbound.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Tags.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Messages.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Whitelists.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Ips.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Internal.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Subaccounts.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Urls.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Webhooks.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Senders.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Metadata.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Mandrill/Exceptions.php');
+}
+else {
+    require_once(dirname(__FILE__) . '/Mandrill/Templates.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Exports.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Users.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Rejects.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Inbound.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Tags.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Messages.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Whitelists.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Ips.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Internal.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Subaccounts.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Urls.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Webhooks.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Senders.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Metadata.php');
+    require_once(dirname(__FILE__) . '/Mandrill/Exceptions.php');
 
-require_once 'Mandrill/Templates.php';
-require_once 'Mandrill/Exports.php';
-require_once 'Mandrill/Users.php';
-require_once 'Mandrill/Rejects.php';
-require_once 'Mandrill/Inbound.php';
-require_once 'Mandrill/Tags.php';
-require_once 'Mandrill/Messages.php';
-require_once 'Mandrill/Whitelists.php';
-require_once 'Mandrill/Ips.php';
-require_once 'Mandrill/Internal.php';
-require_once 'Mandrill/Subaccounts.php';
-require_once 'Mandrill/Urls.php';
-require_once 'Mandrill/Webhooks.php';
-require_once 'Mandrill/Senders.php';
-require_once 'Mandrill/Metadata.php';
-require_once 'Mandrill/Exceptions.php';
+}
 
 class Mandrill_Mandrill {
     
