@@ -32,7 +32,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 *
 	 * @return void
 	 */
-	public function processImportJobs()
+	public function bulksyncImportSubscribers()
 	{
 		$job = $this->_getJob('Import');
 		if(is_null($job)){
@@ -214,7 +214,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 *
 	 * @return Ebizmarts_MageMonkey_Model_Cron
 	 */
-	public function processExportJobs()
+	public function bulksyncExportSubscribers()
 	{
 		$this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
 		$job = $this->_getJob('Export');
@@ -415,7 +415,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 *
 	 *
 	 */
-	public function processAutoExportJobs()
+	public function autoExportSubscribers()
 	{
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeId => $val) {

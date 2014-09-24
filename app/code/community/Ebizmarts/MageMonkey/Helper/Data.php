@@ -797,20 +797,18 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 				if(FALSE === array_key_exists($listId, $lists)){
 
 					//Unsubscribe Email
-					if($defaultList == $listId){
 
-						$item = Mage::getModel('monkey/monkey')->loadByEmail($email);
-						if(!$item->getId()){
-							$item = Mage::getModel('newsletter/subscriber')
-								    ->loadByEmail($email);
-						}
-						if($item->getSubscriberEmail()){
-							$item->unsubscribe();
-						}
-
-						//Unsubscribe Email
-						$api->listUnsubscribe($listId, $email);
+					$item = Mage::getModel('monkey/monkey')->loadByEmail($email);
+					if(!$item->getId()){
+						$item = Mage::getModel('newsletter/subscriber')
+							    ->loadByEmail($email);
 					}
+					if($item->getSubscriberEmail()){
+						$item->unsubscribe();
+					}
+
+					//Unsubscribe Email
+					$api->listUnsubscribe($listId, $email);
 
 				}else{
 
@@ -863,6 +861,12 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
                             $subscriber->setImportMode(TRUE);
                             $subscriber->subscribe($email);
+                            $customer->setListGroups($groupings);
+                            $customer->setMcListId($listId);
+                            $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+                            if(!Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE) || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
+                                $api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+                            }
                         } else {
                             $customer->setListGroups($groupings);
                             $customer->setMcListId($listId);

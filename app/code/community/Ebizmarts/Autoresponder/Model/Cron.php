@@ -13,7 +13,7 @@ class Ebizmarts_Autoresponder_Model_Cron
     /**
      *
      */
-    public function process()
+    public function autoresponder()
     {
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeId => $val)
