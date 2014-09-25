@@ -2430,7 +2430,6 @@ class Ebizmarts_MageMonkey_Model_MCAPI
         if ($sep_changed){
             ini_set("arg_separator.output", $orig_sep);
         }
-
         $payload = "POST " . $this->apiUrl["path"] . "?" . $this->apiUrl["query"] . "&method=" . $method . " HTTP/1.0\r\n";
         $payload .= "Host: " . $host . "\r\n";
         //$payload .= "User-Agent: MCAPI/" . $this->version ."\r\n";

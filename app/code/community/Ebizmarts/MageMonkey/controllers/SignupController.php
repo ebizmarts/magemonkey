@@ -27,9 +27,7 @@ class Ebizmarts_MageMonkey_SignupController extends Mage_Core_Controller_Front_A
 				$this->_redirect($this->_getRedirectPath());
 				return;
 			}
-
 			Mage::helper('monkey')->handlePost($this->getRequest(), $guestEmail);
-
 			if(!$loggedIn){
 				Mage::getSingleton('core/session')
 					->addSuccess($this->__('Thanks for your subscription!'));

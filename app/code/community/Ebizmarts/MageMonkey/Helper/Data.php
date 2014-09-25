@@ -790,7 +790,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 		$email     =  $guestEmail ? $guestEmail : $customer->getEmail();
 		if( !empty($curlists) ){
-
 			//Handle Unsubscribe and groups update actions
             foreach($curlists as $listId => $list){
 
@@ -842,9 +841,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if (is_array($lists) && is_array($curlists)) {
                 $subscribe = array_diff_key($lists, $curlists);
                 if (!empty($subscribe)) {
-
                     foreach ($subscribe as $listId => $slist) {
-
                         if (!isset($slist['subscribed'])) {
                             continue;
                         }
@@ -861,9 +858,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
                             $subscriber->setImportMode(TRUE);
                             $subscriber->subscribe($email);
-                            $customer->setListGroups($groupings);
-                            $customer->setMcListId($listId);
-                            $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+                            $mergeVars = Mage::helper('monkey')->getMergeVars($subscriber);
                             if(!Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE) || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
                                 $api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
                             }
