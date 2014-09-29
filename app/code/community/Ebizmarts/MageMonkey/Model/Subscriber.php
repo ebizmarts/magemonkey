@@ -12,4 +12,14 @@ class Ebizmarts_MageMonkey_Model_Subscriber extends Mage_Newsletter_Model_Subscr
     {
         return $this;
     }
+
+    public function sendConfirmationRequestEmail()
+    {
+        return $this;
+    }
+
+    public function sendConfirmationSuccessEmail()
+    {
+        return $this;
+    }
 }

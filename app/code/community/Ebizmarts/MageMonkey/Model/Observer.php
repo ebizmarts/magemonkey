@@ -344,17 +344,17 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$customer = $observer->getEvent()->getCustomer();
 
 		//Handle additional lists subscription on Customer Create Account
-		Mage::helper('monkey')->additionalListsSubscription($customer);
+		Mage::helper('monkey')->additionalListsSubscription($customer, $post);
 
 		$oldEmail = $customer->getOrigData('email');
 		if(!$oldEmail){
 			return $observer;
 		}
-		$mergeVars = $this->_mergeVars($customer, TRUE);
 		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 		$lists = $api->listsForEmail($oldEmail);
 		if(is_array($lists)){
 			foreach($lists as $listId){
+                $mergeVars = $this->_mergeVars($customer, TRUE, $listId);
 				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
 			}
 		}

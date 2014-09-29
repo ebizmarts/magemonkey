@@ -756,7 +756,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		if( in_array($requestString, $allowedPost) OR !is_null($post) ){
 			if(!is_null($post)){
-				$request = $post;
+				$request->setPost($post);
 			}
 			$this->handlePost($request, $customer->getEmail());
 		}
@@ -859,20 +859,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             $subscriber->setImportMode(TRUE);
                             $subscriber->subscribe($email);
                             $mergeVars = Mage::helper('monkey')->getMergeVars($subscriber);
-                            if(!Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE) || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
+                            if(!Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
                                 $api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
                             }
                         } else {
                             $customer->setListGroups($groupings);
                             $customer->setMcListId($listId);
                             $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
-                            if(!Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE) || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
+                            if(!Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
                                 $api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
                             }
 
                         }
 
                     }
+                    Mage::getSingleton('core/session')->getMonkeyCheckout(TRUE);
 
                 }
             }

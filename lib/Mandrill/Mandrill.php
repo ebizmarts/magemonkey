@@ -145,11 +145,16 @@ class Mandrill_Mandrill {
         if(curl_error($ch)) {
             throw new Mandrill_HttpError("API call to $url failed: " . curl_error($ch));
         }
+
         $result = json_decode($response_body, true);
         if($result === null) throw new Mandrill_Error('We were unable to decode the JSON response from the Mandrill API: ' . $response_body);
-        
-        if(floor($info['http_code'] / 100) >= 4) {
-            throw $this->castError($result);
+
+        try {
+            if (floor($info['http_code'] / 100) >= 4) {
+                throw $this->castError($result);
+            }
+        }catch(Exception $e){
+            $this->log($e->getMessage());
         }
 
         return $result;

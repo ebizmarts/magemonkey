@@ -19,7 +19,7 @@ $canmodify     = $this->getCanModify();
 				<?php if($this->getShowGeneral()): ?>
 				<!-- General Subscription -->
 				<li class="listdata"><?php echo $this->listLabel($generalList); ?>
-					<?php if(is_array($generalList['interest_groupings'])): ?>
+					<?php if($generalList['interest_groupings'] && is_array($generalList['interest_groupings'])): ?>
 
 						<div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
 						<?php foreach($generalList['interest_groupings'] as $group): ?>
@@ -49,7 +49,7 @@ $canmodify     = $this->getCanModify();
 				?>
 
 					<li class="listdata"><?php echo $this->listLabel($list); ?>
-					<?php if(is_array($igroups)): ?>
+					<?php if($igroups && is_array($igroups)): ?>
 						<div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
 						<?php foreach($igroups as $group): ?>
 							<?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
