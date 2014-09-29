@@ -15,6 +15,12 @@
     </modules>
     <global>
     	<events>
+            <newsletter_subscription_un_email_template>
+
+                <label>Newsletter unsubscription success</label>
+                <file>newsletter_unsub_success.html</file>
+                <type>html</type>
+            </newsletter_subscription_un_email_template>
             <newsletter_subscriber_save_before>
                 <observers>
                     <monkey_subscribe_observer>
@@ -56,6 +62,11 @@
                     <asyncorders><table>magemonkey_async_orders</table></asyncorders>
                 </entities>
             </monkey_mysql4>
+            <newsletter>
+                <rewrite>
+                    <subscriber>Ebizmarts_MageMonkey_Model_Subscriber</subscriber>
+                </rewrite>
+            </newsletter>
         </models>
         <resources>
             <monkey_setup>

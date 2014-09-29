@@ -62,15 +62,20 @@
     </review_product_list-->
 
     <catalog_product_view>
+        <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.notice" as="backtostock_notice" template="ebizmarts/autoresponder/backtostock/catalog/product/notice.phtml" />
+        <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.form" as="backtostock_form" template="ebizmarts/autoresponder/backtostock/catalog/product/form.phtml" />
         <reference name="content">
             <reference name="product.info">
                 <reference name="alert.urls">
-                    <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.notice" as="backtostock_notice" template="ebizmarts/autoresponder/backtostock/catalog/product/notice.phtml" />
+                    <action method="append" ifconfig="ebizmarts_autoresponder/general/active"><block>backtostock.notice</block></action>
                 </reference>
             </reference>
             <reference name="product.info.additional">
-                <block type="ebizmarts_autoresponder/backtostock_notice" name="backtostock.form" as="backtostock_form" template="ebizmarts/autoresponder/backtostock/catalog/product/form.phtml" />
+                <action method="append"  ifconfig="ebizmarts_autoresponder/general/active"><block>backtostock.form</block></action>
             </reference>
         </reference>
+        <depends>
+            <ifconfig>ebizmarts_autoresponder/backtostock/active</ifconfig>
+        </depends>
     </catalog_product_view>
 </layout>
