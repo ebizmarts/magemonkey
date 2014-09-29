@@ -493,7 +493,7 @@ class Ebizmarts_MageMonkey_Model_Cron
     }
     public function cleanSubscribersAsync()
     {
-        $collection = Mage::getModel('nmonkey/asyncsubscribers')->getCollection();
+        $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
         $collection->addFieldToFilter('proccessed',array('eq'=>1));
         foreach($collection as $item)
         {
