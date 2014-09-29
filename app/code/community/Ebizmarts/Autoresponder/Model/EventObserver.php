@@ -61,6 +61,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         if($o->getEvent()->getControllerAction()->getFullActionName() == 'review_product_post') {
             Mage::dispatchEvent("review_product_post_after", array('request' => $o->getControllerAction()->getRequest()));
         }
+        return $o;
     }
     public function reviewProductPostAfter(Varien_Event_Observer $o)
     {
@@ -97,6 +98,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
                 }
             }
         }
+        return $o;
     }
 
     protected function _generateReviewCoupon($reviewData)
