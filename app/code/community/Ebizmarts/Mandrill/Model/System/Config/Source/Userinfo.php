@@ -25,6 +25,15 @@ class Ebizmarts_Mandrill_Model_System_Config_Source_Userinfo
     public function __construct()
     {
         $storeId = Mage::app()->getStore()->getId();
+        if(Mage::app()->getRequest()->getParam('store')) {
+            $stores = Mage::app()->getStores();
+            foreach($stores as $store) {
+                if($store->getCode()==Mage::app()->getRequest()->getParam('store')) {
+                    $storeId = $store->getStoreId();
+                    break;
+                }
+            }
+        }
         if (!$this->_account_details&&Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId)) {
             $api = new Mandrill_Message(Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId));
             try {
