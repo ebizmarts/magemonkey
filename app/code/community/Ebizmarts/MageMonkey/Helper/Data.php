@@ -847,7 +847,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 *
 	 * @param Mage_Customer_Model_Customer $customer
 	 */
-	public function additionalListsSubscription($customer = null, $post = null)
+	public function additionalListsSubscription($customer, $post = null)
 	{
 		$request = Mage::app()->getRequest();
 
@@ -870,19 +870,19 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Add lists from post to database magemonkey_async_subscribers
      *
-     * @param $email
+     * @param $object (can be subscriber or customer)
      * @param null $post
      */
-    public function asyncListsSubscription($email, $post = null){
-        $request = Mage::app()->getRequest();
+    public function listsSubscription($subscriber, $post = null, $db = 0){
 
         if(!$post) {
             $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
             if ($monkeyPost) {
                 $post = unserialize($monkeyPost);
             }else {
-                if($request->getPost()){
-                    $post = $request->getPost();
+                if($db == 0){
+                    $defaultList = Mage::helper('monkey')->config('list');
+                    $this->subscribeToList($subscriber, $defaultList, $db);
                 }else{
                     return false;
                 }
@@ -892,35 +892,29 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         if($post['magemonkey_force']) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
-                $this->_asyncSubscribe($email, $listId);
+                $this->subscribeToList($subscriber, $listId, $db);
             }
         }elseif($post['magemonkey_subscribe']){
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach($lists as $listId) {
-                $this->_asyncSubscribe($email, $listId);
+                $this->subscribeToList($subscriber, $listId, $db);
             }
         }
     }
 
     /**
-     * Subscribe the list to database magemonkey_async_subscribers
+     * Subscribe the list to database magemonkey_async_subscribers if $db==1 else subscribe to MailChimp directly
      *
-     * @param $email
+     * @param $object
      * @param $listId
+     * @param int $db
      */
-    protected function _asyncSubscribe($object, $listId){
+    public function subscribeToList($object, $listId, $db = 0){
 
-        //check if object is subscriber else load subscriber
-        if($object->getSubscriberEmail()) {
-            $email = $object->getSubscriberEmail();
-            $subscriber = $object;
-        }else{
-            $email = $object->getEmail();
-            $subscriber = Mage::getModel('newsletter/subscriber')
-                ->loadByEmail($email);
-        }
+        $email = $object->getSubscriberEmail();
+        $subscriber = $object;
+
         //Flag only is TRUE when changing to SUBSCRIBE
-        $subscriber->setImportMode(TRUE);
         $isConfirmNeed = FALSE;
         if( !Mage::helper('monkey')->isAdmin() &&
             (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
@@ -943,7 +937,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
             $mergeVars = Mage::helper('monkey')->mergeVars($subscriber, FALSE, $listId);
 
-            if(Mage::getStoreConfig('monkey/general/checkout_async'))
+            if($db)
             {
                 $subs = Mage::getModel('monkey/asyncsubscribers');
                 $subs->setMapfields(serialize($mergeVars))
@@ -953,8 +947,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     ->setProccessed(0)
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
                     ->save();
-            }
-            else {
+            }else{
                 Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
             }
 
