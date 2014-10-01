@@ -101,11 +101,13 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 foreach($stores as $__store => $val) {
                     $storeid = Mage::app()->getStore($__store)->getId();
                     $aux = $this->__getMandrillStatistics($period,$storeid);
-                    $__particular['sent'] += $aux['sent'];
-                    $__particular['soft_bounces'] += $aux['soft_bounces'];
-                    $__particular['hard_bounces'] += $aux['hard_bounces'];
-                    $__particular['unique_opens'] += $aux['unique_opens'];
-                    $__particular['unique_clicks'] += $aux['unique_clicks'];
+                    if($aux) {
+                        $__particular['sent'] += $aux['sent'];
+                        $__particular['soft_bounces'] += $aux['soft_bounces'];
+                        $__particular['hard_bounces'] += $aux['hard_bounces'];
+                        $__particular['unique_opens'] += $aux['unique_opens'];
+                        $__particular['unique_clicks'] += $aux['unique_clicks'];
+                    }
                 }
                 $particular = $__particular;
             }
@@ -190,6 +192,9 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 unset($general['stats']);
                 return $general;
 
+        }
+        if(!isset($general['stats'])){
+            return false;
         }
         $stats = (array)$general['stats'];
         $particular = (array)$stats[$index];

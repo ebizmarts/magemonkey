@@ -98,6 +98,15 @@
                             <show_in_store>1</show_in_store>
                             <comment><![CDATA[Keep in mind, all your orders in Malchimp will be removed.<br>Select carefully the correct scope]]></comment>
                         </reset_remoteecommerce360>
+                        <maxlistsamount translate="label comment">
+                            <label>Max amount of lists to show</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>29</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                        </maxlistsamount>
                         <list translate="label comment">
                             <label>General Subscription</label>
                             <frontend_type>select</frontend_type>

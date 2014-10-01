@@ -223,9 +223,8 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	 * @param array $list List data from MC
 	 * @return string HTML code
 	 */
-	public function renderGroup($group, $list)
+	public function renderGroup($group, $list, $checked = -1)
 	{
-
 		$fieldType = $group['form_field'];
 
 		if($this->_getEmail()){
@@ -235,52 +234,57 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 		}
 
 		$myGroups = array();
-		if($memberInfo['success'] == 1){
-			$groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
+		//if checked = 1 all groups checked elseif checked == -1 registered groups checked elseif checked == 0 none checked
+        if($checked == 1){
+            foreach($group['groups'] as $g){
+                $myGroups[$group['id']][] = $g['name'];
+            }
+        }elseif($checked == -1) {
+            if($memberInfo['success'] == 1){
+                $groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
+                foreach ($groupings as $_group) {
+                    if (!empty($_group['groups'])) {
+                        if ($fieldType == 'checkboxes') {
 
-            foreach($groupings as $_group){
-
-                if(!empty($_group['groups'])){
-                    if($fieldType == 'checkboxes'){
-
-                        $currentGroup = str_replace('\\,','%C%',$_group['groups']);
-                        $currentGroupArray = explode(', ', $currentGroup);
-
-                        $myGroups[$_group['id']] = str_replace('%C%',',', $currentGroupArray);
-
-                    }elseif($fieldType == 'radio'){
-
-                        if(strpos($_group['groups'], ',')) {
-                            $currentGroup = str_replace('\\,','%C%',$_group['groups']);
+                            $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
                             $currentGroupArray = explode(', ', $currentGroup);
-                            $collapsed = str_replace('%C%',',', $currentGroupArray);
 
-                            if(is_array($collapsed) && isset($collapsed[0])) {
-                                $myGroups[$_group['id']] = array($collapsed[0]);
-                            } else {
-                                $myGroups[$_group['id']] = array($collapsed);
+                            $myGroups[$_group['id']] = str_replace('%C%', ',', $currentGroupArray);
+
+                        } elseif ($fieldType == 'radio') {
+
+                            if (strpos($_group['groups'], ',')) {
+                                $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
+                                $currentGroupArray = explode(', ', $currentGroup);
+                                $collapsed = str_replace('%C%', ',', $currentGroupArray);
+
+                                if (is_array($collapsed) && isset($collapsed[0])) {
+                                    $myGroups[$_group['id']] = array($collapsed[0]);
+                                } else {
+                                    $myGroups[$_group['id']] = array($collapsed);
+                                }
+                            }else{
+                                $myGroups[$_group['id']] = array($_group['groups']);
                             }
-                        } else {
-                            $myGroups[$_group['id']] = array($_group['groups']);
-                        }
 
-                    }else{
-                        if(strpos($_group['groups'], ',')) {
-                            $currentGroup = str_replace('\\,','%C%',$_group['groups']);
-                            $currentGroupArray = explode(', ', $currentGroup);
-                            $collapsed = str_replace('%C%',',', $currentGroupArray);
+                        }else{
+                            if(strpos($_group['groups'], ',')) {
+                                $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
+                                $currentGroupArray = explode(', ', $currentGroup);
+                                $collapsed = str_replace('%C%', ',', $currentGroupArray);
 
-                            if(is_array($collapsed) && isset($collapsed[0])) {
-                                $myGroups[$_group['id']] = array($collapsed[0]);
-                            } else {
-                                $myGroups[$_group['id']] = array($collapsed);
+                                if(is_array($collapsed) && isset($collapsed[0])) {
+                                    $myGroups[$_group['id']] = array($collapsed[0]);
+                                }else{
+                                    $myGroups[$_group['id']] = array($collapsed);
+                                }
+                            }else{
+                                $myGroups[$_group['id']] = array($_group['groups']);
                             }
-                        } else {
-                            $myGroups[$_group['id']] = array($_group['groups']);
+
                         }
 
                     }
-
                 }
             }
 		}
@@ -307,7 +311,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 		$object->setForm($this->getForm());
 
 		//Check/select values
-		if(isset($myGroups[$group['id']])){
+		if(isset($myGroups[$group['id']]) && !$checked == 0 || $checked == 1){
 			$object->setValue($myGroups[$group['id']]);
 		}else{
 			$object->setValue(array());
@@ -322,7 +326,13 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 			}
 
 			foreach($group['groups'] as $g){
-				$options [$g['name']] = $g['name'];
+                if($this->helper('monkey')->config('list') == $list['id']){
+                    if($this->_groupAllowed($g['name'])){
+                        $options [$g['name']] = $g['name'];
+                    }
+                }else{
+                    $options [$g['name']] = $g['name'];
+                }
 			}
 
 			if(method_exists('Varien_Data_Form_Element_Checkboxes', 'addElementValues')){
@@ -340,7 +350,13 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
 			$options = array();
 			foreach($group['groups'] as $g){
-				$options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
+                if($this->helper('monkey')->config('list') == $list['id']) {
+                    if ($this->_groupAllowed($g['name'])) {
+                        $options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
+                    }
+                }else{
+                    $options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
+                }
 			}
 
 			$object->setName($this->_htmlGroupName($list, $group));
@@ -362,6 +378,43 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 		return $html;
 
 	}
+
+    /**
+     * Return element id for group to be added to the post on checkout
+     *
+     * @param $group
+     * @param bool $default
+     * @return null|string
+     */
+    public function getGroupId($group, $default = FALSE){
+        $ret = "interest-group_".$group['name'];
+        if($default){
+            if(!$this->_groupAllowed($group['name'])){
+                $ret = null;
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * Return if group is selected in MailChimp configuration.
+     *
+     * @param $groupName
+     * @return bool
+     */
+    protected function _groupAllowed($groupName)
+    {
+        $allowedGroups = $this->helper('monkey')->config('cutomergroup');
+        $allowedGroups = explode(',',$allowedGroups);
+        $ret = false;
+        foreach($allowedGroups as $group){
+            $group = explode('_',$group);
+            if($group[1] == $groupName){
+                $ret = true;
+            }
+        }
+        return $ret;
+    }
 
 	/**
 	 * Retrieve email from Customer object in session
