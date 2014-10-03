@@ -629,9 +629,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $mergeVars = Mage::helper('monkey')->getMergeVars($customer, $includeEmail);
         // add groups
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
-
+        $post = Mage::app()->getRequest()->getPost();
         if ($monkeyPost) {
             $post = unserialize($monkeyPost);
+        }
+        if($post){
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             if ($currentList && Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId()) == 1) {
                 $subscribeGroups = array(0 => array());
@@ -842,30 +844,30 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return $errors;
 	}
 
-	/**
-	 * Handle additional lists subscription on form posts like Customer Create Account
-	 *
-	 * @param Mage_Customer_Model_Customer $customer
-	 */
-	public function additionalListsSubscription($customer, $post = null)
-	{
-		$request = Mage::app()->getRequest();
-
-		if( !$request->isPost() && is_null($post) ){
-			return false;
-		}
-
-		$allowedPost   = array('/customer/account/createpost/');
-		$requestString = $request->getRequestString();
-
-		if( in_array($requestString, $allowedPost) OR !is_null($post) ){
-			if(!is_null($post)){
-				$request->setPost($post);
-			}
-			$this->handlePost($request, $customer->getEmail());
-		}
-
-	}
+//	/**
+//	 * Handle additional lists subscription on form posts like Customer Create Account
+//	 *
+//	 * @param Mage_Customer_Model_Customer $customer
+//	 */
+//	public function additionalListsSubscription($customer, $post = null)
+//	{
+//		$request = Mage::app()->getRequest();
+//
+//		if( !$request->isPost() && is_null($post) ){
+//			return false;
+//		}
+//
+//		$allowedPost   = array('/customer/account/createpost/');
+//		$requestString = $request->getRequestString();
+//
+//		if( in_array($requestString, $allowedPost) OR !is_null($post) ){
+//			if(!is_null($post)){
+//				$request->setPost($post);
+//			}
+//			$this->handlePost($request, $customer->getEmail());
+//		}
+//
+//	}
 
     /**
      * Add lists from post to database magemonkey_async_subscribers
@@ -875,29 +877,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($subscriber, $post = null, $db = 0){
 
-        if(!$post) {
-            $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
-            if ($monkeyPost) {
-                $post = unserialize($monkeyPost);
-            }else {
-                if($db == 0){
-                    $defaultList = Mage::helper('monkey')->config('list');
-                    $this->subscribeToList($subscriber, $defaultList, $db);
-                }else{
-                    return false;
-                }
-            }
+        //footer subscription
+        if(!$post && $db == 0) {
+            $defaultList = Mage::helper('monkey')->config('list');
+            $this->_subscribeToList($subscriber, $defaultList, $db);
         }
 
-        if($post['magemonkey_force']) {
+        //post subscription
+        if(isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
-                $this->subscribeToList($subscriber, $listId, $db);
+                $this->_subscribeToList($subscriber, $listId, $db);
             }
-        }elseif($post['magemonkey_subscribe']){
+        }elseif(isset($post['magemonkey_subscribe'])){
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach($lists as $listId) {
-                $this->subscribeToList($subscriber, $listId, $db);
+                $this->_subscribeToList($subscriber, $listId, $db);
             }
         }
     }
@@ -909,10 +904,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $listId
      * @param int $db
      */
-    public function subscribeToList($object, $listId, $db = 0){
+    protected function _subscribeToList($subscriber, $listId, $db = 0){
 
-        $email = $object->getSubscriberEmail();
-        $subscriber = $object;
+        $email = $subscriber->getSubscriberEmail();
 
         //Flag only is TRUE when changing to SUBSCRIBE
         $isConfirmNeed = FALSE;

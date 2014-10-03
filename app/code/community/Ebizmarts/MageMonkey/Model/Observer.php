@@ -279,19 +279,14 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if(!$oldEmail){
 			return $observer;
 		}
-        $subscriber = Mage::getModel('newsletter/subscriber')
-            ->setImportMode(TRUE)
-            ->setSubscriberEmail($oldEmail)
-            ->setIsStatusChanged(1);
+        $subscriber = Mage::getModel('newsletter/subscriber');
+        $subscriber->setImportMode(TRUE);
+        $subscriber->subscribe($oldEmail);
 
-        //Handle additional lists subscription on Customer Create Account
+        //Handle lists subscription on Customer Create Account
         $post = Mage::app()->getRequest()->getPost();
-        if(Mage::getStoreConfig('monkey/general/checkout_async', $customer->getStoreId()) == 0) {
-            Mage::helper('monkey')->listsSubscription($subscriber, $post, 0);
-            //Mage::helper('monkey')->additionalListsSubscription($customer, $post);
-        }else{
-            Mage::helper('monkey')->listsSubscription($subscriber, $post, 1);
-        }
+        $saveOnDb = Mage::getStoreConfig('monkey/general/checkout_async', $customer->getStoreId());
+        Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveOnDb);
 
 		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 		$lists = $api->listsForEmail($oldEmail);
@@ -321,7 +316,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
 		if(!Mage::helper('monkey')->canMonkey()){
-			return;
+			return $observer;
 		}
 
 		if(Mage::app()->getRequest()->isPost()){
@@ -333,6 +328,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 				Mage::getSingleton('core/session')->setMonkeyCheckout(true);
 			}
 		}
+        return $observer;
 	}
 
 	/**
@@ -361,37 +357,36 @@ class Ebizmarts_MageMonkey_Model_Observer
 			if($campaign_id){
 				$order->setEbizmartsMagemonkeyCampaignId($campaign_id);
 			}
+
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout();
-//			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
-//            if($sessionFlag || $forceSubscription == 3 || $forceSubscription == 4){
             if($sessionFlag){
 				//Guest Checkout
 				if( (int)$order->getCustomerGroupId() === Mage_Customer_Model_Group::NOT_LOGGED_IN_ID ){
 					Mage::helper('monkey')->registerGuestCustomer($order);
 				}
-
-				$subscriber = Mage::getModel('newsletter/subscriber')
-					->setImportMode(TRUE)
-                       ->setSubscriberEmail($order->getCustomerEmail())
-                       ->setIsStatusChanged(1);
-					//->subscribe($order->getCustomerEmail());
 			}
 
 			//Multiple lists on checkout
 			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
 			if($monkeyPost){
-
 				$post = unserialize($monkeyPost);
-				//$request = new Varien_Object(array('post' => $post));
-				$customer  = new Varien_Object(array('email' => $order->getCustomerEmail()));
 
+//              $subscriber = Mage::getModel('newsletter/subscriber')
+//                  ->setImportMode(TRUE)
+//                  ->setSubscriberEmail($order->getCustomerEmail())
+//                  ->setIsStatusChanged(1);
+                $subscriber = Mage::getModel('newsletter/subscriber');
+                $subscriber->setImportMode(TRUE);
+                $subscriber->subscribe($order->getCustomerEmail());
 				//Handle additional lists subscription on Customer Create Account
-				Mage::helper('monkey')->listsSubscription($subscriber, $post, 1);
+                $saveInDb = Mage::getStoreConfig('monkey/general/checkout_async', $order->getStoreId());
+				Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveInDb);
 			}
 
 		}
         Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
         Mage::getSingleton('core/session')->setMonkeyPost(NULL);
+        return $observer;
 	}
 
 	/** Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
@@ -402,7 +397,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	public function massActionOption($observer)
     {
 		if(!Mage::helper('monkey')->canMonkey()){
-			return;
+			return $observer;
 		}
         $block = $observer->getEvent()->getBlock();
 
@@ -417,6 +412,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
             }
         }
+        return $observer;
     }
 
 }

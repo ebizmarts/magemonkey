@@ -79,6 +79,16 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
                     . ' - IFNULL(main_table.base_subtotal_canceled, 0) - ABS(IFNULL(main_table.base_discount_amount, 0))'
                     . ' + IFNULL(main_table.base_discount_refunded, 0)';
             }
+            else if(version_compare(Mage::getVersion(), '1.6.0.0', '<')) {
+                $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
+                    "IFNULL('main_table.base_total_invoiced', 0)",
+                    "IFNULL('main_table.base_tax_invoiced', 0)",
+                    "IFNULL('main_table.base_shipping_invoiced', 0)",
+                    "IFNULL('main_table.base_total_refunded', 0)",
+                    "IFNULL('main_table.base_tax_refunded', 0)",
+                    "IFNULL('main_table.base_shipping_refunded', 0)"
+                );
+            }
             else {
                 $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
                     $adapter->getIfNullSql('main_table.base_total_invoiced', 0),
