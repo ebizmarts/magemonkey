@@ -198,7 +198,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		$configscope = Mage::app()->getRequest()->getParam('store');
 		if( $configscope && ($configscope !== 'undefined') && !is_array($configscope) ){
-			$store = $configscope;
+            if (is_array($configscope) && isset($configscope['code'])) {
+                $store = $configscope['code'];
+            } else {
+                $store = $configscope;
+            }
 		}
 
 		return Mage::getStoreConfig("monkey/general/$value", $store);
@@ -634,8 +638,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         if ($monkeyPost) {
             $post = unserialize($monkeyPost);
         }
-        //if post exists && is not admin backend subscription
-        if($post && !($request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName'))){
+        //if post exists && is not admin backend subscription && not footer subscription
+        $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
+        $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
+        if($post && !$adminSubscription && !$footerSubscription){
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             if ($currentList && Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId()) == 1) {
                 $subscribeGroups = array(0 => array());
