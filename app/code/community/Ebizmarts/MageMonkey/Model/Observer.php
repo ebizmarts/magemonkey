@@ -279,16 +279,19 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if(!$oldEmail){
 			return $observer;
 		}
+
+        //subscribe to Magento newsletter
         $subscriber = Mage::getModel('newsletter/subscriber');
         $subscriber->setImportMode(TRUE);
         $subscriber->subscribe($oldEmail);
 
-        //Handle lists subscription on Customer Create Account
+        $request = Mage::app()->getRequest();
         $post = Mage::app()->getRequest()->getPost();
         $saveOnDb = Mage::getStoreConfig('monkey/general/checkout_async', $customer->getStoreId());
-        Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveOnDb);
 
-		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
+        //subscribe to MailChimp newsletter
+        Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveOnDb);
+        $api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 		$lists = $api->listsForEmail($oldEmail);
 		if(is_array($lists)){
 			foreach($lists as $listId){
@@ -296,12 +299,24 @@ class Ebizmarts_MageMonkey_Model_Observer
 				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
 			}
 		}
-		$request = Mage::app()->getRequest();
-		//Unsubscribe when update customer from admin
-		if (!isset($post['subscription']) && $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
-                 $subscriber = Mage::getModel('newsletter/subscriber')
-                               ->loadByEmail($customer->getEmail());
-                 $subscriber->setImportMode(TRUE)->unsubscribe();
+
+		//subscribe to MailChimp when customer subscribed from admin
+        //unsubscribe from Magento when customer unsubscribed from admin
+		if ($request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
+           if(isset($post['subscription'])) {
+               $defaultList = Mage::helper('monkey')->config('list');
+               $mergeVars = Mage::helper('monkey')->mergeVars($customer, TRUE, $defaultList);
+               $isConfirmNeed = FALSE;
+               if( !Mage::helper('monkey')->isAdmin() &&
+                   (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
+                   $isConfirmNeed = TRUE;
+               }
+               $api->listSubscribe($defaultList, $subscriber->getSubscriberEmail(), $mergeVars, $isConfirmNeed);
+           }else{
+               $subscriber = Mage::getModel('newsletter/subscriber')
+                   ->loadByEmail($customer->getEmail());
+               $subscriber->setImportMode(TRUE)->unsubscribe();
+           }
         }
 
 		return $observer;
@@ -370,15 +385,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
 			if($monkeyPost){
 				$post = unserialize($monkeyPost);
-
-//              $subscriber = Mage::getModel('newsletter/subscriber')
-//                  ->setImportMode(TRUE)
-//                  ->setSubscriberEmail($order->getCustomerEmail())
-//                  ->setIsStatusChanged(1);
+                //Handle lists subscription
                 $subscriber = Mage::getModel('newsletter/subscriber');
                 $subscriber->setImportMode(TRUE);
                 $subscriber->subscribe($order->getCustomerEmail());
-				//Handle additional lists subscription on Customer Create Account
+
                 $saveInDb = Mage::getStoreConfig('monkey/general/checkout_async', $order->getStoreId());
 				Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveInDb);
 			}
