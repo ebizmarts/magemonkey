@@ -206,7 +206,7 @@
             <path>adminhtml/default/default/template/ebizmarts/abandonedcart</path>
             <path>frontend/base/default/layout/ebizmarts_abandonedcart.xml</path>
             <path>frontend/base/default/template/ebizmarts_abandonedcart</path>
-            <path>en_US/template/email/sales/abandoned_cart.html</path>
+            <path>en_US/template/email/ebizmarts</path>
             <path>en_US/Ebizmarts_AbandonedCart.csv</path>
         </path>
         <type>
@@ -233,7 +233,7 @@
             <type>dir</type>
             <type>file</type>
             <type>dir</type>
-            <type>file</type>
+            <type>dir</type>
             <type>file</type>
         </type>
         <include>

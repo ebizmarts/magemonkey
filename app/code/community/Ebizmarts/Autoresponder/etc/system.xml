@@ -24,7 +24,7 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                 </hint>
-                <general translate="label comment">
+                <general translate="label">
                     <label>General</label>
                     <sort_order>1</sort_order>
                     <frontend_type>text</frontend_type>
@@ -65,7 +65,7 @@
                         </identity>
                     </fields>
                 </general>
-                <neworder translate="label comment">
+                <neworder translate="label">
                     <label>After New Order</label>
                     <sort_order>2</sort_order>
                     <frontend_type>text</frontend_type>
@@ -94,7 +94,7 @@
                             </depends>
                         </days>
                         <subject translate="label">
-                            <label>Mail Subject</label>
+                            <label>Email Subject</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>25</sort_order>
                             <show_in_default>1</show_in_default>
@@ -144,7 +144,7 @@
                         </customer>
                     </fields>
                 </neworder>
-                <related translate="label comment">
+                <related translate="label">
                     <label>Related Products</label>
                     <sort_order>3</sort_order>
                     <frontend_type>text</frontend_type>
@@ -236,7 +236,7 @@
                                 <active>1</active>
                             </depends>
                         </customer>
-                        <max-related translate="label">
+                        <max-related translate="label comment">
                             <label>Max related products</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>70</sort_order>
@@ -250,7 +250,7 @@
                         </max-related>
                     </fields>
                 </related>
-                <review translate="label comment">
+                <review translate="label">
                     <label>Product Review</label>
                     <sort_order>4</sort_order>
                     <frontend_type>text</frontend_type>
@@ -412,7 +412,7 @@
                                 <coupon>1</coupon>
                             </depends>
                         </coupon_counter>
-                        <coupon_general_quantity trasnslate="label comment">
+                        <coupon_general_quantity trasnslate="label">
                             <label>Required Reviews qty</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>90</sort_order>
@@ -440,7 +440,7 @@
                                 <coupon_counter>2</coupon_counter>
                             </depends>
                         </coupon_general_type>
-                        <coupon_specific_quantity translate="lable comment">
+                        <coupon_specific_quantity translate="lable">
                             <label>Specific coupons qty</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>105</sort_order>
@@ -454,7 +454,7 @@
                                 <coupon_general_type>3</coupon_general_type>
                             </depends>
                         </coupon_specific_quantity>
-                        <coupon_order_counter>
+                        <coupon_order_counter translate="label comment">
                             <label>Min. items reviewed per order</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>90</sort_order>
@@ -496,7 +496,7 @@
                                 <coupon_counter>1</coupon_counter>
                             </depends>
                         </coupon_order_max>
-                        <customer_coupon translate="label comment">
+                        <customer_coupon translate="label">
                             <label>Customer Groups for coupon</label>
                             <frontend_type>multiselect</frontend_type>
                             <source_model>ebizmarts_autoresponder/system_config_customergroup</source_model>
@@ -616,7 +616,7 @@
                         </couponlabel>
                     </fields>
                 </review>
-                <birthday translate="label comment">
+                <birthday translate="label">
                     <label>Before Customer Birthday</label>
                     <sort_order>12</sort_order>
                     <frontend_type>text</frontend_type>
@@ -1032,7 +1032,7 @@
                                 <active>1</active>
                             </depends>
                         </days>
-                        <time translate="label comment">
+                        <time translate="label">
                             <label>Seconds elapsed to consider a product as visited</label>
                             <frontend_type>select</frontend_type>
                             <source_model>ebizmarts_autoresponder/system_config_time</source_model>

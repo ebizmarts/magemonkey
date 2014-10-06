@@ -24,7 +24,7 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                 </hint>
-                <general translate="label comment">
+                <general translate="label">
                     <label>General</label>
                     <sort_order>1</sort_order>
                     <frontend_type>text</frontend_type>
@@ -104,7 +104,7 @@
                                 <active>1</active>
                             </depends>
                         </mandrill-tag>
-                        <max translate="label comment">
+                        <max translate="label">
                             <label>Max number of email to send</label>
                             <frontend_type>select</frontend_type>
                             <source_model>ebizmarts_abandonedcart/system_config_maxemails</source_model>
@@ -113,7 +113,6 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[Max]]></comment>
                             <depends>
                                 <active>1</active>
                             </depends>
@@ -126,7 +125,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The subject for the first email abandoned cart]]></comment>
+                            <comment><![CDATA[The subject for the first abandoned cart email]]></comment>
                             <depends>
                                 <max separator=",">0,1,2,3,4</max>
                                 <active>1</active>
@@ -183,7 +182,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The subject for the second email abandoned cart]]></comment>
+                            <comment><![CDATA[The subject for the second abandoned cart email]]></comment>
                             <depends>
                                 <max separator=",">1,2,3,4</max>
                                     <active>1</active>
@@ -225,7 +224,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The subject for the third email abandoned cart]]></comment>
+                            <comment><![CDATA[The subject for the third abandoned cart email]]></comment>
                             <depends>
                                 <max separator=",">2,3,4</max>
                                 <active>1</active>
@@ -267,7 +266,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
+                            <comment><![CDATA[The subject for the fourth abandoned cart email]]></comment>
                             <depends>
                                 <max separator=",">3,4</max>
                                 <active>1</active>
@@ -302,14 +301,14 @@
                             </depends>
                         </days4>
                         <subject5 translate="label comment">
-                            <label>Fourth Email Subject</label>
+                            <label>Fifth Email Subject</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
+                            <comment><![CDATA[The subject for the fifth abandoned cart email]]></comment>
                             <depends>
                                 <max separator=",">4</max>
                                 <active>1</active>
@@ -373,7 +372,7 @@
 
                     </fields>
                 </general>
-                <coupon>
+                <coupon translate="label">
                     <label>Coupon</label>
                     <sort_order>99</sort_order>
                     <frontend_type>text</frontend_type>
@@ -390,7 +389,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </create>
-                        <sendon translate="label">
+                        <sendon translate="label comment">
                             <label>On email number?</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>110</sort_order>
@@ -415,7 +414,7 @@
                                 <create>1</create>
                             </depends>
                         </automatic>
-                        <couponcode>
+                        <couponcode translate="label comment">
                             <label>Coupon Code</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>120</sort_order>
@@ -429,7 +428,7 @@
                                 <automatic>1</automatic>
                             </depends>
                         </couponcode>
-                        <expire>
+                        <expire translate="label comment">
                             <label>Expire on</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>120</sort_order>
@@ -443,7 +442,7 @@
                                 <automatic>2</automatic>
                             </depends>
                         </expire>
-                        <length>
+                        <length translate="label">
                             <label>Coupon length</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>130</sort_order>
@@ -457,7 +456,7 @@
                                 <automatic>2</automatic>
                             </depends>
                         </length>
-                        <discounttype>
+                        <discounttype translate="label comment">
                             <label>Discount type</label>
                             <frontend_type>select</frontend_type>
                             <source_model>ebizmarts_abandonedcart/system_config_discounttype</source_model>
@@ -472,7 +471,7 @@
                                 <automatic>2</automatic>
                             </depends>
                         </discounttype>
-                        <discount>
+                        <discount translate="label comment">
                             <label>Discount amount</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>150</sort_order>
@@ -486,7 +485,7 @@
                                 <automatic>2</automatic>
                             </depends>
                         </discount>
-                        <couponlabel>
+                        <couponlabel translate="label">
                             <label>Label for coupon</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>160</sort_order>
