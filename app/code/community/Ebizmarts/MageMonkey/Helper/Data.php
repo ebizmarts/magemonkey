@@ -1069,4 +1069,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 	}
+
+    public function getThisStore(){
+        $store = Mage::app()->getStore();
+
+        $configscope = Mage::app()->getRequest()->getParam('store');
+        if( $configscope && ($configscope !== 'undefined') ){
+            $store = $configscope;
+        }
+        return $store;
+    }
 }
