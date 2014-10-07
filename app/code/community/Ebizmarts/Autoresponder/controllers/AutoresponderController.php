@@ -84,21 +84,17 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
     {
         $params = $this->getRequest()->getParams();
         $storeId = Mage::app()->getStore()->getStoreId();
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId)&&Mage::getSingleton('customer/session')->isLoggedIn()) {
-            if(isset($params['product_id'])) {
-                $product = Mage::getModel('catalog/product')->load($params['product_id']);
-                $mark = $product->getEbizmartsMarkVisited();
-                if($mark == 1) {
-                    $resp['time'] = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TIME,$storeId);
-                }
-                else {
-                    $resp['time'] = -1;
-                }
+        if(isset($params['product_id'])) {
+            $product = Mage::getModel('catalog/product')->load($params['product_id']);
+            $mark = $product->getEbizmartsMarkVisited();
+            if($mark == 1) {
+                $resp['time'] = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TIME,$storeId);
+            }
+            else {
+                $resp['time'] = -1;
             }
         }
-        else {
-            $resp['time'] = -1;
-        }
+
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($resp));
         return;

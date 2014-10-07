@@ -198,7 +198,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		$configscope = Mage::app()->getRequest()->getParam('store');
 		if( $configscope && ($configscope !== 'undefined') && !is_array($configscope) ){
-			$store = $configscope;
+            if (is_array($configscope) && isset($configscope['code'])) {
+                $store = $configscope['code'];
+            } else {
+                $store = $configscope;
+            }
 		}
 
 		return Mage::getStoreConfig("monkey/general/$value", $store);
@@ -629,9 +633,15 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $mergeVars = Mage::helper('monkey')->getMergeVars($customer, $includeEmail);
         // add groups
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
-
+        $request = Mage::app()->getRequest();
+        $post = $request->getPost();
         if ($monkeyPost) {
             $post = unserialize($monkeyPost);
+        }
+        //if post exists && is not admin backend subscription && not footer subscription
+        $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
+        $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
+        if($post && !$adminSubscription && !$footerSubscription){
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             if ($currentList && Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId()) == 1) {
                 $subscribeGroups = array(0 => array());
@@ -666,13 +676,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                 }
             }
-            if ($subscribeGroups[0]['id'] && $subscribeGroups[0]['id'] != -1) {
+            if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
                 $mergeVars["GROUPINGS"] = $subscribeGroups;
             }
 
             $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
             $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
-            if ($post['magemonkey_subscribe'] && $map != "") {
+            if (isset($post['magemonkey_subscribe']) /*&& $post['magemonkey_subscribe']*/ && $map != "") {
                 $listsChecked = explode(',', $post['magemonkey_subscribe']);
                 $hasClicked = in_array($currentList, $listsChecked);
                 if ($hasClicked && $force != 3) {
@@ -842,85 +852,72 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		return $errors;
 	}
 
-	/**
-	 * Handle additional lists subscription on form posts like Customer Create Account
-	 *
-	 * @param Mage_Customer_Model_Customer $customer
-	 */
-	public function additionalListsSubscription($customer = null, $post = null)
-	{
-		$request = Mage::app()->getRequest();
-
-		if( !$request->isPost() && is_null($post) ){
-			return false;
-		}
-
-		$allowedPost   = array('/customer/account/createpost/');
-		$requestString = $request->getRequestString();
-
-		if( in_array($requestString, $allowedPost) OR !is_null($post) ){
-			if(!is_null($post)){
-				$request->setPost($post);
-			}
-			$this->handlePost($request, $customer->getEmail());
-		}
-
-	}
+//	/**
+//	 * Handle additional lists subscription on form posts like Customer Create Account
+//	 *
+//	 * @param Mage_Customer_Model_Customer $customer
+//	 */
+//	public function additionalListsSubscription($customer, $post = null)
+//	{
+//		$request = Mage::app()->getRequest();
+//
+//		if( !$request->isPost() && is_null($post) ){
+//			return false;
+//		}
+//
+//		$allowedPost   = array('/customer/account/createpost/');
+//		$requestString = $request->getRequestString();
+//
+//		if( in_array($requestString, $allowedPost) OR !is_null($post) ){
+//			if(!is_null($post)){
+//				$request->setPost($post);
+//			}
+//			$this->handlePost($request, $customer->getEmail());
+//		}
+//
+//	}
 
     /**
      * Add lists from post to database magemonkey_async_subscribers
      *
-     * @param $email
+     * @param $object (can be subscriber or customer)
      * @param null $post
      */
-    public function asyncListsSubscription($email, $post = null){
-        $request = Mage::app()->getRequest();
+    public function listsSubscription($subscriber, $post = null, $db = 0)
+    {
 
-        if(!$post) {
-            $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
-            if ($monkeyPost) {
-                $post = unserialize($monkeyPost);
-            }else {
-                if($request->getPost()){
-                    $post = $request->getPost();
-                }else{
-                    return false;
-                }
-            }
+        //footer subscription
+        if (!$post && $db == 0) {
+            $defaultList = Mage::helper('monkey')->config('list');
+            $this->_subscribeToList($subscriber, $defaultList, $db);
         }
 
-        if($post['magemonkey_force']) {
+        //post subscription
+        if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
-                $this->_asyncSubscribe($email, $listId);
+                $this->_subscribeToList($subscriber, $listId, $db);
             }
-        }elseif($post['magemonkey_subscribe']){
+        } elseif (isset($post['magemonkey_subscribe'])) {
             $lists = explode(',', $post['magemonkey_subscribe']);
-            foreach($lists as $listId) {
-                $this->_asyncSubscribe($email, $listId);
+            foreach ($lists as $listId) {
+                $this->_subscribeToList($subscriber, $listId, $db);
             }
         }
     }
 
     /**
-     * Subscribe the list to database magemonkey_async_subscribers
+     * Subscribe the list to database magemonkey_async_subscribers if $db==1 else subscribe to MailChimp directly
      *
-     * @param $email
+     * @param $object
      * @param $listId
+     * @param int $db
      */
-    protected function _asyncSubscribe($object, $listId){
+    protected function _subscribeToList($subscriber, $listId, $db = 0){
 
-        //check if object is subscriber else load subscriber
-        if($object->getSubscriberEmail()) {
-            $email = $object->getSubscriberEmail();
-            $subscriber = $object;
-        }else{
-            $email = $object->getEmail();
-            $subscriber = Mage::getModel('newsletter/subscriber')
-                ->loadByEmail($email);
-        }
+        $email = $subscriber->getSubscriberEmail();
+
         //Flag only is TRUE when changing to SUBSCRIBE
-        $subscriber->setImportMode(TRUE);
         $isConfirmNeed = FALSE;
         if( !Mage::helper('monkey')->isAdmin() &&
             (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
@@ -943,7 +940,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
             $mergeVars = Mage::helper('monkey')->mergeVars($subscriber, FALSE, $listId);
 
-            if(Mage::getStoreConfig('monkey/general/checkout_async'))
+            if($db)
             {
                 $subs = Mage::getModel('monkey/asyncsubscribers');
                 $subs->setMapfields(serialize($mergeVars))
@@ -953,8 +950,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     ->setProccessed(0)
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
                     ->save();
-            }
-            else {
+            }else{
                 Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
             }
 
@@ -979,7 +975,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 		$defaultList = $this->getDefaultList(Mage::app()->getStore());
 
-		$api       = Mage::getSingleton('monkey/api');
+		$api      = Mage::getSingleton('monkey/api');
 		$loggedIn = Mage::helper('customer')->isLoggedIn();
 		if($loggedIn){
 			$customer  = Mage::helper('customer')->getCustomer();
@@ -1073,4 +1069,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 	}
+
+    public function getThisStore(){
+        $store = Mage::app()->getStore();
+
+        $configscope = Mage::app()->getRequest()->getParam('store');
+        if( $configscope && ($configscope !== 'undefined') ){
+            $store = $configscope;
+        }
+        return $store;
+    }
 }

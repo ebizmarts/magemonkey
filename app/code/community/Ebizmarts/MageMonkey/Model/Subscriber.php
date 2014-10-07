@@ -10,16 +10,28 @@ class Ebizmarts_MageMonkey_Model_Subscriber extends Mage_Newsletter_Model_Subscr
 {
     public function sendUnsubscriptionEmail()
     {
-        return $this;
+        if(Mage::getStoreConfig('monkey/general/active', Mage::helper('monkey')->getThisStore()) == 1) {
+            return $this;
+        }else{
+            return parent::sendUnsubscriptionEmail();
+        }
     }
 
     public function sendConfirmationRequestEmail()
     {
-        return $this;
+        if(Mage::getStoreConfig('monkey/general/active', Mage::helper('monkey')->getThisStore()) == 1) {
+            return $this;
+        }else{
+            return parent::sendConfirmationRequestEmail();
+        }
     }
 
     public function sendConfirmationSuccessEmail()
     {
-        return $this;
+        if(Mage::getStoreConfig('monkey/general/active', Mage::helper('monkey')->getThisStore()) == 1) {
+            return $this;
+        }else{
+            return parent::sendConfirmationSuccessEmail();
+        }
     }
 }

@@ -215,35 +215,42 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 * @return Ebizmarts_MageMonkey_Model_Cron
 	 */
 	public function bulksyncExportSubscribers()
-	{
-		$this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
-		$job = $this->_getJob('Export');
-		if(is_null($job)){
-			return $this;
-		}
+    {
+        $this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
+        $job = $this->_getJob('Export');
+        if (is_null($job)) {
+            return $this;
+        }
 
-		$collection = $this->_getEntityModel($job->getDataSourceEntity());
+        $collection = $this->_getEntityModel($job->getDataSourceEntity());
 
-		if(!$job->getStartedAt()){
-			$job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
-		}
+        if (!$job->getStartedAt()) {
+            $job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
+        }
 
-		$collection->setPageSize($this->_limit);
+        $collection->setPageSize($this->_limit);
 
-		//Condition for chunk batch
-		if($job->getLastProcessedId()){
-			$collection->addFieldToFilter($this->_getId($job->getDataSourceEntity()), array('gt' => (int)$job->getLastProcessedId()));
-		}
+        //Condition for chunk batch
+        if ($job->getLastProcessedId()) {
+            $collection->addFieldToFilter($this->_getId($job->getDataSourceEntity()), array('gt' => (int)$job->getLastProcessedId()));
+        }
 
         //Filter by STORE
         $jobStoreId = (int)$job->getStoreId();
-		if($jobStoreId){
-			$collection->addFieldToFilter('store_id', $jobStoreId);
-		}
+        if ($jobStoreId) {
+            $collection->addFieldToFilter('store_id', $jobStoreId);
+        }
 
-		if($job->getDataSourceEntity() == 'newsletter_subscriber'):
-			$collection->addFieldToFilter('subscriber_status', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
-		endif;
+        if ($job->getDataSourceEntity() == 'newsletter_subscriber') {
+            $collection->addFieldToFilter('subscriber_status', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
+            $orderBy = 'subscriber_id';
+        }elseif($job->getDataSourceEntity() == 'customer'){
+            $orderBy = 'entity_id';
+        }
+
+        if($orderBy){
+            $collection->addOrder($orderBy, 'ASC');
+        }
 
 		$collection->load();
 
@@ -277,10 +284,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 					$lastId = $collection->getLastItem()->getId();
 					$job->setLastProcessedId($lastId);
 					$job->setProcessedCount( ( $processedCount+$job->getProcessedCount() ));
-
-					/*if( $processedCount < $this->_limit ){
-						$job->setStatus('finished');
-					}*/
 
 					$job
 					->setUpdatedAt($this->_dbDate())

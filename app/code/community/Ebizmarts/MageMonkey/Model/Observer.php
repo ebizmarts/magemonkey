@@ -33,12 +33,13 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-
-		if(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
+		if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
 			return $observer;
 		}
 
-        Mage::helper('monkey')->asyncListsSubscription($subscriber, null);
+        if(!Mage::helper('monkey')->listsSubscription($subscriber, null, 1)){
+            Mage::helper('monkey')->listsSubscription($subscriber, null, 0);
+        }
         Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
 
         return $observer;
@@ -106,7 +107,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function saveConfig(Varien_Event_Observer $observer)
     {
-
 		$scope = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
@@ -280,15 +280,18 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-        //Handle additional lists subscription on Customer Create Account
-        $post = Mage::app()->getRequest()->getPost();
-        if(Mage::getStoreConfig('monkey/general/checkout_async', $customer->getStoreId()) == 0) {
-            Mage::helper('monkey')->additionalListsSubscription($customer, $post);
-        }else{
-            Mage::helper('monkey')->asyncListsSubscription($customer, $post);
-        }
+        //subscribe to Magento newsletter
+        $subscriber = Mage::getModel('newsletter/subscriber');
+        $subscriber->setImportMode(TRUE);
+        $subscriber->subscribe($oldEmail);
 
-		$api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
+        $request = Mage::app()->getRequest();
+        $post = Mage::app()->getRequest()->getPost();
+        $saveOnDb = Mage::getStoreConfig('monkey/general/checkout_async', $customer->getStoreId());
+
+        //subscribe to MailChimp newsletter
+        Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveOnDb);
+        $api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 		$lists = $api->listsForEmail($oldEmail);
 		if(is_array($lists)){
 			foreach($lists as $listId){
@@ -296,12 +299,24 @@ class Ebizmarts_MageMonkey_Model_Observer
 				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
 			}
 		}
-		$request = Mage::app()->getRequest();
-		//Unsubscribe when update customer from admin
-		if (!isset($post['subscription']) && $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
-                 $subscriber = Mage::getModel('newsletter/subscriber')
-                               ->loadByEmail($customer->getEmail());
-                 $subscriber->setImportMode(TRUE)->unsubscribe();
+
+		//subscribe to MailChimp when customer subscribed from admin
+        //unsubscribe from Magento when customer unsubscribed from admin
+		if ($request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
+           if(isset($post['subscription'])) {
+               $defaultList = Mage::helper('monkey')->config('list');
+               $mergeVars = Mage::helper('monkey')->mergeVars($customer, TRUE, $defaultList);
+               $isConfirmNeed = FALSE;
+               if( !Mage::helper('monkey')->isAdmin() &&
+                   (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
+                   $isConfirmNeed = TRUE;
+               }
+               $api->listSubscribe($defaultList, $subscriber->getSubscriberEmail(), $mergeVars, $isConfirmNeed);
+           }else{
+               $subscriber = Mage::getModel('newsletter/subscriber')
+                   ->loadByEmail($customer->getEmail());
+               $subscriber->setImportMode(TRUE)->unsubscribe();
+           }
         }
 
 		return $observer;
@@ -316,7 +331,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
 		if(!Mage::helper('monkey')->canMonkey()){
-			return;
+			return $observer;
 		}
 
 		if(Mage::app()->getRequest()->isPost()){
@@ -328,6 +343,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 				Mage::getSingleton('core/session')->setMonkeyCheckout(true);
 			}
 		}
+        return $observer;
 	}
 
 	/**
@@ -338,8 +354,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
-
 		if(!Mage::helper('monkey')->canMonkey()){
+            Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
+            Mage::getSingleton('core/session')->setMonkeyPost(NULL);
 			return $observer;
 		}
 
@@ -355,39 +372,32 @@ class Ebizmarts_MageMonkey_Model_Observer
 			if($campaign_id){
 				$order->setEbizmartsMagemonkeyCampaignId($campaign_id);
 			}
+
 			$sessionFlag = Mage::getSingleton('core/session')->getMonkeyCheckout();
-//			$forceSubscription = Mage::helper('monkey')->canCheckoutSubscribe();
-//            if($sessionFlag || $forceSubscription == 3 || $forceSubscription == 4){
             if($sessionFlag){
 				//Guest Checkout
 				if( (int)$order->getCustomerGroupId() === Mage_Customer_Model_Group::NOT_LOGGED_IN_ID ){
 					Mage::helper('monkey')->registerGuestCustomer($order);
 				}
-
-				try{
-					$subscriber = Mage::getModel('newsletter/subscriber')
-						->setImportMode(TRUE)
-						->subscribe($order->getCustomerEmail());
-				}catch(Exception $e){
-					Mage::logException($e);
-				}
-
 			}
 
 			//Multiple lists on checkout
 			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
 			if($monkeyPost){
-
 				$post = unserialize($monkeyPost);
-				$request = new Varien_Object(array('post' => $post));
-				$customer  = new Varien_Object(array('email' => $order->getCustomerEmail()));
+                //Handle lists subscription
+                $subscriber = Mage::getModel('newsletter/subscriber');
+                $subscriber->setImportMode(TRUE);
+                $subscriber->subscribe($order->getCustomerEmail());
 
-				//Handle additional lists subscription on Customer Create Account
-				Mage::helper('monkey')->additionalListsSubscription($customer, $request);
+                $saveInDb = Mage::getStoreConfig('monkey/general/checkout_async', $order->getStoreId());
+				Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveInDb);
 			}
 
 		}
         Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
+        Mage::getSingleton('core/session')->setMonkeyPost(NULL);
+        return $observer;
 	}
 
 	/** Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
@@ -398,7 +408,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	public function massActionOption($observer)
     {
 		if(!Mage::helper('monkey')->canMonkey()){
-			return;
+			return $observer;
 		}
         $block = $observer->getEvent()->getBlock();
 
@@ -413,6 +423,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
             }
         }
+        return $observer;
     }
 
 }
