@@ -73,6 +73,17 @@ class Ebizmarts_MageMonkey_Model_Email_Template extends Mage_Core_Model_Email_Te
 					        'to_name'    => $names
 				        );
 
+            if ($this->getMail()->hasAttachments) {
+                $attachments = array();
+                foreach ($this->getMail()->getParts() as $p) {
+                    $attachments[] = array(
+                        'type'    => $p->type,
+                        'name'    => $p->filename,
+                        'content' => $p->getContent());
+                }
+                $message['attachments'] = $attachments;
+            }
+
             $sent = $mail->sendEmail($message);
             if($mail->errorCode){
 				return false;
