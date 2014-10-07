@@ -643,8 +643,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
         $customerSubscription = $request->getActionName() == 'createpost' && $request->getControllerName() == 'account' && $request->getModuleName() == 'customer';
         if($post && !$adminSubscription && !$footerSubscription && !$customerSubscription){
+            $defaultList = Mage::helper('monkey')->config('list');
             //if can change customer set the groups set by customer else set the groups on MailChimp config
-            if ($currentList && Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId()) == 1 && isset($post['list'][$currentList])) {
+            $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
+            if ($currentList && ($currentList != $defaultList || $canChangeGroups) && isset($post['list'][$currentList])) {
                 $subscribeGroups = array(0 => array());
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
@@ -653,7 +655,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     }
                 }
                 $groups = NULL;
-            } else {
+            } elseif($currentList == $defaultList) {
                 $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $object->getStoreId());
                 $groups = explode(",", $groups);
                 if (is_array($groups) && $groups[0]) {
@@ -691,8 +693,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 } else {
                     $mergeVars[$map] = "No";
                 }
-            } else {
+                //if not our checkout subscription (Ej onestepcheckout) set clicked to Yes
+            } elseif($request->getActionName() == 'saveOrder' && $request->getControllerModule() == 'onepage' && $request->getModuleName() == 'checkout') {
                 $mergeVars[$map] = "No";
+            }else{
+                $mergeVars[$map] = "Yes";
             }
         }else{
             $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
