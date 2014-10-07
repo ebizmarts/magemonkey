@@ -641,9 +641,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         //if post exists && is not admin backend subscription && not footer subscription
         $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
-        if($post && !$adminSubscription && !$footerSubscription){
+        $customerSubscription = $request->getActionName() == 'createpost' && $request->getControllerName() == 'account' && $request->getModuleName() == 'customer';
+        if($post && !$adminSubscription && !$footerSubscription && !$customerSubscription){
             //if can change customer set the groups set by customer else set the groups on MailChimp config
-            if ($currentList && Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId()) == 1) {
+            if ($currentList && Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId()) == 1 && isset($post['list'][$currentList])) {
                 $subscribeGroups = array(0 => array());
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
@@ -655,7 +656,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             } else {
                 $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $object->getStoreId());
                 $groups = explode(",", $groups);
-                if (is_array($groups)) {
+                if (is_array($groups) && $groups[0]) {
                     $subscribeGroups = array();
                     $_prevGroup = null;
                     $checkboxes = array();
@@ -693,6 +694,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             } else {
                 $mergeVars[$map] = "No";
             }
+        }else{
+            $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
+            $mergeVars[$map] = "Yes";
         }
 
         return $mergeVars;
@@ -924,18 +928,19 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $isConfirmNeed = TRUE;
         }
 
-        if($isConfirmNeed){
-            $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
-        }
         $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
         if( TRUE === $subscriber->getIsStatusChanged() ){
             if($isOnMailChimp == 1){
                 return false;
             }
 
-            if($isConfirmNeed){
+            if($isConfirmNeed) {
                 $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
-                Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
+                if($db){
+                    Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request will be sent soon.'));
+                }else{
+                    Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
+                }
             }
 
             $mergeVars = Mage::helper('monkey')->mergeVars($subscriber, FALSE, $listId);
