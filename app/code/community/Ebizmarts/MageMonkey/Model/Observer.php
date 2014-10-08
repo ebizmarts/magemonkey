@@ -19,6 +19,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
+        MAge::log('handleSubscriber', null, 'santiago.log', true);
         if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -37,9 +38,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-        if(!Mage::helper('monkey')->listsSubscription($subscriber, null, 1)){
-            Mage::helper('monkey')->listsSubscription($subscriber, null, 0);
-        }
+        Mage::helper('monkey')->subscribeToMainList($subscriber, 0);
+
         Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
 
         return $observer;
@@ -269,6 +269,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function updateCustomer(Varien_Event_Observer $observer)
 	{
+        Mage::log('updateCustomer', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -276,20 +277,25 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$customer = $observer->getEvent()->getCustomer();
 
 		$oldEmail = $customer->getOrigData('email');
+        Mage::log('oldemail', null, 'santiago.log', true);
+        Mage::log($oldEmail, null, 'santiago.log', true);
 		if(!$oldEmail){
 			return $observer;
 		}
 
-        //subscribe to Magento newsletter
-        $subscriber = Mage::getModel('newsletter/subscriber');
-        $subscriber->setImportMode(TRUE);
-        $subscriber->subscribe($oldEmail);
+        $subscriber = Mage::getModel('newsletter/subscriber')
+            ->setImportMode(TRUE)
+            ->setSubscriberEmail($oldEmail);
 
         $request = Mage::app()->getRequest();
         $post = Mage::app()->getRequest()->getPost();
         $saveOnDb = Mage::getStoreConfig('monkey/general/checkout_async', $customer->getStoreId());
 
         //subscribe to MailChimp newsletter
+        Mage::log('request upd', null, 'santiago.log', true);
+        Mage::log($request, null, 'santiago.log', true);
+        Mage::log('post upd', null, 'santiago.log', true);
+        Mage::log($post, null, 'santiago.log', true);
         Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveOnDb);
         $api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
 		$lists = $api->listsForEmail($oldEmail);
@@ -354,6 +360,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
+        Mage::log('registerCheckoutSuccess', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
             Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
             Mage::getSingleton('core/session')->setMonkeyPost(NULL);
@@ -385,12 +392,15 @@ class Ebizmarts_MageMonkey_Model_Observer
 			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
 			if($monkeyPost){
 				$post = unserialize($monkeyPost);
-                //Handle lists subscription
-                $subscriber = Mage::getModel('newsletter/subscriber');
-                $subscriber->setImportMode(TRUE);
-                $subscriber->subscribe($order->getCustomerEmail());
+                Mage::log('post', null, 'santiago.log', true);
+                Mage::log($post, null, 'santiago.log', true);
+
+                $subscriber = Mage::getModel('newsletter/subscriber')
+                    ->setImportMode(TRUE)
+                    ->setSubscriberEmail($order->getCustomerEmail());
 
                 $saveInDb = Mage::getStoreConfig('monkey/general/checkout_async', $order->getStoreId());
+                Mage::log('mail antes de mandar listsSubscription '. $subscriber->getSubscriberEmail(), null, 'santiago.log', true);
 				Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveInDb);
 			}
 

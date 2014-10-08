@@ -894,25 +894,41 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($subscriber, $post = null, $db = 0)
     {
-
-        //footer subscription
-        if (!$post && $db == 0) {
-            $defaultList = Mage::helper('monkey')->config('list');
-            $this->_subscribeToList($subscriber, $defaultList, $db);
-        }
-
+        Mage::log('listsSubscription', null, 'santiago.log', true);
+        Mage::log($subscriber->getSubscriberEmail(), null, 'santiago.log', true);
+        $defaultList = Mage::helper('monkey')->config('list');
         //post subscription
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
-                $this->_subscribeToList($subscriber, $listId, $db);
+                if($listId == $defaultList){
+                    Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
+                    //subscribe to Magento newsletter
+                    $subscriber->subscribe($subscriber->getSubscriberEmail());
+                }else {
+                    $this->_subscribeToList($subscriber, $listId, $db);
+                }
             }
         } elseif (isset($post['magemonkey_subscribe'])) {
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
-                $this->_subscribeToList($subscriber, $listId, $db);
+                if($listId == $defaultList){
+                    Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
+                    //subscribe to Magento newsletter
+                    $subscriber->subscribe($subscriber->getSubscriberEmail());
+                }else {
+                    $this->_subscribeToList($subscriber, $listId, $db);
+                }
             }
         }
+    }
+
+    public function subscribeToMainList($subscriber, $db = 0)
+    {
+        Mage::log('subscribeToMainList', null, 'santiago.log', true);
+        $defaultList = Mage::helper('monkey')->config('list');
+        $this->_subscribeToList($subscriber, $defaultList, $db);
+
     }
 
     /**
@@ -926,15 +942,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
         $email = $subscriber->getSubscriberEmail();
 
-        //Flag only is TRUE when changing to SUBSCRIBE
+        $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
+            ->addFieldToFilter('lists', $listId)
+            ->addFieldToFilter('email', $email)
+            ->addFieldToFilter('proccessed', 0);
+        //if not in magemonkey_async_subscribers with proccessed 0 add list
+        if(!count($alreadyOnList) > 0){
         $isConfirmNeed = FALSE;
-        if( !Mage::helper('monkey')->isAdmin() &&
-            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
-            $isConfirmNeed = TRUE;
-        }
+            if( !Mage::helper('monkey')->isAdmin() &&
+                (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
+                $isConfirmNeed = TRUE;
+            }
 
-        $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
-        if( TRUE === $subscriber->getIsStatusChanged() ){
+            $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
+            //if( TRUE === $subscriber->getIsStatusChanged() ){
+            Mage::log('isOnMailChimp', null, 'santiago.log', true);
+            Mage::log($isOnMailChimp, null, 'santiago.log', true);
             if($isOnMailChimp == 1){
                 return false;
             }
@@ -949,7 +972,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             $mergeVars = Mage::helper('monkey')->mergeVars($subscriber, FALSE, $listId);
+            Mage::log('email', null, 'santiago.log', true);
+            Mage::log($email, null, 'santiago.log', true);
 
+            Mage::log('subscribe lista '. $listId, null, 'santiago.log', true);
+            Mage::log('db'. $db, null, 'santiago.log', true);
             if($db)
             {
                 $subs = Mage::getModel('monkey/asyncsubscribers');
