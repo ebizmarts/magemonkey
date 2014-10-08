@@ -894,8 +894,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($subscriber, $post = null, $db = 0)
     {
-        Mage::log('listsSubscription', null, 'santiago.log', true);
-        Mage::log($subscriber->getSubscriberEmail(), null, 'santiago.log', true);
         $defaultList = Mage::helper('monkey')->config('list');
         //post subscription
         if (isset($post['magemonkey_force'])) {
@@ -925,7 +923,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function subscribeToMainList($subscriber, $db = 0)
     {
-        Mage::log('subscribeToMainList', null, 'santiago.log', true);
         $defaultList = Mage::helper('monkey')->config('list');
         $this->_subscribeToList($subscriber, $defaultList, $db);
 
@@ -956,8 +953,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
             $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
             //if( TRUE === $subscriber->getIsStatusChanged() ){
-            Mage::log('isOnMailChimp', null, 'santiago.log', true);
-            Mage::log($isOnMailChimp, null, 'santiago.log', true);
             if($isOnMailChimp == 1){
                 return false;
             }
@@ -972,11 +967,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
 
             $mergeVars = Mage::helper('monkey')->mergeVars($subscriber, FALSE, $listId);
-            Mage::log('email', null, 'santiago.log', true);
-            Mage::log($email, null, 'santiago.log', true);
-
-            Mage::log('subscribe lista '. $listId, null, 'santiago.log', true);
-            Mage::log('db'. $db, null, 'santiago.log', true);
             if($db)
             {
                 $subs = Mage::getModel('monkey/asyncsubscribers');
