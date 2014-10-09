@@ -409,7 +409,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         $ret = false;
         foreach($allowedGroups as $group){
             $group = explode('_',$group);
-            if($group[1] == $groupName){
+            if(isset($group[1]) && $group[1] == $groupName){
                 $ret = true;
             }
         }

@@ -37,9 +37,8 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-        if(!Mage::helper('monkey')->listsSubscription($subscriber, null, 1)){
-            Mage::helper('monkey')->listsSubscription($subscriber, null, 0);
-        }
+        Mage::helper('monkey')->subscribeToMainList($subscriber, 0);
+
         Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
 
         return $observer;
@@ -280,10 +279,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-        //subscribe to Magento newsletter
-        $subscriber = Mage::getModel('newsletter/subscriber');
-        $subscriber->setImportMode(TRUE);
-        $subscriber->subscribe($oldEmail);
+        $subscriber = Mage::getModel('newsletter/subscriber')
+            ->setImportMode(TRUE)
+            ->setSubscriberEmail($oldEmail);
 
         $request = Mage::app()->getRequest();
         $post = Mage::app()->getRequest()->getPost();
@@ -385,10 +383,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 			$monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
 			if($monkeyPost){
 				$post = unserialize($monkeyPost);
-                //Handle lists subscription
-                $subscriber = Mage::getModel('newsletter/subscriber');
-                $subscriber->setImportMode(TRUE);
-                $subscriber->subscribe($order->getCustomerEmail());
+
+                $subscriber = Mage::getModel('newsletter/subscriber')
+                    ->setImportMode(TRUE)
+                    ->setSubscriberEmail($order->getCustomerEmail());
 
                 $saveInDb = Mage::getStoreConfig('monkey/general/checkout_async', $order->getStoreId());
 				Mage::helper('monkey')->listsSubscription($subscriber, $post, $saveInDb);
