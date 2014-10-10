@@ -687,16 +687,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $mergeVars["GROUPINGS"] = $subscribeGroups;
             }
 
-            MAge::log('request', null, 'santiago.log', true);
-            MAge::log($request, null, 'santiago.log', true);
-            Mage::log('isOneStep', null, 'santiago.log', true);
-            Mage::log(Mage::getSingleton('core/session')->getIsOneStepCheckout(), null, 'santiago.log', true);
-            Mage::log('request post', null, 'santiago.log', true);
-            Mage::log($request->getPost(), null, 'santiago.log', true);
-            Mage::log('post q ya viene', null, 'santiago.log', true);
-            Mage::log($post, null, 'santiago.log', true);
-            Mage::log('getIsHandleSubscriber', null, 'santiago.log', true);
-            Mage::log(Mage::getSingleton('core/session')->getIsHandleSubscriber(), null, 'santiago.log', true);
             $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
             $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
             if (isset($post['magemonkey_subscribe']) && $map != "") {
@@ -911,18 +901,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($subscriber, $post = null, $db = 0)
     {
-        Mage::log('listsSubscription '. $db, null, 'santiago.log', true);
         $defaultList = Mage::helper('monkey')->config('list');
-        Mage::log('getIsOneStepCheckout ', null, 'santiago.log', true);
-        Mage::log(Mage::getSingleton('core/session')->getIsOneStepCheckout(), null, 'santiago.log', true);
         //post subscription
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
                 if($listId == $defaultList){
                     Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
-                    //subscribe to Magento newsletter
-                    $subscriber->subscribe($subscriber->getSubscriberEmail());
                 }else {
                     $this->_subscribeToList($subscriber, $listId, $db);
                 }
@@ -932,26 +917,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             foreach ($lists as $listId) {
                 if($listId == $defaultList){
                     Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
-                    //subscribe to Magento newsletter
-                    $subscriber->subscribe($subscriber->getSubscriberEmail());
                 }else {
                     $this->_subscribeToList($subscriber, $listId, $db);
                 }
             }
         //Subscription for One Step Checkout with force subscription
         }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()){
-            Mage::log($db, null, 'santiago.log', true);
             Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
-            //subscribe to Magento newsletter
-            $subscriber->subscribe($subscriber->getSubscriberEmail());
         }
     }
 
     public function subscribeToMainList($subscriber, $db = 0)
     {
         $defaultList = Mage::helper('monkey')->config('list');
-        Mage::log('subscribeToMainList '.$db, null, 'santiago.log', true);
         $this->_subscribeToList($subscriber, $defaultList, $db);
+        //subscribe to Magento's newsletter
+        $subscriber->subscribe($subscriber->getSubscriberEmail());
 
     }
 
@@ -970,7 +951,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             ->addFieldToFilter('lists', $listId)
             ->addFieldToFilter('email', $email)
             ->addFieldToFilter('proccessed', 0);
-        Mage::log(count($alreadyOnList), null, 'santiago.log', true);
         //if not in magemonkey_async_subscribers with proccessed 0 add list
         if(count($alreadyOnList) == 0){
         $isConfirmNeed = FALSE;
@@ -994,11 +974,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
             }
 
-            Mage::log('guarda lista '. $listId, null, 'santiago.log', true);
-            Mage::log('db '. $db, null, 'santiago.log', true);
             $mergeVars = Mage::helper('monkey')->mergeVars($subscriber, FALSE, $listId);
-            Mage::log('mergeVars', null, 'santiago.log', true);
-            Mage::log($mergeVars, null, 'santiago.log', true);
             if($db)
             {
                 $subs = Mage::getModel('monkey/asyncsubscribers');

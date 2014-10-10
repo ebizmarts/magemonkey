@@ -19,7 +19,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
-        Mage::log('handleSubscriber', null, 'santiago.log', true);
         if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -34,8 +33,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-        MAge::log('getMonkeyCheckout', null, 'santiago.log', true);
-        MAge::log(Mage::getSingleton('core/session')->getMonkeyCheckout(), null, 'santiago.log', true);
 		if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
 			return $observer;
 		}
@@ -278,7 +275,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function updateCustomer(Varien_Event_Observer $observer)
 	{
-        Mage::log('updateCustomer', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -341,7 +337,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
-        Mage::log('registerCheckoutSubscribe', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -372,7 +367,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
-        Mage::log('registerCheckoutSuccess', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
             Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
             Mage::getSingleton('core/session')->setMonkeyPost(NULL);
