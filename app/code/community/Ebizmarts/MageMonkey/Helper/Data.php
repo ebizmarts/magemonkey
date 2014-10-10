@@ -642,7 +642,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
         $customerSubscription = $request->getActionName() == 'createpost' && $request->getControllerName() == 'account' && $request->getModuleName() == 'customer';
-        if($post && !$adminSubscription && !$footerSubscription && !$customerSubscription){
+        if($post && !$adminSubscription && !$footerSubscription && !$customerSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout()){
             $defaultList = Mage::helper('monkey')->config('list');
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
@@ -658,24 +658,28 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             } elseif($currentList == $defaultList) {
                 $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $object->getStoreId());
                 $groups = explode(",", $groups);
-                if (is_array($groups) && $groups[0]) {
+                if (isset($groups[0]) && $groups[0]) {
                     $subscribeGroups = array();
                     $_prevGroup = null;
                     $checkboxes = array();
                     foreach ($groups as $group) {
                         $item = explode("_", $group);
-                        $currentGroup = $item[0];
-                        if ($currentGroup == $_prevGroup || $_prevGroup == null) {
-                            $checkboxes[] = $item[1];
-                            $_prevGroup = $currentGroup;
-                        } else {
-                            $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
-                            $checkboxes = array();
-                            $_prevGroup = $currentGroup;
-                            $checkboxes[] = $item[1];
+                        if($item[0]) {
+                            $currentGroup = $item[0];
+                            if ($currentGroup == $_prevGroup || $_prevGroup == null) {
+                                $checkboxes[] = $item[1];
+                                $_prevGroup = $currentGroup;
+                            } else {
+                                $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+                                $checkboxes = array();
+                                $_prevGroup = $currentGroup;
+                                $checkboxes[] = $item[1];
+                            }
                         }
                     }
-                    $subscribeGroups[] = array('id' => $currentGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+                    if($currentGroup) {
+                        $subscribeGroups[] = array('id' => $currentGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+                    }
 
                 }
             }
@@ -683,6 +687,16 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $mergeVars["GROUPINGS"] = $subscribeGroups;
             }
 
+            MAge::log('request', null, 'santiago.log', true);
+            MAge::log($request, null, 'santiago.log', true);
+            Mage::log('isOneStep', null, 'santiago.log', true);
+            Mage::log(Mage::getSingleton('core/session')->getIsOneStepCheckout(), null, 'santiago.log', true);
+            Mage::log('request post', null, 'santiago.log', true);
+            Mage::log($request->getPost(), null, 'santiago.log', true);
+            Mage::log('post q ya viene', null, 'santiago.log', true);
+            Mage::log($post, null, 'santiago.log', true);
+            Mage::log('getIsHandleSubscriber', null, 'santiago.log', true);
+            Mage::log(Mage::getSingleton('core/session')->getIsHandleSubscriber(), null, 'santiago.log', true);
             $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
             $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
             if (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] && $map != "") {
@@ -693,11 +707,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 } else {
                     $mergeVars[$map] = "No";
                 }
-                //if not our checkout subscription (Ej onestepcheckout) set clicked to Yes
-            } elseif($request->getActionName() == 'saveOrder' && $request->getControllerModule() == 'onepage' && $request->getModuleName() == 'checkout') {
+            }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout()){
+                if(isset($post['subscribe_newsletter']) || $request->getPost()['subscribe_newsletter'] || Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
+                    $mergeVars[$map] = "Yes";
+                }elseif(Mage::helper('monkey')->config('checkout_subscribe') > 2){
+                    $mergeVars[$map] = "No";
+                }
+            }elseif($request->getActionName() == 'saveOrder' && $request->getControllerModule() == 'onepage' && $request->getModuleName() == 'checkout') {
                 $mergeVars[$map] = "No";
-            }else{
-                $mergeVars[$map] = "Yes";
             }
         }else{
             $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
@@ -894,7 +911,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($subscriber, $post = null, $db = 0)
     {
+        Mage::log('listsSubscription '. $db, null, 'santiago.log', true);
         $defaultList = Mage::helper('monkey')->config('list');
+        Mage::log('getIsOneStepCheckout ', null, 'santiago.log', true);
+        Mage::log(Mage::getSingleton('core/session')->getIsOneStepCheckout(), null, 'santiago.log', true);
         //post subscription
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
@@ -918,12 +938,19 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     $this->_subscribeToList($subscriber, $listId, $db);
                 }
             }
+        //Subscription for One Step Checkout with force subscription
+        }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()){
+            Mage::log($db, null, 'santiago.log', true);
+            Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
+            //subscribe to Magento newsletter
+            $subscriber->subscribe($subscriber->getSubscriberEmail());
         }
     }
 
     public function subscribeToMainList($subscriber, $db = 0)
     {
         $defaultList = Mage::helper('monkey')->config('list');
+        Mage::log('subscribeToMainList '.$db, null, 'santiago.log', true);
         $this->_subscribeToList($subscriber, $defaultList, $db);
 
     }
@@ -943,8 +970,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             ->addFieldToFilter('lists', $listId)
             ->addFieldToFilter('email', $email)
             ->addFieldToFilter('proccessed', 0);
+        Mage::log(count($alreadyOnList), null, 'santiago.log', true);
         //if not in magemonkey_async_subscribers with proccessed 0 add list
-        if(!count($alreadyOnList) > 0){
+        if(count($alreadyOnList) == 0){
         $isConfirmNeed = FALSE;
             if( !Mage::helper('monkey')->isAdmin() &&
                 (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
@@ -966,7 +994,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
             }
 
+            Mage::log('guarda lista '. $listId, null, 'santiago.log', true);
+            Mage::log('db '. $db, null, 'santiago.log', true);
             $mergeVars = Mage::helper('monkey')->mergeVars($subscriber, FALSE, $listId);
+            Mage::log('mergeVars', null, 'santiago.log', true);
+            Mage::log($mergeVars, null, 'santiago.log', true);
             if($db)
             {
                 $subs = Mage::getModel('monkey/asyncsubscribers');
