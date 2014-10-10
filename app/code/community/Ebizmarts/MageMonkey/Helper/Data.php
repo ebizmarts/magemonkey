@@ -932,7 +932,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $defaultList = Mage::helper('monkey')->config('list');
         $this->_subscribeToList($subscriber, $defaultList, $db);
         //subscribe to Magento's newsletter
-        $subscriber->subscribe($subscriber->getSubscriberEmail());
+        if(!Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
+            $subscriber->subscribe($subscriber->getSubscriberEmail());
+        }
 
     }
 

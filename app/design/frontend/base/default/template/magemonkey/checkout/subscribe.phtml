@@ -131,12 +131,6 @@ $force = $this->getForce();
     </div>
     <!-- Additional Lists -->
 </div>
-<?php
-//Check if there's additional list selected, if not Dont show this section
-if(count($lists) > 0):
-    //echo $this->getChildHtml('left.monkeysignup');
-endif;
-?>
 
 <script type="text/javascript">
     //Handle newsletter subscribe/unsubscribe checkbox events
@@ -165,7 +159,7 @@ endif;
     });
     //If force subscription or checked by default set the elements as clicked
 <?php if($auto):?>addSubscribeToPost($('magemonkey-trigger'));
-    <?php if(is_array($generalList['interest_groupings'])): ?>
+    <?php if($this->getCanModify() && is_array($generalList['interest_groupings'])): ?>
         <?php foreach($generalList['interest_groupings'] as $group): ?>
             <?php foreach($group['groups'] as $g): ?>
                 <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
@@ -191,11 +185,11 @@ endif;
 <?php endif; ?>
 
 
-    if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
-
-        var event = 'change';
-
-        //Radio||Checkbox
+//    if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
+//
+//        var event = 'change';
+//
+//        //Radio||Checkbox
 //        $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
 //
 //            if(input.readAttribute('type') == 'radio'){
@@ -212,8 +206,8 @@ endif;
 //                addElementToPost(this);
 //            });
 //        });
-
-    }
+//
+//    }
     //Handle newsletter groups subscribe/unsubscribe checkbox events
     $$('.interest-groupings input').each(function(group){
         group.observe('change', function(){

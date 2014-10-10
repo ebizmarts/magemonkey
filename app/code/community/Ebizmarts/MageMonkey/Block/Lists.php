@@ -407,10 +407,12 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         $allowedGroups = $this->helper('monkey')->config('cutomergroup');
         $allowedGroups = explode(',',$allowedGroups);
         $ret = false;
-        foreach($allowedGroups as $group){
-            $group = explode('_',$group);
-            if(isset($group[1]) && $group[1] == $groupName){
-                $ret = true;
+        if(isset($allowedGroups)) {
+            foreach ($allowedGroups as $group) {
+                $group = explode('_', $group);
+                if (isset($group[1]) && $group[1] == $groupName) {
+                    $ret = true;
+                }
             }
         }
         return $ret;
@@ -435,6 +437,15 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	public function listLabel($list)
 	{
 		$myLists = $this->getSubscribedLists();
+
+        //if is on database it gets checked
+        $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
+            ->addFieldToFilter('lists', $list['id'])
+            ->addFieldToFilter('email', $this->_getEmail())
+            ->addFieldToFilter('proccessed', 0);
+        if(count($alreadyOnList) > 0){
+            $myLists[] = $list['id'];
+        }
 
 		$checkbox = new Varien_Data_Form_Element_Checkbox;
 		$checkbox->setForm($this->getForm());
