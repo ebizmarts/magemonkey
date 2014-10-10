@@ -699,7 +699,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             Mage::log(Mage::getSingleton('core/session')->getIsHandleSubscriber(), null, 'santiago.log', true);
             $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
             $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
-            if (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] && $map != "") {
+            if (isset($post['magemonkey_subscribe']) && $map != "") {
                 $listsChecked = explode(',', $post['magemonkey_subscribe']);
                 $hasClicked = in_array($currentList, $listsChecked);
                 if ($hasClicked && $force != 3) {
