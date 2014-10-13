@@ -1006,7 +1006,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		//<state> param is an html serialized field containing the default form state
 		//before submission, we need to parse it as a request in order to save it to $odata and process it
 		parse_str($request->getPost('state'), $odata);
-		$isConfirmNeed = FALSE;
 		$curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
 		$lists    = $request->getPost('list', array());
 
@@ -1038,7 +1037,19 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					}
 
 					//Unsubscribe Email
-					$api->listUnsubscribe($listId, $email);
+                    $alreadyOnDb = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
+                        ->addFieldToFilter('lists', $listId)
+                        ->addFieldToFilter('email', $email)
+                        ->addFieldToFilter('proccessed', 0);
+
+                    if(count($alreadyOnDb) > 0){
+                        foreach ($alreadyOnDb as $listToDelete) {
+                            $toDelete = Mage::getModel('monkey/asyncsubscribers')->load($listToDelete->getId());
+                            $toDelete->delete();
+                        }
+                    }else {
+                        $api->listUnsubscribe($listId, $email);
+                    }
 
 				}else{
 
@@ -1079,9 +1090,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                     $groupings = $lists[$listId];
                     unset($groupings['subscribed']);
-                    if (!Mage::helper('monkey')->isAdmin() && (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, Mage::app()->getStore()->getId()) == 1)) {
-                        $isConfirmNeed = TRUE;
-                    }
                     if ($defaultList == $listId) {
                         $subscriber = Mage::getModel('newsletter/subscriber');
                         $subscriber->setListGroups($groupings);
@@ -1089,17 +1097,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
                         $subscriber->setImportMode(TRUE);
                         $subscriber->subscribe($email);
-                        $mergeVars = Mage::helper('monkey')->getMergeVars($subscriber);
-                        if(!Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
-                            $api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
-                        }
                     } else {
                         $customer->setListGroups($groupings);
                         $customer->setMcListId($listId);
-                        $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
-                        if(!Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getStoreConfig('monkey/general/checkout_async') != 1) {
-                            $api->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
-                        }
+                        $subscriber = Mage::getModel('newsletter/subscriber')
+                            ->setImportMode(TRUE)
+                            ->setSubscriberEmail($email);
+                        $this->_subscribeToList($subscriber, $listId, 0);
 
                     }
                 }

@@ -529,7 +529,7 @@ class Ebizmarts_Autoresponder_Model_Cron
 
                     //@TODO check if this next two validations can be replaced with isSaleable()
                     // Validate if Product has Stock
-                    if(!$_stock->getData('is_in_stock')) {
+                    if(!$_stock->getData('is_in_stock') || $_stock->getData('qty') == 0) {
                         Mage::helper('ebizmarts_autoresponder')->log('SKIPPED - Product ID '. $_product->getId() .' is not in stock yet.');
                         continue;
                     }

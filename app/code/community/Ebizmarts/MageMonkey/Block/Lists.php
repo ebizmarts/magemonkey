@@ -227,7 +227,8 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 	{
 		$fieldType = $group['form_field'];
 
-		if($this->_getEmail()){
+        $email = $this->_getEmail();
+		if($email){
 			$memberInfo = $this->_memberInfo($list['id']);
 		} else {
 			$memberInfo['success'] = 0;
@@ -242,6 +243,16 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         }elseif($checked == -1) {
             if($memberInfo['success'] == 1){
                 $groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
+                $alreadyOnDb = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
+                    ->addFieldToFilter('lists', $list['id'])
+                    ->addFieldToFilter('email', $email)
+                    ->addFieldToFilter('proccessed', 0);
+                if(count($alreadyOnDb) > 0){
+                    foreach($alreadyOnDb as $listToAdd) {
+                        $mapFields = unserialize($listToAdd->getMapfields());
+                        $groupings = $mapFields['GROUPINGS'];
+                    }
+                }
                 foreach ($groupings as $_group) {
                     if (!empty($_group['groups'])) {
                         if ($fieldType == 'checkboxes') {
