@@ -107,14 +107,8 @@ class Ebizmarts_Autoresponder_Model_Cron
         $customerGroupsCoupon = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_COUPON, $storeId));
 
 
-        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
-        $expr           = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
-        $from           = new Zend_Db_Expr($expr);
-        $expr           = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days-1, 'DAY'));
-        $to             = new Zend_Db_Expr($expr);
         $collection     = Mage::getModel('customer/customer')->getCollection();
-        $date = date("Y-m-d H:i:s");
-        $date2 = date("Y-m-d H:i:s",strtotime(" - $days days"));
+        $date2 = date("Y-m-d H:i:s",strtotime(" + $days days"));
         $month = date("m",strtotime($date2));
         $day = date("d",strtotime($date2));
         $moreselect = "MONTH(at_dob.value) = $month AND DAY(at_dob.value) = $day";

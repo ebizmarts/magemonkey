@@ -242,59 +242,63 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
             }
         }elseif($checked == -1) {
             if($memberInfo['success'] == 1){
-                $groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
+                if(isset($memberInfo['data'][0]['merges']['GROUPINGS'])) {
+                    $groupings = $memberInfo['data'][0]['merges']['GROUPINGS'];
+                }
                 $alreadyOnDb = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
                     ->addFieldToFilter('lists', $list['id'])
                     ->addFieldToFilter('email', $email)
-                    ->addFieldToFilter('proccessed', 0);
+                    ->addFieldToFilter('processed', 0);
                 if(count($alreadyOnDb) > 0){
                     foreach($alreadyOnDb as $listToAdd) {
                         $mapFields = unserialize($listToAdd->getMapfields());
                         $groupings = $mapFields['GROUPINGS'];
                     }
                 }
-                foreach ($groupings as $_group) {
-                    if (!empty($_group['groups'])) {
-                        if ($fieldType == 'checkboxes') {
+                if(isset($groupings)) {
+                    foreach ($groupings as $_group) {
+                        if (!empty($_group['groups'])) {
+                            if ($fieldType == 'checkboxes') {
 
-                            $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
-                            $currentGroupArray = explode(', ', $currentGroup);
-
-                            $myGroups[$_group['id']] = str_replace('%C%', ',', $currentGroupArray);
-
-                        } elseif ($fieldType == 'radio') {
-
-                            if (strpos($_group['groups'], ',')) {
                                 $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
                                 $currentGroupArray = explode(', ', $currentGroup);
-                                $collapsed = str_replace('%C%', ',', $currentGroupArray);
 
-                                if (is_array($collapsed) && isset($collapsed[0])) {
-                                    $myGroups[$_group['id']] = array($collapsed[0]);
+                                $myGroups[$_group['id']] = str_replace('%C%', ',', $currentGroupArray);
+
+                            } elseif ($fieldType == 'radio') {
+
+                                if (strpos($_group['groups'], ',')) {
+                                    $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
+                                    $currentGroupArray = explode(', ', $currentGroup);
+                                    $collapsed = str_replace('%C%', ',', $currentGroupArray);
+
+                                    if (is_array($collapsed) && isset($collapsed[0])) {
+                                        $myGroups[$_group['id']] = array($collapsed[0]);
+                                    } else {
+                                        $myGroups[$_group['id']] = array($collapsed);
+                                    }
                                 } else {
-                                    $myGroups[$_group['id']] = array($collapsed);
+                                    $myGroups[$_group['id']] = array($_group['groups']);
                                 }
-                            }else{
-                                $myGroups[$_group['id']] = array($_group['groups']);
-                            }
 
-                        }else{
-                            if(strpos($_group['groups'], ',')) {
-                                $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
-                                $currentGroupArray = explode(', ', $currentGroup);
-                                $collapsed = str_replace('%C%', ',', $currentGroupArray);
+                            } else {
+                                if (strpos($_group['groups'], ',')) {
+                                    $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
+                                    $currentGroupArray = explode(', ', $currentGroup);
+                                    $collapsed = str_replace('%C%', ',', $currentGroupArray);
 
-                                if(is_array($collapsed) && isset($collapsed[0])) {
-                                    $myGroups[$_group['id']] = array($collapsed[0]);
-                                }else{
-                                    $myGroups[$_group['id']] = array($collapsed);
+                                    if (is_array($collapsed) && isset($collapsed[0])) {
+                                        $myGroups[$_group['id']] = array($collapsed[0]);
+                                    } else {
+                                        $myGroups[$_group['id']] = array($collapsed);
+                                    }
+                                } else {
+                                    $myGroups[$_group['id']] = array($_group['groups']);
                                 }
-                            }else{
-                                $myGroups[$_group['id']] = array($_group['groups']);
+
                             }
 
                         }
-
                     }
                 }
             }
@@ -453,7 +457,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
             ->addFieldToFilter('lists', $list['id'])
             ->addFieldToFilter('email', $this->_getEmail())
-            ->addFieldToFilter('proccessed', 0);
+            ->addFieldToFilter('processed', 0);
         if(count($alreadyOnList) > 0){
             $myLists[] = $list['id'];
         }

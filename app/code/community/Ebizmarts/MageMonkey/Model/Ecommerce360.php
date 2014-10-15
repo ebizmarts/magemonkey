@@ -147,8 +147,9 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $this->_info['order_id'] = $this->_order->getId();
                 $sync->setInfo(serialize($this->_info))
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProccessed(0)
+                    ->setProcessed(0)
                     ->save();
+                $rs = true;
             }
             else {
                 //Send order to MailChimp
@@ -161,8 +162,9 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $this->_info['order_id'] = $this->_order->getId();
                 $sync->setInfo(serialize($this->_info))
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProccessed(0)
+                    ->setProcessed(0)
                     ->save();
+                $rs = true;
             }
             else {
 			    $rs = $api->ecommOrderAdd($this->_info);
@@ -186,7 +188,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
     private function setItemstoSend()
     {
-    	 foreach ($this->_order->getAllItems() as $item){
+    	foreach ($this->_order->getAllItems() as $item){
 			$mcitem = array();
             $product = Mage::getSingleton('catalog/product')->load($item->getProductId());
 

@@ -952,8 +952,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
             ->addFieldToFilter('lists', $listId)
             ->addFieldToFilter('email', $email)
-            ->addFieldToFilter('proccessed', 0);
-        //if not in magemonkey_async_subscribers with proccessed 0 add list
+            ->addFieldToFilter('processed', 0);
+        //if not in magemonkey_async_subscribers with processed 0 add list
         if(count($alreadyOnList) == 0){
         $isConfirmNeed = FALSE;
             if( !Mage::helper('monkey')->isAdmin() &&
@@ -984,7 +984,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     ->setEmail($email)
                     ->setLists($listId)
                     ->setConfirm($isConfirmNeed)
-                    ->setProccessed(0)
+                    ->setProcessed(0)
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
                     ->save();
             }else{
@@ -1040,7 +1040,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     $alreadyOnDb = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
                         ->addFieldToFilter('lists', $listId)
                         ->addFieldToFilter('email', $email)
-                        ->addFieldToFilter('proccessed', 0);
+                        ->addFieldToFilter('processed', 0);
 
                     if(count($alreadyOnDb) > 0){
                         foreach ($alreadyOnDb as $listToDelete) {

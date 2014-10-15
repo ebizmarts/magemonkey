@@ -440,7 +440,7 @@ class Ebizmarts_MageMonkey_Model_Cron
     public function sendordersAsync()
     {
         $collection = Mage::getModel('monkey/asyncorders')->getCollection();
-        $collection->addFieldToFilter('proccessed',array('eq'=>0));
+        $collection->addFieldToFilter('processed',array('eq'=>0));
         $storeId = null;
         foreach($collection as $item)
         {
@@ -458,7 +458,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $api->ecommOrderAdd($info);
                 $info['campaign_id'] = null;
             }
-            $item->setProccessed(1)->save();
+            $item->setProcessed(1)->save();
 
             Mage::getModel('monkey/ecommerce')
                 ->setOrderIncrementId($info['id'])
@@ -473,7 +473,7 @@ class Ebizmarts_MageMonkey_Model_Cron
     public function cleanordersAsync()
     {
         $collection = Mage::getModel('monkey/asyncorders')->getCollection();
-        $collection->addFieldToFilter('proccessed',array('eq'=>1));
+        $collection->addFieldToFilter('processed',array('eq'=>1));
         foreach($collection as $item)
         {
             $item->delete();
@@ -482,7 +482,7 @@ class Ebizmarts_MageMonkey_Model_Cron
     public function sendSubscribersAsync()
     {
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
-        $collection->addFieldToFilter('proccessed',array('eq'=>0));
+        $collection->addFieldToFilter('processed',array('eq'=>0));
         foreach($collection as $item)
         {
             $mergeVars = unserialize($item->getMapfields());
@@ -490,14 +490,14 @@ class Ebizmarts_MageMonkey_Model_Cron
             $email = $item->getEmail();
             $isConfirmNeed = $item->getConfirm();
             Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
-            $item->setProccessed(1)->save();
+            $item->setProcessed(1)->save();
         }
 
     }
     public function cleanSubscribersAsync()
     {
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
-        $collection->addFieldToFilter('proccessed',array('eq'=>1));
+        $collection->addFieldToFilter('processed',array('eq'=>1));
         foreach($collection as $item)
         {
             $item->delete();
