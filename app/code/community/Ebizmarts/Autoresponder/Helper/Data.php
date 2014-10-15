@@ -83,7 +83,6 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 
     public function getCanShowJs(){
-        Mage::log('entro', null, 'santiago.log', true);
         $storeId = Mage::app()->getStore()->getStoreId();
         if(Mage::getStoreConfig('ebizmarts_autoresponder/general/active', $storeId) && Mage::getStoreConfig('ebizmarts_autoresponder/visitedproducts/active', $storeId)) {
             if(Mage::getStoreConfig('web/url/use_store', $storeId)){

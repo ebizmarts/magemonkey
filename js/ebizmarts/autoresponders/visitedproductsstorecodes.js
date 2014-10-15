@@ -8,7 +8,11 @@
     function getUrl(){
         var path = window.location.toString();
         var myUrl = path.split('/')
-        return myUrl.slice(0,4).join('/') + '/ebizautoresponder/autoresponder/';
+        var max = 4;
+        if(jQuery.inArray('index.php', myUrl) != -1){
+            max = 5;
+        }
+        return myUrl.slice(0,max).join('/') + '/ebizautoresponder/autoresponder/';
     }
 
     function markVisited(productID) {
