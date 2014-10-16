@@ -37,17 +37,19 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-        Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
-        if(Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
-            $saveOnDb = Mage::helper('monkey')->config('checkout_async');
-            Mage::helper('monkey')->subscribeToMainList($subscriber, $saveOnDb);
-        }else{
-            Mage::helper('monkey')->subscribeToMainList($subscriber, 0);
+        if( TRUE === $subscriber->getIsStatusChanged() ) {
+            Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
+            if (Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
+                $saveOnDb = Mage::helper('monkey')->config('checkout_async');
+                Mage::helper('monkey')->subscribeToMainList($subscriber, $saveOnDb);
+            } else {
+                Mage::helper('monkey')->subscribeToMainList($subscriber, 0);
+            }
+
+            Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
+
+            Mage::getSingleton('core/session')->setIsHandleSubscriber(FALSE);
         }
-
-        Mage::getSingleton('core/session')->getMonkeyPost(TRUE);
-
-        Mage::getSingleton('core/session')->setIsHandleSubscriber(FALSE);
         return $observer;
     }
 
