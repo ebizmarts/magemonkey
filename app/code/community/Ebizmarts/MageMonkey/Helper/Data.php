@@ -698,7 +698,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     $mergeVars[$map] = "No";
                 }
             }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout()){
-                if(isset($post['subscribe_newsletter']) || $request->getPost()['subscribe_newsletter'] || Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
+                if(isset($post['subscribe_newsletter']) || isset($request->getPost()['subscribe_newsletter']) || Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
                     $mergeVars[$map] = "Yes";
                 }elseif(Mage::helper('monkey')->config('checkout_subscribe') > 2){
                     $mergeVars[$map] = "No";
@@ -907,7 +907,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
                 if($listId == $defaultList){
-                    Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
+                    $subscriber->subscribe($subscriber->getSubscriberEmail());
                 }else {
                     $this->_subscribeToList($subscriber, $listId, $db);
                 }
@@ -916,14 +916,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
                 if($listId == $defaultList){
-                    Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
+                    $subscriber->subscribe($subscriber->getSubscriberEmail());
                 }else {
                     $this->_subscribeToList($subscriber, $listId, $db);
                 }
             }
         //Subscription for One Step Checkout with force subscription
         }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()){
-            Mage::helper('monkey')->subscribeToMainList($subscriber, $db);
+            $subscriber->subscribe($subscriber->getSubscriberEmail());
         }
     }
 
@@ -931,11 +931,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $defaultList = Mage::helper('monkey')->config('list');
         $this->_subscribeToList($subscriber, $defaultList, $db);
-        //subscribe to Magento's newsletter
-        if(!Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
-            $subscriber->subscribe($subscriber->getSubscriberEmail());
-        }
-
     }
 
     /**

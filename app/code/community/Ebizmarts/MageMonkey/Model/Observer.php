@@ -33,13 +33,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-		if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
-			return $observer;
-		}
-
         if( TRUE === $subscriber->getIsStatusChanged() ) {
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
-            if (Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
+            if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
                 $saveOnDb = Mage::helper('monkey')->config('checkout_async');
                 Mage::helper('monkey')->subscribeToMainList($subscriber, $saveOnDb);
             } else {

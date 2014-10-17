@@ -7,7 +7,7 @@ app/design/frontend/base/default/layout/* app/design/frontend/base/default/layou
 app/design/adminhtml/default/default/template/* app/design/adminhtml/default/default/template/
 app/design/adminhtml/default/default/layout/* app/design/adminhtml/default/default/layout/
 app/code/community/Ebizmarts/* app/code/community/Ebizmarts/
-js/ebizmarts/autoresponders/visitedproducts.js js/ebizmarts/autoresponders/visitedproducts.js
+js/ebizmarts/autoresponders/* js/ebizmarts/autoresponders/
 lib/Mandrill/* lib/Mandrill/
 skin/adminhtml/default/default/* skin/adminhtml/default/default/
 skin/frontend/base/default/magemonkey skin/frontend/base/default/magemonkey
