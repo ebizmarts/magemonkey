@@ -698,7 +698,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     $mergeVars[$map] = "No";
                 }
             }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout()){
-                if(isset($post['subscribe_newsletter']) || isset($request->getPost()['subscribe_newsletter']) || Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
+                if(isset($post['subscribe_newsletter']) || isset($post['subscribe_newsletter']) || Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
                     $mergeVars[$map] = "Yes";
                 }elseif(Mage::helper('monkey')->config('checkout_subscribe') > 2){
                     $mergeVars[$map] = "No";
