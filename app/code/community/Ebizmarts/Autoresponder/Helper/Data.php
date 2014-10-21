@@ -48,7 +48,7 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
         $types = array();
         $storeId = Mage::app()->getStore()->getStoreId();
         $lists = Mage::getConfig()->getNode('default/ebizmarts_autoresponder')->asArray();
-        $lists['abandonedcart'] = array('listname'=>'Abandoned Carts List');
+        $lists['abandonedcart'] = array('listname'=>  Mage::helper('ebizmarts_abandonedcart')->__('Abandoned Carts List'));
         foreach ($lists as $key =>$data) {
             if(isset($data['listname'])) {
                 if(Mage::getStoreConfig("ebizmarts_autoresponder/$key/active",$storeId)||($key=='abandonedcart'&&Mage::getStoreConfig("ebizmarts_abandonedcart/general/active",$storeId))) {
@@ -80,6 +80,19 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
         $allowGuests = Mage::getStoreConfig("ebizmarts_autoresponder/backtostock/allow_guests", $storeId);
 
         return $allowGuests;
+    }
+
+    public function getCanShowJs(){
+        $storeId = Mage::app()->getStore()->getStoreId();
+        if(Mage::getStoreConfig('ebizmarts_autoresponder/general/active', $storeId) && Mage::getStoreConfig('ebizmarts_autoresponder/visitedproducts/active', $storeId)) {
+            if(Mage::getStoreConfig('web/url/use_store', $storeId)){
+                return 'ebizmarts/autoresponders/visitedproductsstorecodes.js';
+            }else{
+                return 'ebizmarts/autoresponders/visitedproducts.js';
+            }
+
+        }
+
     }
 
 }

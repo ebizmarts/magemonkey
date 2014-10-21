@@ -147,8 +147,9 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $this->_info['order_id'] = $this->_order->getId();
                 $sync->setInfo(serialize($this->_info))
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProccessed(0)
+                    ->setProcessed(0)
                     ->save();
+                $rs = true;
             }
             else {
                 //Send order to MailChimp
@@ -161,8 +162,9 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $this->_info['order_id'] = $this->_order->getId();
                 $sync->setInfo(serialize($this->_info))
                     ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProccessed(0)
+                    ->setProcessed(0)
                     ->save();
+                $rs = true;
             }
             else {
 			    $rs = $api->ecommOrderAdd($this->_info);
@@ -186,7 +188,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
     private function setItemstoSend()
     {
-    	 foreach ($this->_order->getAllItems() as $item){
+    	foreach ($this->_order->getAllItems() as $item){
 			$mcitem = array();
             $product = Mage::getSingleton('catalog/product')->load($item->getProductId());
 
@@ -269,70 +271,68 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
     public function autoExportJobs($storeId){
         $allow_sent = false;
-        $orders = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('main_table.store_id',array('eq'=>$storeId));
-        $orders->getSelect()->joinLeft( array('ecommerce'=> Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null');
-
         //Get status options selected in the Configuration
         $states = explode(',', Mage::helper('monkey')->config('order_status',$storeId));
-        $max = Mage::getStoreConfig("monkey/general/order_max",$storeId);
-        $counter = 0;
-		foreach($orders as $order){
-            if($counter>$max) {
+        $max = Mage::getStoreConfig("monkey/general/order_max", $storeId);
+        $count = 0;
+        foreach($states as $state) {
+            if($max == $count){
                 break;
             }
-			foreach($states as $state){
-				if($order->getStatus() == $state || $state == 'all_status'){
-					$allow_sent = true;
-				}
-			}
+            if($state != 'all_status') {
+                $orders = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('main_table.store_id', array('eq' => $storeId));
+                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null AND main_table.status = \'' . $state . '\'')
+                    ->limit($max - $count);
+            }else{
+                $orders = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('main_table.store_id', array('eq' => $storeId));
+                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null')
+                    ->limit($max - $count);
+            }
+            $count += count($orders);
+            foreach ($orders as $order) {
 
-			if($allow_sent == true){
-				$this->_order = $order;
-				$api = Mage::getSingleton('monkey/api', array('store' => $this->_order->getStoreId()));
-				if(!$api){
-					return false;
-				}
+                $this->_order = $order;
+                $api = Mage::getSingleton('monkey/api', array('store' => $this->_order->getStoreId()));
+                if (!$api) {
+                    return false;
+                }
 
-				$subtotal = $this->_order->getBaseSubtotal();
-				$discount = (float)$this->_order->getBaseDiscountAmount();
-				if ($discount != 0) {
-					$subtotal = $subtotal + ($discount);
-				}
+                $subtotal = $this->_order->getBaseSubtotal();
+                $discount = (float)$this->_order->getBaseDiscountAmount();
+                if ($discount != 0) {
+                    $subtotal = $subtotal + ($discount);
+                }
 
-		        $this->_info = array(
-						                'id'          => $this->_order->getIncrementId(),
-						                'total'       => $subtotal,
-						                'shipping'    => $this->_order->getBaseShippingAmount(),
-						                'tax'         => $this->_order->getBaseTaxAmount(),
-						                'store_id'    => $this->_order->getStoreId(),
-						                'store_name'  => $this->_order->getStoreName(),
-                                        'order_date'  => $this->_order->getCreatedAt(),
-						                'plugin_id'   => 1215,
-						                'items'       => array()
-		                			);
+                $this->_info = array(
+                    'id' => $this->_order->getIncrementId(),
+                    'total' => $subtotal,
+                    'shipping' => $this->_order->getBaseShippingAmount(),
+                    'tax' => $this->_order->getBaseTaxAmount(),
+                    'store_id' => $this->_order->getStoreId(),
+                    'store_name' => $this->_order->getStoreName(),
+                    'order_date' => $this->_order->getCreatedAt(),
+                    'plugin_id' => 1215,
+                    'items' => array()
+                );
 
-				$email    = $this->_order->getCustomerEmail();
-				$campaign = $this->_order->getEbizmartsMagemonkeyCampaignId();
-				$this->setItemstoSend();
+                $email = $this->_order->getCustomerEmail();
+                $campaign = $this->_order->getEbizmartsMagemonkeyCampaignId();
+                $this->setItemstoSend();
 
-				if($email && $campaign){
-					$this->_info ['email_id']= $email;
-					$this->_info ['campaign_id']= $campaign;
+                if ($email && $campaign) {
+                    $this->_info ['email_id'] = $email;
+                    $this->_info ['campaign_id'] = $campaign;
 
-					//Send order to MailChimp
-			    	$rs = $api->campaignEcommOrderAdd($this->_info);
-				}else{
-					$this->_info ['email']= $email;
-					$rs = $api->ecommOrderAdd($this->_info);
-				}
-				$allow_sent = false;
-                if ( isset($rs['complete']) && $rs['complete'] == TRUE ) {
-					$this->_logCall();
-                    $counter++;
-				}
-			}
-
-		}
-	 }
-
+                    //Send order to MailChimp
+                    $rs = $api->campaignEcommOrderAdd($this->_info);
+                } else {
+                    $this->_info ['email'] = $email;
+                    $rs = $api->ecommOrderAdd($this->_info);
+                }
+                if (isset($rs['complete']) && $rs['complete'] == TRUE) {
+                    $this->_logCall();
+                }
+            }
+        }
+    }
 }

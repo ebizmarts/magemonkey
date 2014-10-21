@@ -16,6 +16,7 @@ class Mandrill_Message extends Mandrill_Mandrill
     protected $_from = null;
     protected $_to = array();
     protected $_headers = array();
+    protected $_fromName;
 
 
     public function createAttachment($body,
@@ -109,6 +110,7 @@ class Mandrill_Message extends Mandrill_Mandrill
         $email = $this->_filterEmail($email);
 //        $name  = $this->_filterName($name);
         $this->_from = $email;
+        $this->_fromName = $name;
 //        $this->_storeHeader('From', $this->_formatAddress($email, $name), true);
 
         return $this;
@@ -179,13 +181,51 @@ class Mandrill_Message extends Mandrill_Mandrill
             throw new Zend_Mail_Exception('Cannot set standard header from addHeader()');
         }
 
-        $this->_header[] = array($name=>$value);
+        $this->_header[$name] = $value;
 
         return $this;
     }
     public function getHeaders()
     {
-        return $this->_headers;
+        return $this->_headers[0];
     }
+    public function send()
+    {
+        $email = array();
+        foreach($this->_to as $to) {
+            $email['to'][] = array(
+                'email' => $to
+            );
+        }
+        foreach($this->_bcc as $bcc) {
+            $email['to'][] = array(
+                'email' => $bcc,
+                'type' => 'bcc'
+            );
+        }
+        $email['subject'] = $this->_subject;
+        if(isset($this->_fromName)) {
+            $email['from_name'] = $this->_fromName;
+        }
+        $email['from_email'] = $this->_from;
+        $email['headers'] = $this->getHeaders();
+        if($att = $this->getAttachments()) {
+            $email['attachments'] = $att;
+        }
+        if($this->_bodyHtml) {
+            $email['html'] = $this->_bodyHtml;
+        }
+        if($this->_bodyText) {
+            $email['text'] = $this->_bodyText;
+        }
 
+        try {
+            $result = $this->messages->send($email);
+        }
+        catch( Exception $e ) {
+            Mage::logException( $e );
+            return false;
+        }
+        return true;
+    }
 }

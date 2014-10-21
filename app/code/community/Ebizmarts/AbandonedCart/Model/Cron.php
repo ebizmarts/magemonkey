@@ -168,7 +168,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     if($updatedAtDiff >= $diff){
 
                         $mailsubject = $this->_getMailSubject($run, $store);
-                        $templateId = $this->_getTemplateId($run);
+                        $templateId = $this->_getTemplateId($run, $store);
                         if($sendcoupon && $run+1 == $sendcoupondays)
                         {
                             //$templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
@@ -320,24 +320,24 @@ class Ebizmarts_AbandonedCart_Model_Cron
      * @param $currentCount
      * @return mixed
      */
-    protected function _getTemplateId($currentCount){
+    protected function _getTemplateId($currentCount, $store){
 
         $ret = NULL;
         switch($currentCount){
             case 0:
-                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FIRST_EMAIL_TEMPLATE_XML_PATH);
+                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FIRST_EMAIL_TEMPLATE_XML_PATH, $store);
                 break;
             case 1:
-                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SECOND_EMAIL_TEMPLATE_XML_PATH);
+                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SECOND_EMAIL_TEMPLATE_XML_PATH, $store);
                 break;
             case 2:
-                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::THIRD_EMAIL_TEMPLATE_XML_PATH);
+                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::THIRD_EMAIL_TEMPLATE_XML_PATH, $store);
                 break;
             case 3:
-                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FOURTH_EMAIL_TEMPLATE_XML_PATH);
+                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FOURTH_EMAIL_TEMPLATE_XML_PATH, $store);
                 break;
             case 4:
-                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FIFTH_EMAIL_TEMPLATE_XML_PATH);
+                $ret = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::FIFTH_EMAIL_TEMPLATE_XML_PATH, $store);
                 break;
         }
         return $ret;

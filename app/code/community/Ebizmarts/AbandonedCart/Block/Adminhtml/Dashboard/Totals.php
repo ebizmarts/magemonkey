@@ -95,13 +95,14 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         if(Mage::helper('core')->isModuleEnabled('Ebizmarts_Mandrill')
             && (version_compare(Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version, '1.0.4', '>'))
             && Mage::helper('ebizmarts_mandrill')->useTransactionalService()) {
+            $particular = array('sent' => 0, 'soft_bounces' => 0,'hard_bounces'=>0,'unique_opens'=>0,'unique_clicks'=>0);
             if(!$isFilter) {
                 $stores = Mage::app()->getStores();
-                $__particular = array('sent' => 0, 'soft_bounces' => 0,'hard_bounces'=>0,'unique_opens'=>0,'unique_clicks'=>0);
+                $__particular = $particular;
                 foreach($stores as $__store => $val) {
                     $storeid = Mage::app()->getStore($__store)->getId();
                     $aux = $this->__getMandrillStatistics($period,$storeid);
-                    if($aux) {
+                    if($aux && !isset($aux['status'])) {
                         $__particular['sent'] += $aux['sent'];
                         $__particular['soft_bounces'] += $aux['soft_bounces'];
                         $__particular['hard_bounces'] += $aux['hard_bounces'];
@@ -112,7 +113,9 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 $particular = $__particular;
             }
             else {
-                $particular = $this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'));
+                if(!isset($this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'))['status'])){
+                    $particular = $this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'));
+                }
             }
             // add totals for emails
             if($particular) {

@@ -1,294 +1,247 @@
 <_>
-    <form_key>n9Rjv1K08GpLofru</form_key>
-    <_create/>
-    <name>Ebizmarts_MageMonkey</name>
-    <channel>community</channel>
-    <version_ids>
-        <version_ids>2</version_ids>
-        <version_ids>1</version_ids>
-    </version_ids>
-    <summary>MailChimp integration for Magento by Ebizmarts</summary>
-    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
-    <license>OSL v3.0</license>
-    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-    <version>1.1.0</version>
-    <stability>stable</stability>
-    <notes>-- version 1.1.0 stable
+   <form_key>uvOydC1ftCRw4L15</form_key>
+   <name>Ebizmarts_MageMonkey</name>
+   <channel>community</channel>
+   <version_ids>
+      <version_ids>2</version_ids>
+      <version_ids>1</version_ids>
+   </version_ids>
+   <summary>MailChimp integration for Magento by Ebizmarts</summary>
+   <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
+   <license>OSL v3.0</license>
+   <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
+   <version>1.1.24</version>
+   <stability>stable</stability>
+   <notes>
+       1.1.24
+       --------
+       Fixed compatibility with before versions of PHP 5.4.
 
-        - Adding abandoned order manager (beta)
-
-        -- version 1.0.22 stable
-
-        - Adding Oauth2 support to connect MageMonkey with MailChimp
-        - Fallback on setReplyTo in Mandrill when transactional email is not enabled
-        - addBcc Fix on Mandrill
-
-        -- version 1.0.21 stable
-
-        - Fix duplicated confirmation email notifications
-        - Add success message when customer register from the &quot;My Account&quot; section
-        - Add mass action option to Sales -&gt; Order grid in admin panel to send orders to MC
-        - Fix Mandrill_API::addTo() and Mandrill_API::replyTo() issues in the Mandrill module
-        - Add version information in the configuration for the Mandrill module
-
-        -- version 1.0.19 stable
-
-        - Fix automatic unsubscribe issue when users create orders from backend
-        - Adding BCC support for Mandrill Emails
-        - Remove enconding from subject for Mandrill Emails
-        - Add tags in emails sent from Mandrill
-
-        -- version 1.0.18 stable
-
-        Independence between MageMonkey and Mandrill modules
-
-        -- version 1.0.17 stable
-
-        -Fix &quot;unsubscribe&quot; when place an order
-
-        -- version 1.0.16 stable
-
-        - Fix progress bar on export function
-        - Add option in admin for limit of customers per round for export and import and delete customers in Magento when are removed in MailChimp
-        - Fix unsubscribe on edit customer from the admin panel
-        - Add version in the config
-        - Fix &quot;Fatal error: Cannot use string offset as an array&quot;
-
-        -- version 1.0.15 stable
-
-        - fix rendering of additional lists html elements
-        - Fix force subscription on checkout when use a payment method wich redirects to a payment page like PayPal Express Checkout.
-
-        -- version 1.0.14 stable
-        Fix Export functionality, only customers with status &quot;subscribed&quot; are exported now.
-        Increase the limit of customers for exports from 200 to 1000 per hour
-        Fix bug in unsubscribe customers.
-        Send email confirmation in double opt-in is not used.
-        Improve the save configuration proccess, add warnings, remove blank messages, improve the auto save webhooks in MailChimp.
-        Fix force subscription on checkout when use a payment method wich redirects to a payment page like PayPal Express Checkout.
-        Add new help links in the configuration (&quot;What&apos;s MailChimp my IP Key?&quot; and &quot;How to segment your list based on your customers purchase activity&quot;).
-        Don&apos;t display additional lists newsletter block on checkout when there are no additional lists selected
-
-        -- version 1.0.13 stable
-        Fixing bug on admin urls when store code is used, more bugs fixed.
-
-        -- version 1.0.12 stable
-        Fixing bug on renderer for old magentos
-
-        -- version 1.0.11 stable
-        Adding export jobs per store id
-
-        -- version 1.0.10 stable
-        Fixing Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists bug
-        Fixing bug on MyAccount when subscribing, unsubscribing
-        Fix for bug on account creation, automatically subscribing
-        Ecommerce360 total with discount
-        Fixing but on order saving issue when customer is subscribed on MailChimp
-        Fixing error on cart page when compilation is ON
-
-        -- version 1.0.9 stable
-        Bug fix on webhooks url when Rewrites are not enabled
-
-        -- version 1.0.8 stable
-        Bug fix on checkout subscribe issues and EE customer credit balance issue fix (Customer is not set or does not exist.)
-
-        -- version 1.0.7 stable
-        Bug fix on TinyMCE inserting image, workaround for Magento passing a store parameter with undefined value.
-
-        -- version 1.0.6 stable
-        Fix bug when on hardcoded default store code. Additional Lists.
-
-        -- version 1.0.4 stable
-        Fix bug when checking newsletter box when registering. Adding customer groups as Interest Grouping
-
-        -- version 1.0.2 beta
-        Fixing bug on bulk export for customers, gets stuck on 200
-
-        -- version 1.0.1 beta
-        Bug fixing when deleting a subscriber
-
-        -- version 1.0.0 beta
-        Including STS
-
-        First public release 0.0.9, January 2012</notes>
-    <authors>
-        <name>
-            <name>Ebizmarts Development Team</name>
-        </name>
-        <user>
-            <user>ebizmarts</user>
-        </user>
-        <email>
-            <email>info@ebizmarts.com</email>
-        </email>
-    </authors>
-    <depends_php_min>5.2.0</depends_php_min>
-    <depends_php_max>6.0.0</depends_php_max>
-    <depends>
-        <package>
-            <name>
-                <name/>
-            </name>
-            <channel>
-                <channel/>
-            </channel>
-            <min>
-                <min/>
-            </min>
-            <max>
-                <max/>
-            </max>
-            <files>
-                <files>                                                     </files>
-            </files>
-        </package>
-        <extension>
-            <name>
-                <name>Core</name>
-            </name>
-            <min>
-                <min/>
-            </min>
-            <max>
-                <max/>
-            </max>
-        </extension>
-    </depends>
-    <contents>
-        <target>
-            <target>magelocal</target>
-            <target>magecommunity</target>
-            <target>magedesign</target>
-            <target>magedesign</target>
-            <target>magedesign</target>
-            <target>mageetc</target>
-            <target>magelocale</target>
-            <target>magedesign</target>
-            <target>mageskin</target>
-            <target>magecommunity</target>
-            <target>magedesign</target>
-            <target>mageetc</target>
-            <target>mage</target>
-            <target>magelocale</target>
-            <target>mageskin</target>
-            <target>mageskin</target>
-            <target>magedesign</target>
-            <target>magecommunity</target>
-            <target>mageetc</target>
-            <target>magedesign</target>
-            <target>magedesign</target>
-            <target>magedesign</target>
-            <target>magedesign</target>
-            <target>magelocale</target>
-            <target>magelocale</target>
-        </target>
-        <path>
-            <path/>
-            <path>Ebizmarts/MageMonkey</path>
-            <path>frontend/base/default/layout/magemonkey.xml</path>
-            <path>frontend/base/default/template/magemonkey</path>
-            <path>adminhtml/default/default/layout/magemonkey.xml</path>
-            <path>modules/Ebizmarts_MageMonkey.xml</path>
-            <path>en_US/Ebizmarts_MageMonkey.csv</path>
-            <path>adminhtml/default/default/template/magemonkey</path>
-            <path>frontend/base/default/magemonkey</path>
-            <path>Ebizmarts/Mandrill</path>
-            <path>adminhtml/default/default/layout/mandrill.xml</path>
-            <path>modules/Ebizmarts_Mandrill.xml</path>
-            <path>lib/Mandrill</path>
-            <path>en_US/Ebizmarts_Mandrill.csv</path>
-            <path>adminhtml/default/default/mandrill</path>
-            <path>adminhtml/default/default/magemonkey</path>
-            <path>adminhtml/default/default/template/mandrill</path>
-            <path>Ebizmarts/AbandonedCart</path>
-            <path>modules/Ebizmarts_AbandonedCart.xml</path>
-            <path>adminhtml/default/default/layout/ebizmarts/abandonedcart.xml</path>
-            <path>adminhtml/default/default/template/ebizmarts/abandonedcart</path>
-            <path>frontend/base/default/layout/ebizmarts_abandonedcart.xml</path>
-            <path>frontend/base/default/template/ebizmarts_abandonedcart</path>
-            <path>en_US/template/email/ebizmarts</path>
-            <path>en_US/Ebizmarts_AbandonedCart.csv</path>
-        </path>
-        <type>
-            <type>file</type>
-            <type>dir</type>
-            <type>file</type>
-            <type>dir</type>
-            <type>file</type>
-            <type>file</type>
-            <type>file</type>
-            <type>dir</type>
-            <type>dir</type>
-            <type>dir</type>
-            <type>file</type>
-            <type>file</type>
-            <type>dir</type>
-            <type>file</type>
-            <type>dir</type>
-            <type>dir</type>
-            <type>dir</type>
-            <type>dir</type>
-            <type>file</type>
-            <type>file</type>
-            <type>dir</type>
-            <type>file</type>
-            <type>dir</type>
-            <type>dir</type>
-            <type>file</type>
-        </type>
-        <include>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-            <include/>
-        </include>
-        <ignore>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-            <ignore/>
-        </ignore>
-    </contents>
+       Fixed miss spelling on magemonkey_async databases.
+   </notes>
+   <authors>
+      <name>
+         <name>Ebizmarts Development Team</name>
+      </name>
+      <user>
+         <user>ebizmarts</user>
+      </user>
+      <email>
+         <email>info@ebizmarts.com</email>
+      </email>
+   </authors>
+   <depends_php_min>5.2.0</depends_php_min>
+   <depends_php_max>6.0.0</depends_php_max>
+   <depends>
+      <package>
+         <name>
+            <name/>
+         </name>
+         <channel>
+            <channel/>
+         </channel>
+         <min>
+            <min/>
+         </min>
+         <max>
+            <max/>
+         </max>
+         <files>
+            <files>                                                                                                  </files>
+         </files>
+      </package>
+      <extension>
+         <name>
+            <name>Core</name>
+         </name>
+         <min>
+            <min/>
+         </min>
+         <max>
+            <max/>
+         </max>
+      </extension>
+   </depends>
+   <contents>
+      <target>
+         <target>magelocal</target>
+         <target>magecommunity</target>
+         <target>mageetc</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magelocale</target>
+         <target>mageskin</target>
+         <target>mageskin</target>
+         <target>magecommunity</target>
+         <target>mageetc</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mage</target>
+         <target>magelocale</target>
+         <target>magecommunity</target>
+         <target>mageetc</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magelocale</target>
+         <target>magelocale</target>
+         <target>mageskin</target>
+         <target>magecommunity</target>
+         <target>mageetc</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mage</target>
+         <target>mageskin</target>
+         <target>magelocale</target>
+         <target>magelocale</target>
+      </target>
+      <path>
+         <path/>
+         <path>Ebizmarts/MageMonkey</path>
+         <path>modules/Ebizmarts_MageMonkey.xml</path>
+         <path>frontend/base/default/layout/magemonkey.xml</path>
+         <path>frontend/base/default/template/magemonkey</path>
+         <path>adminhtml/default/default/layout/magemonkey.xml</path>
+         <path>adminhtml/default/default/template/magemonkey</path>
+         <path>en_US/Ebizmarts_MageMonkey.csv</path>
+         <path>adminhtml/default/default/magemonkey</path>
+         <path>frontend/base/default/magemonkey</path>
+         <path>Ebizmarts/Mandrill</path>
+         <path>modules/Ebizmarts_Mandrill.xml</path>
+         <path>adminhtml/default/default/layout/ebizmarts/mandrill.xml</path>
+         <path>adminhtml/default/default/template/ebizmarts/mandrill</path>
+         <path>lib/Mandrill</path>
+         <path>en_US/Ebizmarts_Mandrill.csv</path>
+         <path>Ebizmarts/AbandonedCart</path>
+         <path>modules/Ebizmarts_AbandonedCart.xml</path>
+         <path>adminhtml/default/default/layout/ebizmarts/abandonedcart.xml</path>
+         <path>adminhtml/default/default/template/ebizmarts/abandonedcart</path>
+         <path>frontend/base/default/layout/ebizmarts/abandonedcart.xml</path>
+         <path>frontend/base/default/template/ebizmarts_abandonedcart</path>
+         <path>en_US/Ebizmarts_AbandonedCart.csv</path>
+         <path>en_US/template/email/ebizmarts/abandonedcart</path>
+         <path>adminhtml/default/default/abandonedcart</path>
+         <path>Ebizmarts/Autoresponder</path>
+         <path>modules/Ebizmarts_Autoresponder.xml</path>
+         <path>adminhtml/default/default/template/ebizmarts/autoresponder</path>
+         <path>frontend/base/default/layout/ebizmarts/autoresponder.xml</path>
+         <path>frontend/base/default/template/ebizmarts/autoresponder</path>
+         <path>js/ebizmarts</path>
+         <path>adminhtml/default/default/ebizmarts</path>
+         <path>en_US/template/email/ebizmarts/autoresponder</path>
+         <path>en_US/Ebizmarts_Autoresponder.csv</path>
+      </path>
+      <type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+      </type>
+      <include>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+      </include>
+      <ignore>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+      </ignore>
+   </contents>
 </_>

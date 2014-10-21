@@ -179,33 +179,33 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @return void
      */
     protected function _unsubscribe(array $data) {
-	$subscriber = $this->loadByEmail($data['data']['email']);
+        $subscriber = $this->loadByEmail($data['data']['email']);
 
-	if(!$subscriber->getId()){
-	$subscriber = Mage::getModel('newsletter/subscriber')
-	                    ->loadByEmail($data['data']['email']);
-	}
-
-	if($subscriber->getId()){
-	try {
-
-        switch ($data['data']['action']) {
-            case 'delete' :
-                //if config setting "Webhooks Delete action" is set as "Delete customer account"
-            	if(Mage::getStoreConfig("monkey/general/webhook_delete") == 1){
-                	$subscriber->delete();
-            	}else{
-					$subscriber->setImportMode(TRUE)->unsubscribe();
-				}
-                break;
-            case 'unsub':
-                $subscriber->setImportMode(TRUE)->unsubscribe();
-                break;
+        if(!$subscriber->getId()){
+        $subscriber = Mage::getModel('newsletter/subscriber')
+                            ->loadByEmail($data['data']['email']);
         }
-    } catch (Exception $e) {
-        Mage::logException($e);
-    }
-	}
+
+        if($subscriber->getId()){
+            try {
+
+                switch ($data['data']['action']) {
+                    case 'delete' :
+                        //if config setting "Webhooks Delete action" is set as "Delete customer account"
+                        if(Mage::getStoreConfig("monkey/general/webhook_delete") == 1){
+                            $subscriber->delete();
+                        }else{
+                            $subscriber->setImportMode(TRUE)->unsubscribe();
+                        }
+                        break;
+                    case 'unsub':
+                        $subscriber->setImportMode(TRUE)->unsubscribe();
+                        break;
+                }
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
     }
 
     /**
