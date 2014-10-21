@@ -113,7 +113,8 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 $particular = $__particular;
             }
             else {
-                if(!isset($this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'))['status'])){
+                $data = $this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'));
+                if(!isset($data['status'])){
                     $particular = $this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'));
                 }
             }
