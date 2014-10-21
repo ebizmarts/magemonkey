@@ -10,34 +10,15 @@
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>1.1.23</version>
+   <version>1.1.24</version>
    <stability>stable</stability>
-   <notes>1.1.23
---------
-Fixed subscriber synchronization with MailChimp bug.
-http://ebizmarts.com/forums/topics/view/13298
+   <notes>
+       1.1.24
+       --------
+       Fixed compatibility with before versions of PHP 5.4.
 
-Fixed abandoned cart dashboard when no abandoned cart email sent.
-http://ebizmarts.com/forums/topics/view/13268
-http://ebizmarts.com/forums/topics/view/13668
-
-Fixed to send birthday autoresponder emails the set days before the birthday instead of after.
-http://ebizmarts.com/forums/topics/view/13637
-
-Show MailChimp lists as subscribed on customer account if in magemonkey database.
-
-Added checkout asymc subscription compatibility with one step checkout.
-
-Fixed visited products autoresponder when store codes enabled.
-	
-Only render form when backtostock autoresponder is active.
-(mikeymike)
-	
-Fixed abandoned cart dashboard for Magento versions under 1.6.
-(fysiomike)
-
-Order by on export process.
-(rissip &amp;&amp; diglin)</notes>
+       Fixed miss spelling on magemonkey_async databases.
+   </notes>
    <authors>
       <name>
          <name>Ebizmarts Development Team</name>
