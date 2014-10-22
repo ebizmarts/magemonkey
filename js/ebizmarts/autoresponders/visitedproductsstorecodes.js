@@ -9,7 +9,8 @@
         var path = window.location.toString();
         var myUrl = path.split('/')
         var max = 4;
-        if(jQuery.inArray('index.php', myUrl) != -1){
+        var pos = myUrl.indexOf('index.php');
+        if(pos != -1){
             max = 5;
         }
         return myUrl.slice(0,max).join('/') + '/ebizautoresponder/autoresponder/';
