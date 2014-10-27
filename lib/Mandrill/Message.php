@@ -187,7 +187,12 @@ class Mandrill_Message extends Mandrill_Mandrill
     }
     public function getHeaders()
     {
-        return $this->_headers[0];
+        if(isset($this->_headers[0])) {
+            return $this->_headers[0];
+        }
+        else {
+            return null;
+        }
     }
     public function send()
     {
@@ -208,7 +213,9 @@ class Mandrill_Message extends Mandrill_Mandrill
             $email['from_name'] = $this->_fromName;
         }
         $email['from_email'] = $this->_from;
-        $email['headers'] = $this->getHeaders();
+        if($headers = $this->getHeaders()) {
+            $email['headers'] = $headers;
+        }
         if($att = $this->getAttachments()) {
             $email['attachments'] = $att;
         }
