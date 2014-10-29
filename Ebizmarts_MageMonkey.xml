@@ -13,11 +13,15 @@
    <version>1.1.24</version>
    <stability>stable</stability>
    <notes>
-       1.1.24
+       1.1.25
        --------
        Fixed compatibility with before versions of PHP 5.4.
 
-       Fixed miss spelling on magemonkey_async databases.
+       Send orders to MailChimp only if related customer is already there.
+
+       Fixed Mandrill headers when not defined.
+
+       Fixed database error when table prefix enabled.
    </notes>
    <authors>
       <name>
