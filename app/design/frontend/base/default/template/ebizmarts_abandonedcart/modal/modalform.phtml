@@ -1,0 +1,43 @@
+<div id="email" style="display:none">
+    <p><span id='email_error_msg' class="email_error" style="display:none">&nbsp;</span></p>
+    <div style="clear:both"></div>
+    <p><span class="email_label">Email</span> <span class="email_input"><input type="text"/></span></p>
+    <div style="clear:both"></div>
+</div>
+
+<script type="text/javascript">
+    var cookie = document.cookie;
+    alert(cookie);
+    Dialog.confirm($('email').innerHTML, {className:"alphacube", width:400, zIndex:200, okLabel:'Confirm',
+        onOk:function(win){
+            var inputField = $$('.email_input input[type=text]').first();
+            var email = inputField.value;
+            var atpos = email.indexOf("@");
+            var dotpos = email.lastIndexOf(".");
+            if (atpos<1 || dotpos<atpos+2 || dotpos+2>=email.length) {
+                $('email_error_msg').innerHTML='Not a valid e-mail address';
+                $('email_error_msg').setStyle({color: '#F00'});
+                $('email_error_msg').show();
+                Windows.focusedWindow.updateHeight();
+                new Effect.Shake(Windows.focusedWindow.getId());
+            }else{
+                var now = new Date();
+                alert(now);
+                var expire = now.tohow + (2 * 365 * 24 * 60 * 60);
+                alert(expire);
+                expire = expire.toUTCString();
+                alert(expire);
+                document.cookie = 'email=' + email + '; expires=' + expire;
+                cookie = document.cookie;
+                alert(cookie);
+                win.close();
+            }
+        }
+    });
+    <?php if(!$this->_canCancel()): ?>
+        $$('.cancel_button').each(function(element){
+            element.setStyle({display: 'none'});
+        });
+    <?php endif; ?>
+
+</script>

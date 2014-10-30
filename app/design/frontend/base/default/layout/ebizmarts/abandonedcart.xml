@@ -8,4 +8,14 @@
         </block>
         <block type="core/text_list" name="additional.product.info" />
     </ebizmarts_abandonedcart_email_order_items>
+    <cms_index_index>
+        <reference name="head">
+            <action method="addJs"><script>prototype/window.js</script></action>
+            <action method="addItem"><type>js_css</type><script>prototype/windows/themes/alphacube.css</script></action>
+            <action method="addItem"><type>js_css</type><script>prototype/windows/themes/default.css</script></action>
+        </reference>
+        <reference name="content">
+            <block type="ebizmarts_abandonedcart/modal_modalform" name="modalform" template="ebizmarts_abandonedcart/modal/modalform.phtml"></block>
+        </reference>
+    </cms_index_index>
 </layout>

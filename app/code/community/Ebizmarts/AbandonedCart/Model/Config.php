@@ -49,4 +49,6 @@ class Ebizmarts_AbandonedCart_Model_Config
     const IN_DAYS                           = 0;
     const IN_HOURS                          = 1;
     const PAGE                              = 'ebizmarts_abandonedcart/general/page';
+    const ENABLE_MODAL                      = 'ebizmarts_abandonedcart/general/modal_general';
+    const MODAL_CAN_CANCEL                  = 'ebizmarts_abandonedcart/general/modal_cancel';
 }
