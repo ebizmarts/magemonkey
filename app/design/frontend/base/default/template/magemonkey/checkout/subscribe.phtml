@@ -34,7 +34,7 @@ $force = $this->getForce();
             }
         }else{
             var arrCheckedLists = checkedLists.split(',');
-            var pos = jQuery.inArray(element.readAttribute('value'), arrCheckedLists);
+            var pos = arrCheckedLists.indexOf(element.readAttribute('value'));
             if(pos != -1) {
                 arrCheckedLists.splice(pos, 1);
                 checkedLists = arrCheckedLists.join(',');

@@ -420,7 +420,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $customer       = Mage::getModel('customer/customer')->load($item->getCustomerId());
                 $customerIdPrev = $item->getCustomerId();
             }
-            if(count($products) > $max||!in_array($customer->getGroupId(),$customerGroups)) {
+            if(count($products) > $max && $max != 0 || !in_array($customer->getGroupId(),$customerGroups)) {
                 continue;
             }
             $itemscollection = Mage::getModel('sales/order_item')->getCollection();

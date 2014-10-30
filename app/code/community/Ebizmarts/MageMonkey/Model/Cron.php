@@ -445,6 +445,12 @@ class Ebizmarts_MageMonkey_Model_Cron
         foreach($collection as $item)
         {
             $info = (array)unserialize($item->getInfo());
+            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
+                ->addFieldToFilter('processed',array('eq'=>1))
+                ->addFieldToFilter('email', array('eq'=>$info['email']));
+            if(count($collection2) == 0){
+                continue;
+            }
             $orderId = $info['order_id'];
             unset($info['order_id']);
             if($storeId!=$info['store_id']) {

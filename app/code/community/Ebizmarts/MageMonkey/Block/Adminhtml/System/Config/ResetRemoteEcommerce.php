@@ -41,7 +41,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetRemoteEcommerce ex
             ->setData(array(
                 'id'        => 'resetecommerce_button',
                 'label'     => $this->helper('monkey')->__('Reset Remote Orders Ecommerce360'),
-                'onclick'   => 'javascript:check(); return false;'
+                'onclick'   => 'javascript:check2(); return false;'
             ));
 
         return $button->toHtml();
