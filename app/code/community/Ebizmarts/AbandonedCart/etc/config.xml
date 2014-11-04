@@ -190,6 +190,11 @@
                 <days3>2</days3>
                 <sendon>3</sendon>
                 <mandrill-tag>AbandonedCart</mandrill-tag>
+                <modal_general>1</modal_general>
+                <modal_cancel>1</modal_cancel>
+                <modal_subscription>1</modal_subscription>
+                <modal_heading>Send us your email!</modal_heading>
+                <modal_text>Put your email here for us to get to know you and personalize your service.</modal_text>
                 <autologin>0</autologin>
                 <page>checkout/cart</page>
             </general>

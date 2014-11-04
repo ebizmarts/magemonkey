@@ -51,4 +51,7 @@ class Ebizmarts_AbandonedCart_Model_Config
     const PAGE                              = 'ebizmarts_abandonedcart/general/page';
     const ENABLE_MODAL                      = 'ebizmarts_abandonedcart/general/modal_general';
     const MODAL_CAN_CANCEL                  = 'ebizmarts_abandonedcart/general/modal_cancel';
+    const MODAL_TEXT                        = 'ebizmarts_abandonedcart/general/modal_text';
+    const MODAL_HEADING                     = 'ebizmarts_abandonedcart/general/modal_heading';
+    const MODAL_SUBSCRIPTION                = 'ebizmarts_abandonedcart/general/modal_subscription';
 }

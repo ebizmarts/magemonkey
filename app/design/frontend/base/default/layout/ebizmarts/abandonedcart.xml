@@ -8,6 +8,8 @@
         </block>
         <block type="core/text_list" name="additional.product.info" />
     </ebizmarts_abandonedcart_email_order_items>
+
+    <!--Home-->
     <cms_index_index>
         <reference name="head">
             <action method="addJs"><script>prototype/window.js</script></action>
@@ -18,4 +20,5 @@
             <block type="ebizmarts_abandonedcart/modal_modalform" name="modalform" template="ebizmarts_abandonedcart/modal/modalform.phtml"></block>
         </reference>
     </cms_index_index>
+    <!--Home-->
 </layout>
