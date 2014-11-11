@@ -27,6 +27,15 @@ class Ebizmarts_AbandonedCart_Model_Cron
         }
     }
 
+    public function cleanAbandonedCartExpiredCoupons(){
+        $allStores = Mage::app()->getStores();
+        foreach($allStores as $storeid => $val){
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeid)) {
+                $this->_cleanCoupons($storeid);
+            }
+        }
+    }
+
     /**
      * @param $store
      */
@@ -94,46 +103,75 @@ class Ebizmarts_AbandonedCart_Model_Cron
 //            Mage::helper('ebizmarts_abandonedcart')->log((string)$collection->getSelect());
 
             // for each cart of the current run
-            foreach($collection as $quote)
-            {
-                foreach($quote->getAllVisibleItems() as $item) {
+            foreach($collection as $quote) {
+                foreach ($quote->getAllVisibleItems() as $item) {
                     $removeFromQuote = false;
                     $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                    if(!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
+                    if (!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED)
                     {
                         Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer present or enabled; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
                         $removeFromQuote = true;
                     }
-                    $stock = $product->getStockItem();
-                    if(
+
+                    if ($product->getTypeId() == 'configurable') {
+                        $simpleProductId = Mage::getModel('catalog/product')->getIdBySku($item->getSku());
+                        $simpleProduct = Mage::getModel('catalog/product')->load($simpleProductId);
+                        $stock = $simpleProduct->getStockItem();
+                        $stockQty = $stock->getQty();
+                    } elseif ($product->getTypeId() == 'bundle') {
+                        $options = $item->getProduct()->getTypeInstance(true)->getOrderOptions($item->getProduct());
+                        $bundled_product = new Mage_Catalog_Model_Product();
+                        $bundled_product->load($product->getId());
+                        $selectionCollection = $bundled_product->getTypeInstance(true)->getSelectionsCollection(
+                            $bundled_product->getTypeInstance(true)->getOptionsIds($bundled_product), $bundled_product
+                        );
+                        $stockQty = -1;
+                        foreach ($selectionCollection as $option) {
+                            foreach ($options['bundle_options'] as $bundle) {
+                                if ($bundle['value'][0]['title'] == $option->getName()) {
+                                    $label = $bundle['label'];
+                                    $qty = $bundle['value'][0]['qty'];
+                                    if ($stockQty == -1 || $stockQty > $qty) {
+                                        $stockQty = $qty;
+                                    }
+                                }
+                            }
+                        }
+
+                    } else {
+                        $stock = $product->getStockItem();
+                        $stockQty = $stock->getQty();
+                    }
+
+                    if (
                         (
                             $stock->getManageStock() ||
                             ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId()))
                         )
-                        && $stock->getQty() < $item->getQty())
+                        && $stockQty < $item->getQty())
                     {
                         Mage::log('AbandonedCart; ' . $product->getSku() .' is no longer in stock; remove from quote ' . $quote->getId() . ' for email',null,'Ebizmarts_AbandonedCart.log');
                         $removeFromQuote = true;
                     }
-                    if($removeFromQuote)
+                    if ($removeFromQuote)
                     {
                         $quote->removeItem($item->getId());
                     }
                 }
-                if(count($quote->getAllVisibleItems()) < 1)
-                {
+
+                if (count($quote->getAllVisibleItems()) < 1) {
                     $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
-                    $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
+                    $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter() + 1);
                     $quote2->save();
                     continue;
                 }
                 // check if they are any order from the customer with date >=
                 $collection2 = Mage::getResourceModel('reports/quote_collection');
                 $collection2->addFieldToFilter('main_table.is_active', '0')
-                            ->addFieldToFilter('main_table.reserved_order_id',array('neq' => 'NULL' ))
-                            ->addFieldToFilter('main_table.customer_email',array('eq' => $quote->getCustomerEmail()))
-                            ->addFieldToFilter('main_table.updated_at',array('from'=>$quote->getUpdatedAt()));
-                if($collection2->getSize()) {
+                    ->addFieldToFilter('main_table.reserved_order_id', array('neq' => 'NULL'))
+                    ->addFieldToFilter('main_table.customer_email', array('eq' => $quote->getCustomerEmail()))
+                    ->addFieldToFilter('main_table.updated_at', array('from' => $quote->getUpdatedAt()));
+                if ($collection2->getSize()) {
                     continue;
                 }
                 //
@@ -151,50 +189,48 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $email = $quote->getCustomerEmail();
 
                 if($this->_isSubscribed($email,'abandonedcart',$store)) {
-                    $name = $quote->getCustomerFirstname().' '.$quote->getCustomerLastname();
+                    $name = $quote->getCustomerFirstname() . ' ' . $quote->getCustomerLastname();
                     $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
-                    $unsubscribeUrl = Mage::getModel('core/url')->setStore($store)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=abandonedcart&email='.$email.'&store='.$store;
+                    $unsubscribeUrl = Mage::getModel('core/url')->setStore($store)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=abandonedcart&email=' . $email . '&store=' . $store;
                     $couponcode = '';
 
                     //if hour is set for first run calculates hours since cart was created else calculates days
                     $today = idate('U', strtotime(now()));
                     $updatedAt = idate('U', strtotime($quote2->getUpdatedAt()));
-                    $updatedAtDiff = ($today-$updatedAt)/60/60/24;
-                        if($unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run == 0){
-                            $updatedAtDiff = ($today-$updatedAt)/60/60;
-                        }
+                    $updatedAtDiff = ($today - $updatedAt) / 60 / 60 / 24;
+                    if ($unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run == 0) {
+                        $updatedAtDiff = ($today - $updatedAt) / 60 / 60;
+                    }
 
                     // if days have passed proceed to send mail
-                    if($updatedAtDiff >= $diff){
+                    if ($updatedAtDiff >= $diff) {
 
                         $mailsubject = $this->_getMailSubject($run, $store);
                         $templateId = $this->_getTemplateId($run, $store);
-                        if($sendcoupon && $run+1 == $sendcoupondays)
-                        {
+                        if ($sendcoupon && $run + 1 == $sendcoupondays) {
                             //$templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
                             // create a new coupon
-                            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AUTOMATIC)==2) {
-                                list($couponcode,$discount,$toDate) = $this->_createNewCoupon($store,$email);
-                                $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode,'discount' => $discount,
-                                            'todate' => $toDate, 'name' => $name,'tags'=>array($mandrillTag),'unsubscribeurl'=>$unsubscribeUrl);
-                            }
-                            else {
+                            if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AUTOMATIC) == 2) {
+                                list($couponcode, $discount, $toDate) = $this->_createNewCoupon($store, $email);
+                                $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode, 'discount' => $discount,
+                                    'todate' => $toDate, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
+                            } else {
                                 $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_CODE);
-                                $vars = array('quote'=>$quote,'url'=>$url, 'couponcode'=>$couponcode, 'name' => $name,'tags'=>array($mandrillTag),'unsubscribeurl'=>$unsubscribeUrl);
+                                $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
                             }
-                        }
-                        else {
+                        } else {
                             //$templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
-                            $vars = array('quote'=>$quote,'url'=>$url,'unsubscribeurl'=>$unsubscribeUrl,'tags'=>array($mandrillTag));
+                            $vars = array('quote' => $quote, 'url' => $url, 'unsubscribeurl' => $unsubscribeUrl, 'tags' => array($mandrillTag));
 
                         }
+                        Mage::app()->getTranslator()->init('frontend', true);
                         $translate = Mage::getSingleton('core/translate');
-                        $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$store);
+                        $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $store);
                         $translate->setTranslateInLine(true);
-                        $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter()+1);
+                        $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter() + 1);
                         $quote2->setEbizmartsAbandonedcartToken($token);
                         $quote2->save();
-                        Mage::helper('ebizmarts_abandonedcart')->saveMail('abandoned cart',$email,$name,$couponcode,$store);
+                        Mage::helper('ebizmarts_abandonedcart')->saveMail('abandoned cart', $email, $name, $couponcode, $store);
                     }
                 }
             }
@@ -341,6 +377,18 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 break;
         }
         return $ret;
+
+    }
+
+    protected function _cleanCoupons($store){
+        $today = date('Y-m-d');
+        $collection = Mage::getModel('salesrule/rule')->getCollection()
+            ->addFieldToFilter('name', array('like'=>'Abandoned coupon%'))
+            ->addFieldToFilter('to_date', array('lt'=> $today));
+
+        foreach ($collection as $toDelete) {
+            $toDelete->delete();
+        }
 
     }
 }

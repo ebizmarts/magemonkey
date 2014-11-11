@@ -58,6 +58,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId)){
             $this->_processBackToStock($storeId);
         }
+        $this->_cleanAutoresponderExpiredCoupons();
     }
     protected function _processNewOrders($storeId)
     {
@@ -737,5 +738,19 @@ class Ebizmarts_Autoresponder_Model_Cron
             ->addFieldtoFilter('main_table.store_id',array('eq'=>$storeId));
         return $collection->getSize() == 0;
 
+    }
+
+    protected function _cleanAutoresponderExpiredCoupons(){
+        $today = date('Y-m-d');
+        $reviewCouponFilter = array('like'=>'Review coupon%');
+        $birthdayCouponFilter = array('like'=>'Birthday coupon%');
+
+        $collection = Mage::getModel('salesrule/rule')->getCollection()
+            ->addFieldToFilter('name', array($reviewCouponFilter,$birthdayCouponFilter))
+            ->addFieldToFilter('to_date', array('lt'=> $today));
+
+        foreach ($collection as $toDelete) {
+            $toDelete->delete();
+        }
     }
 }

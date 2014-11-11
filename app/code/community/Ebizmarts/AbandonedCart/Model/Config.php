@@ -49,9 +49,10 @@ class Ebizmarts_AbandonedCart_Model_Config
     const IN_DAYS                           = 0;
     const IN_HOURS                          = 1;
     const PAGE                              = 'ebizmarts_abandonedcart/general/page';
-    const ENABLE_MODAL                      = 'ebizmarts_abandonedcart/general/modal_general';
-    const MODAL_CAN_CANCEL                  = 'ebizmarts_abandonedcart/general/modal_cancel';
-    const MODAL_TEXT                        = 'ebizmarts_abandonedcart/general/modal_text';
-    const MODAL_HEADING                     = 'ebizmarts_abandonedcart/general/modal_heading';
-    const MODAL_SUBSCRIPTION                = 'ebizmarts_abandonedcart/general/modal_subscription';
+    const ENABLE_POPUP                      = 'ebizmarts_abandonedcart/general/popup_general';
+    const POPUP_CAN_CANCEL                  = 'ebizmarts_abandonedcart/general/popup_cancel';
+    const POPUP_TEXT                        = 'ebizmarts_abandonedcart/general/popup_text';
+    const POPUP_HEADING                     = 'ebizmarts_abandonedcart/general/popup_heading';
+    const POPUP_SUBSCRIPTION                = 'ebizmarts_abandonedcart/general/popup_subscription';
+    const POPUP_WIDTH                       = 'ebizmarts_abandonedcart/general/popup_width';
 }

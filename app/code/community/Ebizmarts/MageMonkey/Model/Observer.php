@@ -421,7 +421,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 * @param Varien_Event_Observer $observer
 	 * @return void
 	 */
-	public function massActionOption($observer)
+	public function massActionOption(Varien_Event_Observer $observer)
     {
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;

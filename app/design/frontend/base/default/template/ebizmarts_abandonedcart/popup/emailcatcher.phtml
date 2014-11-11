@@ -1,0 +1,86 @@
+<?php if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $this->_getStoreId()) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $this->_getStoreId())): ?>
+    <div id="email" style="display:none">
+        <p><span id='email_error_msg' class="email_error" style="display:none">&nbsp;</span></p>
+        <div style="clear:both; margin-bottom:10px"><h2 style="color:rgb(36,131,199)"><?php echo $this->_popupHeading(); ?></h2><p><?php echo $this->_popupMessage(); ?></p></div>
+        <p><span class="email_label" style="margin-right: 5px">Email:</span><span class="email_input"><input type="text"/></span></p>
+        <div style="text-align:left; clear:both; margin-top:10px">
+            <?php if($this->_canShowSubscription()): ?>
+                <ul class="form-list">
+                    <li class="control"><input type="checkbox" name="is_subscribed" id="subscription" value="1" title="<?php echo $this->__('General Subscription') ?>"<?php if($this->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="checkbox" /><label for="subscription"><?php echo $this->__('General Subscription') ?></label></li>
+                </ul>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        <?php if(!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
+            if (navigator.cookieEnabled) {
+                <?php if(isset($_COOKIE['email'])):
+                    $email = str_replace(' ', '+', $_COOKIE['email']);
+                    if(isset($_COOKIE['subscribe'])):
+                        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+                        if(!$subscriber->getId()):
+                            Mage::getModel('newsletter/subscriber')->subscribe($email); ?>
+                document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+                location.reload();
+                <?php endif; ?>
+                <?php endif; ?>
+                <?php endif; ?>
+
+                var cookieStored = getEmailCookie();
+                if (!cookieStored) {
+                    Dialog.confirm($('email').innerHTML, {
+                        className: "alphacube",
+                        width: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>,
+                        zIndex: 200,
+                        okLabel: 'Confirm',
+                        <?php if(!$this->_canCancel()): ?>closeOnEsc: false,
+                        <?php else: ?>cancelLabel: 'Close', <?php endif; ?>
+                        onOk: function (win) {
+                            var inputField = $$('.email_input input[type=text]').first();
+                            var email = inputField.value;
+                            if (validateEmail(email)) {
+                                var now = new Date();
+                                var expire = new Date(now.getTime() + (1 * 365 * 24 * 60) * 60000);//(Years * Days * Hours * Minutes)
+                                document.cookie = 'email=' + email + '; expires=' + expire;
+                                if ($('subscription').checked) {
+                                    document.cookie = 'subscribe=true; expires=' + expire;
+                                    location.reload();
+                                } else {
+                                    location.reload();
+                                }
+                            } else {
+                                $('email_error_msg').innerHTML = 'Not a valid e-mail address';
+                                $('email_error_msg').setStyle({color: '#F00'});
+                                $('email_error_msg').show();
+                                Windows.focusedWindow.updateHeight();
+                                new Effect.Shake(Windows.focusedWindow.getId());
+                            }
+                        }
+                    });
+                }
+                <?php if(!$this->_canCancel()): ?>
+                $$('.cancel_button').each(function (element) {
+                    element.remove();
+                });
+                <?php endif; ?>
+            }
+        <?php endif; ?>
+        function validateEmail(email) {
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+
+        function getEmailCookie(){
+            var cookie = document.cookie;
+            var cookieArr = cookie.split(';');
+            var cookieStored = false;
+            for(var i=0;i<cookieArr.length;i++){
+                if(cookieArr[i].indexOf('email=') > -1){
+                    cookieStored = true;
+                }
+            }
+            return cookieStored;
+        }
+    </script>
+<?php endif; ?>
