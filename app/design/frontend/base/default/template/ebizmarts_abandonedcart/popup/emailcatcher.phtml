@@ -41,14 +41,18 @@
                             var email = inputField.value;
                             if (validateEmail(email)) {
                                 var now = new Date();
-                                var expire = new Date(now.getTime() + (1 * 365 * 24 * 60) * 60000);//(Years * Days * Hours * Minutes)
+                                var expire = new Date(now.getTime() + (1 * 365 * 24 * 60) * 60000);//[(1 * 365 * 24 * 60) * 60000] == 1 year  -- (Years * Days * Hours * Minutes) * 60000
                                 document.cookie = 'email=' + email + '; expires=' + expire;
+                                <?php if($this->_canShowSubscription()): ?>
                                 if ($('subscription').checked) {
                                     document.cookie = 'subscribe=true; expires=' + expire;
                                     location.reload();
-                                } else {
-                                    location.reload();
+                                }else{
+                                    win.close();
                                 }
+                                <?php else: ?>
+                                win.close();
+                                <?php endif ?>
                             } else {
                                 $('email_error_msg').innerHTML = 'Not a valid e-mail address';
                                 $('email_error_msg').setStyle({color: '#F00'});
