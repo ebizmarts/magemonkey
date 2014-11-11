@@ -143,33 +143,56 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			$this->_info ['email_id']= $emailCookie;
 			$this->_info ['campaign_id']= $campaignCookie;
             if(Mage::getStoreConfig('monkey/general/checkout_async')) {
-                $sync = Mage::getModel('monkey/asyncorders');
-                $this->_info['order_id'] = $this->_order->getId();
-                $sync->setInfo(serialize($this->_info))
-                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProcessed(0)
-                    ->save();
-                $rs = true;
+                $collection = Mage::getModel('monkey/asyncorders')->getCollection();
+                $alreadyOnDb = false;
+                foreach ($collection as $order){
+                    $info = unserialize($order->getInfo());
+                    if($info['order_id'] == $this->_order->getId()){
+                        $alreadyOnDb = true;
+                    }
+                }
+                if(!$alreadyOnDb) {
+                    $sync = Mage::getModel('monkey/asyncorders');
+                    $this->_info['order_id'] = $this->_order->getId();
+                    $sync->setInfo(serialize($this->_info))
+                        ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                        ->setProcessed(0)
+                        ->save();
+                    $rs = true;
+                }else{
+                    $rs = 'Order already sent or ready to get sent soon';
+                }
             }
             else {
                 //Send order to MailChimp
 	    	    $rs = $api->campaignEcommOrderAdd($this->_info);
             }
 		}else{
-			$this->_info ['email']= $this->_order->getCustomerEmail();
-            if(Mage::getStoreConfig('monkey/general/checkout_async')) {
-                $sync = Mage::getModel('monkey/asyncorders');
-                $this->_info['order_id'] = $this->_order->getId();
-                $sync->setInfo(serialize($this->_info))
-                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProcessed(0)
-                    ->save();
-                $rs = true;
+            $this->_info ['email'] = $this->_order->getCustomerEmail();
+            if (Mage::getStoreConfig('monkey/general/checkout_async')) {
+                $collection = Mage::getModel('monkey/asyncorders')->getCollection();
+                $alreadyOnDb = false;
+                foreach ($collection as $order){
+                    $info = unserialize($order->getInfo());
+                    if($info['order_id'] == $this->_order->getId()){
+                        $alreadyOnDb = true;
+                    }
+                }
+                if(!$alreadyOnDb) {
+                    $sync = Mage::getModel('monkey/asyncorders');
+                    $this->_info['order_id'] = $this->_order->getId();
+                    $sync->setInfo(serialize($this->_info))
+                        ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                        ->setProcessed(0)
+                        ->save();
+                    $rs = true;
+                }else{
+                        $rs = 'Order already sent or ready to get sent soon';
+                }
+            } else {
+                $rs = $api->ecommOrderAdd($this->_info);
             }
-            else {
-			    $rs = $api->ecommOrderAdd($this->_info);
-            }
-		}
+        }
 
 		if ( $rs === TRUE ){
 			$this->_logCall();

@@ -99,8 +99,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
             if(count($customergroups)) {
                 $collection->addFieldToFilter('main_table.customer_group_id', array('in', $customergroups));
             }
-            //is this necessary?
-//            Mage::helper('ebizmarts_abandonedcart')->log((string)$collection->getSelect());
 
             // for each cart of the current run
             foreach($collection as $quote) {
