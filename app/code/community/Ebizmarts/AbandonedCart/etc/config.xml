@@ -204,15 +204,17 @@
                 <days3>2</days3>
                 <sendon>3</sendon>
                 <mandrill-tag>AbandonedCart</mandrill-tag>
+                <autologin>0</autologin>
+                <page>checkout/cart</page>
+            </general>
+            <catchpopup>
                 <popup_general>1</popup_general>
                 <popup_cancel>1</popup_cancel>
                 <popup_subscription>1</popup_subscription>
                 <popup_heading>Send us your email!</popup_heading>
                 <popup_text>Put your email here for us to get to know you and personalize your service.</popup_text>
                 <popup_width>410</popup_width>
-                <autologin>0</autologin>
-                <page>checkout/cart</page>
-            </general>
+            </catchpopup>
         </ebizmarts_abandonedcart>
     </default>
 </config>
