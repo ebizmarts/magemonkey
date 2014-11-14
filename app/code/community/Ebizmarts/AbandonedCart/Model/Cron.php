@@ -242,57 +242,68 @@ class Ebizmarts_AbandonedCart_Model_Cron
      */
     protected function _createNewCoupon($store,$email)
     {
-        $couponamount = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AMOUNT, $store);
-        $couponexpiredays = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_EXPIRE, $store);
-        $coupontype = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_TYPE, $store);
-        $couponlength = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_LENGTH, $store);
-        $couponlabel = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_LABEL, $store);
-        $websiteid =  Mage::getModel('core/store')->load($store)->getWebsiteId();
+        $collection = Mage::getModel('salesrule/rule')->getCollection()
+            ->addFieldToFilter('name', array('like'=>'Abandoned coupon ' . $email));
+        if (!count($collection)) {
+            $couponamount = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AMOUNT, $store);
+            $couponexpiredays = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_EXPIRE, $store);
+            $coupontype = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_TYPE, $store);
+            $couponlength = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_LENGTH, $store);
+            $couponlabel = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_LABEL, $store);
+            $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
 
-        $fromDate = date("Y-m-d");
-        $toDate = date('Y-m-d', strtotime($fromDate. " + $couponexpiredays day"));
-        if($coupontype == 1) {
-            $action = 'cart_fixed';
-            $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()."$couponamount";
+            $fromDate = date("Y-m-d");
+            $toDate = date('Y-m-d', strtotime($fromDate . " + $couponexpiredays day"));
+            if ($coupontype == 1) {
+                $action = 'cart_fixed';
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . "$couponamount";
+            } elseif ($coupontype == 2) {
+                $action = 'by_percent';
+                $discount = "$couponamount%";
+            }
+            $customer_group = new Mage_Customer_Model_Group();
+            $allGroups = $customer_group->getCollection()->toOptionHash();
+            $groups = array();
+            foreach ($allGroups as $groupid => $name) {
+                $groups[] = $groupid;
+            }
+            $coupon_rule = Mage::getModel('salesrule/rule');
+            $coupon_rule->setName("Abandoned coupon $email")
+                ->setDescription("Abandoned coupon $email")
+                ->setStopRulesProcessing(0)
+                ->setFromDate($fromDate)
+                ->setToDate($toDate)
+                ->setIsActive(1)
+                ->setCouponType(2)
+                ->setUsesPerCoupon(1)
+                ->setUsesPerCustomer(1)
+                ->setCustomerGroupIds($groups)
+                ->setProductIds('')
+                ->setLengthMin($couponlength)
+                ->setLengthMax($couponlength)
+                ->setSortOrder(0)
+                ->setStoreLabels(array($couponlabel))
+                ->setSimpleAction($action)
+                ->setDiscountAmount($couponamount)
+                ->setDiscountQty(0)
+                ->setDiscountStep('0')
+                ->setSimpleFreeShipping('0')
+                ->setApplyToShipping('0')
+                ->setIsRss(0)
+                ->setWebsiteIds($websiteid);
+            $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
+            $coupon_rule->setCouponCode($uniqueId);
+            $coupon_rule->save();
+            return array($uniqueId, $discount, $toDate);
+        }else{
+            $coupon = $collection->getFirstItem();
+            if ($coupon->getSimpleAction() == 'cart_fixed') {
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . $coupon->getDiscountAmount();
+            } else{
+                $discount = $coupon->getDiscountAmount();
+            }
+            return array($coupon->getCode(), $discount, $coupon->getToDate());
         }
-        elseif($coupontype == 2) {
-            $action = 'by_percent';
-            $discount = "$couponamount%";
-        }
-        $customer_group = new Mage_Customer_Model_Group();
-        $allGroups  = $customer_group->getCollection()->toOptionHash();
-        $groups = array();
-        foreach($allGroups as $groupid=>$name) {
-            $groups[] = $groupid;
-        }
-        $coupon_rule = Mage::getModel('salesrule/rule');
-        $coupon_rule->setName("Abandoned coupon $email")
-                    ->setDescription("Abandoned coupon $email")
-                    ->setStopRulesProcessing(0)
-                    ->setFromDate($fromDate)
-                    ->setToDate($toDate)
-                    ->setIsActive(1)
-                    ->setCouponType(2)
-                    ->setUsesPerCoupon(1)
-                    ->setUsesPerCustomer(1)
-                    ->setCustomerGroupIds($groups)
-                    ->setProductIds('')
-                    ->setLengthMin($couponlength)
-                    ->setLengthMax($couponlength)
-                    ->setSortOrder(0)
-                    ->setStoreLabels(array($couponlabel))
-                    ->setSimpleAction($action)
-                    ->setDiscountAmount($couponamount)
-                    ->setDiscountQty(0)
-                    ->setDiscountStep('0')
-                    ->setSimpleFreeShipping('0')
-                    ->setApplyToShipping('0')
-                    ->setIsRss(0)
-                    ->setWebsiteIds($websiteid);
-        $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
-        $coupon_rule->setCouponCode($uniqueId);
-        $coupon_rule->save();
-        return array($uniqueId,$discount,$toDate);
     }
 
     /**

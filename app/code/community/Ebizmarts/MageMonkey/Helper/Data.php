@@ -1067,7 +1067,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 
 					//Handle groups update
-					$api->listUpdateMember($listId, $email, $mergeVars);
+					$api->listUpdateMember($listId, $email, $mergeVars, '', false);
 
 				}
 

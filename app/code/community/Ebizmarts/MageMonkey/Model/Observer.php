@@ -300,7 +300,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 		if(is_array($lists)){
 			foreach($lists as $listId){
                 $mergeVars = Mage::helper('monkey')->mergeVars($customer, TRUE, $listId);
-				$api->listUpdateMember($listId, $oldEmail, $mergeVars);
+				$api->listUpdateMember($listId, $oldEmail, $mergeVars, '', false);
 			}
 		}
 
