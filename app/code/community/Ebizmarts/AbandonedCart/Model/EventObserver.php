@@ -39,7 +39,7 @@ class Ebizmarts_AbandonedCart_Model_EventObserver
             if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none') {
                 $email = str_replace(' ', '+', $_COOKIE['email']);
                 if($quote->getCustomerEmail() != $email){
-                    $quote->setCustomerEmail($email);;
+                    $quote->setCustomerEmail($email);
                     $quote->save();
                 }
             }
