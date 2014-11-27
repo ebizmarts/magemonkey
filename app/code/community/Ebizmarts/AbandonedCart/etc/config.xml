@@ -105,14 +105,14 @@
             </sales_convert_quote>
         </fieldsets>
         <events>
-            <checkout_quote_init>
+            <sales_quote_save_after>
                 <observers>
                     <ebizmarts_abandoned_quote_init>
                         <class>ebizmarts_abandonedcart/eventObserver</class>
                         <method>loadCustomer</method>
                     </ebizmarts_abandoned_quote_init>
                 </observers>
-            </checkout_quote_init>
+            </sales_quote_save_after>
         </events>
     </global>
 
@@ -214,6 +214,7 @@
                 <popup_heading>Send us your email!</popup_heading>
                 <popup_text>Put your email here for us to get to know you and personalize your service.</popup_text>
                 <popup_width>410</popup_width>
+                <popup_cookie_time>1</popup_cookie_time>
             </catchpopup>
         </ebizmarts_abandonedcart>
     </default>

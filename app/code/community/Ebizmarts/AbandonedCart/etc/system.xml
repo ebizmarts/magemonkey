@@ -444,18 +444,31 @@
                             </depends>
                         </popup_width>
                         <popup_subscription translate="label comment">
-                            <label>Show Subscription Checkbox on Popup</label>
+                            <label>Subscribe customer</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>68</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[Customer can choose to subscribe to General Subscription.]]></comment>
+                            <comment><![CDATA[When email confirmed on popup subscribe customer to newsletter.]]></comment>
                             <depends>
                                 <popup_general separator=",">1</popup_general>
                             </depends>
                         </popup_subscription>
+                        <popup_cookie_time translate="label comment">
+                            <label>When popup cancelled show again after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>69</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[This field is in days.]]></comment>
+                            <depends>
+                                <popup_general separator=",">1</popup_general>
+                                <popup_cancel separator=",">1</popup_cancel>
+                            </depends>
+                        </popup_cookie_time>
                     </fields>
                 </catchpopup>
                 <coupon>

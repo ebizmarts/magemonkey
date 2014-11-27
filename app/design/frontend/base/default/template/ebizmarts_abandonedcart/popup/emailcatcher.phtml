@@ -11,36 +11,48 @@
         <?php if(!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
             if (navigator.cookieEnabled) {
                 <?php if(isset($_COOKIE['email'])):
-                    $email = str_replace(' ', '+', $_COOKIE['email']);
-                    if(isset($_COOKIE['subscribe'])):
-                        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
-                        if(!$subscriber->getId()):
-                            Mage::getModel('newsletter/subscriber')->subscribe($email); ?>
-                document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-                location.reload();
-                <?php endif; ?>
-                <?php endif; ?>
+                    if($_COOKIE['email'] != 'none'):
+                        $email = str_replace(' ', '+', $_COOKIE['email']);
+                        if(isset($_COOKIE['subscribe'])):
+                            $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+                            if(!$subscriber->getId()):
+                                Mage::getModel('newsletter/subscriber')->subscribe($email); ?>
+                                document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+                                location.reload();
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                <?php elseif($this->_canCancel()): ?>
+                    document.observe('keydown', function(evt){
+                        if(evt.keyCode == 27) {
+                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                        }
+                    });
                 <?php endif; ?>
 
-                var cookieStored = getEmailCookie();
+                var cookieStored = emailCookieExists();
                 if (!cookieStored) {
-                    Dialog.confirm($('email').innerHTML, {
-                        className: "alphacube",
+                    var win = Dialog.confirm($('email').innerHTML, {
+                        className: "popup",
                         id: "popupDialog",
                         width: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>,
                         zIndex: 200,
                         okLabel: 'Confirm',
                         <?php if(!$this->_canCancel()): ?>closeOnEsc: false,
-                        <?php else: ?>cancelLabel: 'Close', <?php endif; ?>
+                        <?php else: ?>
+                        cancelLabel: 'Close',
+                        onCancel: function (win) {
+                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                        },
+                        <?php endif; ?>
                         onOk: function (win) {
                             var inputField = $$('.email_input input[type=text]').first();
                             var email = inputField.value;
                             if (validateEmail(email)) {
-                                var now = new Date();
-                                var expire = new Date(now.getTime() + (1 * 365 * 24 * 60) * 60000);//[(1 * 365 * 24 * 60) * 60000] == 1 year  -- (Years * Days * Hours * Minutes) * 60000
-                                document.cookie = 'email=' + email + '; expires=' + expire;
-                                <?php if($this->_canShowSubscription()): ?>
-                                document.cookie = 'subscribe=true; expires=' + expire;
+                                var cookie = 'email=' + email;
+                                createCookie(cookie, 365);
+                                <?php if($this->_modalSubscribe()): ?>
+                                createCookie('subscribe=true', 365);
                                 location.reload();
                                 <?php else: ?>
                                 win.close();
@@ -55,49 +67,20 @@
                         }
                     });
 
-//                    var win = new Window({
-//                        className: 'alphacube',
-//                        resizable: false,
-//                        closable: true,
-//                        minimizable: false,
-//                        maximizable: false,
-//                        draggable: false,
-//                        width: 400,
-//                        height: 200,
-//                        destroyOnClose: true,
-//                        okLabel: 'Confirm',
-//                        onClose: function () {
-//                            alert('hola');
-//                        }
-//                    });
-//                    win.setZIndex(200);
-//                    win.setContent('email');
-//                    //win.getContent().innerHTML= "<div style='padding:10px'>Duisl ullan ex et am vulputem augiam doloreet amet enibh eui te dipit acillutat acilis amet, suscil er iuscilla con utat, quisis eu feugait ad dolore commy nullam iuscilisl iureril ilisl del ut pratuer iliquis acipissit accum quis nulluptat. Dui bla faccumsan velis auguero con henis duismolor sumsandrem quat vulluptat alit er iniamcore exeriure vero core te dit ut nulla feummolore commod dipis augiamcommod tem ese dolestrud do odo odiamco eetummy nis aliquamcommy nonse eu feugue del eugiamconsed ming estrud magnis exero eumsandio enisim del dio od tat.sumsan et pratum velit ing etue te consequis alis nullan et, quis am iusci bla feummy.</div>"
-//                    var size = win.getSize();
-//                    win.showCenter();
-//
-//
-//
-//                    closePopup = {
-//                        onClick: function(eventName, win){
-//                            alert('gogo');
-//                            if(win == $('overlay_modal')){
-//                                win.close();
-//                            }
-//                        }
-//                    };
-//                    Windows.addObserver(closePopup);
-                }
-
                 <?php if(!$this->_canCancel()): ?>
                 $$('.cancel_button').each(function (element) {
                     element.remove();
                 });
                 <?php else: ?>
-//                    $$('.cancel_button').each(function (element) {
-//                        element.setZIndex(element.getZIndex()-1);
-//                    });
+                    Event.observe(window, 'load', function () {
+                        $('overlay_modal').observe('click', function(){
+                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                            win.close();
+                        });
+                    });
                 <?php endif; ?>
+
+                }
             }
         <?php endif; ?>
         function validateEmail(email) {
@@ -105,16 +88,22 @@
             return re.test(email);
         }
 
-        function getEmailCookie(){
+        function emailCookieExists(){
             var cookie = document.cookie;
             var cookieArr = cookie.split(';');
             var cookieStored = false;
             for(var i=0;i<cookieArr.length;i++){
-                if(cookieArr[i].indexOf('email=') > -1){
+                if(cookieArr[i].indexOf('email=') >      -1){
                     cookieStored = true;
                 }
             }
             return cookieStored;
+        }
+
+        function createCookie(cookie, expirationInDays){
+            var now = new Date();
+            var expire = new Date(now.getTime() + (expirationInDays * 24 * 60) * 60000);//[(1 * 365 * 24 * 60) * 60000] == 1 year  -- (Years * Days * Hours * Minutes) * 60000
+            document.cookie = cookie + '; expires=' + expire + '; path=/';
         }
     </script>
 <?php endif; ?>

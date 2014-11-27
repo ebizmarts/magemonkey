@@ -34,10 +34,15 @@ class Ebizmarts_AbandonedCart_Model_EventObserver
     }
 
     public function loadCustomer(Varien_Event_Observer $observer){
-        $quote = $observer->getEvent()->getQuote();
-        if(!$quote->getCustomerEmail() && isset($_COOKIE['email'])){
-            $email = str_replace(' ', '+', $_COOKIE['email']);
-            $quote->setCustomerEmail($email);
+        if(!Mage::getSingleton('customer/session')->isLoggedIn()) {
+            $quote = $observer->getEvent()->getQuote();
+            if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none') {
+                $email = str_replace(' ', '+', $_COOKIE['email']);
+                if($quote->getCustomerEmail() != $email){
+                    $quote->setCustomerEmail($email);;
+                    $quote->save();
+                }
+            }
         }
         return $observer;
     }

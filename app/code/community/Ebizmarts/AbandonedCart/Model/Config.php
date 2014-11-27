@@ -55,4 +55,5 @@ class Ebizmarts_AbandonedCart_Model_Config
     const POPUP_HEADING                     = 'ebizmarts_abandonedcart/catchpopup/popup_heading';
     const POPUP_SUBSCRIPTION                = 'ebizmarts_abandonedcart/catchpopup/popup_subscription';
     const POPUP_WIDTH                       = 'ebizmarts_abandonedcart/catchpopup/popup_width';
+    const POPUP_COOKIE_TIME                 = 'ebizmarts_abandonedcart/catchpopup/popup_cookie_time';
 }

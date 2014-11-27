@@ -22,7 +22,7 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Adminhtml_Bl
         return Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_TEXT, $storeId);
     }
 
-    protected function _canShowSubscription(){
+    protected function _modalSubscribe(){
         $storeId = Mage::app()->getStore()->getId();
         return Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_SUBSCRIPTION, $storeId);
     }
