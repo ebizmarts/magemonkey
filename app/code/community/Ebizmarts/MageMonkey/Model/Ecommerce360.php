@@ -357,7 +357,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                     $this->_info ['campaign_id'] = $campaign;
 
                     if(Mage::getStoreConfig('monkey/general/checkout_async', Mage::app()->getStore()->getId())) {
-                        Mage::log('asyncsave', null, 'order.log', true);
                         $sync = Mage::getModel('monkey/asyncorders');
                         $this->_info['order_id'] = $this->_order->getId();
                         $sync->setInfo(serialize($this->_info))
