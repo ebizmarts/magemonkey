@@ -50,7 +50,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 * @param string $listId Optional listid to retrieve store code from it
 	 * @return string
 	 */
-	public function getWebhooksKey($store, $listId = null)
+	public function getWebhooksKey($store = null, $listId = null)
 	{
 		if( !is_null($listId) ){
 			$store = $this->getStoreByList($listId, TRUE);
@@ -60,7 +60,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		$key   = substr($crypt, 0, (strlen($crypt)/2));
 
         // Prevent most cases to attach default in webhook url
-        if($store == 'default') $store = '';
+        if(!$store || $store == 'default') $store = '';
 
 		return ($key . $store);
 	}
@@ -1064,8 +1064,12 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             $toDelete = Mage::getModel('monkey/asyncsubscribers')->load($listToDelete->getId());
                             $toDelete->delete();
                         }
+                        Mage::getSingleton('core/session')
+                            ->addSuccess($this->__('You have been removed from Newsletter.'));
                     }else {
                         $api->listUnsubscribe($listId, $email);
+                        Mage::getSingleton('core/session')
+                            ->addSuccess($this->__('You have been removed from Newsletter.'));
                     }
 
 				}else{
@@ -1089,6 +1093,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
 					//Handle groups update
 					$api->listUpdateMember($listId, $email, $mergeVars);
+                    Mage::getSingleton('core/session')
+                        ->addSuccess($this->__('Your profile has been updated!'));
 
 				}
 

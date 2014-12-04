@@ -28,8 +28,6 @@ class Ebizmarts_MageMonkey_SignupController extends Mage_Core_Controller_Front_A
 				return;
 			}
 			Mage::helper('monkey')->handlePost($this->getRequest(), $guestEmail);
-			Mage::getSingleton('core/session')
-				->addSuccess($this->__('Newsletter configuration saved!'));
 
 		}
 
