@@ -351,7 +351,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $campaign = $this->_order->getEbizmartsMagemonkeyCampaignId();
                 $this->setItemstoSend();
                 $rs = false;
-                Mage::log('before save', null, 'order.log', true);
                 if ($email && $campaign) {
                     $this->_info ['email_id'] = $email;
                     $this->_info ['campaign_id'] = $campaign;
@@ -371,7 +370,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 } else {
                     $this->_info ['email'] = $email;
                     if(Mage::getStoreConfig('monkey/general/checkout_async', Mage::app()->getStore()->getId())) {
-                        Mage::log('asyncsave2', null, 'order.log', true);
                         $sync = Mage::getModel('monkey/asyncorders');
                         $this->_info['order_id'] = $this->_order->getId();
                         $sync->setInfo(serialize($this->_info))

@@ -97,24 +97,6 @@
         </template>
         <template>
             <email>
-                <ebizmarts_autoresponder_registration_template translate="label" module="ebizmarts_autoresponder">
-                    <label>Registration Email</label>
-                    <file>ebizmarts/autoresponder/registration.html</file>
-                    <type>html</type>
-                </ebizmarts_autoresponder_registration_template>
-            </email>
-        </template>
-        <template>
-            <email>
-                <ebizmarts_autoresponder_newsletter_template translate="label" module="ebizmarts_autoresponder">
-                    <label>Newsletter Registration Email</label>
-                    <file>ebizmarts/autoresponder/newsletter.html</file>
-                    <type>html</type>
-                </ebizmarts_autoresponder_newsletter_template>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_autoresponder_noactivity_template translate="label" module="ebizmarts_autoresponder">
                     <label>No Customer Activity Email</label>
                     <file>ebizmarts/autoresponder/noactivity.html</file>

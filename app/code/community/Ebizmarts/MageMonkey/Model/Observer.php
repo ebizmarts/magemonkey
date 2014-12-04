@@ -37,6 +37,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
+        if(Mage::getSingleton('core/session')->getIsOneStepCheckout() && !Mage::getSingleton('core/session')->getRegisterCheckoutSuccess()){
+            return $observer;
+        }
+
         if( TRUE === $subscriber->getIsStatusChanged() ) {
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
             if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
@@ -374,6 +378,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
+        Mage::getSingleton('core/session')->setRegisterCheckoutSuccess(TRUE);
 		if(!Mage::helper('monkey')->canMonkey()){
             Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
             Mage::getSingleton('core/session')->setMonkeyPost(NULL);
@@ -417,6 +422,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
         Mage::getSingleton('core/session')->setMonkeyPost(NULL);
         Mage::getSingleton('core/session')->setIsOneStepCheckout(FALSE);
+        Mage::getSingleton('core/session')->setRegisterCheckoutSuccess(FALSE);
         return $observer;
 	}
 

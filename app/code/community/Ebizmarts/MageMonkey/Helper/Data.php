@@ -597,7 +597,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function mergeVars($object = NULL, $includeEmail = FALSE, $currentList = NULL)
     {
-
         //Initialize as GUEST customer
         $customer = new Varien_Object;
 
@@ -700,7 +699,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
             }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout()){
                 $post2 = $request->getPost();
-                if(isset($post['subscribe_newsletter']) || isset($post2['subscribe_newsletter']) || Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
+                if(isset($post['subscribe_newsletter']) || isset($post2['subscribe_newsletter'])) {
                     $mergeVars[$map] = "Yes";
                 }elseif(Mage::helper('monkey')->config('checkout_subscribe') > 2){
                     $mergeVars[$map] = "No";
@@ -895,8 +894,28 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
             //Subscription for One Step Checkout with force subscription
         }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()){
-            //$subscriber->subscribe($subscriber->getSubscriberEmail());
-            //TODO check onestepcheckout compatibility
+//            //Initialize as GUEST customer
+//            $customer = new Varien_Object;
+//
+//            $regCustomer = Mage::registry('current_customer');
+//            $guestCustomer = Mage::registry('mc_guest_customer');
+//
+//            if (Mage::helper('customer')->isLoggedIn()) {
+//                $customer = Mage::helper('customer')->getCustomer();
+//            } elseif ($regCustomer) {
+//                $customer = $regCustomer;
+//            } elseif ($guestCustomer) {
+//                $customer = $guestCustomer;
+//            } else {
+//                if (is_null($object)) {
+//                    $customer->setEmail($object->getSubscriberEmail())
+//                        ->setStoreId($object->getStoreId());
+//                } else {
+//                    $customer = $object;
+//                }
+//
+//            }
+            $this->subscribeToList($object, $db, $defaultList);
         }
 
     }
