@@ -5,8 +5,19 @@
  *
  */
 (function () {
+    function getUrl(){
+        var path = window.location.toString();
+        var myUrl = path.split('/')
+        var max = 4;
+        var pos = myUrl.indexOf('index.php');
+        if(pos != -1){
+            max = 5;
+        }
+        return myUrl.slice(0,max).join('/') + '/ebizautoresponder/autoresponder/';
+    }
+
     function markVisited(productID) {
-        new Ajax.Request('/ebizautoresponder/autoresponder/markVisitedProducts?product_id=' + productID, {
+        new Ajax.Request(getUrl() + 'markVisitedProducts?product_id=' + productID, {
             method: 'get',
             onSuccess: function (transport) {
             }
@@ -18,7 +29,7 @@
             productID = '';
         if ($product) {
             productID = $product.value;
-            new Ajax.Request('/ebizautoresponder/autoresponder/getVisitedProductsConfig?product_id=' + productID, {
+            new Ajax.Request(getUrl() + 'getVisitedProductsConfig?product_id=' + productID, {
                 method: 'get',
                 onSuccess: function (transport) {
                     if (transport.responseJSON.time > -1) {
