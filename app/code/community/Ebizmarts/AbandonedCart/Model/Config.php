@@ -48,7 +48,7 @@ class Ebizmarts_AbandonedCart_Model_Config
     const ABANDONED_TAGS                    = 'global/ebizmarts_abandonedcart/mandrill-tag';
     const IN_DAYS                           = 0;
     const IN_HOURS                          = 1;
-    const PAGE                              = 'ebizmarts_abandonedcart/catchpopup/page';
+    const PAGE                              = 'ebizmarts_abandonedcart/general/page';
     const ENABLE_POPUP                      = 'ebizmarts_abandonedcart/catchpopup/popup_general';
     const POPUP_CAN_CANCEL                  = 'ebizmarts_abandonedcart/catchpopup/popup_cancel';
     const POPUP_TEXT                        = 'ebizmarts_abandonedcart/catchpopup/popup_text';
