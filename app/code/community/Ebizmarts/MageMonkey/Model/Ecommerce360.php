@@ -143,33 +143,56 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			$this->_info ['email_id']= $emailCookie;
 			$this->_info ['campaign_id']= $campaignCookie;
             if(Mage::getStoreConfig('monkey/general/checkout_async')) {
-                $sync = Mage::getModel('monkey/asyncorders');
-                $this->_info['order_id'] = $this->_order->getId();
-                $sync->setInfo(serialize($this->_info))
-                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProcessed(0)
-                    ->save();
-                $rs = true;
+                $collection = Mage::getModel('monkey/asyncorders')->getCollection();
+                $alreadyOnDb = false;
+                foreach ($collection as $order){
+                    $info = unserialize($order->getInfo());
+                    if($info['order_id'] == $this->_order->getId()){
+                        $alreadyOnDb = true;
+                    }
+                }
+                if(!$alreadyOnDb) {
+                    $sync = Mage::getModel('monkey/asyncorders');
+                    $this->_info['order_id'] = $this->_order->getId();
+                    $sync->setInfo(serialize($this->_info))
+                        ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                        ->setProcessed(0)
+                        ->save();
+                    $rs = true;
+                }else{
+                    $rs = 'Order already sent or ready to get sent soon';
+                }
             }
             else {
                 //Send order to MailChimp
 	    	    $rs = $api->campaignEcommOrderAdd($this->_info);
             }
 		}else{
-			$this->_info ['email']= $this->_order->getCustomerEmail();
-            if(Mage::getStoreConfig('monkey/general/checkout_async')) {
-                $sync = Mage::getModel('monkey/asyncorders');
-                $this->_info['order_id'] = $this->_order->getId();
-                $sync->setInfo(serialize($this->_info))
-                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
-                    ->setProcessed(0)
-                    ->save();
-                $rs = true;
+            $this->_info ['email'] = $this->_order->getCustomerEmail();
+            if (Mage::getStoreConfig('monkey/general/checkout_async')) {
+                $collection = Mage::getModel('monkey/asyncorders')->getCollection();
+                $alreadyOnDb = false;
+                foreach ($collection as $order){
+                    $info = unserialize($order->getInfo());
+                    if($info['order_id'] == $this->_order->getId()){
+                        $alreadyOnDb = true;
+                    }
+                }
+                if(!$alreadyOnDb) {
+                    $sync = Mage::getModel('monkey/asyncorders');
+                    $this->_info['order_id'] = $this->_order->getId();
+                    $sync->setInfo(serialize($this->_info))
+                        ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                        ->setProcessed(0)
+                        ->save();
+                    $rs = true;
+                }else{
+                        $rs = 'Order already sent or ready to get sent soon';
+                }
+            } else {
+                $rs = $api->ecommOrderAdd($this->_info);
             }
-            else {
-			    $rs = $api->ecommOrderAdd($this->_info);
-            }
-		}
+        }
 
 		if ( $rs === TRUE ){
 			$this->_logCall();
@@ -292,6 +315,15 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             foreach ($orders as $order) {
 
                 $this->_order = $order;
+                $ordersToSend = Mage::getModel('monkey/asyncorders')->getCollection()
+                    ->addFieldToFilter('processed', array('eq' => 0));
+                foreach($ordersToSend as $orderToSend){
+                    $info = (array)unserialize($orderToSend->getInfo());
+                    if($this->_order->getIncrementId() == $info['id']){
+                        continue;
+                    }
+                }
+
                 $api = Mage::getSingleton('monkey/api', array('store' => $this->_order->getStoreId()));
                 if (!$api) {
                     return false;
@@ -318,19 +350,49 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $email = $this->_order->getCustomerEmail();
                 $campaign = $this->_order->getEbizmartsMagemonkeyCampaignId();
                 $this->setItemstoSend();
-
+                $rs = false;
                 if ($email && $campaign) {
                     $this->_info ['email_id'] = $email;
                     $this->_info ['campaign_id'] = $campaign;
 
-                    //Send order to MailChimp
-                    $rs = $api->campaignEcommOrderAdd($this->_info);
+                    if(Mage::getStoreConfig('monkey/general/checkout_async', Mage::app()->getStore()->getId())) {
+                        $sync = Mage::getModel('monkey/asyncorders');
+                        $this->_info['order_id'] = $this->_order->getId();
+                        $sync->setInfo(serialize($this->_info))
+                            ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                            ->setProcessed(0)
+                            ->save();
+                        $rs['complete'] = true;
+                    } else {
+                        //Send order to MailChimp
+                        $rs = $api->campaignEcommOrderAdd($this->_info);
+                    }
                 } else {
                     $this->_info ['email'] = $email;
-                    $rs = $api->ecommOrderAdd($this->_info);
+                    if(Mage::getStoreConfig('monkey/general/checkout_async', Mage::app()->getStore()->getId())) {
+                        $sync = Mage::getModel('monkey/asyncorders');
+                        $this->_info['order_id'] = $this->_order->getId();
+                        $sync->setInfo(serialize($this->_info))
+                            ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                            ->setProcessed(0)
+                            ->save();
+                        $rs['complete'] = true;
+                    } else {
+                        $rs = $api->ecommOrderAdd($this->_info);
+                    }
                 }
                 if (isset($rs['complete']) && $rs['complete'] == TRUE) {
-                    $this->_logCall();
+                    $order = Mage::getModel('monkey/ecommerce')
+                        ->setOrderIncrementId($this->_info['id'])
+                        ->setOrderId($this->_info['order_id'])
+                        ->setMcEmailId($this->_info ['email'])
+                        ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
+                        ->setStoreId($this->_info['store_id']);
+                    if(isset($this->_info['campaign_id']) && $this->_info['campaign_id']){
+                        $order->setMcCampaignId($this->_info['campaign_id']);
+                    }
+                    $order->save();
+                    //$this->_logCall();
                 }
             }
         }

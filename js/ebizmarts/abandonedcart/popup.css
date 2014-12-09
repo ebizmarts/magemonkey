@@ -1,0 +1,30 @@
+.overlay_popup{
+	background-color: #85BBEF;
+	filter:alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+}
+
+.popup_content {
+	overflow:auto;
+	color: #000;
+	font-family: Tahoma, Arial, sans-serif;
+    font: 12px arial;
+	background:#FDFDFD;
+    border-radius: 10px;
+    margin: 10px 5px 5px 5px;
+}
+
+.popup_message {
+  font: 12px arial;
+	text-align:center;
+	width:100%;
+	padding-bottom:10px;
+}
+
+.popup_buttons {
+	text-align:center;
+	width:100%;
+}
+
+

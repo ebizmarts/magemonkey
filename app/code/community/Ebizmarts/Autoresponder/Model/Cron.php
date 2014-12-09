@@ -58,6 +58,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId)){
             $this->_processBackToStock($storeId);
         }
+        $this->_cleanAutoresponderExpiredCoupons();
     }
     protected function _processNewOrders($storeId)
     {
@@ -673,56 +674,68 @@ class Ebizmarts_Autoresponder_Model_Cron
 
     protected function _createNewCoupon($store,$email)
     {
-        $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
-        $couponexpiredays = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_EXPIRE, $store);
-        $coupontype = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT_TYPE, $store);
-        $couponlength = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_LENGTH, $store);
-        $couponlabel = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_LABEL, $store);
-        $websiteid =  Mage::getModel('core/store')->load($store)->getWebsiteId();
+        $collection = Mage::getModel('salesrule/rule')->getCollection()
+            ->addFieldToFilter('name', array('like'=>'Birthday coupon ' . $email));
+        if (!count($collection)) {
+            $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
+            $couponexpiredays = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_EXPIRE, $store);
+            $coupontype = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT_TYPE, $store);
+            $couponlength = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_LENGTH, $store);
+            $couponlabel = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_LABEL, $store);
+            $websiteid =  Mage::getModel('core/store')->load($store)->getWebsiteId();
 
-        $fromDate = date("Y-m-d");
-        $toDate = date('Y-m-d', strtotime($fromDate. " + $couponexpiredays day"));
-        if($coupontype == 1) {
-            $action = 'cart_fixed';
-            $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()."$couponamount";
+            $fromDate = date("Y-m-d");
+            $toDate = date('Y-m-d', strtotime($fromDate. " + $couponexpiredays day"));
+            if($coupontype == 1) {
+                $action = 'cart_fixed';
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()."$couponamount";
+            }
+            elseif($coupontype == 2) {
+                $action = 'by_percent';
+                $discount = "$couponamount%";
+            }
+            $customer_group = new Mage_Customer_Model_Group();
+            $allGroups  = $customer_group->getCollection()->toOptionHash();
+            $groups = array();
+            foreach($allGroups as $groupid=>$name) {
+                $groups[] = $groupid;
+            }
+            $coupon_rule = Mage::getModel('salesrule/rule');
+            $coupon_rule->setName("Birthday coupon $email")
+                ->setDescription("Birthday coupon $email")
+                ->setFromDate($fromDate)
+                ->setToDate($toDate)
+                ->setIsActive(1)
+                ->setCouponType(2)
+                ->setUsesPerCoupon(1)
+                ->setUsesPerCustomer(1)
+                ->setCustomerGroupIds($groups)
+                ->setProductIds('')
+                ->setLengthMin($couponlength)
+                ->setLengthMax($couponlength)
+                ->setSortOrder(0)
+                ->setStoreLabels(array($couponlabel))
+                ->setSimpleAction($action)
+                ->setDiscountAmount($couponamount)
+                ->setDiscountQty(0)
+                ->setDiscountStep('0')
+                ->setSimpleFreeShipping('0')
+                ->setApplyToShipping('0')
+                ->setIsRss(0)
+                ->setWebsiteIds($websiteid);
+            $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
+            $coupon_rule->setCouponCode($uniqueId);
+            $coupon_rule->save();
+            return array($uniqueId,$discount,$toDate);
+        }else{
+            $coupon = $collection->getFirstItem();
+            if ($coupon->getSimpleAction() == 'cart_fixed') {
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . $coupon->getDiscountAmount();
+            } else{
+                $discount = $coupon->getDiscountAmount();
+            }
+            return array($coupon->getCode(), $discount, $coupon->getToDate());
         }
-        elseif($coupontype == 2) {
-            $action = 'by_percent';
-            $discount = "$couponamount%";
-        }
-        $customer_group = new Mage_Customer_Model_Group();
-        $allGroups  = $customer_group->getCollection()->toOptionHash();
-        $groups = array();
-        foreach($allGroups as $groupid=>$name) {
-            $groups[] = $groupid;
-        }
-        $coupon_rule = Mage::getModel('salesrule/rule');
-        $coupon_rule->setName("Birthday coupon $email")
-            ->setDescription("Birthday coupon $email")
-            ->setFromDate($fromDate)
-            ->setToDate($toDate)
-            ->setIsActive(1)
-            ->setCouponType(2)
-            ->setUsesPerCoupon(1)
-            ->setUsesPerCustomer(1)
-            ->setCustomerGroupIds($groups)
-            ->setProductIds('')
-            ->setLengthMin($couponlength)
-            ->setLengthMax($couponlength)
-            ->setSortOrder(0)
-            ->setStoreLabels(array($couponlabel))
-            ->setSimpleAction($action)
-            ->setDiscountAmount($couponamount)
-            ->setDiscountQty(0)
-            ->setDiscountStep('0')
-            ->setSimpleFreeShipping('0')
-            ->setApplyToShipping('0')
-            ->setIsRss(0)
-            ->setWebsiteIds($websiteid);
-        $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
-        $coupon_rule->setCouponCode($uniqueId);
-        $coupon_rule->save();
-        return array($uniqueId,$discount,$toDate);
     }
 
     function _getIntervalUnitSql($interval, $unit)
@@ -737,5 +750,19 @@ class Ebizmarts_Autoresponder_Model_Cron
             ->addFieldtoFilter('main_table.store_id',array('eq'=>$storeId));
         return $collection->getSize() == 0;
 
+    }
+
+    protected function _cleanAutoresponderExpiredCoupons(){
+        $today = date('Y-m-d');
+        $reviewCouponFilter = array('like'=>'Review coupon%');
+        $birthdayCouponFilter = array('like'=>'Birthday coupon%');
+
+        $collection = Mage::getModel('salesrule/rule')->getCollection()
+            ->addFieldToFilter('name', array($reviewCouponFilter,$birthdayCouponFilter))
+            ->addFieldToFilter('to_date', array('lt'=> $today));
+
+        foreach ($collection as $toDelete) {
+            $toDelete->delete();
+        }
     }
 }

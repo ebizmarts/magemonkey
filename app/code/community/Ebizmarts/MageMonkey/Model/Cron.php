@@ -488,15 +488,35 @@ class Ebizmarts_MageMonkey_Model_Cron
     public function sendSubscribersAsync()
     {
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
-        $collection->addFieldToFilter('processed',array('eq'=>0));
+        $collection->addFieldToFilter('processed',array('eq'=>0))
+            ->setOrder('lists', 'desc');
+        $batch = array();
+        $oldList = '';
+        $isConfirmNeed = FALSE;
         foreach($collection as $item)
         {
+            $newList = $item->getLists();
+            $eachIsConfirmNeed = $item->getConfirm();
+
+            if($oldList == ''){
+                $oldList = $newList;
+            }
+            if($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed){
+                Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+                $isConfirmNeed = $eachIsConfirmNeed;
+                $oldList = $newList;
+                $batch = array();
+            }
+
             $mergeVars = unserialize($item->getMapfields());
-            $listId = $item->getLists();
-            $email = $item->getEmail();
-            $isConfirmNeed = $item->getConfirm();
-            Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+            $mergeVars['EMAIL'] = $item->getEmail();
+            $batch[] = $mergeVars;
+            //$email = $item->getEmail();
+            //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
             $item->setProcessed(1)->save();
+            if($item->getId() == $collection->getLastItem()->getId()){
+                Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+            }
         }
 
     }

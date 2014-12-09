@@ -15,11 +15,6 @@
     </modules>
     <global>
     	<events>
-            <newsletter_subscription_un_email_template>
-                <label>Newsletter unsubscription success</label>
-                <file>newsletter_unsub_success.html</file>
-                <type>html</type>
-            </newsletter_subscription_un_email_template>
             <newsletter_subscriber_save_before>
                 <observers>
                     <monkey_subscribe_observer>

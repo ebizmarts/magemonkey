@@ -86,6 +86,8 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
         $storeId = Mage::app()->getStore()->getStoreId();
         if(isset($params['product_id'])) {
             $product = Mage::getModel('catalog/product')->load($params['product_id']);
+            $collection = Mage::getModel('catalog/product')->getCollection()
+                ->addFieldToFilter('entity_id', $params['product_id']);
             $mark = $product->getEbizmartsMarkVisited();
             if($mark == 1) {
                 $resp['time'] = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TIME,$storeId);

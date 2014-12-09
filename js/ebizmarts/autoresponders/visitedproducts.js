@@ -14,7 +14,7 @@
     }
 
     var cb = function () {
-        var $product = $$('input[name^=product]').first(),
+        var $product = $$('#product_addtocart_form input[name^=product]').first(),
             productID = '';
         if ($product) {
             productID = $product.value;

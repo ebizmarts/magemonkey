@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.28</version>
+            <version>0.1.29</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -104,6 +104,16 @@
                 </ebizmarts_abandonedcart_flag>
             </sales_convert_quote>
         </fieldsets>
+        <events>
+            <sales_quote_save_after>
+                <observers>
+                    <ebizmarts_abandoned_quote_init>
+                        <class>ebizmarts_abandonedcart/eventObserver</class>
+                        <method>loadCustomer</method>
+                    </ebizmarts_abandoned_quote_init>
+                </observers>
+            </sales_quote_save_after>
+        </events>
     </global>
 
     <admin>
@@ -175,6 +185,10 @@
                     <model>ebizmarts_abandonedcart/cron::abandoned</model>
                 </run>
             </ebizmarts_abandoned_cart>
+            <ebizmarts_abandoned_cart_clean_expiredcoupons>
+                <schedule><cron_expr>0 0 1 * *</cron_expr></schedule>
+                <run><model>ebizmarts_abandonedcart/cron::cleanAbandonedCartExpiredCoupons</model></run>
+            </ebizmarts_abandoned_cart_clean_expiredcoupons>
         </jobs>
     </crontab>
     <default>
@@ -193,6 +207,15 @@
                 <autologin>0</autologin>
                 <page>checkout/cart</page>
             </general>
+            <catchpopup>
+                <popup_general>1</popup_general>
+                <popup_cancel>1</popup_cancel>
+                <popup_subscription>1</popup_subscription>
+                <popup_heading>Send us your email!</popup_heading>
+                <popup_text>Put your email here for us to get to know you and personalize your service.</popup_text>
+                <popup_width>410</popup_width>
+                <popup_cookie_time>1</popup_cookie_time>
+            </catchpopup>
         </ebizmarts_abandonedcart>
     </default>
 </config>

@@ -17,6 +17,7 @@ class Ebizmarts_MageMonkey_Block_Checkout_Subscribe extends Ebizmarts_MageMonkey
 
         $key = array(
             'EbizMageMonkeyCheckoutSubscribe',
+            (int)Mage::app()->getStore()->getStoreId(),
             (int)Mage::app()->getStore()->isCurrentlySecure(),
             Mage::getSingleton('customer/session')->isLoggedIn(),
             $this->getQuote()->getCustomer()->getId()

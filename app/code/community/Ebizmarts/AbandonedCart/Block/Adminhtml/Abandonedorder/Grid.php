@@ -104,7 +104,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedorder_Grid extends Mage_A
 
         $this->addColumn('status', array(
             'header' => Mage::helper('sales')->__('Status'),
-            'index' => 'status',
+            'index' => 'main_table.status',
             'type'  => 'options',
             'width' => '70px',
             'options' => Mage::getSingleton('sales/order_config')->getStatuses(),

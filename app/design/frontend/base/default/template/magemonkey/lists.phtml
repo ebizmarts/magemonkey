@@ -115,6 +115,19 @@ $canmodify     = $this->getCanModify();
 				});
 		});
 
+        $$('.mailchimp_extra_field').each(function(field){
+            field.observe('change', function(){
+                if(!$(field.name) && field.value != "") {
+                    var inputer = new Element('input', {
+                        id: field.name,
+                        value: field.value,
+                        type: "hidden"
+                    });
+                    $('form-state').appendChild(inputer);
+                }
+            });
+        });
+
 		//Load viewstate on hidden field for later process
 		$('form-state').writeAttribute('value', $('mailchimp-additional').serialize());
 
