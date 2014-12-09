@@ -29,6 +29,11 @@
                         }
                     });
                 <?php endif; ?>
+                document.observe('keydown', function(evt){
+                    if(evt.keyCode == 13) {
+                        win.okCallback();
+                    }
+                });
 
                 var cookieStored = emailCookieExists();
                 if (!cookieStored) {
