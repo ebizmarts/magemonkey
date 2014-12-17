@@ -215,6 +215,7 @@
                 <popup_text>Put your email here for us to get to know you and personalize your service.</popup_text>
                 <popup_width>410</popup_width>
                 <popup_cookie_time>1</popup_cookie_time>
+                <popup_insist>1</popup_insist>
             </catchpopup>
         </ebizmarts_abandonedcart>
     </default>

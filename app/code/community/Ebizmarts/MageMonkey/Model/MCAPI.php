@@ -1609,6 +1609,7 @@ class Ebizmarts_MageMonkey_Model_MCAPI
      * @return boolean true on success, false on failure. When using MCAPI.class.php, the value can be tested and error messages pulled from the MCAPI object (see below)
      */
     function listUnsubscribe($id, $email_address, $delete_member=false, $send_goodbye=true, $send_notify=true) {
+        Mage::log('listUnsubscribe', null, 'santiago.log', true);
         $params = array();
         $params["id"] = $id;
         $params["email_address"] = $email_address;

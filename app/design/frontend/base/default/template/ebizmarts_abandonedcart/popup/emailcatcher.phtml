@@ -25,7 +25,8 @@
                 <?php elseif($this->_canCancel()): ?>
                     document.observe('keydown', function(evt){
                         if(evt.keyCode == 27) {
-                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                            //if(counter en config == counter en db)
+                                createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
                         }
                     });
                 <?php endif; ?>
@@ -41,7 +42,7 @@
                         className: "popup",
                         id: "popupDialog",
                         width: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>,
-                        zIndex: 200,
+                        zIndex: 2001,
                         okLabel: 'Confirm',
                         <?php if(!$this->_canCancel()): ?>closeOnEsc: false,
                         <?php else: ?>
