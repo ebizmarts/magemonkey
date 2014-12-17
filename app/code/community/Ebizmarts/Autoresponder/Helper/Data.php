@@ -95,4 +95,13 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
 
     }
 
+    public function isSetTime($setTime){
+        $now = date('H');
+        if($now == $setTime){
+            return true;
+        }
+        $this->log('Time set on Autoresponder configuration is different than the current time.');
+        return false;
+    }
+
 }

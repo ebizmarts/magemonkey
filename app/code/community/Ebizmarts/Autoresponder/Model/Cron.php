@@ -34,28 +34,28 @@ class Ebizmarts_Autoresponder_Model_Cron
         Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
         Mage::getSingleton('core/design_package' )->setStore($storeId);
 
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $storeId))) {
             $this->_processNewOrders($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CRON_TIME, $storeId))) {
             $this->_processRelated($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CRON_TIME, $storeId))) {
             $this->_processReview($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE_CRON_TIME, $storeId))) {
             $this->_processBirthday($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CRON_TIME, $storeId))) {
             $this->_processNoActivity($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_CRON_TIME, $storeId))) {
             $this->_processWishlist($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CRON_TIME, $storeId))) {
             $this->_processVisited($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId)){
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_CRON_TIME, $storeId))){
             $this->_processBackToStock($storeId);
         }
         $this->_cleanAutoresponderExpiredCoupons();
