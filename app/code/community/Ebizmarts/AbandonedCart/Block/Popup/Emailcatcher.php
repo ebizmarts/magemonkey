@@ -5,7 +5,7 @@
  * Date: 23/10/14
  * Time: 02:28 PM
  */
-class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Adminhtml_Block_Widget_Form {
+class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_Template {
 
     protected function _canCancel(){
         $storeId = Mage::app()->getStore()->getId();
