@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_monkeyapiapps_index>
+        <reference name="content">
+            <block type="monkeyapi/adminhtml_monkeyapiapps" />
+        </reference>
+    </adminhtml_monkeyapiapps_index>
+    <adminhtml_monkeyapiapps_grid>
+        <reference name="content">
+            <block type="monkeyapi/adminhtml_monkeyapiapps_grid" output="toHtml" />
+        </reference>
+    </adminhtml_monkeyapiapps_grid>
+</layout>

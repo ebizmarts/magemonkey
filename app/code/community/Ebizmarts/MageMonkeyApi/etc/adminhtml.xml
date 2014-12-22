@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <system>
+            <children>
+                <api>
+                    <children>
+                        <monkeyapi_apps translate="title" module="monkeyapi">
+                            <title>MageMonkey API - APPS</title>
+                            <sort_order>999</sort_order>
+                            <action>adminhtml/monkeyapiapps</action>
+                        </monkeyapi_apps>
+                    </children>
+                </api>
+            </children>
+        </system>
+    </menu>
+</config>

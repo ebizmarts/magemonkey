@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Ebizmarts_MageMonkeyApi>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Ebizmarts_MageMonkey />
+                <Ebizmarts_AbandonedCart />
+            </depends>
+        </Ebizmarts_MageMonkeyApi>
+    </modules>
+</config>
