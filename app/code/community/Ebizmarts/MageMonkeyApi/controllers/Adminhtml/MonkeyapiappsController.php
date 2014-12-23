@@ -25,7 +25,7 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
         $app = Mage::getModel('monkeyapi/application');
 
         $app->setApplicationKey($activationKey);
-        $app->setApplicationRequestKey(Mage::helper("core")->getRandomString(22));
+        $app->setApplicationRequestKey(Mage::helper('monkeyapi')->generateApiKey());
 
         //@TODO: Check that app key is not already used
 
@@ -36,6 +36,10 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
         $this->_redirect('*/*/');
     }
 
+    /**
+     * Toggle activation key status, if disabled cannot be used.
+     * @throws Exception
+     */
     public function toggleAction() {
         $appId = $this->getRequest()->getParam('id');
 
@@ -44,13 +48,41 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
 
             if($app->getId()) {
                 if ($app->getApplicationRequestKey() == '*')
-                    $app->setApplicationRequestKey(Mage::helper("core")->getRandomString(22));
+                    $app->setApplicationRequestKey(Mage::helper('monkeyapi')->generateApiKey());
                 else
                     $app->setApplicationRequestKey('*');
 
                 $app->save();
 
-                $this->_getSession()->addSuccess($this->__('Done.'));
+                $this->_getSession()->addSuccess($this->__('Success!'));
+            }
+            else
+                $this->_getSession()->addError($this->__('Application does not exist.'));
+
+        }
+
+        $this->_redirect('*/*/');
+        return;
+    }
+
+    /**
+     * Toggle activation key status, use this when you want to activate the same key on another device.
+     * @throws Exception
+     */
+    public function resetAction() {
+        $appId = $this->getRequest()->getParam('id');
+
+        if($appId) {
+            $app = Mage::getModel('monkeyapi/application')->load($appId);
+
+            if($app->getId()) {
+
+                $app->setApplicationRequestKey(Mage::helper('monkeyapi')->generateApiKey());
+                $app->setActivated(0);
+
+                $app->save();
+
+                $this->_getSession()->addSuccess($this->__('Success!'));
             }
             else
                 $this->_getSession()->addError($this->__('Application does not exist.'));

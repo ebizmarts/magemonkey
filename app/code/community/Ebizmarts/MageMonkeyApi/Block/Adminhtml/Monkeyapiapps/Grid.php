@@ -25,7 +25,7 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
             'type' => 'number',
         ));
         $this->addColumn('application_key', array(
-            'header' => Mage::helper('monkeyapi')->__('App Key'),
+            'header' => Mage::helper('monkeyapi')->__('Device Key'),
             'index' => 'application_key',
             //'type' => 'number',
         ));
@@ -52,8 +52,14 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
             'actions' => array(
                 array(
                     'caption' => Mage::helper('monkeyapi')->__('Enable/Disable'),
-                    'url' => array('base' => 'adminhtml/monkeyapiapps/toggle'),
-                    'field' => 'id',
+                    'url'     => array('base' => 'adminhtml/monkeyapiapps/toggle'),
+                    'field'   => 'id',
+                    'confirm' => Mage::helper('monkeyapi')->__('Are you sure?')
+                ),
+                array(
+                    'caption' => Mage::helper('monkeyapi')->__('Reset'),
+                    'url'     => array('base' => 'adminhtml/monkeyapiapps/reset'),
+                    'field'   => 'id',
                     'confirm' => Mage::helper('monkeyapi')->__('Are you sure?')
                 ),
             ),
