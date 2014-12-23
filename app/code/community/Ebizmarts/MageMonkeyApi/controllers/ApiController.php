@@ -2,6 +2,46 @@
 
 class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_Action {
 
+    /**
+     * Predispatch: Check for valid API KEY parameter.
+     *
+     * @return Mage_Core_Controller_Front_Action
+     */
+    public function preDispatch() {
+        parent::preDispatch();
+
+        if ( !$this->getRequest()->isDispatched() )
+            return;
+
+        $action = $this->getRequest()->getActionName();
+        $openActions = array(
+            'activate',
+        );
+        $pattern = '/^(' . implode('|', $openActions) . ')/i';
+
+        if ( !preg_match($pattern, $action) ) {
+
+            //Check for valid api key.
+            $requestApiKey = $this->getRequest()->getParam('api_key', '');
+            $app = Mage::getResourceModel('monkeyapi/application_collection')
+                ->setApiKeyFilter($requestApiKey)
+                ->setOnlyEnabledApiKeyFilter()
+                ->setActiveDeviceFilter()
+                ->setPageSize(1)
+                ->getFirstItem();
+
+            if(!$app->getId()) {
+                $this->_setClientError(400, 4004);
+                return;
+            }
+
+        }
+
+    }
+
+    /**
+     * Activate device action.
+     */
     public function activateAction() {
         if($this->getRequest()->isPost()) {
 
@@ -40,14 +80,18 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         }
     }
 
+    /**
+     * Abandoned Carts statistics.
+     */
     public function acstatsAction() {
 
-        if(!$this->getRequest()->isGet()) {
+        if( !$this->getRequest()->isGet() ) {
             $this->_setClientError(405, 4052);
             return;
         }
 
-
+        $this->_setSuccess(200, array());
+        return;
 
     }
 
