@@ -51,6 +51,10 @@
                 <code>4003</code>
                 <message><![CDATA[Cannot activate, key does not exist or was already activated.]]></message>
             </code_4003>
+            <code_4004>
+                <code>4004</code>
+                <message><![CDATA[Invalid API authentication.]]></message>
+            </code_4004>
             <code_4051>
                 <code>4051</code>
                 <message><![CDATA[Only POST requests.]]></message>
@@ -60,6 +64,11 @@
                 <message><![CDATA[Only GET requests.]]></message>
             </code_4052>
         </monkeyapi_errorcodes>
+        <ignoredModules> <!-- To avoid Mage_Log to slow down things -->
+            <entities>
+                <monkeyapi />
+            </entities>
+        </ignoredModules>
     </global>
     <frontend>
         <routers>
