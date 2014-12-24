@@ -7,7 +7,7 @@ $installer->startSetup();
 $tableApp = $installer->getTable('monkeyapi/application');
 
 $installer->getConnection()->addColumn($tableApp, 'uuid', 'CHAR(36) null');
-$installer->getConnection()->addColumn($tableApp, 'last_call_ts', 'BIGINT null');
+$installer->getConnection()->addColumn($tableApp, 'last_call_ts', 'BIGINT unsigned null');
 $installer->getConnection()->addColumn($tableApp, 'application_name', 'VARCHAR(255) null');
 $installer->getConnection()->addColumn($tableApp, 'device_info', 'TEXT null');
 $installer->getConnection()->addIndex($tableApp, $installer->getIdxName('monkeyapi/application', array('uuid')), array('uuid'));
