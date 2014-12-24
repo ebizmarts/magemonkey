@@ -21,10 +21,13 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         if ( !preg_match($pattern, $action) ) {
 
-            //Check for valid api key.
+            //Check for valid api key/uuid combination.
             $requestApiKey = $this->getRequest()->getParam('api_key', '');
+            $requestUuid   = $this->getRequest()->getParam('uuid');
+
             $app = Mage::getResourceModel('monkeyapi/application_collection')
                 ->setApiKeyFilter($requestApiKey)
+                ->setUuidFilter($requestUuid)
                 ->setOnlyEnabledApiKeyFilter()
                 ->setActiveDeviceFilter()
                 ->setPageSize(1)
@@ -32,11 +35,54 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
             if(!$app->getId()) {
                 $this->_setClientError(400, 4004);
+                $this->setFlag('', 'no-dispatch', true);
                 return;
+            }
+            else {
+               $app->setLastCallTs( $this->getRequest()->getParam('ts') )->save();
             }
 
         }
 
+    }
+
+    /**
+     * Postdispatch: should set last visited url
+     *
+     * @return Mage_Core_Controller_Front_Action
+     */
+    public function postDispatch() {
+        parent::postDispatch();
+
+        $log = Mage::getModel('monkeyapi/log');
+
+        $log->setHttpUserAgent(Mage::helper('core/http')->getHttpUserAgent(true));
+
+
+        $bodyRaw    = json_decode($this->getRequest()->getRawBody());
+        $rawBodyEnc = array($bodyRaw);
+        $allParams  = $this->getRequest()->getParams();
+
+        $log->setHttpParams(json_encode(array_merge($rawBodyEnc, $allParams)));
+
+
+        $log->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr(false));
+
+        if($bodyRaw !== false && is_object($bodyRaw))
+            $log->setUuid($bodyRaw->uuid);
+
+        //Should be always a stringyfied JSON
+        $responseBody = $this->getResponse()->getBody();
+        if(is_string($responseBody))
+            $log->setResponseParams($responseBody);
+
+        $log->setResponseHeaders(json_encode($this->getResponse()->getHeaders()));
+
+        $log->setResponseCode($this->getResponse()->getHttpResponseCode());
+
+        $log->save();
+
+        return $this;
     }
 
     /**
@@ -57,6 +103,11 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
                 return;
             }
 
+            if( !isset($postData->uuid) ) {
+                $this->_setClientError(400, 4005);
+                return;
+            }
+
             $activationKey = $postData->key;
 
             $app = Mage::getResourceModel('monkeyapi/application_collection')->setKeyFilter($activationKey)
@@ -68,7 +119,12 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
                 return;
             }
 
-            $app->setActivated(1)->save();
+            $app
+                ->setUuid($postData->uuid)
+                ->setLastCallTs($postData->ts)
+                ->setApplicationName($postData->app_info->description)
+                ->setDeviceInfo( json_encode($postData->device_info) )
+                ->setActivated(1)->save();
 
             $this->_setSuccess(200, array('api_key' => $app->getApplicationRequestKey()));
             return;
@@ -90,7 +146,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             return;
         }
 
-        $this->_setSuccess(200, array());
+        $this->_setSuccess(200, array('toDO'));
         return;
 
     }
@@ -109,12 +165,14 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
     private function _setSuccess($httpCode, $content) {
         return $this->getResponse()
+            ->setHeader('Content-type', 'application/json', true)
             ->setHttpResponseCode($httpCode)
             ->setBody(json_encode($content));
     }
 
     private function _setClientError($httpCode, $code) {
         return $this->getResponse()
+            ->setHeader('Content-type', 'application/json', true)
             ->setHttpResponseCode($httpCode)
             ->setBody($this->_error($code));
     }
