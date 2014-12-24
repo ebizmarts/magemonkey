@@ -15,6 +15,12 @@ class Ebizmarts_MageMonkeyApi_Model_Resource_Application_Collection extends Mage
         return $this;
     }
 
+    public function setUuidFilter($key) {
+        $this->addFieldToFilter('uuid', array('eq' => $key));
+        $this->addFieldToFilter('uuid', array('notnull' => $key));
+        return $this;
+    }
+
     public function setApiKeyFilter($key) {
         $this->addFieldToFilter('application_request_key', $key);
         return $this;
