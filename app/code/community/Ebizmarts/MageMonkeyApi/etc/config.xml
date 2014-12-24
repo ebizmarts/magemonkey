@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkeyApi>
-            <version>0.0.4</version>
+            <version>0.0.5</version>
         </Ebizmarts_MageMonkeyApi>
     </modules>
     <global>
@@ -56,8 +56,12 @@
             </code_4003>
             <code_4004>
                 <code>4004</code>
-                <message><![CDATA[Invalid API authentication.]]></message>
+                <message><![CDATA[Invalid credentials supplied.]]></message>
             </code_4004>
+            <code_4005>
+                <code>4005</code>
+                <message><![CDATA[Please specify the device id (uuid).]]></message>
+            </code_4005>
             <code_4051>
                 <code>4051</code>
                 <message><![CDATA[Only POST requests.]]></message>
