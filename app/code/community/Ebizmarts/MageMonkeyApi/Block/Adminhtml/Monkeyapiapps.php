@@ -8,7 +8,7 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps extends Mage_Adminht
     public function __construct() {
         $this->_controller = 'adminhtml_monkeyapiapps';
         $this->_blockGroup = 'monkeyapi';
-        $this->_headerText = Mage::helper('monkeyapi')->__('Apps');
+        $this->_headerText = Mage::helper('monkeyapi')->__('Device Keys');
 
         parent::__construct();
 
