@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkeyApi>
-            <version>0.0.3</version>
+            <version>0.0.4</version>
         </Ebizmarts_MageMonkeyApi>
     </modules>
     <global>
