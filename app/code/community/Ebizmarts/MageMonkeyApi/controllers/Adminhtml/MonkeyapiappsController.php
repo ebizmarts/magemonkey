@@ -81,6 +81,8 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
                 $app->setActivated(0);
                 $app->setUuid(null);
                 $app->setLastCallTs(null);
+                $app->setApplicationName(null);
+                $app->setDeviceInfo(null);
 
                 $app->save();
 
