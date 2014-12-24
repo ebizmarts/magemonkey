@@ -62,6 +62,12 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
                     'field'   => 'id',
                     'confirm' => Mage::helper('monkeyapi')->__('Are you sure?')
                 ),
+                array(
+                    'caption' => Mage::helper('monkeyapi')->__('Delete'),
+                    'url'     => array('base' => 'adminhtml/monkeyapiapps/delete'),
+                    'field'   => 'id',
+                    'confirm' => Mage::helper('monkeyapi')->__('Are you sure?')
+                ),
             ),
             'filter' => false,
             'sortable' => false,
@@ -71,6 +77,22 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
         //$this->addExportType('*/*/exportCsv', Mage::helper('bakerloo_restful')->__('CSV'));
 
         return parent::_prepareColumns();
+    }
+
+    /**
+     * Prepare mass action
+     */
+    protected function _prepareMassaction() {
+        $this->setMassactionIdField('id');
+        $this->getMassactionBlock()->setFormFieldName('application');
+
+        $this->getMassactionBlock()->addItem('delete', array(
+            'label'    => Mage::helper('monkeyapi')->__('Delete'),
+            'url'      => $this->getUrl('*/*/massDelete'),
+            'confirm'  => Mage::helper('monkeyapi')->__('Are you sure?')
+        ));
+
+        return $this;
     }
 
     public function getGridUrl() {

@@ -93,4 +93,50 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
         return;
     }
 
+    public function deleteAction() {
+        $id = $this->getRequest()->getParam('id', false);
+
+        try {
+            $obj = Mage::getModel('monkeyapi/application')->load($id);
+
+            if($obj->getId())
+                $obj->delete();
+
+            Mage::getSingleton('adminhtml/session')->addSuccess($this->__('The record has been deleted.'));
+
+        } catch (Exception $e) {
+            Mage::getSingleton('adminhtml/session')->addError($this->__('An error occurred while deleting this record.'));
+        }
+
+        $this->_redirect("*/*/");
+    }
+
+    public function massDeleteAction() {
+        $session = Mage::getSingleton('adminhtml/session');
+        $ids = $this->getRequest()->getParam('application');
+        if (!is_array($ids)) {
+            $session->addError(Mage::helper('monkeyapi')->__('Please select at least one record.'));
+        }
+        else {
+            try {
+                foreach ($ids as $id) {
+                    $model = Mage::getModel('monkeyapi/application')->load($id);
+
+                    if ($model->getId())
+                        $model->delete();
+                }
+
+                $this->_getSession()->addSuccess(
+                    Mage::helper('monkeyapi')->__('Total of %d record(s) have been removed.', count($ids))
+                );
+
+            } catch (Mage_Core_Exception $e) {
+                $session->addError($e->getMessage());
+            } catch (Exception $e) {
+                $session->addException($e, Mage::helper('monkeyapi')->__('An error occurred while deleting.'));
+            }
+        }
+        $this->_redirectReferer();
+    }
+
 }
