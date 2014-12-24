@@ -20,7 +20,7 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
 
     public function newAction() {
 
-        $activationKey = Mage::helper("core")->getRandomString(6);
+        $activationKey = Mage::helper("core")->getRandomString(4);
 
         $app = Mage::getModel('monkeyapi/application');
 
