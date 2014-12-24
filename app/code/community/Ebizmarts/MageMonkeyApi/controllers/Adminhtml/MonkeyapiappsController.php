@@ -79,6 +79,8 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
 
                 $app->setApplicationRequestKey(Mage::helper('monkeyapi')->generateApiKey());
                 $app->setActivated(0);
+                $app->setUuid(null);
+                $app->setLastCallTs(null);
 
                 $app->save();
 
