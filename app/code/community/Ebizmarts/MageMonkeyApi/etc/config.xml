@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkeyApi>
-            <version>0.0.1</version>
+            <version>0.0.3</version>
         </Ebizmarts_MageMonkeyApi>
     </modules>
     <global>
@@ -18,6 +18,9 @@
                     <application>
                         <table>monkeyapi_application</table>
                     </application>
+                    <log>
+                        <table>monkeyapi_request_log</table>
+                    </log>
                 </entities>
             </monkeyapi_resource>
         </models>
