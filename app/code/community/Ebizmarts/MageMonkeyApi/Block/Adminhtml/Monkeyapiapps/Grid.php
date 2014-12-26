@@ -42,6 +42,14 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
             'filter' => false,
             'renderer' => 'monkeyapi/adminhtml_widget_grid_column_renderer_enabledApp',
         ));
+        $this->addColumn('application_name', array(
+            'header' => Mage::helper('monkeyapi')->__('App. Name'),
+            'index' => 'application_name',
+        ));
+        $this->addColumn('last_call_ts', array(
+            'header' => Mage::helper('monkeyapi')->__('Last Access'),
+            'index' => 'last_call_ts',
+        ));
 
         $this->addColumn('action', array(
             'header' => Mage::helper('monkeyapi')->__('Action'),
