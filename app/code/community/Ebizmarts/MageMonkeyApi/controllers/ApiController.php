@@ -151,6 +151,34 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
     }
 
     /**
+     * Return Magento statistics.
+     */
+    public function magentostatsAction() {
+
+        if( !$this->getRequest()->isPost() ) {
+            $this->_setClientError(405, 4051);
+            return;
+        }
+
+        $collection = Mage::getResourceModel('reports/order_collection')->calculateSales(false)->load();
+        $sales      = $collection->getFirstItem();
+
+        $collectionTotals = Mage::getResourceModel('reports/order_collection')->calculateTotals(false)->load();
+        $totals = $collectionTotals->getFirstItem();
+
+        $statsRet = array(
+            'base_currency'          => "ESTO ES POR WEBSITE!!! QUE HACEMOS?",
+            'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : $sales->getLifetime(),
+            'lifetime_orders_qty'    => ($totals->getQuantity() * 1),
+            'lifetime_customers_qty' => Mage::getResourceModel('customer/customer_collection')->getSize(),
+        );
+
+        $this->_setSuccess(200, $statsRet);
+        return;
+
+    }
+
+    /**
      * Return Magento website information.
      */
     public function websiteinfoAction() {
