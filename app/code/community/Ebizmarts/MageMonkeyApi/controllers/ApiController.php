@@ -22,12 +22,11 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         if ( !preg_match($pattern, $action) ) {
 
             //Check for valid api key/uuid combination.
-            $requestApiKey = $this->getRequest()->getParam('api_key', '');
-            $requestUuid   = $this->getRequest()->getParam('uuid');
+            $postData = $this->_jsonPayload();
 
             $app = Mage::getResourceModel('monkeyapi/application_collection')
-                ->setApiKeyFilter($requestApiKey)
-                ->setUuidFilter($requestUuid)
+                ->setApiKeyFilter($postData->api_key)
+                ->setUuidFilter($postData->uuid)
                 ->setOnlyEnabledApiKeyFilter()
                 ->setActiveDeviceFilter()
                 ->setPageSize(1)
@@ -141,7 +140,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
      */
     public function acstatsAction() {
 
-        if( !$this->getRequest()->isGet() ) {
+        if( !$this->getRequest()->isPost() ) {
             $this->_setClientError(405, 4052);
             return;
         }
@@ -149,6 +148,41 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $this->_setSuccess(200, array('toDO'));
         return;
 
+    }
+
+    /**
+     * Return Magento website information.
+     */
+    public function websiteinfoAction() {
+
+        if( !$this->getRequest()->isPost() ) {
+            $this->_setClientError(405, 4051);
+            return;
+        }
+
+        //Magento Edition
+        $modulesArray = (array) Mage::getConfig()->getNode('modules')->children();
+        $edition      = (array_key_exists('Enterprise_Enterprise', $modulesArray)) ? 'EE' : 'CE';
+
+        //Stores
+        $websiteRet = array();
+
+        $websiteColl = Mage::getModel('core/website')
+            ->getCollection()
+            ->joinGroupAndStore();
+        foreach($websiteColl as $_w) {
+            $websiteRet []= $_w->getName() .'/'. $_w->getGroupTitle() .'/'. $_w->getStoreTitle();
+        }
+
+        $websiteInfo = array(
+          'magento_edition'    => $edition,
+          'magento_version'    => Mage::getVersion(),
+          'magento_websites'   => $websiteRet,
+          'magemonkey_version' => (string) Mage::getConfig()->getNode('modules/Ebizmarts_MageMonkey/version')
+        );
+
+        $this->_setSuccess(200, $websiteInfo);
+        return;
     }
 
     private function _jsonPayload() {
