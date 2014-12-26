@@ -81,7 +81,7 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapilog_Grid extends Mage_Adm
      * @return string
      */
     public function getRowUrl($log) {
-        return $this->getUrl('*/*/view', array('id' => $log->getId()));
+        return false;
     }
 
 }
