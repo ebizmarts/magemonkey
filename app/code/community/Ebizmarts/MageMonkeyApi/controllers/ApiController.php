@@ -2,12 +2,18 @@
 
 class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_Action {
 
+    private $_start;
+    private $_end;
+
     /**
      * Predispatch: Check for valid API KEY parameter.
      *
      * @return Mage_Core_Controller_Front_Action
      */
     public function preDispatch() {
+
+        $this->_start = microtime(true);
+
         parent::preDispatch();
 
         if ( !$this->getRequest()->isDispatched() )
@@ -38,7 +44,8 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
                 return;
             }
             else {
-               $app->setLastCallTs( $postData->ts )->save();
+               $app
+                   ->setLastCallTs( $postData->ts )->save();
             }
 
         }
@@ -57,13 +64,13 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $log->setHttpUserAgent(Mage::helper('core/http')->getHttpUserAgent(true));
 
-
         $bodyRaw    = json_decode($this->getRequest()->getRawBody());
         $rawBodyEnc = array($bodyRaw);
         $allParams  = $this->getRequest()->getParams();
 
         $log->setHttpParams(json_encode(array_merge($rawBodyEnc, $allParams)));
 
+        $log->setCallMethod($this->getRequest()->getActionName());
 
         $log->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr(false));
 
@@ -80,6 +87,10 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $log->setResponseCode($this->getResponse()->getHttpResponseCode());
 
         $log->save();
+
+        $this->_end = microtime(true);
+
+        $log->setCallTime($this->_end-$this->_start)->save();
 
         return $this;
     }
