@@ -10,4 +10,14 @@
             <block type="monkeyapi/adminhtml_monkeyapiapps_grid" output="toHtml" />
         </reference>
     </adminhtml_monkeyapiapps_grid>
+    <adminhtml_monkeyapilog_index>
+        <reference name="content">
+            <block type="monkeyapi/adminhtml_monkeyapilog" />
+        </reference>
+    </adminhtml_monkeyapilog_index>
+    <adminhtml_monkeyapilog_grid>
+        <reference name="content">
+            <block type="monkeyapi/adminhtml_monkeyapilog_grid" output="toHtml" />
+        </reference>
+    </adminhtml_monkeyapilog_grid>
 </layout>

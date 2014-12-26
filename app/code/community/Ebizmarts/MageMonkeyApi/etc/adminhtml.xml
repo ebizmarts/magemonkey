@@ -9,6 +9,13 @@
                             <title>MageMonkey API - APPS</title>
                             <sort_order>999</sort_order>
                             <action>adminhtml/monkeyapiapps</action>
+                            <children>
+                                <monkeyapi_logs>
+                                    <title>MageMonkey API - Calls</title>
+                                    <sort_order>10</sort_order>
+                                    <action>adminhtml/monkeyapilog</action>
+                                </monkeyapi_logs>
+                            </children>
                         </monkeyapi_apps>
                     </children>
                 </api>
