@@ -138,14 +138,31 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
     /**
      * Abandoned Carts statistics.
      */
-    public function acstatsAction() {
+    public function abandonedcartstatsAction() {
 
         if( !$this->getRequest()->isPost() ) {
             $this->_setClientError(405, 4052);
             return;
         }
 
-        $this->_setSuccess(200, array('toDO'));
+        $block = new Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals;
+        $block->setLayout( (new Mage_Core_Model_Layout()) );
+
+        $totals = $block->abandonedCartTotals();
+
+        $stats = new stdClass();
+
+        $string = Mage::helper('core/string');
+
+        foreach($totals as $_t) {
+            $propName = strtolower( implode('_', $string->splitWords($_t['label'])) );
+
+            $propName = preg_replace('/[^A-Za-z0-9_]/', '', $propName);
+
+            $stats->{$propName} = $string->stripTags($_t['value']);
+        }
+
+        $this->_setSuccess(200, $stats);
         return;
 
     }
