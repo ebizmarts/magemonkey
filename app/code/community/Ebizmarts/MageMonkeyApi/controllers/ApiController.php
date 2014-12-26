@@ -167,7 +167,8 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $totals = $collectionTotals->getFirstItem();
 
         $currencyObj = new stdClass();
-        $currencyObj->code = (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
+        $currencyObj->code   = (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
+        $currencyObj->symbol = Mage::app()->getLocale()->currency($currencyObj->code)->getSymbol();
 
         $statsRet = array(
             'base_currency'          => $currencyObj,
