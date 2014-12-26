@@ -38,7 +38,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
                 return;
             }
             else {
-               $app->setLastCallTs( $this->getRequest()->getParam('ts') )->save();
+               $app->setLastCallTs( $postData->ts )->save();
             }
 
         }
