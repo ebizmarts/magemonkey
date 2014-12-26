@@ -166,8 +166,11 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $collectionTotals = Mage::getResourceModel('reports/order_collection')->calculateTotals(false)->load();
         $totals = $collectionTotals->getFirstItem();
 
+        $currencyObj = new stdClass();
+        $currencyObj->code = (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
+
         $statsRet = array(
-            'base_currency'          => "ESTO ES POR WEBSITE!!! QUE HACEMOS?",
+            'base_currency'          => $currencyObj,
             'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : $sales->getLifetime(),
             'lifetime_orders_qty'    => ($totals->getQuantity() * 1),
             'lifetime_customers_qty' => Mage::getResourceModel('customer/customer_collection')->getSize(),
