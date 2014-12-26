@@ -162,6 +162,10 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         }
     }
 
+    public function abandonedCartTotals() {
+        return $this->_totals;
+    }
+
     /**
      * @param $period
      * @param $store
@@ -169,6 +173,39 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
      */
     private function __getMandrillStatistics($period,$store)
     {
-        return Mage::helper('ebizmarts_abandonedcart')->mandrillStatistics($period, $store);
+        $api = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY,$store));
+        $mandrillTag = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MANDRILL_TAG, $store)."_$store";
+        $tags = $api->tags->info($mandrillTag);
+        $general = (array)$tags;
+        switch($period) {
+            case '24h':
+                $index = 'today';
+                break;
+            case '7d':
+                $index = 'last_7_days';
+                break;
+            case '30d':
+                $index = 'last_30_days';
+                break;
+            case '60d':
+                $index = 'last_60_days';
+                break;
+            case '90d':
+                $index = 'last_90_days';
+                break;
+            case 'lifetime':
+                unset($general['stats']);
+
+                Mage::log($general);
+
+                return $general;
+
+        }
+        if(!isset($general['stats'])){
+            return false;
+        }
+        $stats = (array)$general['stats'];
+        $particular = (array)$stats[$index];
+        return $particular;
     }
 }
