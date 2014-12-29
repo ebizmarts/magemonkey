@@ -1,0 +1,9 @@
+pre code.json-hl {
+    width: 650px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
+    padding: 15px;
+}
+
+button#log-back { margin-bottom: 15px; }

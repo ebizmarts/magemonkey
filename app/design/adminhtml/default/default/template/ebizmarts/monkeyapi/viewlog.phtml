@@ -1,0 +1,42 @@
+<?php
+
+$log = $this->logObject();
+
+?>
+
+<button onclick="setLocation('<?php echo $this->getBackUrl(); ?>');" class="scalable back" type="button" title="<?php echo $this->__('Back'); ?>" id="log-back"><span><span><span><?php echo $this->__('Back'); ?></span></span></span></button>
+
+<ul>
+    <li><strong><?php echo $this->__('Method:'); ?></strong> /<?php echo $log->getCallMethod(); ?></li>
+    <li><strong><?php echo $this->__('Time:'); ?></strong> <?php echo Mage::getSingleton('core/date')->date('M d, Y h:i a', $log->getCreatedAt()); ?></li>
+    <li><strong><?php echo $this->__('Call Time:'); ?></strong> <?php echo Mage::helper('monkeyapi')->formatTimeSeconds($log->getCallTime()); ?>s</li>
+    <li><strong><?php echo $this->__('IP:'); ?></strong> <?php echo $log->getRemoteAddr(); ?></li>
+    <li><strong><?php echo $this->__('User Agent:'); ?></strong> <?php echo $log->getHttpUserAgent(); ?></li>
+</ul>
+
+<br />
+
+<h3><?php echo $this->__('Request'); ?></h3>
+<pre>
+    <code class="json-hl">
+        <?php echo $log->getHttpParams(); ?>
+    </code>
+</pre>
+
+<br />
+
+<h3><?php echo $this->__('Response (%s)', $log->getResponseCode()); ?></h3>
+<pre class="json-hl-pre">
+    <code class="json-hl">
+        <?php echo $log->getResponseParams(); ?>
+    </code>
+</pre>
+
+<script type="text/javascript">
+    document.observe('dom:loaded', function() {
+        $$('.json-hl').each(function(block) {
+            block.innerHTML = jsl.format.formatJson(block.innerHTML);
+            hljs.highlightBlock(block);
+        });
+    });
+</script>
