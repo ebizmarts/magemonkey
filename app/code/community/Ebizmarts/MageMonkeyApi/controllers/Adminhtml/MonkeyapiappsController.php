@@ -143,4 +143,31 @@ class Ebizmarts_MageMonkeyApi_Adminhtml_MonkeyapiappsController extends Mage_Adm
         $this->_redirectReferer();
     }
 
+    /**
+     * View additional data for the request.
+     */
+    public function viewAction() {
+        $this->_title($this->__('View Device'))
+            ->_title($this->__('Devices'))
+            ->_title($this->__('MageMonkey API'));
+
+        $id = $this->getRequest()->getParam('id');
+
+        $app = Mage::getModel('monkeyapi/application');
+        if ($id) {
+            $app->load($id);
+            Mage::register('current_app', $app);
+        }
+        else {
+            $this->_getSession()->addError($this->__('Entry does not exist.'));
+            $this->_redirect('*/*/');
+            return;
+        }
+
+        $this->loadLayout();
+        $this->_setActiveMenu('system');
+        $this->renderLayout();
+
+    }
+
 }

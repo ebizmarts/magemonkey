@@ -10,6 +10,17 @@
             <block type="monkeyapi/adminhtml_monkeyapiapps_grid" output="toHtml" />
         </reference>
     </adminhtml_monkeyapiapps_grid>
+    <adminhtml_monkeyapiapps_view>
+        <reference name="head">
+            <action method="addCss"><stylesheet>ebizmarts/monkeyapi/highlight.css</stylesheet></action>
+            <action method="addCss"><stylesheet>ebizmarts/monkeyapi/monkeyapi.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><name>ebizmarts/monkeyapi/highlight.pack.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>ebizmarts/monkeyapi/jsl.format.js</name></action>
+        </reference>
+        <reference name="content">
+            <block type="monkeyapi/adminhtml_monkeyapiapps_view" template="ebizmarts/monkeyapi/viewapp.phtml" />
+        </reference>
+    </adminhtml_monkeyapiapps_view>
     <adminhtml_monkeyapilog_index>
         <reference name="content">
             <block type="monkeyapi/adminhtml_monkeyapilog" />

@@ -82,8 +82,6 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
             'is_system' => true,
         ));
 
-        //$this->addExportType('*/*/exportCsv', Mage::helper('bakerloo_restful')->__('CSV'));
-
         return parent::_prepareColumns();
     }
 
@@ -114,7 +112,7 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
      * @return string
      */
     public function getRowUrl($item) {
-        return false; //$this->getUrl('*/*/edit', array('id' => $item->getId()));
+        return $this->getUrl('*/*/view', array('id' => $item->getId()));
     }
 
 }
