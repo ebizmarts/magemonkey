@@ -157,8 +157,14 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             return;
         }
 
-        //$period = $this->getRequest()->getParam('period', '24h');
-        //Setear el period a lifetime.
+        $post = $this->_jsonPayload();
+
+        //Filters.
+        $filterPeriod = isset($post->period) ? $post->period : 'lifetime';
+        $this->getRequest()->setParam('period', $filterPeriod);
+
+        $filterStoreID = isset($post->store) ? $post->store : null;
+        $this->getRequest()->setParam('store', $filterStoreID);
 
         $block = new Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals;
         $block->setLayout( (new Mage_Core_Model_Layout()) );
