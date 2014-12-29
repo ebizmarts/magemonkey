@@ -11,7 +11,7 @@ $app = $this->logObject();
     <?php if($app->getActivated()): ?>
         <li><strong><?php echo $this->__('App. Name:'); ?></strong> <?php echo $app->getApplicationName(); ?></li>
         <li><strong><?php echo $this->__('<acronym title="%s">UUID:</acronym>', 'Universally unique identifier'); ?></strong> <?php echo $app->getUuid(); ?></li>
-        <li><strong><?php echo $this->__('Last Access:'); ?></strong> <?php echo $app->getLastCallTs(); ?></li>
+        <li><strong><?php echo $this->__('Last Access:'); ?></strong> <?php echo Mage::getModel('core/date')->date('M d, Y h:i a', $app->getLastCallTs()); ?></li>
     <?php endif; ?>
 </ul>
 
@@ -19,12 +19,21 @@ $app = $this->logObject();
 <?php if($app->getActivated()): ?>
     <br />
 
-    <h3><?php echo $this->__('Device Info'); ?></h3>
+    <h3><?php echo $this->__('Device Info.'); ?></h3>
     <pre>
         <code class="json-hl">
             <?php echo $app->getDeviceInfo(); ?>
         </code>
     </pre>
+
+    <?php if($app->getAppInfo()): ?>
+        <h3><?php echo $this->__('App. Info.'); ?></h3>
+        <pre>
+            <code class="json-hl">
+                <?php echo $app->getAppInfo(); ?>
+            </code>
+        </pre>
+    <?php endif;?>
 
     <script type="text/javascript">
         document.observe('dom:loaded', function() {

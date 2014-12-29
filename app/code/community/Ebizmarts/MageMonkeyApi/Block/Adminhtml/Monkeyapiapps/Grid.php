@@ -49,6 +49,7 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapiapps_Grid extends Mage_Ad
         $this->addColumn('last_call_ts', array(
             'header' => Mage::helper('monkeyapi')->__('Last Access'),
             'index' => 'last_call_ts',
+            'type' => 'datetime',
         ));
 
         $this->addColumn('action', array(

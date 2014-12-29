@@ -8,7 +8,7 @@ $log = $this->logObject();
 
 <ul>
     <li><strong><?php echo $this->__('Method:'); ?></strong> /<?php echo $log->getCallMethod(); ?></li>
-    <li><strong><?php echo $this->__('Time:'); ?></strong> <?php echo Mage::getSingleton('core/date')->date('M d, Y h:i a', $log->getCreatedAt()); ?></li>
+    <li><strong><?php echo $this->__('Time:'); ?></strong> <?php echo Mage::getModel('core/date')->date('M d, Y h:i a', $log->getCreatedAt()); ?></li>
     <li><strong><?php echo $this->__('Call Time:'); ?></strong> <?php echo Mage::helper('monkeyapi')->formatTimeSeconds($log->getCallTime()); ?>s</li>
     <li><strong><?php echo $this->__('IP:'); ?></strong> <?php echo $log->getRemoteAddr(); ?></li>
     <li><strong><?php echo $this->__('User Agent:'); ?></strong> <?php echo $log->getHttpUserAgent(); ?></li>
