@@ -1,0 +1,37 @@
+<?php
+
+$app = $this->logObject();
+
+?>
+
+<button onclick="setLocation('<?php echo $this->getBackUrl(); ?>');" class="scalable back" type="button" title="<?php echo $this->__('Back'); ?>" id="log-back"><span><span><span><?php echo $this->__('Back'); ?></span></span></span></button>
+
+<ul>
+    <li><strong><?php echo $this->__('Activation Key:'); ?></strong> <?php echo $app->getApplicationKey(); ?></li>
+    <?php if($app->getActivated()): ?>
+        <li><strong><?php echo $this->__('App. Name:'); ?></strong> <?php echo $app->getApplicationName(); ?></li>
+        <li><strong><?php echo $this->__('<acronym title="%s">UUID:</acronym>', 'Universally unique identifier'); ?></strong> <?php echo $app->getUuid(); ?></li>
+        <li><strong><?php echo $this->__('Last Access:'); ?></strong> <?php echo $app->getLastCallTs(); ?></li>
+    <?php endif; ?>
+</ul>
+
+
+<?php if($app->getActivated()): ?>
+    <br />
+
+    <h3><?php echo $this->__('Device Info'); ?></h3>
+    <pre>
+        <code class="json-hl">
+            <?php echo $app->getDeviceInfo(); ?>
+        </code>
+    </pre>
+
+    <script type="text/javascript">
+        document.observe('dom:loaded', function() {
+            $$('.json-hl').each(function(block) {
+                block.innerHTML = jsl.format.formatJson(block.innerHTML);
+                hljs.highlightBlock(block);
+            });
+        });
+    </script>
+<?php endif; ?>
