@@ -241,7 +241,16 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             ->getCollection()
             ->joinGroupAndStore();
         foreach($websiteColl as $_w) {
-            $websiteRet []= $_w->getName() .'/'. $_w->getGroupTitle() .'/'. $_w->getStoreTitle();
+
+            $_wInfo = array(
+              'website_name'    => $_w->getName(),
+              'store_name'      => $_w->getGroupTitle(),
+              'store_view_name' => $_w->getStoreTitle(),
+              'store_id'        => (int)$_w->getStoreId(),
+            );
+
+            array_push($websiteRet, $_wInfo);
+
         }
 
         $websiteInfo = array(
