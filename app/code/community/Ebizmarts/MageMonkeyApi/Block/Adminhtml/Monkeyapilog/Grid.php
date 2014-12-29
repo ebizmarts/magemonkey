@@ -58,7 +58,7 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Monkeyapilog_Grid extends Mage_Adm
             'actions' => array(
                 array(
                     'caption' => Mage::helper('monkeyapi')->__('view full'),
-                    'url'     => array('base' => 'adminhtml/monkeyapiapps/view'),
+                    'url'     => array('base' => 'adminhtml/monkeyapilog/view'),
                     'field'   => 'id',
                 ),
             ),

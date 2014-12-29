@@ -12,10 +12,7 @@ class Ebizmarts_MageMonkeyApi_Block_Adminhtml_Widget_Grid_Column_Renderer_CallTi
         $data = parent::_getValue($row);
         if (!is_null($data)) {
 
-            $data  = floor($data*10.0)/10.0;
-            $value = sprintf("%.1f", $data);
-
-            return $value .'s';
+            return Mage::helper('monkeyapi')->formatTimeSeconds($data) .'s';
         }
         return $this->getColumn()->getDefault();
     }

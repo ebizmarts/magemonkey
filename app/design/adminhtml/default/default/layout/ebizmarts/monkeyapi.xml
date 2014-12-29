@@ -20,4 +20,15 @@
             <block type="monkeyapi/adminhtml_monkeyapilog_grid" output="toHtml" />
         </reference>
     </adminhtml_monkeyapilog_grid>
+    <adminhtml_monkeyapilog_view>
+        <reference name="head">
+            <action method="addCss"><stylesheet>ebizmarts/monkeyapi/highlight.css</stylesheet></action>
+            <action method="addCss"><stylesheet>ebizmarts/monkeyapi/monkeyapi.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><name>ebizmarts/monkeyapi/highlight.pack.js</name></action>
+            <action method="addItem"><type>skin_js</type><name>ebizmarts/monkeyapi/jsl.format.js</name></action>
+        </reference>
+        <reference name="content">
+            <block type="monkeyapi/adminhtml_monkeyapilog_view" template="ebizmarts/monkeyapi/viewlog.phtml" />
+        </reference>
+    </adminhtml_monkeyapilog_view>
 </layout>
