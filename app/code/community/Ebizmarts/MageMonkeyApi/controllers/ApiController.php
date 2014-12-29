@@ -45,7 +45,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             }
             else {
                $app
-                   ->setLastCallTs( $postData->ts )->save();
+                   ->setLastCallTs( Mage::getModel('core/date')->gmtTimestamp() )->save();
             }
 
         }
@@ -131,9 +131,10 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
             $app
                 ->setUuid($postData->uuid)
-                ->setLastCallTs($postData->ts)
+                ->setLastCallTs(Mage::getModel('core/date')->gmtTimestamp())
                 ->setApplicationName($postData->app_info->description)
                 ->setDeviceInfo( json_encode($postData->device_info) )
+                ->setAppInfo( json_encode($postData->app_info) )
                 ->setActivated(1)->save();
 
             $this->_setSuccess(200, array('api_key' => $app->getApplicationRequestKey()));
@@ -155,6 +156,9 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             $this->_setClientError(405, 4052);
             return;
         }
+
+        //$period = $this->getRequest()->getParam('period', '24h');
+        //Setear el period a lifetime.
 
         $block = new Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals;
         $block->setLayout( (new Mage_Core_Model_Layout()) );
