@@ -333,7 +333,7 @@ class Ebizmarts_MageMonkey_Model_Observer
                     $subscriber = Mage::getModel('newsletter/subscriber')
                         ->loadByEmail($customer->getEmail());
                     $subscriber->setImportMode(TRUE)->unsubscribe();
-                    Mage::getSingleton('monkey/api')->listUnsubscribe($defaultList, $customer->getEmail());
+                    Mage::getSingleton('monkey/api', $customer->getStoreId())->listUnsubscribe($defaultList, $customer->getEmail());
                 }
             }
             Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);

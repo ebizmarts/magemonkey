@@ -424,19 +424,28 @@ class Ebizmarts_Autoresponder_Model_Cron
             if(count($products) > $max && $max != 0 || !in_array($customer->getGroupId(),$customerGroups)) {
                 continue;
             }
-            $itemscollection = Mage::getModel('sales/order_item')->getCollection();
-            $itemscollection->addFieldToFilter('main_table.created_at',array('from'=>$from))
-                            ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
-            if($itemscollection->getSize() == 0) {                                                  // if not orders from date which include this product
-                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeId)) {   // if the abandoned cart module is active
-                    $itemscollection2 = Mage::getModel('sales/quote_item')->getCollection();
-                    $itemscollection2->addFieldToFilter('main_table.created_at',array('from'=>$from))
-                                    ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
-                    if($itemscollection2->getSize() > 0) {                                          // if there are an abandoned cart which include this product
-                        continue;
-                    }
-                }
+//            $itemscollection = Mage::getModel('sales/order_item')->getCollection();
+//            $itemscollection->addFieldToFilter('main_table.created_at',array('from'=>$from))
+//                            ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
+//            if($itemscollection->getSize() == 0) {                                                  // if not orders from date which include this product
+//                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeId)) {   // if the abandoned cart module is active
+//                    $itemscollection2 = Mage::getModel('sales/quote_item')->getCollection();
+//                    $itemscollection2->addFieldToFilter('main_table.created_at',array('from'=>$from))
+//                                    ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
+//                    if($itemscollection2->getSize() > 0) {                                          // if there are an abandoned cart which include this product
+//                        continue;
+//                    }
+//                }
+//                $products[]= Mage::getModel('catalog/product')->load($item->getProductId());
+//            }
+            $itemscollection = Mage::getModel('sales/quote')->getCollection()
+                ->addFieldToFilter('main_table.customer_id', array('eq'=>$item->getCustomerId()))
+                ->addFieldToFilter('main_table.created_at',array('from'=>$from))
+                ->addFieldToFilter('main_table.is_active', array('eq'=>0));
+            if(count($itemscollection) == 0){
                 $products[]= Mage::getModel('catalog/product')->load($item->getProductId());
+            }else{
+                continue;
             }
         }
         if(count($products)) {
