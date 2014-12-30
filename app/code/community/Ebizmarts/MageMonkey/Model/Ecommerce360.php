@@ -121,7 +121,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 		if ($discount != 0) {
 			$subtotal = $subtotal + ($discount);
 		}
-
+        $createdAtArr = str_split($this->_order->getCreatedAt(), 10);
         $this->_info = array(
 				                'id'          => $this->_order->getIncrementId(),
 				                'total'       => $subtotal,
@@ -129,7 +129,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 				                'tax'         => $this->_order->getBaseTaxAmount(),
 				                'store_id'    => $this->_order->getStoreId(),
 				                'store_name'  => $this->_order->getStoreName(),
-                                'order_date'  => $this->_order->getCreatedAt(),
+                                'order_date'  => $createdAtArr[0],
 				                'plugin_id'   => 1215,
 				                'items'       => array()
                 			);
@@ -334,6 +334,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 if ($discount != 0) {
                     $subtotal = $subtotal + ($discount);
                 }
+                $createdAtArr = str_split($this->_order->getCreatedAt(), 10);
 
                 $this->_info = array(
                     'id' => $this->_order->getIncrementId(),
@@ -342,7 +343,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                     'tax' => $this->_order->getBaseTaxAmount(),
                     'store_id' => $this->_order->getStoreId(),
                     'store_name' => $this->_order->getStoreName(),
-                    'order_date' => $this->_order->getCreatedAt(),
+                    'order_date' => $createdAtArr[0],
                     'plugin_id' => 1215,
                     'items' => array()
                 );

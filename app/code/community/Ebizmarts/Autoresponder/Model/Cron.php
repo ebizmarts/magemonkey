@@ -34,28 +34,28 @@ class Ebizmarts_Autoresponder_Model_Cron
         Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
         Mage::getSingleton('core/design_package' )->setStore($storeId);
 
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $storeId))) {
             $this->_processNewOrders($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CRON_TIME, $storeId))) {
             $this->_processRelated($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CRON_TIME, $storeId))) {
             $this->_processReview($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE_CRON_TIME, $storeId))) {
             $this->_processBirthday($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CRON_TIME, $storeId))) {
             $this->_processNoActivity($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_CRON_TIME, $storeId))) {
             $this->_processWishlist($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId)) { // done
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CRON_TIME, $storeId))) {
             $this->_processVisited($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId)){
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_CRON_TIME, $storeId))){
             $this->_processBackToStock($storeId);
         }
         $this->_cleanAutoresponderExpiredCoupons();
@@ -424,19 +424,28 @@ class Ebizmarts_Autoresponder_Model_Cron
             if(count($products) > $max && $max != 0 || !in_array($customer->getGroupId(),$customerGroups)) {
                 continue;
             }
-            $itemscollection = Mage::getModel('sales/order_item')->getCollection();
-            $itemscollection->addFieldToFilter('main_table.created_at',array('from'=>$from))
-                            ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
-            if($itemscollection->getSize() == 0) {                                                  // if not orders from date which include this product
-                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeId)) {   // if the abandoned cart module is active
-                    $itemscollection2 = Mage::getModel('sales/quote_item')->getCollection();
-                    $itemscollection2->addFieldToFilter('main_table.created_at',array('from'=>$from))
-                                    ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
-                    if($itemscollection2->getSize() > 0) {                                          // if there are an abandoned cart which include this product
-                        continue;
-                    }
-                }
+//            $itemscollection = Mage::getModel('sales/order_item')->getCollection();
+//            $itemscollection->addFieldToFilter('main_table.created_at',array('from'=>$from))
+//                            ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
+//            if($itemscollection->getSize() == 0) {                                                  // if not orders from date which include this product
+//                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeId)) {   // if the abandoned cart module is active
+//                    $itemscollection2 = Mage::getModel('sales/quote_item')->getCollection();
+//                    $itemscollection2->addFieldToFilter('main_table.created_at',array('from'=>$from))
+//                                    ->addFieldToFilter('main_table.product_id',array('eq'=>$item->getProductId()));
+//                    if($itemscollection2->getSize() > 0) {                                          // if there are an abandoned cart which include this product
+//                        continue;
+//                    }
+//                }
+//                $products[]= Mage::getModel('catalog/product')->load($item->getProductId());
+//            }
+            $itemscollection = Mage::getModel('sales/quote')->getCollection()
+                ->addFieldToFilter('main_table.customer_id', array('eq'=>$item->getCustomerId()))
+                ->addFieldToFilter('main_table.created_at',array('from'=>$from))
+                ->addFieldToFilter('main_table.is_active', array('eq'=>0));
+            if(count($itemscollection) == 0){
                 $products[]= Mage::getModel('catalog/product')->load($item->getProductId());
+            }else{
+                continue;
             }
         }
         if(count($products)) {

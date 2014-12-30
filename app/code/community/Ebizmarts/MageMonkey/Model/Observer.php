@@ -299,6 +299,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		$customer = $observer->getEvent()->getCustomer();
 
+        $isConfirmNeed = FALSE;
+        if( !Mage::helper('monkey')->isAdmin() &&
+            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $customer->getStoreId()) == 1) ){
+            $isConfirmNeed = TRUE;
+        }
+
 		$oldEmail = $customer->getOrigData('email');
         $email = $customer->getEmail();
         if(Mage::getSingleton('core/session')->getMonkeyCheckout()) {
@@ -343,7 +349,7 @@ class Ebizmarts_MageMonkey_Model_Observer
                     $subscriber = Mage::getModel('newsletter/subscriber')
                         ->loadByEmail($customer->getEmail());
                     $subscriber->setImportMode(TRUE)->unsubscribe();
-                    Mage::getSingleton('monkey/api')->listUnsubscribe($defaultList, $customer->getEmail());
+                    Mage::getSingleton('monkey/api', $customer->getStoreId())->listUnsubscribe($defaultList, $customer->getEmail());
                 }
             }
             Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);
@@ -390,7 +396,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
-        Mage::log('registerCheckoutSuccess', null, 'santiago.log', true);
         Mage::getSingleton('core/session')->setRegisterCheckoutSuccess(TRUE);
 		if(!Mage::helper('monkey')->canMonkey()){
             Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);

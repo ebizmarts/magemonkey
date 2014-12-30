@@ -534,7 +534,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 		if( !$customer->getId() && !$request->getPost('lastname') ){
 			$guestLastName  = $this->config('guest_lastname', $customer->getStoreId());
-			
+
 			if($guestLastName){
 				$merge_vars['LNAME'] = $guestLastName;
 			}

@@ -16,7 +16,7 @@
                         if(isset($_COOKIE['subscribe'])):
                             $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
                             if(!$subscriber->getId()):
-                                Mage::getModel('newsletter/subscriber')->subscribe($email); ?>
+                                Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)->subscribe($email); ?>
                                 document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
                                 location.reload();
                             <?php endif; ?>
