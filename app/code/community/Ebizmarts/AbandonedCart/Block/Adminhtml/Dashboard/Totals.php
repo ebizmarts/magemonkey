@@ -10,6 +10,8 @@
 
 class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Adminhtml_Block_Dashboard_Bar
 {
+    protected $_rawTotals = array();
+
     /**
      *
      */
@@ -91,6 +93,14 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         $this->addTotal($this->__('Generated Shipping'), $totals->getShipping());
         $this->addTotal($this->__('Generated Orders'),$totals->getQuantity()*1,true);
         $this->addTotal($this->__('Generated Conv. Rate'),$convrate.'%',true);
+
+
+        $this->_rawTotals['generated_revenue']   = (float)$totals->getRevenue();
+        $this->_rawTotals['generated_tax']       = (float)$totals->getTax();
+        $this->_rawTotals['generated_shipping']  = (float)$totals->getShipping();
+        $this->_rawTotals['generated_orders']    = ($totals->getQuantity()*1);
+        $this->_rawTotals['generated_conv_rate'] = $convrate;
+
         // get Mandrill statistics
         if(Mage::helper('core')->isModuleEnabled('Ebizmarts_Mandrill')
             && (version_compare(Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version, '1.0.4', '>'))
@@ -139,6 +149,9 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 $this->addTotal($this->__('Emails Sent'), $_sent,true);
                 $this->addTotal($this->__('Emails Received'), $received,true);
 
+                $this->_rawTotals['emails_sent'] = (int)$_sent;
+                $this->_rawTotals['emails_received'] = (int)$aux;
+
                 //Emails Opened
                 if($_unique_opens > 0) {
                     $emailsOpened = $_unique_opens / $_sent*100;
@@ -149,6 +162,8 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 $opens = sprintf('%d (%2.2f%%)', $_unique_opens, $emailsOpened);
                 $this->addTotal($this->__('Emails Opened'),$opens,true);
 
+                $this->_rawTotals['emails_opened'] = (int)$_unique_opens;
+
                 //Emails Clicked
                 if($_unique_clicks > 0){
                     $emailsClicked = $_unique_clicks / $_unique_opens*100;
@@ -158,12 +173,15 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
 
                 $clicks = sprintf('%d (%2.2f%%)', $_unique_clicks, $emailsClicked);
                 $this->addTotal($this->__('Emails Clicked'), $clicks,true);
+
+                $this->_rawTotals['emails_clicked'] = (int)$_unique_clicks;
+
             }
         }
     }
 
     public function abandonedCartTotals() {
-        return $this->_totals;
+        return $this->_rawTotals;
     }
 
     /**
@@ -195,9 +213,6 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 break;
             case 'lifetime':
                 unset($general['stats']);
-
-                Mage::log($general);
-
                 return $general;
 
         }
@@ -208,4 +223,5 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         $particular = (array)$stats[$index];
         return $particular;
     }
+
 }

@@ -173,14 +173,8 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $stats = new stdClass();
 
-        $string = Mage::helper('core/string');
-
-        foreach($totals as $_t) {
-            $propName = strtolower( implode('_', $string->splitWords($_t['label'])) );
-
-            $propName = preg_replace('/[^A-Za-z0-9_]/', '', $propName);
-
-            $stats->{$propName} = $string->stripTags($_t['value']);
+        foreach($totals as $key => $value) {
+            $stats->{$key} = $value;
         }
 
         $this->_setSuccess(200, $stats);
