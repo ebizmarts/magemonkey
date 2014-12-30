@@ -205,7 +205,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $statsRet = array(
             'base_currency'          => Mage::helper('monkeyapi')->defaultCurrency(),
             'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : $sales->getLifetime(),
-            'lifetime_orders_qty'    => ($totals->getQuantity() * 1),
+            'period_orders_qty'    => ($totals->getQuantity() * 1),
             'lifetime_customers_qty' => Mage::getResourceModel('customer/customer_collection')->getSize(),
         );
 
