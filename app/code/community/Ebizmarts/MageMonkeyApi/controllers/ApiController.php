@@ -160,7 +160,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $post = $this->_jsonPayload();
 
         //Filters.
-        $filterPeriod = isset($post->period) ? $post->period : 'lifetime';
+        $filterPeriod = isset($post->period) ? $post->period : '24h';
         $this->getRequest()->setParam('period', $filterPeriod);
 
         $filterStoreID = isset($post->store) ? $post->store : null;
@@ -176,6 +176,8 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         foreach($totals as $key => $value) {
             $stats->{$key} = $value;
         }
+
+        $stats->base_currency = Mage::helper('monkeyapi')->defaultCurrency();
 
         $this->_setSuccess(200, $stats);
         return;
@@ -198,12 +200,8 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $collectionTotals = Mage::getResourceModel('reports/order_collection')->calculateTotals(false)->load();
         $totals = $collectionTotals->getFirstItem();
 
-        $currencyObj = new stdClass();
-        $currencyObj->code   = (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
-        $currencyObj->symbol = Mage::app()->getLocale()->currency($currencyObj->code)->getSymbol();
-
         $statsRet = array(
-            'base_currency'          => $currencyObj,
+            'base_currency'          => Mage::helper('monkeyapi')->defaultCurrency(),
             'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : $sales->getLifetime(),
             'lifetime_orders_qty'    => ($totals->getQuantity() * 1),
             'lifetime_customers_qty' => Mage::getResourceModel('customer/customer_collection')->getSize(),
