@@ -25,17 +25,7 @@
                 <?php elseif($this->_canCancel()): ?>
                     document.observe('keydown', function(evt){
                         if(evt.keyCode == 27) {
-                            <?php if(isset($_COOKIE['counter'])):
-                            //check cookie counter for customer id and check actual counter
-                            //if(counter en config == counter en db){?>
-                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
-                            //else{
-                            //add one to the counter
-                            //}
-                            <?php else:
-                            //create cookie counter in 0
-                            ?>
-                            <?php endif; ?>
+                            win.cancelCallback();
                         }
                     });
                 <?php endif; ?>
@@ -57,7 +47,30 @@
                         <?php else: ?>
                         cancelLabel: 'Close',
                         onCancel: function (win) {
+                            <?php if(isset($_COOKIE['counter'])):
+                            //check cookie counter for customer id and check actual counter
+                                $counterId = $_COOKIE['counter'];
+                                $counter = Mage::getModel('ebizmarts_abandonedcart/popup')->load($counterId);
+                                Mage::log('$counter', null, 'santiago.log', true);
+                                Mage::log($counter->getCounter(), null, 'santiago.log', true);
+                                Mage::log(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId()), null, 'santiago.log', true);
+                                //if(counter en config == counter en db){
+                                if($counter->getCounter()+1 >= Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId())): ?>
+                            document.cookie = 'counter=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
                             createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                                <?php else :
+                                $counter->setCounter(($counter->getCounter()+1));
+                                $counter->save();
+                                endif; ?>
+                            <?php else:
+                            //create cookie counter in 0
+                            $newCounter = Mage::getModel('ebizmarts_abandonedcart/popup');
+                            $newCounter->setCounter(1)->save();
+                            Mage::log('$newCounter', null, 'santiago.log', true);
+                            Mage::log($newCounter, null, 'santiago.log', true);
+                            ?>
+                            createCookie('counter='+<?php echo $newCounter->getId(); ?>, <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                            <?php endif; ?>
                         },
                         <?php endif; ?>
                         onOk: function (win) {
@@ -89,8 +102,8 @@
                 <?php else: ?>
                     Event.observe(window, 'load', function () {
                         $('overlay_modal').observe('click', function(){
-                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
                             win.close();
+                            win.cancelCallback();
                         });
                     });
                 <?php endif; ?>
@@ -108,7 +121,7 @@
             var cookieArr = cookie.split(';');
             var cookieStored = false;
             for(var i=0;i<cookieArr.length;i++){
-                if(cookieArr[i].indexOf('email=') >      -1){
+                if(cookieArr[i].indexOf('email=') > -1){
                     cookieStored = true;
                 }
             }

@@ -462,7 +462,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[This field depends on the next field configuration.]]></comment>
+                            <comment><![CDATA[This field is in days.]]></comment>
                             <depends>
                                 <popup_general separator=",">1</popup_general>
                                 <popup_cancel separator=",">1</popup_cancel>
