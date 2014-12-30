@@ -25,8 +25,17 @@
                 <?php elseif($this->_canCancel()): ?>
                     document.observe('keydown', function(evt){
                         if(evt.keyCode == 27) {
-                            //if(counter en config == counter en db)
-                                createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                            <?php if(isset($_COOKIE['counter'])):
+                            //check cookie counter for customer id and check actual counter
+                            //if(counter en config == counter en db){?>
+                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                            //else{
+                            //add one to the counter
+                            //}
+                            <?php else:
+                            //create cookie counter in 0
+                            ?>
+                            <?php endif; ?>
                         }
                     });
                 <?php endif; ?>

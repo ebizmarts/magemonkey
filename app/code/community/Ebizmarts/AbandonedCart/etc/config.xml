@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.29</version>
+            <version>0.1.30</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -74,6 +74,9 @@
                     <mailssent>
                         <table>magemonkey_mails_sent</table>
                     </mailssent>
+                    <popup>
+                        <table>ebizmarts_abandonedcart_popup</table>
+                    </popup>
                 </entities>
             </ebizmarts_abandonedcart_resource>
         </models>
