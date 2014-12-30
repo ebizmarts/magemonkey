@@ -157,14 +157,8 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             return;
         }
 
-        $post = $this->_jsonPayload();
-
         //Filters.
-        $filterPeriod = isset($post->period) ? $post->period : '24h';
-        $this->getRequest()->setParam('period', $filterPeriod);
-
-        $filterStoreID = isset($post->store) ? $post->store : null;
-        $this->getRequest()->setParam('store', $filterStoreID);
+        $this->_setFilters();
 
         $block = new Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals;
         $block->setLayout( (new Mage_Core_Model_Layout()) );
@@ -194,10 +188,18 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             return;
         }
 
-        $collection = Mage::getResourceModel('reports/order_collection')->calculateSales(false)->load();
+        //Filters.
+        $this->_setFilters();
+
+        $isFilter = is_null($this->getRequest()->getParam('store', null)) ? 0 : 1;
+
+        $collection = Mage::getResourceModel('reports/order_collection')->calculateSales($isFilter)->load();
         $sales      = $collection->getFirstItem();
 
-        $collectionTotals = Mage::getResourceModel('reports/order_collection')->calculateTotals(false)->load();
+        $collectionTotals = Mage::getResourceModel('reports/order_collection')
+            ->addCreateAtPeriodFilter($this->getRequest()->getParam('period', null))
+            ->calculateTotals($isFilter)
+            ->load();
         $totals = $collectionTotals->getFirstItem();
 
         $statsRet = array(
@@ -303,5 +305,15 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
     }
 
+    private function _setFilters() {
+        $post = $this->_jsonPayload();
+
+        //Filters.
+        $filterPeriod = isset($post->period) ? $post->period : '24h';
+        $this->getRequest()->setParam('period', $filterPeriod);
+
+        $filterStoreID = isset($post->store) ? $post->store : null;
+        $this->getRequest()->setParam('store', $filterStoreID);
+    }
 
 }
