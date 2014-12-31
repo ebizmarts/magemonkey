@@ -11,6 +11,11 @@ class Ebizmarts_MageMonkeyApi_Helper_Data extends Mage_Core_Helper_Abstract {
         return sprintf("%.1f", $time);
     }
 
+    public function formatFloat($time) {
+        $time  = floor($time*10.0)/10.0;
+        return sprintf("%.2f", $time);
+    }
+
     public function defaultCurrency() {
         $currencyObj = new stdClass();
         $currencyObj->code   = (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
