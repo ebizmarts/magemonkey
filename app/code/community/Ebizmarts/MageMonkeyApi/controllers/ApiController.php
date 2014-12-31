@@ -172,6 +172,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         }
 
         $stats->base_currency = Mage::helper('monkeyapi')->defaultCurrency();
+        $stats->period = $this->getRequest()->getParam('period');
 
         $this->_setSuccess(200, $stats);
         return;
@@ -196,17 +197,26 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $collection = Mage::getResourceModel('reports/order_collection')->calculateSales($isFilter)->load();
         $sales      = $collection->getFirstItem();
 
+        $period = $this->getRequest()->getParam('period');
+        if($period == 'lifetime')
+            $period = '2y';
+
         $collectionTotals = Mage::getResourceModel('reports/order_collection')
-            ->addCreateAtPeriodFilter($this->getRequest()->getParam('period', null))
+            ->addCreateAtPeriodFilter($period)
             ->calculateTotals($isFilter)
             ->load();
         $totals = $collectionTotals->getFirstItem();
 
         $statsRet = array(
+            'period'                 => $period,
             'base_currency'          => Mage::helper('monkeyapi')->defaultCurrency(),
-            'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : $sales->getLifetime(),
-            'period_orders_qty'    => ($totals->getQuantity() * 1),
+            'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : Mage::helper('monkeyapi')->formatFloat($sales->getLifetime()),
+            'average_sales'          => is_null($sales->getAverage()) ? "0.00" : Mage::helper('monkeyapi')->formatFloat($sales->getAverage()),
             'lifetime_customers_qty' => Mage::getResourceModel('customer/customer_collection')->getSize(),
+            'period_orders_qty'      => ($totals->getQuantity() * 1),
+            'period_revenue'         => Mage::helper('monkeyapi')->formatFloat($totals->getRevenue()),
+            'period_tax'             => Mage::helper('monkeyapi')->formatFloat($totals->getTax()),
+            'period_shipping'        => Mage::helper('monkeyapi')->formatFloat($totals->getShipping()),
         );
 
         $this->_setSuccess(200, $statsRet);
