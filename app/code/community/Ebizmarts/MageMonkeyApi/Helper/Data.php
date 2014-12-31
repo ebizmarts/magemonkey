@@ -11,9 +11,8 @@ class Ebizmarts_MageMonkeyApi_Helper_Data extends Mage_Core_Helper_Abstract {
         return sprintf("%.1f", $time);
     }
 
-    public function formatFloat($time) {
-        $time  = floor($time*10.0)/10.0;
-        return sprintf("%.2f", $time);
+    public function formatFloat($float) {
+        return 0.01 * (int)($float*100);
     }
 
     public function defaultCurrency() {
