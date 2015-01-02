@@ -209,20 +209,25 @@ class Ebizmarts_AbandonedCart_Model_Cron
                             //$templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
                             // create a new coupon
                             if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AUTOMATIC) == 2) {
+                                Mage::log('first', null, 'santiago.log', true);
                                 list($couponcode, $discount, $toDate) = $this->_createNewCoupon($store, $email);
+                                $url .= '&coupon='.$couponcode;
+                                Mage::log($url, null, 'santiago.log', true);
                                 $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode, 'discount' => $discount,
                                     'todate' => $toDate, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
                             } else {
+                                Mage::log('else', null, 'santiago.log', true);
                                 $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_CODE);
+                                $url .= '&coupon='.$couponcode;
                                 $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
                             }
                         } else {
                             //$templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
                             $vars = array('quote' => $quote, 'url' => $url, 'unsubscribeurl' => $unsubscribeUrl, 'tags' => array($mandrillTag));
-
                         }
                         Mage::app()->getTranslator()->init('frontend', true);
                         $translate = Mage::getSingleton('core/translate');
+                        Mage::log($vars['url'], null, 'santiago.log', true);
                         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $store);
                         $translate->setTranslateInLine(true);
                         $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter() + 1);
