@@ -181,7 +181,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         }
         else
-            $statsRet = $this->abandonedcartstats();
+            $statsRet = array($this->abandonedcartstats());
 
         $this->_setSuccess(200, $statsRet);
         return;
@@ -247,7 +247,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         }
         else
-            $statsRet = $this->magentostats();
+            $statsRet = array($this->magentostats());
 
         $this->_setSuccess(200, $statsRet);
         return;
