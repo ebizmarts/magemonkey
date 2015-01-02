@@ -260,14 +260,44 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $collection = Mage::getResourceModel('reports/order_collection')->calculateSales($isFilter)->load();
         $sales      = $collection->getFirstItem();
 
-        $period = is_null($periodParam) ? $this->getRequest()->getParam('period') : $periodParam;
-        if($period == 'lifetime')
-            $period = '2y';
+        $collectionTotals = Mage::getResourceModel('reports/order_collection');
 
-        $collectionTotals = Mage::getResourceModel('reports/order_collection')
-            ->addCreateAtPeriodFilter($period)
-            ->calculateTotals($isFilter)
-            ->load();
+        $period = is_null($periodParam) ? $this->getRequest()->getParam('period') : $periodParam;
+        if($period == 'lifetime') {
+            //$rcoll = Mage::getResourceModel('reports/order_collection');
+
+            $_firstOrder = Mage::getResourceModel('sales/order_grid_collection')
+                            ->setOrder('created_at', 'ASC')
+                            ->setPageSize(1)
+                            ->load()
+                            ->getFirstItem();
+
+            $customStart = Mage::app()->getLocale()->date($_firstOrder->getCreatedAt());
+            $customStart->setHour(0);
+            $customStart->setMinute(0);
+            $customStart->setSecond(0);
+            $customStart->setTimezone('Etc/UTC');
+
+            $lifetimeRange   = $collectionTotals->getDateRange('custom', $customStart, 0, true);
+            list($from, $to) = $lifetimeRange;
+
+            $collectionTotals->checkIsLive('2y');
+
+            if ($collectionTotals->isLive())
+                $fieldToFilter = 'created_at';
+            else
+                $fieldToFilter = 'period';
+
+            $collectionTotals->addFieldToFilter($fieldToFilter, array(
+                'from'  => $from->toString(Varien_Date::DATETIME_INTERNAL_FORMAT),
+                'to'    => $to->toString(Varien_Date::DATETIME_INTERNAL_FORMAT)
+            ));
+
+        }
+        else
+            $collectionTotals->addCreateAtPeriodFilter($period);
+
+        $collectionTotals->calculateTotals($isFilter)->load();
         $totals = $collectionTotals->getFirstItem();
 
         return array(
