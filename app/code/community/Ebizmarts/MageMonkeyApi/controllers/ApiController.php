@@ -152,6 +152,16 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
      */
     public function abandonedcartstatsAction() {
 
+        /*
+        Available filters:
+        24h - Last 24 hours
+        7d - Last 7 days
+        30d - Last 30 days
+        60d - Last 60 days
+        90d - Last 90 days
+        lifetime - Lifetime
+        */
+
         if( !$this->getRequest()->isPost() ) {
             $this->_setClientError(405, 4052);
             return;
@@ -184,6 +194,18 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
      */
     public function magentostatsAction() {
 
+        /*
+        Available filters:
+        24h - Last 24 hours
+        7d - Last 7 days
+        1m - Current Month
+        1y - YTD
+        2y - 2YTD
+        */
+
+        /*@TODO: Implement `lifetime` for this resource.
+        @see Mage_Reports_Model_Resource_Order_Collection*/
+
         if( !$this->getRequest()->isPost() ) {
             $this->_setClientError(405, 4051);
             return;
@@ -192,12 +214,31 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         //Filters.
         $this->_setFilters();
 
+        $periodFilter = $this->getRequest()->getParam('period');
+
+        if(is_array($periodFilter)) {
+
+            $statsRet = array();
+
+            foreach($periodFilter as $_period)
+                array_push($statsRet, $this->magentostats($_period));
+
+        }
+        else
+            $statsRet = $this->magentostats();
+
+        $this->_setSuccess(200, $statsRet);
+        return;
+
+    }
+
+    private function magentostats($periodParam = null) {
         $isFilter = is_null($this->getRequest()->getParam('store', null)) ? 0 : 1;
 
         $collection = Mage::getResourceModel('reports/order_collection')->calculateSales($isFilter)->load();
         $sales      = $collection->getFirstItem();
 
-        $period = $this->getRequest()->getParam('period');
+        $period = is_null($periodParam) ? $this->getRequest()->getParam('period') : $periodParam;
         if($period == 'lifetime')
             $period = '2y';
 
@@ -207,7 +248,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             ->load();
         $totals = $collectionTotals->getFirstItem();
 
-        $statsRet = array(
+        return array(
             'period'                 => $period,
             'base_currency'          => Mage::helper('monkeyapi')->defaultCurrency(),
             'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : Mage::helper('monkeyapi')->formatFloat($sales->getLifetime()),
@@ -218,10 +259,6 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             'period_tax'             => Mage::helper('monkeyapi')->formatFloat($totals->getTax()),
             'period_shipping'        => Mage::helper('monkeyapi')->formatFloat($totals->getShipping()),
         );
-
-        $this->_setSuccess(200, $statsRet);
-        return;
-
     }
 
     /**
