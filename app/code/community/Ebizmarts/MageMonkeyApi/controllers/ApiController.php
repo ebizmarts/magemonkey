@@ -247,20 +247,30 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         foreach($websiteColl as $_w) {
 
             $_wInfo = array(
-              'website_name'    => $_w->getName(),
-              'store_name'      => $_w->getGroupTitle(),
-              'store_view_name' => $_w->getStoreTitle(),
-              'store_id'        => (int)$_w->getStoreId(),
+              'store_id'         => (int)$_w->getStoreId(),
+              'store_name'       => $_w->getGroupTitle(),
+              'store_view_name'  => $_w->getStoreTitle(),
+              'store_is_default' => (int)((int)$_w->getDefaultGroupId() == (int)$_w->getStoreId()),
             );
 
-            array_push($websiteRet, $_wInfo);
+            if(!array_key_exists($_w->getWebsiteId(), $websiteRet)) {
+                $websiteRet[$_w->getWebsiteId()] = array(
+                    'website_id'         => (int) $_w->getWebsiteId(),
+                    'website_name'       => $_w->getName(),
+                    'website_code'       => $_w->getCode(),
+                    'website_is_default' => (int) $_w->getIsDefault(),
+                    );
+                $websiteRet[$_w->getWebsiteId()]['stores'] = array();
+            }
+
+            $websiteRet[$_w->getWebsiteId()]['stores'][] = $_wInfo;
 
         }
 
         $websiteInfo = array(
           'magento_edition'    => $edition,
           'magento_version'    => Mage::getVersion(),
-          'magento_websites'   => $websiteRet,
+          'magento_websites'   => array_values($websiteRet),
           'magemonkey_version' => (string) Mage::getConfig()->getNode('modules/Ebizmarts_MageMonkey/version')
         );
 
