@@ -225,9 +225,6 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         2y - 2YTD
         */
 
-        /*@TODO: Implement `lifetime` for this resource.
-        @see Mage_Reports_Model_Resource_Order_Collection*/
-
         if( !$this->getRequest()->isPost() ) {
             $this->_setClientError(405, 4051);
             return;
