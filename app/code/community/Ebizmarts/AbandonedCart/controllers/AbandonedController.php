@@ -22,11 +22,17 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
         {
             //restore the quote
 //            Mage::log($params['id']);
-
             $quote = Mage::getModel('sales/quote')->load($params['id']);
-            if(!isset($params['token']) || (isset($params['token'])&&$params['token']!=$quote->getEbizmartsAbandonedcartToken())) {
+            $url = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::PAGE,$quote->getStoreId());
+            if(isset($params['coupon'])){
+                Mage::log('params[coupon]', null, 'santiago.log', true);
+                Mage::log($params['coupon'], null, 'santiago.log', true);
+                $quote->setCouponCode($params['coupon']);
+                $quote->save();
+            }
+            if((!isset($params['token']) || (isset($params['token'])&&$params['token']!=$quote->getEbizmartsAbandonedcartToken())) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AUTOLOGIN, $quote->getStoreId())) {
                 Mage::getSingleton('customer/session')->addNotice("Your token cart is incorrect");
-                $this->_redirect('/');
+                $this->_redirect($url);
             }
             else {
                 $url = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::PAGE,$quote->getStoreId());

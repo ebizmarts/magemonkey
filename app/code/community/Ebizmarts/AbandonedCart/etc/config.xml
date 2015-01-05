@@ -211,8 +211,8 @@
                 <popup_general>1</popup_general>
                 <popup_cancel>1</popup_cancel>
                 <popup_subscription>1</popup_subscription>
-                <popup_heading>Send us your email!</popup_heading>
-                <popup_text>Put your email here for us to get to know you and personalize your service.</popup_text>
+                <popup_heading>Welcome to our store!</popup_heading>
+                <popup_text>Please enter your email address to get the most of our store and improve your shopping experience.</popup_text>
                 <popup_width>410</popup_width>
                 <popup_cookie_time>1</popup_cookie_time>
             </catchpopup>
