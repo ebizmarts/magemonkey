@@ -62,6 +62,10 @@
                 <code>4005</code>
                 <message><![CDATA[Please specify the device id (uuid).]]></message>
             </code_4005>
+            <code_4006>
+                <code>4006</code>
+                <message><![CDATA[Record not found.]]></message>
+            </code_4006>
             <code_4051>
                 <code>4051</code>
                 <message><![CDATA[Only POST requests.]]></message>
