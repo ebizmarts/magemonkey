@@ -16,8 +16,12 @@ class Ebizmarts_MageMonkeyApi_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 
     public function defaultCurrency() {
+        return $this->currency((string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE));
+    }
+
+    public function currency($code) {
         $currencyObj = new stdClass();
-        $currencyObj->code   = (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
+        $currencyObj->code   = $code;
         $currencyObj->symbol = Mage::app()->getLocale()->currency($currencyObj->code)->getSymbol();
 
         return $currencyObj;
