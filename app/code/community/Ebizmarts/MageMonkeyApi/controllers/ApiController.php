@@ -70,7 +70,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $log->setHttpParams(json_encode(array_merge($rawBodyEnc, $allParams)));
 
-        $log->setCallMethod($this->getRequest()->getActionName());
+        $log->setCallMethod($this->getRequest()->getControllerName() . '/' . $this->getRequest()->getActionName());
 
         $log->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr(false));
 
@@ -302,7 +302,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             'base_currency'          => Mage::helper('monkeyapi')->defaultCurrency(),
             'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : Mage::helper('monkeyapi')->formatFloat($sales->getLifetime()),
             'average_sales'          => is_null($sales->getAverage()) ? "0.00" : Mage::helper('monkeyapi')->formatFloat($sales->getAverage()),
-            'lifetime_customers_qty' => Mage::getResourceModel('customer/customer_collection')->getSize(),
+            'lifetime_customers_qty' => Mage::getResourceModel('customer/customer_collection')->getSize(),//@ToDo: period_customers_qty
             'period_orders_qty'      => ($totals->getQuantity() * 1),
             'period_revenue'         => Mage::helper('monkeyapi')->formatFloat($totals->getRevenue()),
             'period_tax'             => Mage::helper('monkeyapi')->formatFloat($totals->getTax()),
@@ -364,7 +364,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         return;
     }
 
-    private function _jsonPayload() {
+    protected function _jsonPayload() {
         $payload = $this->getRequest()->getRawBody();
 
         $data = json_decode($payload);
@@ -376,21 +376,21 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         return $data;
     }
 
-    private function _setSuccess($httpCode, $content) {
+    protected function _setSuccess($httpCode, $content) {
         return $this->getResponse()
             ->setHeader('Content-type', 'application/json', true)
             ->setHttpResponseCode($httpCode)
             ->setBody(json_encode($content));
     }
 
-    private function _setClientError($httpCode, $code) {
+    protected function _setClientError($httpCode, $code) {
         return $this->getResponse()
             ->setHeader('Content-type', 'application/json', true)
             ->setHttpResponseCode($httpCode)
             ->setBody($this->_error($code));
     }
 
-    private function _error($code) {
+    protected function _error($code) {
 
         $message = '';
 
