@@ -377,6 +377,11 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         return;
     }
 
+    public function customersAction() {
+        $this->_forward('index', 'api_customers', null, $this->_httpParams());
+        return;
+    }
+
     protected function _jsonPayload() {
         $payload = $this->getRequest()->getRawBody();
 
