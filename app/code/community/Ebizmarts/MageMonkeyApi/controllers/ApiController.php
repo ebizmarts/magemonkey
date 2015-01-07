@@ -64,16 +64,13 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $log->setHttpUserAgent(Mage::helper('core/http')->getHttpUserAgent(true));
 
-        $bodyRaw    = json_decode($this->getRequest()->getRawBody());
-        $rawBodyEnc = array($bodyRaw);
-        $allParams  = $this->getRequest()->getParams();
-
-        $log->setHttpParams(json_encode(array_merge($rawBodyEnc, $allParams)));
+        $log->setHttpParams(json_encode($this->_httpParams()));
 
         $log->setCallMethod($this->getRequest()->getControllerName() . '/' . $this->getRequest()->getActionName());
 
         $log->setRemoteAddr(Mage::helper('core/http')->getRemoteAddr(false));
 
+        $bodyRaw = json_decode($this->getRequest()->getRawBody());
         if($bodyRaw !== false && is_object($bodyRaw))
             $log->setUuid($bodyRaw->uuid);
 
@@ -93,6 +90,17 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $log->setCallTime($this->_end-$this->_start)->save();
 
         return $this;
+    }
+
+    /**
+     * return array
+     */
+    protected function _httpParams() {
+        $bodyRaw    = json_decode($this->getRequest()->getRawBody());
+        $rawBodyEnc = array($bodyRaw);
+        $allParams  = $this->getRequest()->getParams();
+
+        return array_merge($rawBodyEnc, $allParams);
     }
 
     /**
@@ -361,6 +369,11 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         );
 
         $this->_setSuccess(200, $websiteInfo);
+        return;
+    }
+
+    public function ordersAction() {
+        $this->_forward('index', 'api_orders', null, $this->_httpParams());
         return;
     }
 
