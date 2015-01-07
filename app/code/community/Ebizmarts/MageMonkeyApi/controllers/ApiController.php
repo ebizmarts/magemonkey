@@ -155,6 +155,26 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         }
     }
 
+    public function dashboardAction() {
+        if( !$this->getRequest()->isPost() ) {
+            $this->_setClientError(405, 4052);
+            return;
+        }
+
+        $this->_setFilters();
+
+        $periodFilter = $this->getRequest()->getParam('period');
+
+        $acStats   = $this->_abandonedcartstats($periodFilter);
+        $mageStats = $this->_magentostats($periodFilter);
+
+        $statsRet  = array_merge($acStats, $mageStats);
+
+        $this->_setSuccess(200, $statsRet);
+        return;
+
+    }
+
     /**
      * Abandoned Carts statistics.
      */
@@ -180,6 +200,14 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $periodFilter = $this->getRequest()->getParam('period');
 
+        $statsRet = $this->_abandonedcartstats($periodFilter);
+
+        $this->_setSuccess(200, $statsRet);
+        return;
+
+    }
+
+    protected function _abandonedcartstats($periodFilter) {
         if(is_array($periodFilter)) {
 
             $statsRet = array();
@@ -191,9 +219,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         else
             $statsRet = array($this->abandonedcartstats());
 
-        $this->_setSuccess(200, $statsRet);
-        return;
-
+        return $statsRet;
     }
 
     private function abandonedcartstats($periodParam = null) {
@@ -215,6 +241,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $stats->base_currency = Mage::helper('monkeyapi')->defaultCurrency();
         $stats->period = $this->getRequest()->getParam('period');
+        $stats->type   = 'abandonedcartstats';
 
         return $stats;
     }
@@ -243,6 +270,14 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $periodFilter = $this->getRequest()->getParam('period');
 
+        $statsRet = $this->_magentostats($periodFilter);
+
+        $this->_setSuccess(200, $statsRet);
+        return;
+
+    }
+
+    protected function _magentostats($periodFilter) {
         if(is_array($periodFilter)) {
 
             $statsRet = array();
@@ -254,9 +289,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         else
             $statsRet = array($this->magentostats());
 
-        $this->_setSuccess(200, $statsRet);
-        return;
-
+        return $statsRet;
     }
 
     private function magentostats($periodParam = null) {
@@ -306,7 +339,6 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         $totals = $collectionTotals->getFirstItem();
 
         return array(
-            'period'                 => $period,
             'base_currency'          => Mage::helper('monkeyapi')->defaultCurrency(),
             'lifetime_sales'         => is_null($sales->getLifetime()) ? "0.00" : Mage::helper('monkeyapi')->formatFloat($sales->getLifetime()),
             'average_sales'          => is_null($sales->getAverage()) ? "0.00" : Mage::helper('monkeyapi')->formatFloat($sales->getAverage()),
@@ -315,6 +347,8 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             'period_revenue'         => Mage::helper('monkeyapi')->formatFloat($totals->getRevenue()),
             'period_tax'             => Mage::helper('monkeyapi')->formatFloat($totals->getTax()),
             'period_shipping'        => Mage::helper('monkeyapi')->formatFloat($totals->getShipping()),
+            'period'                 => $period,
+            'type'                   => 'magentostats'
         );
     }
 
