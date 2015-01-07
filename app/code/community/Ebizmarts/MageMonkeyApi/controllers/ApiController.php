@@ -155,26 +155,6 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
         }
     }
 
-    public function dashboardAction() {
-        if( !$this->getRequest()->isPost() ) {
-            $this->_setClientError(405, 4052);
-            return;
-        }
-
-        $this->_setFilters();
-
-        $periodFilter = $this->getRequest()->getParam('period');
-
-        $acStats   = $this->_abandonedcartstats($periodFilter);
-        $mageStats = $this->_magentostats($periodFilter);
-
-        $statsRet  = array_merge($acStats, $mageStats);
-
-        $this->_setSuccess(200, $statsRet);
-        return;
-
-    }
-
     /**
      * Abandoned Carts statistics.
      */
@@ -241,9 +221,30 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
 
         $stats->base_currency = Mage::helper('monkeyapi')->defaultCurrency();
         $stats->period = $this->getRequest()->getParam('period');
-        $stats->type   = 'abandonedcartstats';
 
         return $stats;
+    }
+
+    public function dashboardAction() {
+        if( !$this->getRequest()->isPost() ) {
+            $this->_setClientError(405, 4052);
+            return;
+        }
+
+        $this->_setFilters();
+
+        $this->getRequest()->setParam('period', array(
+        '24h', '7d', '1m', '1y', '2y'
+        ));
+
+        $periodFilter = $this->getRequest()->getParam('period');
+
+        $ret = array();
+        $ret['periods'] = $this->_magentostats($periodFilter);
+
+        $this->_setSuccess(200, $ret);
+        return;
+
     }
 
     /**
@@ -347,8 +348,7 @@ class Ebizmarts_MageMonkeyApi_ApiController extends Mage_Core_Controller_Front_A
             'period_revenue'         => Mage::helper('monkeyapi')->formatFloat($totals->getRevenue()),
             'period_tax'             => Mage::helper('monkeyapi')->formatFloat($totals->getTax()),
             'period_shipping'        => Mage::helper('monkeyapi')->formatFloat($totals->getShipping()),
-            'period'                 => $period,
-            'type'                   => 'magentostats'
+            'period'                 => $period
         );
     }
 
