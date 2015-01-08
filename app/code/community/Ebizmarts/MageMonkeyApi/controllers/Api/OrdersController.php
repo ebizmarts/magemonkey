@@ -35,11 +35,11 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 
 			if($direction == 'before') {
 				$orderCollection->addFieldToFilter('updated_at', array('lteq' => $post->updated_at));
-				$orderCollection->setOrder('updated_at', 'ASC');
+				$orderCollection->setOrder('updated_at', 'DESC');
 			}
 			elseif($direction == 'after') {
 				$orderCollection->addFieldToFilter('updated_at', array('gteq' => $post->updated_at));
-				$orderCollection->setOrder('updated_at', 'DESC');
+				$orderCollection->setOrder('updated_at', 'ASC');
 			}
 
 			$orderCollection->setPageSize(50)->load();
