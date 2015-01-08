@@ -28,17 +28,17 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 
 			$post = $this->_jsonPayload();
 
-			$updatedAt = Mage::getModel('core/date')->gmtDate('Y-m-d H:i:s', $post->updated_at);
+			//$updatedAt = Mage::getModel('core/date')->gmtDate('Y-m-d H:i:s', $post->updated_at);
 			$direction = $post->direction; //before or after
 
 			$orderCollection = Mage::getResourceModel('sales/order_collection');
 
 			if($direction == 'before') {
-				$orderCollection->addFieldToFilter('updated_at', array('lteq' => $updatedAt));
+				$orderCollection->addFieldToFilter('updated_at', array('lteq' => $post->updated_at));
 				$orderCollection->setOrder('updated_at', 'ASC');
 			}
 			elseif($direction == 'after') {
-				$orderCollection->addFieldToFilter('updated_at', array('gteq' => $updatedAt));
+				$orderCollection->addFieldToFilter('updated_at', array('gteq' => $post->updated_at));
 				$orderCollection->setOrder('updated_at', 'DESC');
 			}
 
