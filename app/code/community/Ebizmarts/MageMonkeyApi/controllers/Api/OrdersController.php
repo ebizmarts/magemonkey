@@ -26,8 +26,10 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 		}
 		else {
 
-			$updatedAt = Mage::getModel('core/date')->gmtDate('Y-m-d H:i:s', $this->getRequest()->getParam('updated_at'));
-			$direction = $this->getRequest()->getParam('direction'); //before or after
+			$post = $this->_jsonPayload();
+
+			$updatedAt = Mage::getModel('core/date')->gmtDate('Y-m-d H:i:s', $post->updated_at);
+			$direction = $post->direction; //before or after
 
 			$orderCollection = Mage::getResourceModel('sales/order_collection');
 
@@ -41,6 +43,8 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 			}
 
 			$orderCollection->setPageSize(50)->load();
+
+			Mage::log((string)$orderCollection->getSelect(), null, 'sql.log', true);
 
 			$ret = array();
 
