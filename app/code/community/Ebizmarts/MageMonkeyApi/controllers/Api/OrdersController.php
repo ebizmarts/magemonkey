@@ -31,6 +31,8 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 			//$updatedAt = Mage::getModel('core/date')->gmtDate('Y-m-d H:i:s', $post->updated_at);
 			$direction = $post->direction; //before or after
 
+			$limit = (($post->limit > 50) ? 50 : $post->limit);
+
 			$orderCollection = Mage::getResourceModel('sales/order_collection');
 
 			if($direction == 'before') {
@@ -42,7 +44,7 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 				$orderCollection->setOrder('updated_at', 'ASC');
 			}
 
-			$orderCollection->setPageSize(50)->load();
+			$orderCollection->setPageSize($limit)->load();
 
 			Mage::log((string)$orderCollection->getSelect(), null, 'sql.log', true);
 
@@ -66,7 +68,6 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 	                        'created_at'           => $order->getCreatedAt(),
 	                        'updated_at'           => $order->getUpdatedAt(),
 	                        "store_id"             => (int)$order->getStoreId(),
-	                        "store_name"           => $order->getStoreName(),
 	                        "customer_id"          => (int)$order->getCustomerId(),
 	                        "base_subtotal"        => (float)$order->getBaseSubtotal(),
 	                        "subtotal"             => (float)$order->getSubtotal(),
