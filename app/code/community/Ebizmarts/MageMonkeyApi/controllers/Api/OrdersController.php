@@ -26,7 +26,7 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 		}
 		else {
 
-			$updatedAt = Mage::getModel('core/date')->gmtDate('Y-n-d H:i:s', $this->getRequest()->getParam('updated_at'));
+			$updatedAt = Mage::getModel('core/date')->gmtDate('Y-m-d H:i:s', $this->getRequest()->getParam('updated_at'));
 			$direction = $this->getRequest()->getParam('direction'); //before or after
 
 			$orderCollection = Mage::getResourceModel('sales/order_collection');
