@@ -26,12 +26,21 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 		}
 		else {
 
-			$orderCollection = Mage::getResourceModel('sales/order_collection')
-			->setPageSize(5)
-			->setOrder('created_at', 'DESC')
-			->load();
+			$updatedAt = Mage::getModel('core/date')->gmtDate('Y-n-d H:i:s', $this->getRequest()->getParam('updated_at'));
+			$direction = $this->getRequest()->getParam('direction'); //before or after
 
-			//echo (string)$orderCollection->getSelect();
+			$orderCollection = Mage::getResourceModel('sales/order_collection');
+
+			if($direction == 'before') {
+				$orderCollection->addFieldToFilter('updated_at', array('lteq' => $updatedAt));
+				$orderCollection->setOrder('updated_at', 'ASC');
+			}
+			elseif($direction == 'after') {
+				$orderCollection->addFieldToFilter('updated_at', array('gteq' => $updatedAt));
+				$orderCollection->setOrder('updated_at', 'DESC');
+			}
+
+			$orderCollection->setPageSize(50)->load();
 
 			$ret = array();
 
