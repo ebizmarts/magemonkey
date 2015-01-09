@@ -31,7 +31,9 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 			//$updatedAt = Mage::getModel('core/date')->gmtDate('Y-m-d H:i:s', $post->updated_at);
 			$direction = $post->direction; //before or after
 
-			$limit = (($post->limit > 50) ? 50 : $post->limit);
+			$maxLimit = 1000;
+
+			$limit = (($post->limit > $maxLimit) ? 50 : $post->limit);
 
 			$orderCollection = Mage::getResourceModel('sales/order_collection');
 
