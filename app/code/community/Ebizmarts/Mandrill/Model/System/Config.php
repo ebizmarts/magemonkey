@@ -10,5 +10,6 @@ class Ebizmarts_Mandrill_Model_System_Config
 {
     const ENABLE        = 'mandrill/general/active';
     const APIKEY        = 'mandrill/general/apikey';
+    const SUBACCOUNT    = 'mandrill/general/subaccount';
     const ENABLE_LOG    = 'mandrill/general/enable_log';
 }
