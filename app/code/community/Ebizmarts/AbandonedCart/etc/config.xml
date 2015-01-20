@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.29</version>
+            <version>0.1.30</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -74,6 +74,9 @@
                     <mailssent>
                         <table>magemonkey_mails_sent</table>
                     </mailssent>
+                    <popup>
+                        <table>ebizmarts_abandonedcart_popup</table>
+                    </popup>
                 </entities>
             </ebizmarts_abandonedcart_resource>
         </models>
@@ -215,6 +218,7 @@
                 <popup_text>Please enter your email address to get the most of our store and improve your shopping experience.</popup_text>
                 <popup_width>410</popup_width>
                 <popup_cookie_time>1</popup_cookie_time>
+                <popup_insist>1</popup_insist>
             </catchpopup>
         </ebizmarts_abandonedcart>
     </default>
