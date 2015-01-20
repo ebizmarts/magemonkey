@@ -1,6 +1,21 @@
 <?php $product = $this->getProduct(); ?>
 <table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #EAEAEA;">
     <?php if($product): ?>
+        <?php if($product->getImage()=="no_selection"&&$product->getTypeId() == "configurable") {
+            $conf = Mage::getModel('catalog/product_type_configurable')->setProduct($product);
+            $simple_collection = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
+            foreach ($simple_collection as $simple_product) {
+                echo $simple_product->getSku() . " - " . $simple_product->getName() . " - " . Mage::helper('core')->currency($simple_product->getPrice()) . "\n";
+                if ($simple_product->getImage() != "no_selection") {
+                    $imageUrl = $simple_product->getThumbnailUrl();
+                    break;
+                }
+            }
+        }
+        else {
+            $imageUrl = $product->getThumbnailUrl();
+        }
+        ?>
     <tr>
         <?php $parentId = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
               if(isset($parentId[0])) {
@@ -10,7 +25,7 @@
 
         <td valign="top" align="left" style="padding:3px 9px">
             <a href="<?php echo $product->getProductUrl(); ?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>" target="_blank">
-                <img src="<?php echo $product->getThumbnailUrl();?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>"/>
+                <img src="<?php echo $imageUrl;?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>"/>
             </a>
         </td>
         <td valign="top" align="left" style="padding:3px 9px">

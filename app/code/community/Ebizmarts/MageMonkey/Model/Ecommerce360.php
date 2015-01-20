@@ -71,7 +71,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	public function saveCookie(Varien_Event_Observer $observer)
 	{
 		if( $this->isActive() ){
-			$request = Mage::app()->getRequest();
+            $request = Mage::app()->getRequest();
 
 			$thirty_days = time()+60*60*24*30;
 	        if ( $request->getParam('mc_cid') ){
@@ -92,10 +92,12 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
 	public function run(Varien_Event_Observer $observer)
 	{
+        Mage::log('run', null, 'santiago.log', true);
         $order = $observer->getEvent()->getOrder();
 		if ( ( ($this->_getCampaignCookie() &&
 				$this->_getEmailCookie()) || Mage::helper('monkey')->config('ecommerce360') == 2 ) &&
 					$this->isActive() ){
+            Mage::log('logSale', null, 'santiago.log', true);
 			$this->logSale($order);
 		}
 		return $observer;

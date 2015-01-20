@@ -47,7 +47,10 @@ class Ebizmarts_MageMonkey_Model_Observer
                 $saveOnDb = Mage::helper('monkey')->config('checkout_async');
                 Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
             } else {
-                Mage::helper('monkey')->subscribeToList($subscriber, 0);
+                $post = Mage::app()->getRequest()->getPost();
+                if(isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || !isset($post['magemonkey_subscribe'])) {
+                    Mage::helper('monkey')->subscribeToList($subscriber, 0);
+                }
             }
 
             Mage::getSingleton('core/session')->setIsHandleSubscriber(FALSE);
@@ -152,12 +155,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		}
 
-		if(!$selectedLists)
-		{
-			$message = Mage::helper('monkey')->__('There is no List selected please save the configuration again');
-			Mage::getSingleton('adminhtml/session')->addWarning($message);
-		}
-
 		if(isset($post['groups']['general']['fields']['additional_lists']['value']))
 		{
 			$additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
@@ -170,7 +167,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 			}
 		}
 
-		if(is_array($additionalLists)){
+        if(!$selectedLists[0])
+        {
+            $message = Mage::helper('monkey')->__('There is no List selected please save the configuration again');
+            Mage::getSingleton('adminhtml/session')->addWarning($message);
+        }elseif(is_array($additionalLists)){
 			foreach($additionalLists as $additional) {
 				if($additional == $selectedLists[0]) {
 					$message = Mage::helper('monkey')->__('Be Careful! You have choosen the same list for "General Subscription" and "Additional Lists". Please change this values and save the configuration again');

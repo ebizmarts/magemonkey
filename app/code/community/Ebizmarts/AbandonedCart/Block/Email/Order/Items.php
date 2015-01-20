@@ -31,7 +31,18 @@ class Ebizmarts_AbandonedCart_Block_Email_Order_Items extends Mage_Sales_Block_I
     {
         $product = Mage::getModel('catalog/product')
             ->load($_item->getProductId());
-        return Mage::helper('catalog/image')->init($product, 'image')->resize(115);
+        if($product->getImage()=="no_selection"&&$product->getTypeId() == "configurable") {
+            $conf = Mage::getModel('catalog/product_type_configurable')->setProduct($product);
+            $simple_collection = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
+            foreach ($simple_collection as $simple_product) {
+                if ($simple_product->getImage() != "no_selection") {
+                    $imageUrl = $simple_product->getThumbnailUrl();
+                }
+            }
+        } else {
+            $imageUrl = $product->getThumbnailUrl();
+        }
+        return $imageUrl;
     }
 
 }

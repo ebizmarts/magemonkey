@@ -887,34 +887,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $listId = $list['subscribed'];
                 $this->subscribeToList($object, $db, $listId);
             }
-        } elseif (isset($post['magemonkey_subscribe'])) {
+        } elseif (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe']) {
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
                 $this->subscribeToList($object, $db, $listId);
             }
             //Subscription for One Step Checkout with force subscription
         }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()){
-//            //Initialize as GUEST customer
-//            $customer = new Varien_Object;
-//
-//            $regCustomer = Mage::registry('current_customer');
-//            $guestCustomer = Mage::registry('mc_guest_customer');
-//
-//            if (Mage::helper('customer')->isLoggedIn()) {
-//                $customer = Mage::helper('customer')->getCustomer();
-//            } elseif ($regCustomer) {
-//                $customer = $regCustomer;
-//            } elseif ($guestCustomer) {
-//                $customer = $guestCustomer;
-//            } else {
-//                if (is_null($object)) {
-//                    $customer->setEmail($object->getSubscriberEmail())
-//                        ->setStoreId($object->getStoreId());
-//                } else {
-//                    $customer = $object;
-//                }
-//
-//            }
             $this->subscribeToList($object, $db, $defaultList);
         }
 

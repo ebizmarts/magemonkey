@@ -116,7 +116,7 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
-                            <comment>Synchronize Magento's General Subscription List with this MailChimp list</comment>
+                            <comment><![CDATA[Synchronize Magento's General Subscription List with this MailChimp list]]></comment>
                         </list>
                         <cutomergroup translate="label comment">
                             <label>Subscriber Group</label>
@@ -127,6 +127,7 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
+                            <comment><![CDATA[Select MailChimp groups a subscriber can join.]]></comment>
                         </cutomergroup>
                         <changecustomergroup translate="label comment">
                             <label>Customer can change groups</label>
