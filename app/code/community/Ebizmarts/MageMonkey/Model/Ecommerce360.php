@@ -92,12 +92,10 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
 	public function run(Varien_Event_Observer $observer)
 	{
-        Mage::log('run', null, 'santiago.log', true);
         $order = $observer->getEvent()->getOrder();
 		if ( ( ($this->_getCampaignCookie() &&
 				$this->_getEmailCookie()) || Mage::helper('monkey')->config('ecommerce360') == 2 ) &&
 					$this->isActive() ){
-            Mage::log('logSale', null, 'santiago.log', true);
 			$this->logSale($order);
 		}
 		return $observer;

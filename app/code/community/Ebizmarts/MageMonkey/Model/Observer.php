@@ -19,7 +19,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
-        Mage::log('handleSubscriber', null, 'santiago.log', true);
         if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -43,11 +42,8 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
 
         $post = Mage::app()->getRequest()->getPost();
-        Mage::log($post, null, 'santiago.log', true);
-        Mage::log($subscriber->getIsStatusChanged(), null, 'santiago.log', true);
         if( TRUE === $subscriber->getIsStatusChanged() ) {
 
-            Mage::log('isset', null, 'santiago.log', true);
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
             if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
                 $saveOnDb = Mage::helper('monkey')->config('checkout_async');
@@ -74,12 +70,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriberDeletion(Varien_Event_Observer $observer)
 	{
-        Mage::log('handleSubscriberDeletion', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return;
 		}
 
-        Mage::log('iswebhookreq', null, 'santiago.log', true);
 		if( TRUE === Mage::helper('monkey')->isWebhookRequest()){
 			return $observer;
 		}
@@ -87,15 +81,12 @@ class Ebizmarts_MageMonkey_Model_Observer
 		$subscriber = $observer->getEvent()->getSubscriber();
 		$subscriber->setImportMode(TRUE);
 
-        Mage::log('getBulksync', null, 'santiago.log', true);
 		if( $subscriber->getBulksync() ){
 			return $observer;
 		}
 
-        Mage::log('paso', null, 'santiago.log', true);
 		$listId = Mage::helper('monkey')->getDefaultList($subscriber->getStoreId());
 
-        Mage::log('listUnsubscribe', null, 'santiago.log', true);
 		Mage::getSingleton('monkey/api', array('store' => $subscriber->getStoreId()))
 									->listUnsubscribe($listId, $subscriber->getSubscriberEmail());
 
@@ -109,7 +100,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function loadConfig(Varien_Event_Observer $observer)
 	{
-        Mage::log('loadConfig', null, 'santiago.log', true);
 		$action = $observer->getEvent()->getControllerAction();
 
         //Do nothing for data saving actions
@@ -132,7 +122,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function saveConfig(Varien_Event_Observer $observer)
     {
-        Mage::log('saveConfig', null, 'santiago.log', true);
 		$scope = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
@@ -293,7 +282,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function updateCustomer(Varien_Event_Observer $observer)
 	{
-        Mage::log('updateCustomer', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -315,11 +303,9 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
         $defaultList = Mage::helper('monkey')->config('list');
 		if(!$oldEmail){
-            Mage::log('!oldemail', null, 'santiago.log', true);
             $isSubscribed = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
             $monkeyPost = unserialize(Mage::getSingleton('core/session')->getMonkeyPost());
             if($isSubscribed->getEmail() && !Mage::helper('monkey')->subscribedToList($email, $defaultList) || $monkeyPost){
-                Mage::log('subs', null, 'santiago.log', true);
                 Mage::helper('monkey')->subscribeToList($customer, $saveOnDb);
                 //$api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
             }
@@ -366,7 +352,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
-        Mage::log('registerCheckoutSubscribe', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}

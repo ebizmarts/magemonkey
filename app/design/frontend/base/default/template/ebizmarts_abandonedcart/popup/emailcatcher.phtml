@@ -51,9 +51,6 @@
                             //check cookie counter for customer id and check actual counter
                                 $counterId = $_COOKIE['counter'];
                                 $counter = Mage::getModel('ebizmarts_abandonedcart/popup')->load($counterId);
-                                Mage::log('$counter', null, 'santiago.log', true);
-                                Mage::log($counter->getCounter(), null, 'santiago.log', true);
-                                Mage::log(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId()), null, 'santiago.log', true);
                                 //if(counter en config == counter en db){
                                 if($counter->getCounter()+1 >= Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId())): ?>
                             document.cookie = 'counter=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
@@ -66,8 +63,6 @@
                             //create cookie counter in 0
                             $newCounter = Mage::getModel('ebizmarts_abandonedcart/popup');
                             $newCounter->setCounter(1)->save();
-                            Mage::log('$newCounter', null, 'santiago.log', true);
-                            Mage::log($newCounter, null, 'santiago.log', true);
                             ?>
                             createCookie('counter='+<?php echo $newCounter->getId(); ?>, <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
                             <?php endif; ?>

@@ -475,7 +475,11 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[If customer doesn't confirm popup, it will be shown this many times when the customer reload the page.]]></comment>
+                            <comment><![CDATA[If customer doesn't confirm popup, it will be shown this many times each time the customer reload the page.]]></comment>
+                            <depends>
+                                <popup_general separator=",">1</popup_general>
+                                <popup_cancel separator=",">1</popup_cancel>
+                            </depends>
                         </popup_insist>
                     </fields>
                 </catchpopup>

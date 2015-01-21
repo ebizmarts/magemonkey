@@ -269,7 +269,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$processedCount = 0;
 			foreach($collection as $item){
 				$processedCount += 1;
-				$batch []= $this->_helper()->getMergeVars($item, TRUE);
+                $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
+                if($isOnMailChimp){
+                    $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
+                }else {
+                    $batch [] = $this->_helper()->getMergeVars($item, TRUE);
+                }
 			}
 			if(count($batch) > 0){
 

@@ -876,7 +876,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $db
      */
     public function listsSubscription($object, $db){
-        Mage::log('listsSubscription', null, 'santiago.log', true);
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
         if(!$post){
@@ -908,7 +907,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param null $listId
      */
     public function subscribeToList($object, $db, $listId = NULL){
-        Mage::log('subscribeToList', null, 'santiago.log', true);
         if(!$listId){
             $listId = Mage::helper('monkey')->config('list');
         }
@@ -938,7 +936,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //if not in magemonkey_async_subscribers with processed 0 add list
             if(count($alreadyOnList) == 0){
                 $isConfirmNeed = FALSE;
-                Mage::log(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()), null, 'santiago.log', true);
                 if( !Mage::helper('monkey')->isAdmin() &&
                     (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1) ){
                     $isConfirmNeed = TRUE;
@@ -972,8 +969,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $db
      */
     public function _subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db){
-        Mage::log('_subscribe', null, 'santiago.log', true);
-        Mage::log($isConfirmNeed, null, 'santiago.log', true);
         if($db)
         {
             if($isConfirmNeed){
@@ -1004,7 +999,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	public function handlePost($request, $guestEmail)
 	{
-        Mage::log('handlePost', null, 'santiago.log', true);
 		//<state> param is an html serialized field containing the default form state
 		//before submission, we need to parse it as a request in order to save it to $odata and process it
 		parse_str($request->getPost('state'), $odata);
@@ -1052,7 +1046,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         Mage::getSingleton('core/session')
                             ->addSuccess($this->__('You have been removed from Newsletter.'));
                     }else {
-                        Mage::log('listUnsubscribe', null, 'santiago.log', true);
                         $api->listUnsubscribe($listId, $email);
                         Mage::getSingleton('core/session')
                             ->addSuccess($this->__('You have been removed from Newsletter.'));
