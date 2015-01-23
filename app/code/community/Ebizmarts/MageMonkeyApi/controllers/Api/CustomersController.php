@@ -26,10 +26,17 @@ class Ebizmarts_MageMonkeyApi_Api_CustomersController extends Ebizmarts_MageMonk
 		}
 		else {
 
+			$post = $this->_jsonPayload();
+
+			$maxLimit = 100;
+
+			$limit = (($post->limit > $maxLimit) ? 20 : $post->limit);
+
 			$customerCollection = Mage::getResourceModel('customer/customer_collection')
             ->addNameToSelect()
-			->setOrder('created_at', 'DESC')
-			->load();
+			->setOrder('created_at', 'DESC');
+
+			$customerCollection->setPageSize($limit)->load();
 
 			//echo (string)$customerCollection->getSelect();
 
