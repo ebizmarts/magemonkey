@@ -30,11 +30,20 @@ class Ebizmarts_MageMonkeyApi_Api_CustomersController extends Ebizmarts_MageMonk
 
 			$maxLimit = 100;
 
-			$limit = (($post->limit > $maxLimit) ? 20 : $post->limit);
+			$limit     = (($post->limit > $maxLimit) ? 20 : $post->limit);
+			$direction = $post->direction;
 
 			$customerCollection = Mage::getResourceModel('customer/customer_collection')
-            ->addNameToSelect()
-			->setOrder('created_at', 'DESC');
+            						->addNameToSelect();
+
+			if($direction == 'before') {
+				$customerCollection->addFieldToFilter('updated_at', array('lteq' => $post->updated_at));
+				$customerCollection->setOrder('updated_at', 'DESC');
+			}
+			elseif($direction == 'after') {
+				$customerCollection->addFieldToFilter('updated_at', array('gteq' => $post->updated_at));
+				$customerCollection->setOrder('updated_at', 'ASC');
+			}
 
 			$customerCollection->setPageSize($limit)->load();
 
