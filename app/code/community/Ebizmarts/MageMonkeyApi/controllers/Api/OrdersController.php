@@ -65,8 +65,9 @@ class Ebizmarts_MageMonkeyApi_Api_OrdersController extends Ebizmarts_MageMonkeyA
 	protected function _orderData(Mage_Sales_Model_Order $order) {
 		return array(
 	                        'id'            => (int)$order->getId(),
-	                        "increment_id"         => (int)$order->getIncrementId(),
+	                        'increment_id'         => (int)$order->getIncrementId(),
 	                        'status'               => $order->getStatusLabel(),
+	                        'state'               => $order->getState(),
 	                        'created_at'           => $order->getCreatedAt(),
 	                        'updated_at'           => $order->getUpdatedAt(),
 	                        "store_id"             => (int)$order->getStoreId(),
