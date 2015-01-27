@@ -57,4 +57,17 @@ class Ebizmarts_AbandonedCart_Model_Config
     const POPUP_WIDTH                       = 'ebizmarts_abandonedcart/catchpopup/popup_width';
     const POPUP_COOKIE_TIME                 = 'ebizmarts_abandonedcart/catchpopup/popup_cookie_time';
     const POPUP_INSIST                      = 'ebizmarts_abandonedcart/catchpopup/popup_insist';
+    const POPUP_CREATE_COUPON               = 'ebizmarts_abandonedcart/catchpopup/create_popup_coupon';
+    const POPUP_COUPON_MANDRILL_TAG         = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_mandrill_tag';
+    const POPUP_COUPON_MAIL_SUBJECT         = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_mail_subject';
+    const POPUP_COUPON_TEMPLATE             = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_template';
+    const POPUP_CUSTOMER_COUPON             = 'ebizmarts_abandonedcart/catchpopup/popup_customer_coupon';
+    const POPUP_COUPON_AUTOMATIC            = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_automatic';
+    const POPUP_COUPON_CODE                 = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_code';
+    const POPUP_COUPON_EXPIRE               = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_expire';
+    const POPUP_COUPON_LENGTH               = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_length';
+    const POPUP_COUPON_DISCOUNTTYPE         = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_discounttype';
+    const POPUP_COUPON_DISCOUNT             = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_discount';
+    const POPUP_COUPON_LABEL                = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_label';
+
 }

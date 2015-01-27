@@ -210,11 +210,13 @@ class Ebizmarts_AbandonedCart_Model_Cron
                             // create a new coupon
                             if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_AUTOMATIC) == 2) {
                                 list($couponcode, $discount, $toDate) = $this->_createNewCoupon($store, $email);
+                                $url .= '&coupon='.$couponcode;
                                 $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode, 'discount' => $discount,
                                     'todate' => $toDate, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
                             } else {
                                 $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_CODE);
-                                $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
+                                $url .= '&coupon='.$couponcode;
+                                $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode + 0, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
                             }
                         } else {
                             //$templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);

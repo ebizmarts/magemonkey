@@ -1122,4 +1122,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $store;
     }
+
+    public function getCanShowCampaignJs(){
+        $storeId = Mage::app()->getStore()->getStoreId();
+        if(Mage::helper('monkey')->config('ecommerce360') && Mage::helper('monkey')->canMonkey()) {
+            return 'ebizmarts/magemonkey/campaignCatcher.js';
+        }
+    }
 }
