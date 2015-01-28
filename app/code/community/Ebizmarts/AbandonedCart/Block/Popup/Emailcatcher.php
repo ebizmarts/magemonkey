@@ -27,6 +27,11 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
         return Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_SUBSCRIPTION, $storeId);
     }
 
+    protected function _createCoupon(){
+        $storeId = Mage::app()->getStore()->getId();
+        return Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId);
+    }
+
     protected function _getStoreId(){
         return Mage::app()->getStore()->getId();
     }

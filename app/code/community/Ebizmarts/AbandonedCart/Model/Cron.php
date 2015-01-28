@@ -216,7 +216,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                             } else {
                                 $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_CODE);
                                 $url .= '&coupon='.$couponcode;
-                                $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode + 0, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
+                                $vars = array('quote' => $quote, 'url' => $url, 'couponcode' => $couponcode, 'name' => $name, 'tags' => array($mandrillTag), 'unsubscribeurl' => $unsubscribeUrl);
                             }
                         } else {
                             //$templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::EMAIL_TEMPLATE_XML_PATH);
@@ -300,9 +300,9 @@ class Ebizmarts_AbandonedCart_Model_Cron
         }else{
             $coupon = $collection->getFirstItem();
             if ($coupon->getSimpleAction() == 'cart_fixed') {
-                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . $coupon->getDiscountAmount();
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . ($coupon->getDiscountAmount()+0);
             } else{
-                $discount = $coupon->getDiscountAmount();
+                $discount = $coupon->getDiscountAmount()+0;
             }
             return array($coupon->getCode(), $discount, $coupon->getToDate());
         }

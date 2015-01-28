@@ -42,10 +42,10 @@
                         id: "popupDialog",
                         width: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>,
                         zIndex: 2001,
-                        okLabel: 'Confirm',
+                        okLabel: '<?php echo $this->__('Confirm') ?>',
                         <?php if(!$this->_canCancel()): ?>closeOnEsc: false,
                         <?php else: ?>
-                        cancelLabel: 'Close',
+                        cancelLabel: '<?php echo $this->__('Close') ?>',
                         onCancel: function (win) {
                             <?php if(isset($_COOKIE['counter'])):
                             //check cookie counter for customer id and check actual counter
@@ -74,6 +74,9 @@
                             if (validateEmail(email)) {
                                 var cookie = 'email=' + email;
                                 createCookie(cookie, 365);
+                                <?php if($this->_createCoupon()): ?>
+
+                                <?php endif; ?>
                                 <?php if($this->_modalSubscribe()): ?>
                                 createCookie('subscribe=true', 365);
                                 location.reload();

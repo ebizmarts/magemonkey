@@ -177,6 +177,15 @@
                 </ebizmarts_abandonedcart>
             </updates>
         </layout>
+        <translate>
+            <modules>
+                <Ebizmarts_AbandonedCart>
+                    <files>
+                        <default>Ebizmarts_AbandonedCart.csv</default>
+                    </files>
+                </Ebizmarts_AbandonedCart>
+            </modules>
+        </translate>
     </frontend>
     <crontab>
         <jobs>

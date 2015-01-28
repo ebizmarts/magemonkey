@@ -770,9 +770,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         }else{
             $coupon = $collection->getFirstItem();
             if ($coupon->getSimpleAction() == 'cart_fixed') {
-                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . $coupon->getDiscountAmount();
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . ($coupon->getDiscountAmount()+0);
             } else{
-                $discount = $coupon->getDiscountAmount();
+                $discount = $coupon->getDiscountAmount()+0;
             }
             return array($coupon->getCode(), $discount, $coupon->getToDate());
         }
