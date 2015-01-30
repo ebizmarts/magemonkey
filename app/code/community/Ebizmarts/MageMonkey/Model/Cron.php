@@ -140,7 +140,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 */
 	protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
 	{
-
 		$subscriber = $this->_getSubscriberObject($member['email']);
 		if( $createCustomer ){
 			$alreadyExist = false;
@@ -153,7 +152,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 			   	}
 	        }
 
-			if($alreadyExist == false){
+			if(!$alreadyExist){
 				//Create customer if not exists, and subscribe
 				$customer = $this->_helper()->createCustomerAccount($member, $websiteId);
 			}
@@ -450,12 +449,19 @@ class Ebizmarts_MageMonkey_Model_Cron
         foreach($collection as $item)
         {
             $info = (array)unserialize($item->getInfo());
-            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
-                ->addFieldToFilter('processed',array('eq'=>1))
-                ->addFieldToFilter('email', array('eq'=>$info['email']));
-            if(count($collection2) == 0){
-                continue;
-            }
+//            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
+//                ->addFieldToFilter('processed',array('eq'=>1))
+//                ->addFieldToFilter('email', array('eq'=>$info['email']));
+//            if(count($collection2) == 0){
+//                $storeId = $info['store_id'];
+//                $storeLists = Mage::helper('monkey')->getListsByStoreId($storeId);
+//                foreach($storeLists as $listId) {
+//                    $isOnMailChimp = Mage::helper('monkey')->subscribedToList($info['email'], $listId);
+//                    if ($isOnMailChimp != 1) {
+//                        continue 2;
+//                    }
+//                }
+//            }
             $orderId = $info['order_id'];
             unset($info['order_id']);
             if($storeId!=$info['store_id']) {

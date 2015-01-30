@@ -27,9 +27,16 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
         return Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_SUBSCRIPTION, $storeId);
     }
 
-    protected function _createCoupon(){
+    protected function _createCoupon($email){
         $storeId = Mage::app()->getStore()->getId();
-        return Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId);
+        if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId)){
+            $collection = Mage::getModel('ebizmarts_abandonedcart/popup')->getCollection()
+                ->addFieldToFilter('email', array('eq'=>$email));
+            if(!count($collection)) {
+                $addEmail = Mage::getModel('ebizmarts_abandonedcart/popup');
+                $addEmail->setEmail($email)->save();
+            }
+        }
     }
 
     protected function _getStoreId(){

@@ -627,7 +627,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <create_coupon>1</create_coupon>
+                                <create_popup_coupon>1</create_popup_coupon>
                             </depends>
                         </popup_coupon_mandrill_tag>
                         <popup_coupon_mail_subject translate="label comment">
@@ -638,20 +638,20 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <create_coupon>1</create_coupon>
+                                <create_popup_coupon>1</create_popup_coupon>
                             </depends>
                         </popup_coupon_mail_subject>
                         <popup_coupon_template translate="label">
                             <label>Coupon Email Template</label>
                             <frontend_type>select</frontend_type>
-                            <config_path>ebizmarts_autoresponder/review/coupon_template</config_path>
+                            <config_path>ebizmarts_abandonedcart/catchpopup/popupcoupon</config_path>
                             <source_model>adminhtml/system_config_source_email_template</source_model>
                             <sort_order>115</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <create_coupon>1</create_coupon>
+                                <create_popup_coupon>1</create_popup_coupon>
                             </depends>
                         </popup_coupon_template>
                         <popup_customer_coupon translate="label comment">
@@ -665,8 +665,7 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[]]></comment>
                             <depends>
-                                <active>1</active>
-                                <coupon>1</coupon>
+                                <create_popup_coupon>1</create_popup_coupon>
                             </depends>
                         </popup_customer_coupon>
                         <popup_coupon_automatic translate="label">
@@ -678,7 +677,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <create_coupon>1</create_coupon>
+                                <create_popup_coupon>1</create_popup_coupon>
                             </depends>
                         </popup_coupon_automatic>
                         <popup_coupon_code>
@@ -691,8 +690,8 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The code of an existing coupon]]></comment>
                             <depends>
-                                <create_coupon>1</create_coupon>
-                                <coupon_automatic>1</coupon_automatic>
+                                <create_popup_coupon>1</create_popup_coupon>
+                                <popup_coupon_automatic>1</popup_coupon_automatic>
                             </depends>
                         </popup_coupon_code>
                         <popup_coupon_expire>
@@ -705,8 +704,8 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The coupon expiration in days]]></comment>
                             <depends>
-                                <create_coupon>1</create_coupon>
-                                <coupon_automatic>2</coupon_automatic>
+                                <create_popup_coupon>1</create_popup_coupon>
+                                <popup_coupon_automatic>2</popup_coupon_automatic>
                             </depends>
                         </popup_coupon_expire>
                         <popup_coupon_length>
@@ -719,8 +718,8 @@
                             <can_be_empty>0</can_be_empty>
                             <!--comment><![CDATA[The coupon expiration in days]]></comment-->
                             <depends>
-                                <create_coupon>1</create_coupon>
-                                <coupon_automatic>2</coupon_automatic>
+                                <create_popup_coupon>1</create_popup_coupon>
+                                <popup_coupon_automatic>2</popup_coupon_automatic>
                             </depends>
                         </popup_coupon_length>
                         <popup_coupon_discounttype>
@@ -734,8 +733,8 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[Select percentage or fixed discount]]></comment>
                             <depends>
-                                <create_coupon>1</create_coupon>
-                                <coupon_automatic>2</coupon_automatic>
+                                <create_popup_coupon>1</create_popup_coupon>
+                                <popup_coupon_automatic>2</popup_coupon_automatic>
                             </depends>
                         </popup_coupon_discounttype>
                         <popup_coupon_discount>
@@ -748,8 +747,8 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[Amount]]></comment>
                             <depends>
-                                <create_coupon>1</create_coupon>
-                                <coupon_automatic>2</coupon_automatic>
+                                <create_popup_coupon>1</create_popup_coupon>
+                                <popup_coupon_automatic>2</popup_coupon_automatic>
                             </depends>
                         </popup_coupon_discount>
                         <popup_coupon_label>
@@ -762,8 +761,8 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[]]></comment>
                             <depends>
-                                <create_coupon>1</create_coupon>
-                                <coupon_automatic>2</coupon_automatic>
+                                <create_popup_coupon>1</create_popup_coupon>
+                                <popup_coupon_automatic>2</popup_coupon_automatic>
                             </depends>
                         </popup_coupon_label>
                     </fields>

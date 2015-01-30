@@ -13,6 +13,7 @@
                 <?php if(isset($_COOKIE['email'])):
                     if($_COOKIE['email'] != 'none'):
                         $email = str_replace(' ', '+', $_COOKIE['email']);
+                        $this->_createCoupon($email);
                         if(isset($_COOKIE['subscribe'])):
                             $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
                             if(!$subscriber->getId()):
@@ -74,9 +75,6 @@
                             if (validateEmail(email)) {
                                 var cookie = 'email=' + email;
                                 createCookie(cookie, 365);
-                                <?php if($this->_createCoupon()): ?>
-
-                                <?php endif; ?>
                                 <?php if($this->_modalSubscribe()): ?>
                                 createCookie('subscribe=true', 365);
                                 location.reload();
@@ -84,7 +82,7 @@
                                 win.close();
                                 <?php endif ?>
                             } else {
-                                $('email_error_msg').innerHTML = 'Not a valid e-mail address';
+                                $('email_error_msg').innerHTML = '<?php echo $this->__('Not a valid e-mail address') ?>';
                                 $('email_error_msg').setStyle({color: '#F00'});
                                 $('email_error_msg').show();
                                 Windows.focusedWindow.updateHeight();

@@ -360,7 +360,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         $sync = Mage::getModel('monkey/asyncorders');
                         $this->_info['order_id'] = $this->_order->getId();
                         $sync->setInfo(serialize($this->_info))
-                            ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                            ->setCreatedAt($createdAtArr[0])//Mage::getModel('core/date')->gmtDate())
                             ->setProcessed(0)
                             ->save();
                         $rs['complete'] = true;
@@ -387,7 +387,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         ->setOrderIncrementId($this->_info['id'])
                         ->setOrderId($this->_info['order_id'])
                         ->setMcEmailId($this->_info ['email'])
-                        ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
+                        ->setCreatedAt($createdAtArr[0])
                         ->setStoreId($this->_info['store_id']);
                     if(isset($this->_info['campaign_id']) && $this->_info['campaign_id']){
                         $order->setMcCampaignId($this->_info['campaign_id']);

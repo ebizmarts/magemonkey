@@ -59,6 +59,15 @@
                 </ebizmarts_abandonedcart_general_template5>
             </email>
         </template>
+        <template>
+            <email>
+                <ebizmarts_abandonedcart_catchpopup_popupcoupon translate="label" module="ebizmarts_abandonedcart">
+                    <label>Pop-up Coupon Template</label>
+                    <file>ebizmarts/abandonedcart/popup_coupon_template.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_catchpopup_popupcoupon>
+            </email>
+        </template>
         <ebizmarts_abandonedcart>
             <mandrill-tag>AbandonedCart</mandrill-tag>
         </ebizmarts_abandonedcart>

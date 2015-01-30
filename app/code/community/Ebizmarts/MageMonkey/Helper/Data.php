@@ -463,6 +463,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 							if($company){
 								$merge_vars['COMPANY'] = $company;
 							}
+                            $country = $address->getCountryId();
+                            if($country){
+                                $merge_vars['COUNTRY'] = $country;
+                            }
 						}
 
 						break;
@@ -777,35 +781,24 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
             $pwd = $customer->generatePassword(8);
             $customer->setPassword($pwd);
-            $customer->setConfirmation($pwd);
+            try{
+                $customer->save();
 
-
-			/**
-			 * Handle Address related Data
-			 */
-			$billing = $shipping = null;
-			if(isset($accountData['billing_address']) && !empty($accountData['billing_address'])){
-				$this->_McAddressToMage($accountData, 'billing', $customer);
-			}
-			if(isset($accountData['shipping_address']) && !empty($accountData['shipping_address'])){
-				$this->_McAddressToMage($accountData, 'shipping', $customer);
-			}
-			/**
-			 * Handle Address related Data
-			 */
-
-            $customerErrors = $customer->validate();
-            if (is_array($customerErrors) && count($customerErrors)) {
-
-                //TODO: Do something with errors.
-
-            }else{
-            	$customer->save();
-
-				if ( $customer->isConfirmationRequired() ){
+                if ( $customer->isConfirmationRequired() ){
                     $customer->sendNewAccountEmail('confirmation');
-				}
-
+                }
+                /**
+                 * Handle Address related Data
+                 */
+                $billing = $shipping = null;
+                if(isset($accountData['billing_address']) && !empty($accountData['billing_address'])){
+                    $this->_McAddressToMage($accountData, 'billing', $customer);
+                }
+                if(isset($accountData['shipping_address']) && !empty($accountData['shipping_address'])){
+                    $this->_McAddressToMage($accountData, 'shipping', $customer);
+                }
+            }catch(Exception $ex){
+                $this->log($ex->getMessage(), 'Monkey.log');
             }
 		}
 

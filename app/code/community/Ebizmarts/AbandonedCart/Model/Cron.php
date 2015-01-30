@@ -24,6 +24,9 @@ class Ebizmarts_AbandonedCart_Model_Cron
             if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE,$storeid)) {
                 $this->_proccess($storeid);
             }
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $storeid) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeid)){
+                $this->_sendPopupCoupon($storeid);
+            }
         }
     }
 
@@ -234,6 +237,59 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     }
                 }
             }
+        }
+    }
+
+    protected function _sendPopupCoupon($storeId)
+    {
+        Mage::log('flag 1', null, 'santiago.log', true);
+        $customerGroupsCoupon = explode(",", Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CUSTOMER_COUPON, $storeId));
+        Mage::log($customerGroupsCoupon, null, 'santiago.log', true);
+        $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_TEMPLATE, $storeId);
+        $mailSubject = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_MAIL_SUBJECT, $storeId);
+        $tags = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_MANDRILL_TAG, $storeId) . "_$storeId";
+        $senderId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SENDER, $storeId);
+        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
+
+        //generate coupon
+        $collection = Mage::getModel('ebizmarts_abandonedcart/popup')->getCollection()
+            ->addFieldToFilter('email', array('neq'=>''));
+        //add hours after subscribing to send coupon email and filter it
+
+        Mage::log('flag 2', null, 'santiago.log', true);
+        foreach($collection as $item) {
+            $email = $item->getEmail();
+            Mage::log($email, null, 'santiago.log', true);
+            $customer = Mage::getModel('customer/customer')
+                ->setStore(Mage::app()->getStore($storeId))
+                ->loadByEmail($email);
+            Mage::log('customer ID = '. $customer->getId(), null, 'santiago.log', true);
+            if ($customer->getId()) {
+                if (!in_array($customer->getGroupId(), $customerGroupsCoupon)) {
+                    Mage::log('exit 1', null, 'santiago.log', true);
+                    continue;
+                }
+            }else{
+                if(!in_array(0, $customerGroupsCoupon)){
+                    Mage::log('exit 2', null, 'santiago.log', true);
+                    continue;
+                }
+            }
+            $emailArr = explode('@', $email);
+            $pseudoName = $emailArr[0];
+            if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_AUTOMATIC, $storeId) == 2) {
+                list($couponcode, $discount, $toDate) = $this->_createNewCoupon($storeId, $email);
+                $vars = array('couponcode' => $couponcode, 'discount' => $discount, 'todate' => $toDate, 'name' => $pseudoName, 'tags' => array($tags));
+            } else {
+                $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_CODE);
+                $vars = array('couponcode' => $couponcode, 'name' => $pseudoName, 'tags' => array($tags));
+            }
+            Mage::log('flag 3', null, 'santiago.log', true);
+            $translate = Mage::getSingleton('core/translate');
+            $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);
+            $translate->setTranslateInLine(true);
+            Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon', $email, $pseudoName, $couponcode, $storeId);
+            Mage::log('flag 4', null, 'santiago.log', true);
         }
     }
 
