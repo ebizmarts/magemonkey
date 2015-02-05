@@ -60,7 +60,7 @@ class Ebizmarts_AbandonedCart_Model_Config
     const POPUP_CREATE_COUPON               = 'ebizmarts_abandonedcart/catchpopup/create_popup_coupon';
     const POPUP_COUPON_MANDRILL_TAG         = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_mandrill_tag';
     const POPUP_COUPON_MAIL_SUBJECT         = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_mail_subject';
-    const POPUP_COUPON_TEMPLATE             = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_template';
+    const POPUP_COUPON_TEMPLATE_XML_PATH    = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_template';
     const POPUP_CUSTOMER_COUPON             = 'ebizmarts_abandonedcart/catchpopup/popup_customer_coupon';
     const POPUP_COUPON_AUTOMATIC            = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_automatic';
     const POPUP_COUPON_CODE                 = 'ebizmarts_abandonedcart/catchpopup/popup_coupon_code';

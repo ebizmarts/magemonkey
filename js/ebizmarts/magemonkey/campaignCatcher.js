@@ -1,12 +1,14 @@
 (function () {
     function getCampaign() {
         var params = location.search.substr(1).split('&');
-        var cookies;
+        var cookies = [];
         for(var i=0;i<params.length;i++){
-            var cookie = params[i].split('=')
+            var cookie = params[i].split('=');
             var key = cookie[0];
             var val = cookie[1];
-            cookies[key] = val;
+            if(key && val) {
+                cookies[key] = val;
+            }
         }
 
         if(cookies['mc_cid']){

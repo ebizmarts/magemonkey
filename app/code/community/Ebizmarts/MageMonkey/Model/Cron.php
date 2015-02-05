@@ -270,6 +270,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 				$processedCount += 1;
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
                 if($isOnMailChimp){
+                    Mage::log('listupdateMember2', null, 'santiago.log', true);
                     $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
                 }else {
                     $batch [] = $this->_helper()->getMergeVars($item, TRUE);
@@ -477,14 +478,18 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
             $item->setProcessed(1)->save();
 
-            Mage::getModel('monkey/ecommerce')
+            $order = Mage::getModel('monkey/ecommerce')
                 ->setOrderIncrementId($info['id'])
                 ->setOrderId($orderId)
                 ->setMcCampaignId($info['campaign_id'])
-                ->setMcEmailId($info['email'])
                 ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
-                ->setStoreId($info['store_id'])
-                ->save();
+                ->setStoreId($info['store_id']);
+            if(isset($info['email_id'])){
+                $order->setMcEmailId($info['email_id']);
+            }else{
+                $order->setMcEmailId($info['email']);
+            }
+            $order->save();
         }
     }
     public function cleanordersAsync()

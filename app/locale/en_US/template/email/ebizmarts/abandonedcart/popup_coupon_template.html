@@ -11,7 +11,7 @@
                     <!-- [ middle starts here] -->
                     <tr>
                         <td valign="top">
-                            <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;"">Template title</h1>
+                            <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;">Template title</h1>
                             <p style="font-size:12px; line-height:16px; margin:0;">
                                 It is recommended to send only 3 emails related to an abandoned cart.
                                 {{depend couponcode}}
@@ -21,10 +21,6 @@
                                 This info will only be displayed if 'discount:' is set as a label for coupon
                                 {{/depend}}
                             </p>
-                    </tr>
-                    <tr>
-                        <td>
-                            {{block type='ebizmarts_abandonedcart/email_order_items' area='frontend' template='ebizmarts_abandonedcart/email/order/items.phtml' quote=$quote}}
                         </td>
                     </tr>
                     <tr>

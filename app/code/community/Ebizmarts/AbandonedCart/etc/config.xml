@@ -21,51 +21,31 @@
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_1.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template1>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template2 translate="label" module="ebizmarts_abandonedcart">
                     <label>Second Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_2.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template2>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template3 translate="label" module="ebizmarts_abandonedcart">
                     <label>Third Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_3.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template3>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template4 translate="label" module="ebizmarts_abandonedcart">
                     <label>Fourth Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template4>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template5 translate="label" module="ebizmarts_abandonedcart">
                     <label>Fifth Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template5>
-            </email>
-        </template>
-        <template>
-            <email>
-                <ebizmarts_abandonedcart_catchpopup_popupcoupon translate="label" module="ebizmarts_abandonedcart">
-                    <label>Pop-up Coupon Template</label>
+                <ebizmarts_abandonedcart_catchpopup_popup_coupon_template translate="label" module="ebizmarts_abandonedcart">
+                    <label>Pop up Coupon Template</label>
                     <file>ebizmarts/abandonedcart/popup_coupon_template.html</file>
                     <type>html</type>
-                </ebizmarts_abandonedcart_catchpopup_popupcoupon>
+                </ebizmarts_abandonedcart_catchpopup_popup_coupon_template>
             </email>
         </template>
         <ebizmarts_abandonedcart>
@@ -168,7 +148,6 @@
             </admin_system_config_changed_section_ebizmarts_abandonedcart>
         </events>
     </adminhtml>
-
     <frontend>
         <routers>
             <ebizmarts_abandonedcart>
@@ -229,7 +208,6 @@
                 <page>checkout/cart</page>
             </general>
             <catchpopup>
-                <popup_general>1</popup_general>
                 <popup_cancel>1</popup_cancel>
                 <popup_subscription>1</popup_subscription>
                 <popup_heading>Send us your email!</popup_heading>

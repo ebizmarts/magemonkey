@@ -245,7 +245,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
         Mage::log('flag 1', null, 'santiago.log', true);
         $customerGroupsCoupon = explode(",", Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CUSTOMER_COUPON, $storeId));
         Mage::log($customerGroupsCoupon, null, 'santiago.log', true);
-        $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_TEMPLATE, $storeId);
+        $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_TEMPLATE_XML_PATH, $storeId);
+        Mage::log($templateId, null, 'santiago.log', true);
         $mailSubject = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_MAIL_SUBJECT, $storeId);
         $tags = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_MANDRILL_TAG, $storeId) . "_$storeId";
         $senderId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SENDER, $storeId);
@@ -285,6 +286,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $vars = array('couponcode' => $couponcode, 'name' => $pseudoName, 'tags' => array($tags));
             }
             Mage::log('flag 3', null, 'santiago.log', true);
+            Mage::log($templateId, null, 'santiago.log', true);
             $translate = Mage::getSingleton('core/translate');
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);
             $translate->setTranslateInLine(true);
