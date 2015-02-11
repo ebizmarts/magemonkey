@@ -270,7 +270,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 				$processedCount += 1;
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
                 if($isOnMailChimp){
-                    Mage::log('listupdateMember2', null, 'santiago.log', true);
                     $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
                 }else {
                     $batch [] = $this->_helper()->getMergeVars($item, TRUE);
@@ -427,7 +426,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 	{
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeId => $val) {
-            if (Mage::getStoreConfig("monkey/general/ecommerce360",$storeId) == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
+            if (Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE,$storeId) == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
                 Mage::getModel('monkey/ecommerce360')->autoExportJobs($storeId);
             }
         }

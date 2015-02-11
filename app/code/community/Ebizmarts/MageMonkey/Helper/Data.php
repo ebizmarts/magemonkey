@@ -248,7 +248,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	public function ecommerce360Active()
 	{
-		return (bool)($this->config('ecommerce360') != 0);
+        $storeId = Mage::app()->getStore()->getId();
+		return (bool)(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) != 0);
 	}
 
 	/**
@@ -633,7 +634,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
-        Mage::log('getMergeVars', null, 'santiago.log', true);
         $mergeVars = Mage::helper('monkey')->getMergeVars($customer, $includeEmail);
         // add groups
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
@@ -647,14 +647,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
         $customerSubscription = $request->getActionName() == 'saveadditional';
         $customerCreateAccountSubscription = $request->getActionName() == 'createpost';
-        Mage::log('$post && !$adminSubscription && !$customerSubscription && !$customerCreateAccountSubscription || Mage::getSingleton(core/session)->getIsOneStepCheckout()', null, 'santiago.log', true);
-        Mage::log($post && !$adminSubscription && !$customerSubscription && !$customerCreateAccountSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout(), null, 'santiago.log', true);
         if($post && !$adminSubscription && !$customerSubscription && !$customerCreateAccountSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout()){
             $defaultList = Mage::helper('monkey')->config('list');
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
-            Mage::log('$currentList && ($currentList != $defaultList || $canChangeGroups) && isset($post[list][$currentList])', null, 'santiago.log', true);
-            Mage::log($currentList && ($currentList != $defaultList || $canChangeGroups) && isset($post['list'][$currentList]), null, 'santiago.log', true);
             if ($currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
                 $subscribeGroups = array(0 => array());
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
@@ -666,7 +662,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $groups = NULL;
             } elseif($currentList == $defaultList) {
                 $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $object->getStoreId());
-                Mage::log($groups, null, 'santiago.log', true);
                 $groups = explode(",", $groups);
                 if (isset($groups[0]) && $groups[0]) {
                     $subscribeGroups = array();
@@ -985,7 +980,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if($isConfirmNeed){
                 Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request has been sent.'));
             }
-            Mage::log('listSubscribe1', null, 'santiago.log', true);
             Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed, TRUE);
         }
     }
@@ -1071,7 +1065,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 					$mergeVars = Mage::helper('monkey')->getMergeVars($customer);
 
 					//Handle groups update
-                    Mage::log('listupdateMember1', null, 'santiago.log', true);
 					$api->listUpdateMember($listId, $email, $mergeVars);
                     Mage::getSingleton('core/session')
                         ->addSuccess($this->__('Your profile has been updated!'));
@@ -1126,7 +1119,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getCanShowCampaignJs(){
         $storeId = Mage::app()->getStore()->getStoreId();
-        if(Mage::helper('monkey')->config('ecommerce360') && Mage::helper('monkey')->canMonkey()) {
+        if(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) && Mage::helper('monkey')->canMonkey()) {
             return 'ebizmarts/magemonkey/campaignCatcher.js';
         }
     }

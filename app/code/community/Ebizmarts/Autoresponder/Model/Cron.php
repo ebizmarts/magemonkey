@@ -84,7 +84,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         foreach($collection as $order) {
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
-            if($this->_isSubscribed($email,'neworder',$storeId)) {
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'neworder',$storeId)) {
                 $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
                 $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=neworder&email='.$email.'&store='.$storeId;
                 $vars = array('tags'=>array($tags),'url'=>$url);
@@ -126,7 +126,7 @@ class Ebizmarts_Autoresponder_Model_Cron
             $cust = Mage::getModel('customer/customer')->load($customer->getEntityId());
             $email = $cust->getEmail();
             $name = $cust->getFirstname().' '.$cust->getLastname();
-            if($this->_isSubscribed($email,'birthday',$storeId)) {
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'birthday',$storeId)) {
                 $vars = array();
                 $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=birthday&email='.$email.'&store='.$storeId;
                 $couponcode = '';
@@ -183,7 +183,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $cust = Mage::getModel('customer/customer')->load($customerId);
                     $email = $cust->getEmail();
                     $name = $cust->getFirstname().' '.$cust->getLastname();
-                    if($this->_isSubscribed($email,'noactivity',$storeId)) {
+                    if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'noactivity',$storeId)) {
                         $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=noactivity&email='.$email.'&store='.$storeId;
                         $vars = array('name' => $name,'tags'=>array($tags),'lastlogin'=>$lastVisited,'url'=>$url);
                         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
@@ -239,7 +239,7 @@ class Ebizmarts_Autoresponder_Model_Cron
             if($counter > 0) {
                 $translate = Mage::getSingleton('core/translate');
                 $email = $order->getCustomerEmail();
-                if($this->_isSubscribed($email,'related',$storeId)) {
+                if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'related',$storeId)) {
                     $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
                     $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=related&email='.$email.'&store='.$storeId;
                     $vars = array('name' => $name,'tags'=>array($tags),'related'=>$allRelated,'url'=>$url);
@@ -279,7 +279,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         foreach($collection as $order) {
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
-            if($this->_isSubscribed($email,'review',$storeId)) {
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'review',$storeId)) {
                 if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON,$storeId)) {
                     srand((double)microtime()*1000000);
                     $token = md5(rand(0,9999999));
@@ -344,7 +344,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 if($wishlist_ant != -1 && count($products) > 0) {
                     $translate  = Mage::getSingleton('core/translate');
                     $email      = $customer->getEmail();
-                    if($this->_isSubscribed($email,'wishlist',$storeId)) {
+                    if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'wishlist',$storeId)) {
                         $name       = $customer->getFirstname().' '.$customer->getLastname();
                         $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=wishlist&email='.$email.'&store='.$storeId;
                         $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
@@ -367,7 +367,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(count($products)) {
             $translate  = Mage::getSingleton('core/translate');
             $email      = $customer->getEmail();
-            if($this->_isSubscribed($email,'wishlist',$storeId)) {
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'wishlist',$storeId)) {
                 $name       = $customer->getFirstname().' '.$customer->getLastname();
                 $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=wishlist&email='.$email.'&store='.$storeId;
                 $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
@@ -407,7 +407,7 @@ class Ebizmarts_Autoresponder_Model_Cron
             if($customerIdPrev!=$item->getCustomerId()) {
                 if($customerIdPrev != 0 && count($products) > 0) {
                     $email      = $customer->getEmail();
-                    if($this->_isSubscribed($email,'visitedproducts',$storeId)) {
+                    if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'visitedproducts',$storeId)) {
                         $translate  = Mage::getSingleton('core/translate');
                         $name       = $customer->getFirstname().' '.$customer->getLastname();
                         $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email='.$email.'&store='.$storeId;
@@ -470,7 +470,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(count($products)) {
             if ($item->getCustomerId()) {
                 $email = $customer->getEmail();
-                if ($this->_isSubscribed($email, 'visitedproducts', $storeId)) {
+                if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
                     $translate = Mage::getSingleton('core/translate');
                     $name = $customer->getFirstname() . ' ' . $customer->getLastname();
                     $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
@@ -781,15 +781,6 @@ class Ebizmarts_Autoresponder_Model_Cron
     function _getIntervalUnitSql($interval, $unit)
     {
         return sprintf('INTERVAL %d %s', $interval, $unit);
-    }
-    protected function _isSubscribed($email,$list,$storeId)
-    {
-        $collection = Mage::getModel('ebizmarts_autoresponder/unsubscribe')->getCollection();
-        $collection->addFieldtoFilter('main_table.email',array('eq'=>$email))
-            ->addFieldtoFilter('main_table.list',array('eq'=>$list))
-            ->addFieldtoFilter('main_table.store_id',array('eq'=>$storeId));
-        return $collection->getSize() == 0;
-
     }
 
     protected function _cleanAutoresponderExpiredCoupons(){

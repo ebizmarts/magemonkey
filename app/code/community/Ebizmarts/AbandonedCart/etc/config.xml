@@ -41,11 +41,11 @@
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template5>
-                <ebizmarts_abandonedcart_catchpopup_popup_coupon_template translate="label" module="ebizmarts_abandonedcart">
-                    <label>Pop up Coupon Template</label>
+                <ebizmarts_abandonedcart_emailcatcher_popup_coupon_template>
+                    <label>Pop up Coupon Email</label>
                     <file>ebizmarts/abandonedcart/popup_coupon_template.html</file>
                     <type>html</type>
-                </ebizmarts_abandonedcart_catchpopup_popup_coupon_template>
+                </ebizmarts_abandonedcart_emailcatcher_popup_coupon_template>
             </email>
         </template>
         <ebizmarts_abandonedcart>
@@ -207,7 +207,7 @@
                 <autologin>0</autologin>
                 <page>checkout/cart</page>
             </general>
-            <catchpopup>
+            <emailcatcher>
                 <popup_cancel>1</popup_cancel>
                 <popup_subscription>1</popup_subscription>
                 <popup_heading>Send us your email!</popup_heading>
@@ -217,7 +217,7 @@
                 <popup_insist>1</popup_insist>
                 <popup_coupon_mandrill_tag>popup_coupon</popup_coupon_mandrill_tag>
                 <popup_coupon_mail_subject>You won a coupon!</popup_coupon_mail_subject>
-            </catchpopup>
+            </emailcatcher>
         </ebizmarts_abandonedcart>
     </default>
 </config>

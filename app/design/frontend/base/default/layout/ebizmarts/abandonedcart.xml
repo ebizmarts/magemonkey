@@ -11,10 +11,10 @@
 
     <default>
         <reference name="head">
-            <action method="addJs" ifconfig="ebizmarts_abandonedcart/catchpopup/popup_general"><script>prototype/window.js</script></action>
-            <action method="addJs" ifconfig="ebizmarts_abandonedcart/catchpopup/popup_general"><script>scriptaculous/scriptaculous.js</script></action>
-            <action method="addItem" ifconfig="ebizmarts_abandonedcart/catchpopup/popup_general"><type>js_css</type><script>prototype/windows/themes/default.css</script></action>
-            <action method="addItem" ifconfig="ebizmarts_abandonedcart/catchpopup/popup_general"><type>js_css</type><script>ebizmarts/abandonedcart/popup.css</script></action>
+            <action method="addJs" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><script>prototype/window.js</script></action>
+            <action method="addJs" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><script>scriptaculous/scriptaculous.js</script></action>
+            <action method="addItem" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><type>js_css</type><script>prototype/windows/themes/default.css</script></action>
+            <action method="addItem" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><type>js_css</type><script>ebizmarts/abandonedcart/popup.css</script></action>
         </reference>
         <reference name="content">
             <block type="ebizmarts_abandonedcart/popup_emailcatcher" name="emailcatcher" template="ebizmarts_abandonedcart/popup/emailcatcher.phtml"></block>

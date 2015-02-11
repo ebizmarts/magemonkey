@@ -55,7 +55,7 @@
                                 //if(counter en config == counter en db){
                                 if($counter->getCounter()+1 >= Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId())): ?>
                             document.cookie = 'counter=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-                            createCookie('email=none', <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                            createCookie('email=none', <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
                                 <?php else :
                                 $counter->setCounter(($counter->getCounter()+1));
                                 $counter->save();
@@ -65,7 +65,7 @@
                             $newCounter = Mage::getModel('ebizmarts_abandonedcart/popup');
                             $newCounter->setCounter(1)->save();
                             ?>
-                            createCookie('counter='+<?php echo $newCounter->getId(); ?>, <?php echo Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()); ?>);
+                            createCookie('counter='+<?php Print(json_encode($newCounter->getId())); ?>, <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
                             <?php endif; ?>
                         },
                         <?php endif; ?>

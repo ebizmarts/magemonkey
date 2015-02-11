@@ -19,7 +19,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
-        Mage::log('handleSubscriber', null, 'santiago.log', true);
         if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -123,9 +122,25 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function saveConfig(Varien_Event_Observer $observer)
     {
-		$scope = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
+        if(Mage::app()->getRequest()->getParam('store')) {
+            $scope = 'store';
+        }
+        elseif(Mage::app()->getRequest()->getParam('website')) {
+            $scope = 'website';
+        }
+        else {
+            $scope = 'default';
+        }
+
+        $store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
+
+        if(!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_ACTIVE, $store)) {
+            $config =  new Mage_Core_Model_Config();
+            $config->saveConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE,false,$scope,$store);
+            Mage::getConfig()->cleanCache();
+        }
 
 		if( !isset($post['groups']) ){
 			return $observer;
@@ -189,14 +204,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 		//Generating Webhooks URL
 		$hookUrl = '';
 		try{
-			switch ($scope) {
-		        case 'default':
-		            $store = Mage::app()->getDefaultStoreView()->getCode();
-		            break;
-		        default:
-		            $store = $scope;
-		            break;
-		    }
 		    $hookUrl  = Mage::getModel('core/url')->setStore($store)->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}catch(Exception $e){
 			$hookUrl  = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
@@ -283,7 +290,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function updateCustomer(Varien_Event_Observer $observer)
 	{
-        Mage::log('updateCustomer', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -325,7 +331,6 @@ class Ebizmarts_MageMonkey_Model_Observer
             if (is_array($lists)) {
                 foreach ($lists as $listId) {
                     $mergeVars = Mage::helper('monkey')->mergeVars($customer, TRUE, $listId);
-                    Mage::log('listupdateMember3', null, 'santiago.log', true);
                     $api->listUpdateMember($listId, $oldEmail, $mergeVars, '', false);
                 }
             }
@@ -355,7 +360,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
 	{
-        Mage::log('registerCheckoutSubscribe', null, 'santiago.log', true);
 		if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -386,7 +390,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function registerCheckoutSuccess(Varien_Event_Observer $observer)
 	{
-        Mage::log('registerCheckoutSuccess', null, 'santiago.log', true);
         Mage::getSingleton('core/session')->setRegisterCheckoutSuccess(TRUE);
 		if(!Mage::helper('monkey')->canMonkey()){
             Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);

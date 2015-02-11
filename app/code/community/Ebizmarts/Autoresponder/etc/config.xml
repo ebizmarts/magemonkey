@@ -204,6 +204,14 @@
                     </ebizmarts_autoresponder_review_product_post_after>
                 </observers>
             </review_product_post_after>
+            <sales_order_save_after>
+                <observers>
+                    <ebizmarts_autoresponder_order_save_after>
+                        <class>ebizmarts_autoresponder/eventObserver</class>
+                        <method>orderSaved</method>
+                    </ebizmarts_autoresponder_order_save_after>
+                </observers>
+            </sales_order_save_after>
         </events>
         <translate>
             <modules>
