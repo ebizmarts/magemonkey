@@ -33,15 +33,15 @@ class Ebizmarts_AbandonedCart_Model_EventObserver
     }
 
     public function loadCustomer(Varien_Event_Observer $observer){
+        $quote = $observer->getEvent()->getQuote();
         if(!Mage::getSingleton('customer/session')->isLoggedIn()) {
-            $quote = $observer->getEvent()->getQuote();
             $action = Mage::app()->getRequest()->getActionName();
             $onCheckout = $action == 'saveOrder' || $action == 'savePayment' || $action == 'saveShippingMethod' || $action == 'saveBilling';
             if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none' && !$onCheckout) {
                 $email = str_replace(' ', '+', $_COOKIE['email']);
                 if($quote->getCustomerEmail() != $email){
-                    $quote->setCustomerEmail($email);
-                    $quote->save();
+                    $quote->setCustomerEmail($email)
+                        ->save();
                 }
             }
         }

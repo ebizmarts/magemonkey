@@ -11,7 +11,7 @@
                     <!-- [ middle starts here] -->
                     <tr>
                         <td valign="top">
-                            <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;"">Hello, {{htmlescape var=$name}}</h1>
+                            <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;">Hello, {{htmlescape var=$name}}</h1>
                             <p style="font-size:12px; line-height:16px; margin:0;">
                                 You have an abandoned cart at {{var store.getFrontendName()}}.
                                 We would be glad to help you feel comfortable with our checkout process. if you are having technical issues contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#1E7EC8;">{{config path='trans_email/ident_support/email'}}</a> or call us at <span class="nobr">{{config path='general/store_information/phone'}}</span> Monday - Friday, 8am - 5pm PST.
@@ -23,14 +23,20 @@
                                 and obtain a discount of {{var discount}} only until {{var todate}}
                                 {{/depend}}
                             </p>
+                        </td>
                     </tr>
                     <tr>
                         <td>
-                            {{block type='ebizmarts_abandonedcart/email_order_items' area='frontend' template='ebizmarts_abandonedcart/email/order/items.phtml' quote=$quote}}
+                            {{block type='ebizmarts_abandonedcart/email_order_items' area='frontend' template='ebizmarts_abandonedcart/email/order/items.phtml' quote=$quote url}}
                         </td>
                     </tr>
                     <tr>
                         <td bgcolor="#EAEAEA" align="center" style="background:#EAEAEA; text-align:center;"><center><p style="font-size:12px; margin:0;">Thank you, <strong>{{var store.getFrontendName()}}</strong></p></center></td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <div style="margin-top: 30px; margin-bottom:20px;"><a bgcolor="#EAEAEA" style="background:#EAEAEA; text-align:center;  display:cell-block; color:black; border-radius: 10px; text-decoration:none; padding:22px; box-shadow: inset 0px 1px 1px #909193, 0px 1px 0px #fff; font-size:15px" href="{{var url}}" >Resume your oder {{depend couponcode}} and redeem coupon code {{/depend}}{{var couponcode}} {{depend discount}} to get {{var discount}}% off!{{/depend}}</a></div>
+                        </td>
                     </tr>
                     <tr>
                         <td>You can unsubscribe from this email clicking <a href="{{var unsubscribeurl}}" style="color:#1E7EC8;">here</a>.</td>

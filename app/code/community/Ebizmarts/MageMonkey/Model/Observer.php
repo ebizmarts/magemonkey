@@ -37,21 +37,26 @@ class Ebizmarts_MageMonkey_Model_Observer
 			return $observer;
 		}
 
-        if(Mage::getSingleton('core/session')->getIsOneStepCheckout() && !Mage::getSingleton('core/session')->getRegisterCheckoutSuccess()){
+        if(Mage::getSingleton('core/session')->getIsOneStepCheckout() && !Mage::getSingleton('core/session')->getMonkeyCheckout()){
             return $observer;
         }
 
+        $post = Mage::app()->getRequest()->getPost();
         if( TRUE === $subscriber->getIsStatusChanged() ) {
+
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
             if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
                 $saveOnDb = Mage::helper('monkey')->config('checkout_async');
                 Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
             } else {
-                Mage::helper('monkey')->subscribeToList($subscriber, 0);
+                $post = Mage::app()->getRequest()->getPost();
+                if(isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || !isset($post['magemonkey_subscribe'])) {
+                    Mage::helper('monkey')->subscribeToList($subscriber, 0);
+                }
             }
-
             Mage::getSingleton('core/session')->setIsHandleSubscriber(FALSE);
         }
+
         return $observer;
     }
 
@@ -117,9 +122,25 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function saveConfig(Varien_Event_Observer $observer)
     {
-		$scope = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
+        if(Mage::app()->getRequest()->getParam('store')) {
+            $scope = 'store';
+        }
+        elseif(Mage::app()->getRequest()->getParam('website')) {
+            $scope = 'website';
+        }
+        else {
+            $scope = 'default';
+        }
+
+        $store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode(): $observer->getEvent()->getStore();
 		$post   = Mage::app()->getRequest()->getPost();
 		$request = Mage::app()->getRequest();
+
+        if(!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_ACTIVE, $store)) {
+            $config =  new Mage_Core_Model_Config();
+            $config->saveConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE,false,$scope,$store);
+            Mage::getConfig()->cleanCache();
+        }
 
 		if( !isset($post['groups']) ){
 			return $observer;
@@ -152,12 +173,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 
 		}
 
-		if(!$selectedLists)
-		{
-			$message = Mage::helper('monkey')->__('There is no List selected please save the configuration again');
-			Mage::getSingleton('adminhtml/session')->addWarning($message);
-		}
-
 		if(isset($post['groups']['general']['fields']['additional_lists']['value']))
 		{
 			$additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
@@ -170,7 +185,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 			}
 		}
 
-		if(is_array($additionalLists)){
+        if(!$selectedLists[0])
+        {
+            $message = Mage::helper('monkey')->__('There is no List selected please save the configuration again');
+            Mage::getSingleton('adminhtml/session')->addWarning($message);
+        }elseif(is_array($additionalLists)){
 			foreach($additionalLists as $additional) {
 				if($additional == $selectedLists[0]) {
 					$message = Mage::helper('monkey')->__('Be Careful! You have choosen the same list for "General Subscription" and "Additional Lists". Please change this values and save the configuration again');
@@ -185,14 +204,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 		//Generating Webhooks URL
 		$hookUrl = '';
 		try{
-			switch ($scope) {
-		        case 'default':
-		            $store = Mage::app()->getDefaultStoreView()->getCode();
-		            break;
-		        default:
-		            $store = $scope;
-		            break;
-		    }
 		    $hookUrl  = Mage::getModel('core/url')->setStore($store)->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
 		}catch(Exception $e){
 			$hookUrl  = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
@@ -314,7 +325,7 @@ class Ebizmarts_MageMonkey_Model_Observer
             Mage::getSingleton('core/session')->setIsUpdateCustomer(TRUE);
             //subscribe to MailChimp newsletter
             $api   = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
-            $post = Mage::app()->getRequest()->getPost();
+            $post  = Mage::app()->getRequest()->getPost();
             Mage::helper('monkey')->listsSubscription($customer, $post, $saveOnDb);
             $lists = $api->listsForEmail($oldEmail);
             if (is_array($lists)) {
@@ -328,11 +339,12 @@ class Ebizmarts_MageMonkey_Model_Observer
             //unsubscribe from Magento when customer unsubscribed from admin
             if ($request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
                 if (isset($post['subscription'])) {
-                    $api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
+                    //$api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
                 } else {
                     $subscriber = Mage::getModel('newsletter/subscriber')
                         ->loadByEmail($customer->getEmail());
                     $subscriber->setImportMode(TRUE)->unsubscribe();
+                    Mage::getSingleton('monkey/api', $customer->getStoreId())->listUnsubscribe($defaultList, $customer->getEmail());
                 }
             }
             Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);

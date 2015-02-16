@@ -104,14 +104,27 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
     public function markVisitedProductsAction()
     {
         $params = $this->getRequest()->getParams();
-        if(!isset($params['product_id'])||!Mage::getSingleton('customer/session')->isLoggedIn()) {
+        if(!isset($params['product_id'])) {
             return;
         }
+        if(!Mage::getSingleton('customer/session')->isLoggedIn()){
+            if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none') {
+                $email = str_replace(' ', '+', $_COOKIE['email']);
+            }else{
+                return;
+            }
+        }else{
+            $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        }
         $storeId = Mage::app()->getStore()->getStoreId();
-        $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         $visited = Mage::getModel('ebizmarts_autoresponder/visited')->loadByCustomerProduct($customerId,$params['product_id'],$storeId);
-        $visited->setCustomerId($customerId)
-                ->setProductId($params['product_id'])
+        if($email) {
+            $visited->setCustomerEmail($email);
+        }else{
+            $visited->setCustomerId($customerId);
+        }
+
+        $visited->setProductId($params['product_id'])
                 ->setStoreId($storeId)
                 ->setVisitedAt(Mage::getModel('core/date')->gmtDate())
                 ->save();

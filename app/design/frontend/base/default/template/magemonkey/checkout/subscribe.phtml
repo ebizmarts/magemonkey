@@ -164,7 +164,9 @@ $force = $this->getForce();
             <?php foreach($group['groups'] as $g): ?>
                 <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
                 <?php if($idToAdd): ?>
-                    addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
+                    if($(<?php Print(json_encode($idToAdd));?>)) {
+                        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
+                    }
                 <?php endif; ?>
             <?php endforeach; ?>
         <?php endforeach; ?>
@@ -177,7 +179,12 @@ $force = $this->getForce();
         <?php if(is_array($list['interest_groupings'])): ?>
             <?php foreach($list['interest_groupings'] as $group): ?>
                 <?php foreach($group['groups'] as $g): ?>
-                    addGroupToPost($(<?php Print(json_encode($this->getGroupId($g)));?>));
+                    <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
+                    <?php if($idToAdd): ?>
+                    if($(<?php Print(json_encode($idToAdd));?>)) {
+                        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
+                    }
+                    <?php endif; ?>
                 <?php endforeach; ?>
             <?php endforeach; ?>
         <?php endif; ?>

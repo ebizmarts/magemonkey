@@ -66,7 +66,6 @@
                                 <active>1</active>
                             </depends>
                         </firstdate>
-
                         <identity translate="label">
                             <label>Sender</label>
                             <frontend_type>select</frontend_type>
@@ -373,104 +372,6 @@
 
                     </fields>
                 </general>
-                <catchpopup>
-                    <label>Catch email</label>
-                    <sort_order>50</sort_order>
-                    <frontend_type>text</frontend_type>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <popup_general translate="label comment">
-                            <label>Catch Email On Home Page Popup</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>55</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment><![CDATA[Create popup on hompage asking for customer email to use later on Abandoned Cart mailing.]]></comment>
-                        </popup_general>
-                        <popup_cancel translate="label comment">
-                            <label>Customer can close Popup</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>60</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment><![CDATA[Popup can be closed without giving an email.]]></comment>
-                            <depends>
-                                <popup_general separator=",">1</popup_general>
-                            </depends>
-                        </popup_cancel>
-                        <popup_heading translate="label comment">
-                            <label>Popup Heading</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>65</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>1</can_be_empty>
-                            <comment><![CDATA[This field can be empty.]]></comment>
-                            <depends>
-                                <popup_general separator=",">1</popup_general>
-                            </depends>
-                        </popup_heading>
-                        <popup_text translate="label comment">
-                            <label>Popup Message</label>
-                            <frontend_type>textarea</frontend_type>
-                            <sort_order>66</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>1</can_be_empty>
-                            <comment><![CDATA[This field can be empty.]]></comment>
-                            <depends>
-                                <popup_general separator=",">1</popup_general>
-                            </depends>
-                        </popup_text>
-                        <popup_width translate="label comment">
-                            <label>Popup Width</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>67</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <can_be_empty>1</can_be_empty>
-                            <comment><![CDATA[The width is in pixels.]]></comment>
-                            <depends>
-                                <popup_general separator=",">1</popup_general>
-                            </depends>
-                        </popup_width>
-                        <popup_subscription translate="label comment">
-                            <label>Subscribe customer</label>
-                            <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>68</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment><![CDATA[When email confirmed on popup subscribe customer to newsletter.]]></comment>
-                            <depends>
-                                <popup_general separator=",">1</popup_general>
-                            </depends>
-                        </popup_subscription>
-                        <popup_cookie_time translate="label comment">
-                            <label>When popup cancelled show again after</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>69</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                            <comment><![CDATA[This field is in days.]]></comment>
-                            <depends>
-                                <popup_general separator=",">1</popup_general>
-                                <popup_cancel separator=",">1</popup_cancel>
-                            </depends>
-                        </popup_cookie_time>
-                    </fields>
-                </catchpopup>
                 <coupon>
                     <label>Coupon</label>
                     <sort_order>99</sort_order>
@@ -600,6 +501,257 @@
                         </couponlabel>
                     </fields>
                 </coupon>
+                <emailcatcher>
+                    <label>Catch email</label>
+                    <sort_order>170</sort_order>
+                    <frontend_type>text</frontend_type>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <popup_general translate="label comment">
+                            <label>Catch Email on Popup</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>180</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Create popup when customer access the site for the first time to catch email to use later on Abandoned Cart mailing.]]></comment>
+                        </popup_general>
+                        <popup_heading translate="label comment">
+                            <label>Popup Heading</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>190</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                            <comment><![CDATA[This field can be empty.]]></comment>
+                            <depends>
+                                <popup_general>1</popup_general>
+                            </depends>
+                        </popup_heading>
+                        <popup_text translate="label comment">
+                            <label>Popup Message</label>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                            <comment><![CDATA[This field can be empty.]]></comment>
+                            <depends>
+                                <popup_general>1</popup_general>
+                            </depends>
+                        </popup_text>
+                        <popup_width translate="label comment">
+                            <label>Popup Width</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>210</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>1</can_be_empty>
+                            <comment><![CDATA[The width is in pixels.]]></comment>
+                            <depends>
+                                <popup_general>1</popup_general>
+                            </depends>
+                        </popup_width>
+                        <popup_subscription translate="label comment">
+                            <label>Subscribe customer</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>220</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[When email confirmed on popup subscribe customer to newsletter.]]></comment>
+                            <depends>
+                                <popup_general>1</popup_general>
+                            </depends>
+                        </popup_subscription>
+                        <popup_cancel translate="label comment">
+                            <label>Customer can close Popup</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>230</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Popup can be closed without giving an email.]]></comment>
+                            <depends>
+                                <popup_general>1</popup_general>
+                            </depends>
+                        </popup_cancel>
+                        <popup_cookie_time translate="label comment">
+                            <label>When popup cancelled show again after</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>240</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[This field is in days.]]></comment>
+                            <depends>
+                                <popup_general>1</popup_general>
+                                <popup_cancel>1</popup_cancel>
+                            </depends>
+                        </popup_cookie_time>
+                        <popup_insist translate="label comment">
+                            <label>Limit of times popup will get shown</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>250</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[If customer doesn't confirm popup, it will be shown this many times each time the customer reload the page.]]></comment>
+                            <depends>
+                                <popup_general>1</popup_general>
+                                <popup_cancel>1</popup_cancel>
+                            </depends>
+                        </popup_insist>
+                        <popup_coupon translate="label">
+                            <label>Create Coupon?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>260</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </popup_coupon>
+                        <popup_coupon_mandrill_tag translate="label comment">
+                            <label>Coupon mail Mandrill tag</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>270</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                            </depends>
+                        </popup_coupon_mandrill_tag>
+                        <popup_coupon_mail_subject translate="label comment">
+                            <label>Coupon mail Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>280</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                            </depends>
+                        </popup_coupon_mail_subject>
+                        <popup_coupon_template translate="label">
+                            <label>Coupon Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/emailcatcher/popup_coupon_template</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>290</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                            </depends>
+                        </popup_coupon_template>
+                        <popup_automatic translate="label">
+                            <label>Option</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_abandonedcart/system_config_automatic</source_model>
+                            <sort_order>310</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                            </depends>
+                        </popup_automatic>
+                        <popup_coupon_code>
+                            <label>Coupon Code</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>320</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Existing coupon code.]]></comment>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                                <popup_automatic>1</popup_automatic>
+                            </depends>
+                        </popup_coupon_code>
+                        <popup_expire>
+                            <label>Expires on</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>330</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Coupon expiration in days.]]></comment>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                                <popup_automatic>2</popup_automatic>
+                            </depends>
+                        </popup_expire>
+                        <popup_length>
+                            <label>Coupon length</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>340</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                                <popup_automatic>2</popup_automatic>
+                            </depends>
+                        </popup_length>
+                        <popup_discounttype>
+                            <label>Discount type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_abandonedcart/system_config_discounttype</source_model>
+                            <sort_order>350</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Select percentage or fixed discount.]]></comment>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                                <popup_automatic>2</popup_automatic>
+                            </depends>
+                        </popup_discounttype>
+                        <popup_discount>
+                            <label>Discount amount</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>360</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Amount]]></comment>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                                <popup_automatic>2</popup_automatic>
+                            </depends>
+                        </popup_discount>
+                        <popup_couponlabel>
+                            <label>Label for coupon</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>370</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[]]></comment>
+                            <depends>
+                                <popup_coupon>1</popup_coupon>
+                                <popup_automatic>2</popup_automatic>
+                            </depends>
+                        </popup_couponlabel>
+                    </fields>
+                </emailcatcher>
             </groups>
         </ebizmarts_abandonedcart>
     </sections>

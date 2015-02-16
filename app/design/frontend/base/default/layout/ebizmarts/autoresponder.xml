@@ -70,9 +70,7 @@
                     <action method="append" ifconfig="ebizmarts_autoresponder/general/active"><block>backtostock.notice</block></action>
                 </reference>
             </reference>
-            <reference name="product.info.additional">
-                <action method="append"  ifconfig="ebizmarts_autoresponder/general/active"><block>backtostock.form</block></action>
-            </reference>
+            <action method="append"  ifconfig="ebizmarts_autoresponder/general/active"><block>backtostock.form</block></action>
         </reference>
         <depends>
             <ifconfig>ebizmarts_autoresponder/backtostock/active</ifconfig>

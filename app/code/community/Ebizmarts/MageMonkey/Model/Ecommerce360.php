@@ -70,17 +70,17 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
 	public function saveCookie(Varien_Event_Observer $observer)
 	{
-		if( $this->isActive() ){
-			$request = Mage::app()->getRequest();
-
-			$thirty_days = time()+60*60*24*30;
-	        if ( $request->getParam('mc_cid') ){
-	            $this->getCookie()->set('magemonkey_campaign_id', $request->getParam('mc_cid'), $thirty_days);
-	        }
-	        if ( $request->getParam('mc_eid') ){
-	            $this->getCookie()->set('magemonkey_email_id', $request->getParam('mc_eid'), $thirty_days);
-	        }
-		}
+//		if( $this->isActive() ){
+//            $request = Mage::app()->getRequest();
+//
+//			$thirty_days = time()+60*60*24*30;
+//	        if ( $request->getParam('mc_cid') ){
+//	            $this->getCookie()->set('magemonkey_campaign_id', $request->getParam('mc_cid'), $thirty_days);
+//	        }
+//	        if ( $request->getParam('mc_eid') ){
+//	            $this->getCookie()->set('magemonkey_email_id', $request->getParam('mc_eid'), $thirty_days);
+//	        }
+//		}
         return $observer;
 	}
 
@@ -92,9 +92,10 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
 	public function run(Varien_Event_Observer $observer)
 	{
+        $storeId = Mage::app()->getStore()->getId();
         $order = $observer->getEvent()->getOrder();
 		if ( ( ($this->_getCampaignCookie() &&
-				$this->_getEmailCookie()) || Mage::helper('monkey')->config('ecommerce360') == 2 ) &&
+				$this->_getEmailCookie()) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 ) &&
 					$this->isActive() ){
 			$this->logSale($order);
 		}
@@ -121,7 +122,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 		if ($discount != 0) {
 			$subtotal = $subtotal + ($discount);
 		}
-
+        $createdAtArr = str_split($this->_order->getCreatedAt(), 10);
         $this->_info = array(
 				                'id'          => $this->_order->getIncrementId(),
 				                'total'       => $subtotal,
@@ -129,7 +130,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 				                'tax'         => $this->_order->getBaseTaxAmount(),
 				                'store_id'    => $this->_order->getStoreId(),
 				                'store_name'  => $this->_order->getStoreName(),
-                                'order_date'  => $this->_order->getCreatedAt(),
+                                'order_date'  => $createdAtArr[0],
 				                'plugin_id'   => 1215,
 				                'items'       => array()
                 			);
@@ -137,7 +138,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 		$emailCookie    = $this->_getEmailCookie();
 		$campaignCookie = $this->_getCampaignCookie();
 
-		$this->setItemstoSend();
+		$this->setItemstoSend($this->_order->getStoreId());
         $rs = false;
 		if($emailCookie && $campaignCookie){
 			$this->_info ['email_id']= $emailCookie;
@@ -209,7 +210,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 	 * @access private
 	 * @return Ebizmarts_MageMonkey_Model_Ecommerce360
 	 */
-    private function setItemstoSend()
+    private function setItemstoSend($storeId)
     {
     	foreach ($this->_order->getAllItems() as $item){
 			$mcitem = array();
@@ -225,6 +226,24 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 			$mcitem['product_id'] = $product->getEntityId();
 			$mcitem['sku'] = $product->getSku();
             $mcitem['product_name'] = $product->getName();
+            $attributesToSend = explode(',', Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ATTRIBUTES, $storeId));
+            $attributes = $product->getAttributes();
+            $productAttributes = '';
+            $pipe = false;
+            foreach($attributes as $attribute){
+                if($pipe){
+                    $productAttributes .= '|';
+                }
+                if(in_array($attribute->getAttributeCode(), $attributesToSend) && is_string($attribute->getFrontend()->getValue($product)) && trim($attribute->getFrontend()->getValue($product)) != ''){
+                    $productAttributes .= $attribute->getAttributeCode().':'.$attribute->getFrontend()->getValue($product);
+                    $pipe = true;
+                }else{
+                    $pipe = false;
+                }
+            }
+            if($productAttributes){
+                $mcitem['product_name'] .= '['.$productAttributes.']';
+            }
 
             $names = array();
             $cat_ids = $product->getCategoryIds();
@@ -295,8 +314,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     public function autoExportJobs($storeId){
         $allow_sent = false;
         //Get status options selected in the Configuration
-        $states = explode(',', Mage::helper('monkey')->config('order_status',$storeId));
-        $max = Mage::getStoreConfig("monkey/general/order_max", $storeId);
+        $states = explode(',', Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ORDER_STATUS,$storeId));
+        $max = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ORDER_MAX, $storeId);
         $count = 0;
         foreach($states as $state) {
             if($max == $count){
@@ -334,6 +353,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 if ($discount != 0) {
                     $subtotal = $subtotal + ($discount);
                 }
+                $createdAtArr = str_split($this->_order->getCreatedAt(), 10);
 
                 $this->_info = array(
                     'id' => $this->_order->getIncrementId(),
@@ -342,14 +362,14 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                     'tax' => $this->_order->getBaseTaxAmount(),
                     'store_id' => $this->_order->getStoreId(),
                     'store_name' => $this->_order->getStoreName(),
-                    'order_date' => $this->_order->getCreatedAt(),
+                    'order_date' => $createdAtArr[0],
                     'plugin_id' => 1215,
                     'items' => array()
                 );
 
                 $email = $this->_order->getCustomerEmail();
                 $campaign = $this->_order->getEbizmartsMagemonkeyCampaignId();
-                $this->setItemstoSend();
+                $this->setItemstoSend($storeId);
                 $rs = false;
                 if ($email && $campaign) {
                     $this->_info ['email_id'] = $email;
@@ -359,7 +379,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         $sync = Mage::getModel('monkey/asyncorders');
                         $this->_info['order_id'] = $this->_order->getId();
                         $sync->setInfo(serialize($this->_info))
-                            ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                            ->setCreatedAt($createdAtArr[0])//Mage::getModel('core/date')->gmtDate())
                             ->setProcessed(0)
                             ->save();
                         $rs['complete'] = true;
@@ -386,7 +406,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         ->setOrderIncrementId($this->_info['id'])
                         ->setOrderId($this->_info['order_id'])
                         ->setMcEmailId($this->_info ['email'])
-                        ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
+                        ->setCreatedAt($createdAtArr[0])
                         ->setStoreId($this->_info['store_id']);
                     if(isset($this->_info['campaign_id']) && $this->_info['campaign_id']){
                         $order->setMcCampaignId($this->_info['campaign_id']);

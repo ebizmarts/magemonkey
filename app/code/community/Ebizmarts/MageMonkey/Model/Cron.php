@@ -140,7 +140,6 @@ class Ebizmarts_MageMonkey_Model_Cron
 	 */
 	protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
 	{
-
 		$subscriber = $this->_getSubscriberObject($member['email']);
 		if( $createCustomer ){
 			$alreadyExist = false;
@@ -153,7 +152,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 			   	}
 	        }
 
-			if($alreadyExist == false){
+			if(!$alreadyExist){
 				//Create customer if not exists, and subscribe
 				$customer = $this->_helper()->createCustomerAccount($member, $websiteId);
 			}
@@ -269,7 +268,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 			$processedCount = 0;
 			foreach($collection as $item){
 				$processedCount += 1;
-				$batch []= $this->_helper()->getMergeVars($item, TRUE);
+                $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
+                if($isOnMailChimp){
+                    $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
+                }else {
+                    $batch [] = $this->_helper()->getMergeVars($item, TRUE);
+                }
 			}
 			if(count($batch) > 0){
 
@@ -422,7 +426,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 	{
         $allStores = Mage::app()->getStores();
         foreach($allStores as $storeId => $val) {
-            if (Mage::getStoreConfig("monkey/general/ecommerce360",$storeId) == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
+            if (Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE,$storeId) == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
                 Mage::getModel('monkey/ecommerce360')->autoExportJobs($storeId);
             }
         }
@@ -445,12 +449,19 @@ class Ebizmarts_MageMonkey_Model_Cron
         foreach($collection as $item)
         {
             $info = (array)unserialize($item->getInfo());
-            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
-                ->addFieldToFilter('processed',array('eq'=>1))
-                ->addFieldToFilter('email', array('eq'=>$info['email']));
-            if(count($collection2) == 0){
-                continue;
-            }
+//            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
+//                ->addFieldToFilter('processed',array('eq'=>1))
+//                ->addFieldToFilter('email', array('eq'=>$info['email']));
+//            if(count($collection2) == 0){
+//                $storeId = $info['store_id'];
+//                $storeLists = Mage::helper('monkey')->getListsByStoreId($storeId);
+//                foreach($storeLists as $listId) {
+//                    $isOnMailChimp = Mage::helper('monkey')->subscribedToList($info['email'], $listId);
+//                    if ($isOnMailChimp != 1) {
+//                        continue 2;
+//                    }
+//                }
+//            }
             $orderId = $info['order_id'];
             unset($info['order_id']);
             if($storeId!=$info['store_id']) {
@@ -466,14 +477,18 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
             $item->setProcessed(1)->save();
 
-            Mage::getModel('monkey/ecommerce')
+            $order = Mage::getModel('monkey/ecommerce')
                 ->setOrderIncrementId($info['id'])
                 ->setOrderId($orderId)
                 ->setMcCampaignId($info['campaign_id'])
-                ->setMcEmailId($info['email'])
                 ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
-                ->setStoreId($info['store_id'])
-                ->save();
+                ->setStoreId($info['store_id']);
+            if(isset($info['email_id'])){
+                $order->setMcEmailId($info['email_id']);
+            }else{
+                $order->setMcEmailId($info['email']);
+            }
+            $order->save();
         }
     }
     public function cleanordersAsync()

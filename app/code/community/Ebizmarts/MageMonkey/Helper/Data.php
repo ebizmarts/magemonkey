@@ -248,7 +248,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	public function ecommerce360Active()
 	{
-		return (bool)($this->config('ecommerce360') != 0);
+        $storeId = Mage::app()->getStore()->getId();
+		return (bool)(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) != 0);
 	}
 
 	/**
@@ -463,6 +464,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 							if($company){
 								$merge_vars['COMPANY'] = $company;
 							}
+                            $country = $address->getCountryId();
+                            if($country){
+                                $merge_vars['COUNTRY'] = $country;
+                            }
 						}
 
 						break;
@@ -534,7 +539,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 		if( !$customer->getId() && !$request->getPost('lastname') ){
 			$guestLastName  = $this->config('guest_lastname', $customer->getStoreId());
-			
+
 			if($guestLastName){
 				$merge_vars['LNAME'] = $guestLastName;
 			}
@@ -642,11 +647,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
         $customerSubscription = $request->getActionName() == 'saveadditional';
         $customerCreateAccountSubscription = $request->getActionName() == 'createpost';
-        if($post && !$adminSubscription && !$footerSubscription && !$customerSubscription && !$customerCreateAccountSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout()){
+        if($post && !$adminSubscription && !$customerSubscription && !$customerCreateAccountSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout()){
             $defaultList = Mage::helper('monkey')->config('list');
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
-            if ($currentList && ($currentList != $defaultList || $canChangeGroups) && isset($post['list'][$currentList])) {
+            if ($currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
                 $subscribeGroups = array(0 => array());
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
@@ -777,35 +782,24 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
             $pwd = $customer->generatePassword(8);
             $customer->setPassword($pwd);
-            $customer->setConfirmation($pwd);
+            try{
+                $customer->save();
 
-
-			/**
-			 * Handle Address related Data
-			 */
-			$billing = $shipping = null;
-			if(isset($accountData['billing_address']) && !empty($accountData['billing_address'])){
-				$this->_McAddressToMage($accountData, 'billing', $customer);
-			}
-			if(isset($accountData['shipping_address']) && !empty($accountData['shipping_address'])){
-				$this->_McAddressToMage($accountData, 'shipping', $customer);
-			}
-			/**
-			 * Handle Address related Data
-			 */
-
-            $customerErrors = $customer->validate();
-            if (is_array($customerErrors) && count($customerErrors)) {
-
-                //TODO: Do something with errors.
-
-            }else{
-            	$customer->save();
-
-				if ( $customer->isConfirmationRequired() ){
+                if ( $customer->isConfirmationRequired() ){
                     $customer->sendNewAccountEmail('confirmation');
-				}
-
+                }
+                /**
+                 * Handle Address related Data
+                 */
+                $billing = $shipping = null;
+                if(isset($accountData['billing_address']) && !empty($accountData['billing_address'])){
+                    $this->_McAddressToMage($accountData, 'billing', $customer);
+                }
+                if(isset($accountData['shipping_address']) && !empty($accountData['shipping_address'])){
+                    $this->_McAddressToMage($accountData, 'shipping', $customer);
+                }
+            }catch(Exception $ex){
+                $this->log($ex->getMessage(), 'Monkey.log');
             }
 		}
 
@@ -887,34 +881,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $listId = $list['subscribed'];
                 $this->subscribeToList($object, $db, $listId);
             }
-        } elseif (isset($post['magemonkey_subscribe'])) {
+        } elseif (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe']) {
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
                 $this->subscribeToList($object, $db, $listId);
             }
             //Subscription for One Step Checkout with force subscription
         }elseif(Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()){
-//            //Initialize as GUEST customer
-//            $customer = new Varien_Object;
-//
-//            $regCustomer = Mage::registry('current_customer');
-//            $guestCustomer = Mage::registry('mc_guest_customer');
-//
-//            if (Mage::helper('customer')->isLoggedIn()) {
-//                $customer = Mage::helper('customer')->getCustomer();
-//            } elseif ($regCustomer) {
-//                $customer = $regCustomer;
-//            } elseif ($guestCustomer) {
-//                $customer = $guestCustomer;
-//            } else {
-//                if (is_null($object)) {
-//                    $customer->setEmail($object->getSubscriberEmail())
-//                        ->setStoreId($object->getStoreId());
-//                } else {
-//                    $customer = $object;
-//                }
-//
-//            }
             $this->subscribeToList($object, $db, $defaultList);
         }
 
@@ -973,6 +946,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
 
                 $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
+
                 $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db);
             }
         }
@@ -1141,5 +1115,12 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $store = $configscope;
         }
         return $store;
+    }
+
+    public function getCanShowCampaignJs(){
+        $storeId = Mage::app()->getStore()->getStoreId();
+        if(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) && Mage::helper('monkey')->canMonkey()) {
+            return 'ebizmarts/magemonkey/campaignCatcher.js';
+        }
     }
 }

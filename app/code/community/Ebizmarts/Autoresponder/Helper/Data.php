@@ -95,4 +95,22 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract {
 
     }
 
+    public function isSetTime($setTime){
+        $now = date('H');
+        if($now == $setTime){
+            return true;
+        }
+        $this->log('Time set on Autoresponder configuration is different than the current time.');
+        return false;
+    }
+
+    public function isSubscribed($email,$list,$storeId)
+    {
+        $collection = Mage::getModel('ebizmarts_autoresponder/unsubscribe')->getCollection();
+        $collection->addFieldtoFilter('main_table.email',array('eq'=>$email))
+            ->addFieldtoFilter('main_table.list',array('eq'=>$list))
+            ->addFieldtoFilter('main_table.store_id',array('eq'=>$storeId));
+        return $collection->getSize() == 0;
+    }
+
 }

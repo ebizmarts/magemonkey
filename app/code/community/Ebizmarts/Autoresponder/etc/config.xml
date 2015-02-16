@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_Autoresponder>
-            <version>0.1.9</version>
+            <version>0.1.10</version>
         </Ebizmarts_Autoresponder>
     </modules>
     <global>
@@ -204,6 +204,14 @@
                     </ebizmarts_autoresponder_review_product_post_after>
                 </observers>
             </review_product_post_after>
+            <sales_order_save_after>
+                <observers>
+                    <ebizmarts_autoresponder_order_save_after>
+                        <class>ebizmarts_autoresponder/eventObserver</class>
+                        <method>orderSaved</method>
+                    </ebizmarts_autoresponder_order_save_after>
+                </observers>
+            </sales_order_save_after>
         </events>
         <translate>
             <modules>
@@ -220,7 +228,7 @@
         <jobs>
             <ebizmarts_autoresponder>
                 <schedule>
-                    <cron_expr>0 1 * * *</cron_expr>
+                    <cron_expr>0 * * * *</cron_expr>
                 </schedule>
                 <run>
                     <model>ebizmarts_autoresponder/cron::autoresponder</model>

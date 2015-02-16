@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.29</version>
+            <version>0.1.30</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -21,42 +21,31 @@
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_1.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template1>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template2 translate="label" module="ebizmarts_abandonedcart">
                     <label>Second Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_2.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template2>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template3 translate="label" module="ebizmarts_abandonedcart">
                     <label>Third Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_3.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template3>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template4 translate="label" module="ebizmarts_abandonedcart">
                     <label>Fourth Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template4>
-            </email>
-        </template>
-        <template>
-            <email>
                 <ebizmarts_abandonedcart_general_template5 translate="label" module="ebizmarts_abandonedcart">
                     <label>Fifth Abandoned Cart Mail</label>
                     <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_general_template5>
+                <ebizmarts_abandonedcart_emailcatcher_popup_coupon_template>
+                    <label>Pop up Coupon Email</label>
+                    <file>ebizmarts/abandonedcart/popup_coupon_template.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_emailcatcher_popup_coupon_template>
             </email>
         </template>
         <ebizmarts_abandonedcart>
@@ -74,6 +63,9 @@
                     <mailssent>
                         <table>magemonkey_mails_sent</table>
                     </mailssent>
+                    <popup>
+                        <table>ebizmarts_abandonedcart_popup</table>
+                    </popup>
                 </entities>
             </ebizmarts_abandonedcart_resource>
         </models>
@@ -156,7 +148,6 @@
             </admin_system_config_changed_section_ebizmarts_abandonedcart>
         </events>
     </adminhtml>
-
     <frontend>
         <routers>
             <ebizmarts_abandonedcart>
@@ -174,6 +165,15 @@
                 </ebizmarts_abandonedcart>
             </updates>
         </layout>
+        <translate>
+            <modules>
+                <Ebizmarts_AbandonedCart>
+                    <files>
+                        <default>Ebizmarts_AbandonedCart.csv</default>
+                    </files>
+                </Ebizmarts_AbandonedCart>
+            </modules>
+        </translate>
     </frontend>
     <crontab>
         <jobs>
@@ -207,15 +207,17 @@
                 <autologin>0</autologin>
                 <page>checkout/cart</page>
             </general>
-            <catchpopup>
-                <popup_general>1</popup_general>
+            <emailcatcher>
                 <popup_cancel>1</popup_cancel>
                 <popup_subscription>1</popup_subscription>
                 <popup_heading>Welcome to our store!</popup_heading>
                 <popup_text>Please enter your email address to get the most of our store and improve your shopping experience.</popup_text>
                 <popup_width>410</popup_width>
                 <popup_cookie_time>1</popup_cookie_time>
-            </catchpopup>
+                <popup_insist>1</popup_insist>
+                <popup_coupon_mandrill_tag>popup_coupon</popup_coupon_mandrill_tag>
+                <popup_coupon_mail_subject>You won a coupon!</popup_coupon_mail_subject>
+            </emailcatcher>
         </ebizmarts_abandonedcart>
     </default>
 </config>

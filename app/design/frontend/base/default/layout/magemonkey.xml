@@ -47,4 +47,10 @@
 	</monkey_customer_account_index>
 	<!-- Customer -->
 
+    <default>
+        <reference name="head">
+            <action method="addJs" module="monkey"><script helper="monkey/getCanShowCampaignJs"></script></action>
+        </reference>
+    </default>
+
 </layout>
