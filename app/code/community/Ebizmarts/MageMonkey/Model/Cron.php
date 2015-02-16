@@ -445,11 +445,14 @@ class Ebizmarts_MageMonkey_Model_Cron
         foreach($collection as $item)
         {
             $info = (array)unserialize($item->getInfo());
-            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
-                ->addFieldToFilter('processed',array('eq'=>1))
-                ->addFieldToFilter('email', array('eq'=>$info['email']));
-            if(count($collection2) == 0){
-                continue;
+            if(!isset($info['email_id'])){
+                // if we dont have an email_id, look if there is a subscription related to the email of the order
+                $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
+                    ->addFieldToFilter('processed',array('eq'=>1))
+                    ->addFieldToFilter('email', array('eq'=>$info['email']));
+                if(count($collection2) == 0){
+                    continue;
+                }
             }
             $orderId = $info['order_id'];
             unset($info['order_id']);
@@ -470,7 +473,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 ->setOrderIncrementId($info['id'])
                 ->setOrderId($orderId)
                 ->setMcCampaignId($info['campaign_id'])
-                ->setMcEmailId($info['email'])
+                ->setMcEmailId($info['email_id'])
                 ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
                 ->setStoreId($info['store_id'])
                 ->save();
