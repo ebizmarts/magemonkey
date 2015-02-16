@@ -43,7 +43,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CRON_TIME, $storeId))) {
             $this->_processReview($storeId);
         }
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CRON_TIME, $storeId))) {
             $this->_processBirthday($storeId);
         }
         if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CRON_TIME, $storeId))) {

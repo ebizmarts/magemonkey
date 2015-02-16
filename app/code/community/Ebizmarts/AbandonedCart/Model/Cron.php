@@ -153,8 +153,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
                     if (
                         (
-                            $stock->getManageStock() ||
-                            ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId()))
+                            is_object($stock) && ($stock->getManageStock() ||
+                            ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId())))
                         )
                         && $stockQty < $item->getQty())
                     {
