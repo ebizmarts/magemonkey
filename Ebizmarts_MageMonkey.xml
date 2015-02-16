@@ -1,5 +1,5 @@
 <_>
-   <form_key>uvOydC1ftCRw4L15</form_key>
+   <form_key>zOIsvfCLwxPgA7yI</form_key>
    <name>Ebizmarts_MageMonkey</name>
    <channel>community</channel>
    <version_ids>
@@ -10,19 +10,25 @@
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>1.1.24</version>
+   <version>1.1.27</version>
    <stability>stable</stability>
-   <notes>
-       1.1.25
+   <notes>       1.1.27
        --------
-       Fixed compatibility with before versions of PHP 5.4.
+       Checks if group is displayed before adding it to post on Checkout Subscription.
 
-       Send orders to MailChimp only if related customer is already there.
+Fixed Email Catcher.
+Email Catcher has the new option to insist a configurable number of times before stopping if canceled.
+Email catched is now also used on Autoresponder -&gt; Visited Products
+Customer can receive coupon if added email on Email Catcher if configured.
 
-       Fixed Mandrill headers when not defined.
+All Autoresponder features have the option to set the hour of the day to be sent.
 
-       Fixed database error when table prefix enabled.
-   </notes>
+Bulksync export also updates customers
+
+Cookies for MailChimp campaign are now generated with javascript to skip Varnish cache or similar.
+
+http://ebizmarts.com/forums/topics/view/13862#15185
+If configurable doesn&apos;t have images set it will show the simple product image.</notes>
    <authors>
       <name>
          <name>Ebizmarts Development Team</name>
@@ -51,7 +57,7 @@
             <max/>
          </max>
          <files>
-            <files>                                                                                                  </files>
+            <files>                                                                                                     </files>
          </files>
       </package>
       <extension>
