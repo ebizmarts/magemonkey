@@ -249,7 +249,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
     protected function _sendPopupCoupon($storeId)
     {
-        $customerGroupsCoupon = explode(",", Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CUSTOMER_COUPON, $storeId));
         $templateId = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_TEMPLATE_XML_PATH, $storeId);
         $mailSubject = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_MAIL_SUBJECT, $storeId);
         $tags = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_MANDRILL_TAG, $storeId) . "_$storeId";
@@ -270,18 +269,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
         foreach($collection as $item) {
             $email = $item->getEmail();
-            $customer = Mage::getModel('customer/customer')
-                ->setStore(Mage::app()->getStore($storeId))
-                ->loadByEmail($email);
-            if ($customer->getId()) {
-                if (!in_array($customer->getGroupId(), $customerGroupsCoupon)) {
-                    continue;
-                }
-            }else{
-                if(!in_array(0, $customerGroupsCoupon)){
-                    continue;
-                }
-            }
             $emailArr = explode('@', $email);
             $pseudoName = $emailArr[0];
             if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_AUTOMATIC, $storeId) == 2) {
