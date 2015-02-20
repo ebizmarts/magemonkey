@@ -401,7 +401,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         $rs = $api->ecommOrderAdd($this->_info);
                     }
                 }
-                if (isset($rs['complete']) && $rs['complete'] == TRUE) {
+                if (isset($rs['complete']) && $rs['complete'] == TRUE && !Mage::getStoreConfig('monkey/general/checkout_async', Mage::app()->getStore()->getId())) {
                     $order = Mage::getModel('monkey/ecommerce')
                         ->setOrderIncrementId($this->_info['id'])
                         ->setOrderId($this->_info['order_id'])

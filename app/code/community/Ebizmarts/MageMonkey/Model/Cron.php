@@ -446,8 +446,7 @@ class Ebizmarts_MageMonkey_Model_Cron
         $collection = Mage::getModel('monkey/asyncorders')->getCollection();
         $collection->addFieldToFilter('processed',array('eq'=>0));
         $storeId = null;
-        foreach($collection as $item)
-        {
+        foreach($collection as $item) {
             $info = (array)unserialize($item->getInfo());
 //            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
 //                ->addFieldToFilter('processed',array('eq'=>1))
@@ -464,31 +463,34 @@ class Ebizmarts_MageMonkey_Model_Cron
 //            }
             $orderId = $info['order_id'];
             unset($info['order_id']);
-            if($storeId!=$info['store_id']) {
-                $api = Mage::getSingleton('monkey/api',array('store' => $info['store_id']));
+            if ($storeId != $info['store_id']) {
+                $api = Mage::getSingleton('monkey/api', array('store' => $info['store_id']));
                 $storeId = $info['store_id'];
             }
-            if(isset($info['campaign_id'])) {
+            if (isset($info['campaign_id'])) {
                 $api->campaignEcommOrderAdd($info);
-            }
-            else {
+            } else {
                 $api->ecommOrderAdd($info);
                 $info['campaign_id'] = null;
             }
             $item->setProcessed(1)->save();
 
-            $order = Mage::getModel('monkey/ecommerce')
-                ->setOrderIncrementId($info['id'])
-                ->setOrderId($orderId)
-                ->setMcCampaignId($info['campaign_id'])
-                ->setCreatedAt( Mage::getModel('core/date')->gmtDate() )
-                ->setStoreId($info['store_id']);
-            if(isset($info['email_id'])){
-                $order->setMcEmailId($info['email_id']);
-            }else{
-                $order->setMcEmailId($info['email']);
+            $sentCollection = Mage::getModel('monkey/ecommerce')->getCollection()
+                ->addFieldToFilter('order_increment_id', array('eq', $orderId));
+            if (count($sentCollection) == 0) {
+                $order = Mage::getModel('monkey/ecommerce')
+                    ->setOrderIncrementId($info['id'])
+                    ->setOrderId($orderId)
+                    ->setMcCampaignId($info['campaign_id'])
+                    ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                    ->setStoreId($info['store_id']);
+                if (isset($info['email_id'])) {
+                    $order->setMcEmailId($info['email_id']);
+                } else {
+                    $order->setMcEmailId($info['email']);
+                }
+                $order->save();
             }
-            $order->save();
         }
     }
     public function cleanordersAsync()
