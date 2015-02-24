@@ -23,7 +23,9 @@
         <?php $parentId = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
               if(isset($parentId[0])) {
                   $product = Mage::getModel('catalog/product')->load($parentId[0]);
+                  Mage::log('have parent', null, 'santiago.log', true);
               }
+        Mage::log($product->getSku(), null, 'santiago.log', true);
               $url = Mage::getUrl('review/product/list', array('id'=> $product->getId()));
               if($token) {
                   $url .= 'token/'.$token;

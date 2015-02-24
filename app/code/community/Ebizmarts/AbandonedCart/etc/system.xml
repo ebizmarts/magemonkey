@@ -301,7 +301,7 @@
                             </depends>
                         </days4>
                         <subject5 translate="label comment">
-                            <label>Fourth Email Subject</label>
+                            <label>Fifth Email Subject</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
@@ -633,7 +633,7 @@
                             </depends>
                         </template4>
                         <subject5 translate="label comment">
-                            <label>Fourth Email Subject</label>
+                            <label>Fifth Email Subject</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>200</sort_order>
                             <show_in_default>1</show_in_default>
