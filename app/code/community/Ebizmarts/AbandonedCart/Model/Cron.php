@@ -58,9 +58,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
             if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId) && $status == 1) {
                 $abTesting = true;
                 $suffix = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_MANDRILL_SUFFIX, $storeId);
-                Mage::log('abTesting true', null, 'santiago.log', true);
-            }else{
-                Mage::log('abTesting false', null, 'santiago.log', true);
             }
         }
 
@@ -131,10 +128,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $collection->addFieldToFilter('main_table.customer_group_id', array('in', $customergroups));
             }
 
-            Mage::log(count($collection), null, 'santiago.log', true);
             // for each cart of the current run
             foreach($collection as $quote) {
-                Mage::log($quote->getCustomerEmail(), null, 'santiago.log', true);
                 foreach ($quote->getAllVisibleItems() as $item) {
                     $removeFromQuote = false;
                     $product = Mage::getModel('catalog/product')->setStoreId($storeId)->load($item->getProductId());
@@ -239,7 +234,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
                     // if days have passed proceed to send mail
                     if ($updatedAtDiff >= $diff) {
-                        Mage::log('flag', null, 'santiago.log', true);
                         $mailsubject = $this->_getMailSubject($run, $abTesting, $storeId);
                         $templateId = $this->_getTemplateId($run, $abTesting, $storeId);
                         if ($sendcoupon && $run + 1 == $sendcoupondays) {
@@ -262,9 +256,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
                         }
                         Mage::app()->getTranslator()->init('frontend', true);
                         $translate = Mage::getSingleton('core/translate');
-                        Mage::log($templateId, null, 'santiago.log', true);
-                        Mage::log($sender, null, 'santiago.log', true);
-                        Mage::log($email, null, 'santiago.log', true);
                         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                         $translate->setTranslateInLine(true);
                         $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter() + 1);
@@ -272,7 +263,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
                         $quote2->save();
 
                         if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId)) {
-                            Mage::log('abtesting counter up', null, 'santiago.log', true);
                             $counterCollection = Mage::getModel('ebizmarts_abandonedcart/abtesting')->getCollection()
                                 ->addFieldToFilter('store_id', array('eq' => $storeId));
                             $counter = $counterCollection->getFirstItem();
@@ -321,10 +311,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $vars = array('couponcode' => $couponcode, 'name' => $pseudoName, 'tags' => array($tags));
             }
             $translate = Mage::getSingleton('core/translate');
-            Mage::log('sendTransactional coupon popup', null, 'santiago.log', true);
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);
             $item->setProcessed(1)->save();
-            Mage::log('setProcessed 1 coupon popup', null, 'santiago.log', true);
             $translate->setTranslateInLine(true);
             Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon', $email, $pseudoName, $couponcode, $storeId);
         }
