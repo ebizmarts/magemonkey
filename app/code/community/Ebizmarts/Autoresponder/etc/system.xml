@@ -103,7 +103,7 @@
                             <show_in_store>1</show_in_store>
                             <depends>
                                 <active>1</active>
-                                <trigger>0</trigger>
+                                <trigger separator=",">0,2</trigger>
                             </depends>
                         </days>
                         <order_status translate="label comment">
@@ -117,7 +117,7 @@
                             <comment><![CDATA[The email will be sent when order gets to the selected status.]]></comment>
                             <depends>
                                 <active>1</active>
-                                <trigger>1</trigger>
+                                <trigger separator=",">1,2</trigger>
                             </depends>
                         </order_status>
                         <subject translate="label">

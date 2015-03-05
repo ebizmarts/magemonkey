@@ -78,6 +78,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
                     ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to));
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TRIGGER, $storeId) == 2){
+            $collection->addFieldToFilter('main_table.status', array('eq' => strtolower(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ORDER_STATUS, $storeId))));
+        }
         if(count($customerGroups)) {
             $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }

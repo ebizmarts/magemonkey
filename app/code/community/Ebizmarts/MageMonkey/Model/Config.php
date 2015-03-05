@@ -22,6 +22,7 @@ class Ebizmarts_MageMonkey_Model_Config
     const GENERAL_CHANGECUSTOMERGROUP       = 'monkey/general/changecustomergroup';
     const GENERAL_SHOWREALLISTNAME          = 'monkey/general/showreallistname';
     const GENERAL_ADDITIONAL_LIST           = 'monkey/general/additional_lists';
+    const GENERAL_CONFIRMATION_EMAIL        = 'monkey/general/confirmation_email';
     const GENERAL_DOUBLE_OPTIN              = 'monkey/general/double_optin';
     const GENERAL_MAP_FIELDS                = 'monkey/general/map_fields';
     const GENERAL_GUEST_NAME                = 'monkey/general/guest_name';

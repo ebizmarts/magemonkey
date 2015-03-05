@@ -214,7 +214,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     {
     	foreach ($this->_order->getAllItems() as $item){
 			$mcitem = array();
-            $product = Mage::getSingleton('catalog/product')->load($item->getProductId());
+            $product = Mage::getModel('catalog/product')->load($item->getProductId());
 
 			if(in_array($product->getTypeId(), $this->_productsToSkip) && $product->getPriceType() == 0){
 				if($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE){

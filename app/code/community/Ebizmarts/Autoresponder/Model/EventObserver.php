@@ -238,7 +238,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
 
         $order = $observer->getEvent()->getOrder();
 
-        if ($new_data['status'] && $original_data['status'] !== $new_data['status'] && $new_data['status'] == Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ORDER_STATUS, $storeId)) {
+        if (isset($new_data['status']) && isset($original_data['status']) !== $new_data['status'] && $new_data['status'] == Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ORDER_STATUS, $storeId)) {
             if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $storeId) && Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TRIGGER, $storeId) == 1){
                 $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_MANDRILL_TAG,$storeId)."_$storeId";
                 $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_SUBJECT,$storeId);

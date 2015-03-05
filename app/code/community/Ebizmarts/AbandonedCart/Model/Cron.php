@@ -125,7 +125,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
             $collection->addFieldToFilter('main_table.customer_email', array('neq' => ''));
             if(count($customergroups)) {
-                $collection->addFieldToFilter('main_table.customer_group_id', array('in', $customergroups));
+                $collection->addFieldToFilter('main_table.customer_group_id', array('in' => $customergroups));
             }
 
             // for each cart of the current run
