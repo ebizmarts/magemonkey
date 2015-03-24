@@ -32,8 +32,8 @@ $_quote = $this->getQuote();
                 if(isset($options['bundle_options'])) {
 
 
-                	$bundled_product = new Mage_Catalog_Model_Product();
-					$bundled_product->load($_item->getProduct()->getId());
+                    $productId = $_item->getProduct()->getId();
+                	$bundled_product = Mage::getModel('catalog/product')->load($productId);
 					$selectionCollection = $bundled_product->getTypeInstance(true)->getSelectionsCollection(
 						$bundled_product->getTypeInstance(true)->getOptionsIds($bundled_product), $bundled_product
 					);
