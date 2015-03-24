@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.30</version>
+            <version>0.1.31</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -46,6 +46,31 @@
                     <file>ebizmarts/abandonedcart/popup_coupon_template.html</file>
                     <type>html</type>
                 </ebizmarts_abandonedcart_emailcatcher_popup_coupon_template>
+                <ebizmarts_abandonedcart_A_Btesting_template1 translate="label" module="ebizmarts_abandonedcart">
+                    <label>First A/B Testing Abandoned Cart Mail</label>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_A_Btesting_template1>
+                <ebizmarts_abandonedcart_A_Btesting_template2 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Second A/B Testing Abandoned Cart Mail</label>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_A_Btesting_template2>
+                <ebizmarts_abandonedcart_A_Btesting_template3 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Third A/B Testing Abandoned Cart Mail</label>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_A_Btesting_template3>
+                <ebizmarts_abandonedcart_A_Btesting_template4 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Fourth A/B Testing Abandoned Cart Mail</label>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_A_Btesting_template4>
+                <ebizmarts_abandonedcart_A_Btesting_template5 translate="label" module="ebizmarts_abandonedcart">
+                    <label>Fifth A/B Testing Abandoned Cart Mail</label>
+                    <file>ebizmarts/abandonedcart/abandoned_cart_mail_generic.html</file>
+                    <type>html</type>
+                </ebizmarts_abandonedcart_A_Btesting_template5>
             </email>
         </template>
         <ebizmarts_abandonedcart>
@@ -66,6 +91,9 @@
                     <popup>
                         <table>ebizmarts_abandonedcart_popup</table>
                     </popup>
+                    <abtesting>
+                        <table>ebizmarts_abandonedcart_abtesting</table>
+                    </abtesting>
                 </entities>
             </ebizmarts_abandonedcart_resource>
         </models>
@@ -179,7 +207,7 @@
         <jobs>
             <ebizmarts_abandoned_cart>
                 <schedule>
-                    <cron_expr>0 */1 * * *</cron_expr>
+                    <cron_expr>*/5 * * * *</cron_expr>
                 </schedule>
                 <run>
                     <model>ebizmarts_abandonedcart/cron::abandoned</model>

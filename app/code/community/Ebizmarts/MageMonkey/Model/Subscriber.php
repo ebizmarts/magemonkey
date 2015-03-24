@@ -10,7 +10,8 @@ class Ebizmarts_MageMonkey_Model_Subscriber extends Mage_Newsletter_Model_Subscr
 {
     public function sendUnsubscriptionEmail()
     {
-        if(Mage::getStoreConfig('monkey/general/active', Mage::helper('monkey')->getThisStore()) == 1) {
+        $store = Mage::helper('monkey')->getThisStore();
+        if(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_ACTIVE, $store) == 1 && Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $store)) {
             return $this;
         }else{
             return parent::sendUnsubscriptionEmail();
@@ -19,7 +20,8 @@ class Ebizmarts_MageMonkey_Model_Subscriber extends Mage_Newsletter_Model_Subscr
 
     public function sendConfirmationRequestEmail()
     {
-        if(Mage::getStoreConfig('monkey/general/active', Mage::helper('monkey')->getThisStore()) == 1) {
+        $store = Mage::helper('monkey')->getThisStore();
+        if(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_ACTIVE, $store) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $store)) {
             return $this;
         }else{
             return parent::sendConfirmationRequestEmail();
@@ -28,7 +30,8 @@ class Ebizmarts_MageMonkey_Model_Subscriber extends Mage_Newsletter_Model_Subscr
 
     public function sendConfirmationSuccessEmail()
     {
-        if(Mage::getStoreConfig('monkey/general/active', Mage::helper('monkey')->getThisStore()) == 1) {
+        $store = Mage::helper('monkey')->getThisStore();
+        if(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_ACTIVE, $store) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $store)) {
             return $this;
         }else{
             return parent::sendConfirmationSuccessEmail();

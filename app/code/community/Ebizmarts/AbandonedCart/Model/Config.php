@@ -40,6 +40,21 @@ class Ebizmarts_AbandonedCart_Model_Config
     const IN_HOURS                          = 1;
     const PAGE                              = 'ebizmarts_abandonedcart/general/page';
 
+    const AB_TESTING_ACTIVE                 = 'ebizmarts_abandonedcart/A_Btesting/active';
+    const AB_TESTING_MANDRILL_SUFFIX        = 'ebizmarts_abandonedcart/A_Btesting/mandrill_suffix';
+    const AB_TESTING_FIRST_EMAIL            = 'ebizmarts_abandonedcart/A_Btesting/template1';
+    const AB_TESTING_SECOND_EMAIL           = 'ebizmarts_abandonedcart/A_Btesting/template2';
+    const AB_TESTING_THIRD_EMAIL            = 'ebizmarts_abandonedcart/A_Btesting/template3';
+    const AB_TESTING_FOURTH_EMAIL           = 'ebizmarts_abandonedcart/A_Btesting/template4';
+    const AB_TESTING_FIFTH_EMAIL            = 'ebizmarts_abandonedcart/A_Btesting/template5';
+    const AB_TESTING_EMAIL_TEMPLATE         = 'ebizmarts_abandonedcart/A_Btesting/coupon_template';
+    const AB_TESTING_FIRST_SUBJECT          = "ebizmarts_abandonedcart/A_Btesting/subject1";
+    const AB_TESTING_SECOND_SUBJECT         = "ebizmarts_abandonedcart/A_Btesting/subject2";
+    const AB_TESTING_THIRD_SUBJECT          = "ebizmarts_abandonedcart/A_Btesting/subject3";
+    const AB_TESTING_FOURTH_SUBJECT         = "ebizmarts_abandonedcart/A_Btesting/subject4";
+    const AB_TESTING_FIFTH_SUBJECT          = "ebizmarts_abandonedcart/A_Btesting/subject5";
+    const AB_TESTING_COUPON_SENDON          = "ebizmarts_abandonedcart/A_Btesting/A_Btesting_sendon";
+
 
     const COUPON_DAYS                       = "ebizmarts_abandonedcart/coupon/sendon";
     const SEND_COUPON                       = "ebizmarts_abandonedcart/coupon/create";

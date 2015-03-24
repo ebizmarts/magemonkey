@@ -35,7 +35,6 @@
                         win.okCallback();
                     }
                 });
-
                 var cookieStored = emailCookieExists();
                 if (!cookieStored) {
                     var win = Dialog.confirm($('email').innerHTML, {
@@ -53,7 +52,8 @@
                                 $counterId = $_COOKIE['counter'];
                                 $counter = Mage::getModel('ebizmarts_abandonedcart/popup')->load($counterId);
                                 //if(counter en config == counter en db){
-                                if($counter->getCounter()+1 >= Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId())): ?>
+                                if($counter->getCounter()+1 >= Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId())): 
+                                	?>
                             document.cookie = 'counter=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
                             createCookie('email=none', <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
                                 <?php else :
@@ -62,10 +62,14 @@
                                 endif; ?>
                             <?php else:
                             //create cookie counter in 0
-                            $newCounter = Mage::getModel('ebizmarts_abandonedcart/popup');
-                            $newCounter->setCounter(1)->save();
-                            ?>
-                            createCookie('counter='+<?php Print(json_encode($newCounter->getId())); ?>, <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
+                            	if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId()) == 1): ?>
+                            		createCookie('email=none', <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
+                            	<?php else:
+		                            $newCounter = Mage::getModel('ebizmarts_abandonedcart/popup');
+		                            $newCounter->setCounter(1)->save();
+		                            ?>
+		                            createCookie('counter='+<?php Print(json_encode($newCounter->getId())); ?>, <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
+		                        <?php endif; ?>
                             <?php endif; ?>
                         },
                         <?php endif; ?>
@@ -90,7 +94,6 @@
                             }
                         }
                     });
-
                 <?php if(!$this->_canCancel()): ?>
                 $$('.cancel_button').each(function (element) {
                     element.remove();
@@ -103,7 +106,6 @@
                         });
                     });
                 <?php endif; ?>
-
                 }
             }
         <?php endif; ?>
@@ -111,7 +113,6 @@
             var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(email);
         }
-
         function emailCookieExists(){
             var cookie = document.cookie;
             var cookieArr = cookie.split(';');
@@ -123,7 +124,6 @@
             }
             return cookieStored;
         }
-
         function createCookie(cookie, expirationInDays){
             var now = new Date();
             var expire = new Date(now.getTime() + (expirationInDays * 24 * 60) * 60000);//[(1 * 365 * 24 * 60) * 60000] == 1 year  -- (Years * Days * Hours * Minutes) * 60000

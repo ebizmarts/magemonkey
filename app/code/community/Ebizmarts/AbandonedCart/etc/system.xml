@@ -301,7 +301,7 @@
                             </depends>
                         </days4>
                         <subject5 translate="label comment">
-                            <label>Fourth Email Subject</label>
+                            <label>Fifth Email Subject</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
@@ -346,7 +346,7 @@
                             <label>Customer Groups</label>
                             <frontend_type>multiselect</frontend_type>
                             <source_model>ebizmarts_abandonedcart/system_config_customergroup</source_model>
-                            <sort_order>70</sort_order>
+                            <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -360,7 +360,7 @@
                             <label>Auto Login link</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>80</sort_order>
+                            <sort_order>65</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -369,12 +369,11 @@
                                 <active>1</active>
                             </depends>
                         </autologin>
-
                     </fields>
                 </general>
                 <coupon>
                     <label>Coupon</label>
-                    <sort_order>99</sort_order>
+                    <sort_order>70</sort_order>
                     <frontend_type>text</frontend_type>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -384,7 +383,7 @@
                             <label>Create Coupon?</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>100</sort_order>
+                            <sort_order>75</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -392,7 +391,7 @@
                         <sendon translate="label">
                             <label>On email number?</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>110</sort_order>
+                            <sort_order>80</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -406,7 +405,7 @@
                             <label>Option</label>
                             <frontend_type>select</frontend_type>
                             <source_model>ebizmarts_abandonedcart/system_config_automatic</source_model>
-                            <sort_order>115</sort_order>
+                            <sort_order>85</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -417,7 +416,7 @@
                         <couponcode>
                             <label>Coupon Code</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>120</sort_order>
+                            <sort_order>90</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -431,7 +430,7 @@
                         <expire>
                             <label>Expire on</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>120</sort_order>
+                            <sort_order>95</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -445,7 +444,7 @@
                         <length>
                             <label>Coupon length</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>130</sort_order>
+                            <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -460,7 +459,7 @@
                             <label>Discount type</label>
                             <frontend_type>select</frontend_type>
                             <source_model>ebizmarts_abandonedcart/system_config_discounttype</source_model>
-                            <sort_order>140</sort_order>
+                            <sort_order>105</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -474,7 +473,7 @@
                         <discount>
                             <label>Discount amount</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>150</sort_order>
+                            <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -488,7 +487,7 @@
                         <couponlabel>
                             <label>Label for coupon</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>160</sort_order>
+                            <sort_order>115</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -501,9 +500,182 @@
                         </couponlabel>
                     </fields>
                 </coupon>
+                <A_Btesting>
+                    <label>A/B Testing</label>
+                    <sort_order>120</sort_order>
+                    <frontend_type>text</frontend_type>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_abandonedcart/system_config_Yesnovariation</source_model>
+                            <sort_order>125</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </active>
+                        <mandrill_suffix translate="label">
+                            <label>Test suffix</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active separator=",">0,1,2,3,4,-0,-1,-2,-3,-4</active>
+                            </depends>
+                        </mandrill_suffix>
+                        <subject1 translate="label comment">
+                            <label>First Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>135</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the first email abandoned cart]]></comment>
+                            <depends>
+                                <active separator=",">0,1,2,3,4,-0,-1,-2,-3,-4</active>
+                            </depends>
+                        </subject1>
+                        <template1 translate="label">
+                            <label>First Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/A_Btesting/template1</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active separator=",">0,1,2,3,4,-0,-1,-2,-3,-4</active>
+                            </depends>
+                        </template1>
+                        <subject2 translate="label comment">
+                            <label>Second Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>155</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the second email abandoned cart]]></comment>
+                            <depends>
+                                <active separator=",">1,2,3,4,-1,-2,-3,-4</active>
+                            </depends>
+                        </subject2>
+                        <template2 translate="label">
+                            <label>Second Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/A_Btesting/template2</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>160</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active separator=",">1,2,3,4,-1,-2,-3,-4</active>
+                            </depends>
+                        </template2>
+                        <subject3 translate="label comment">
+                            <label>Third Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>170</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the third email abandoned cart]]></comment>
+                            <depends>
+                                <active separator=",">2,3,4,-2,-3,-4</active>
+                            </depends>
+                        </subject3>
+                        <template3 translate="label">
+                            <label>Third Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/A_Btesting/template3</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>175</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active separator=",">2,3,4,-2,-3,-4</active>
+                            </depends>
+                        </template3>
+                        <subject4 translate="label comment">
+                            <label>Fourth Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>185</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
+                            <depends>
+                                <active separator=",">3,4,-3,-4</active>
+                            </depends>
+                        </subject4>
+                        <template4 translate="label">
+                            <label>Fourth Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/A_Btesting/template4</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>190</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active separator=",">3,4,-3,-4</active>
+                            </depends>
+                        </template4>
+                        <subject5 translate="label comment">
+                            <label>Fifth Email Subject</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
+                            <depends>
+                                <active separator=",">4,-4</active>
+                            </depends>
+                        </subject5>
+                        <template5 translate="label">
+                            <label>Fifth Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <config_path>ebizmarts_abandonedcart/A_Btesting/template5</config_path>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>205</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active separator=",">4,-4</active>
+                            </depends>
+                        </template5>
+                        <A_Btesting_sendon translate="label">
+                            <label>If cuopon enabled send on email number?</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>215</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The coupon will be created on testing email for Abandoned Cart number]]></comment>
+                            <depends>
+                                <active separator=",">-0,-1,-2,-3,-4</active>
+                            </depends>
+                        </A_Btesting_sendon>
+                    </fields>
+                </A_Btesting>
                 <emailcatcher>
                     <label>Catch email</label>
-                    <sort_order>170</sort_order>
+                    <sort_order>220</sort_order>
                     <frontend_type>text</frontend_type>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
@@ -513,7 +685,7 @@
                             <label>Catch Email on Popup</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>180</sort_order>
+                            <sort_order>225</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -522,7 +694,7 @@
                         <popup_heading translate="label comment">
                             <label>Popup Heading</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>190</sort_order>
+                            <sort_order>230</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -535,7 +707,7 @@
                         <popup_text translate="label comment">
                             <label>Popup Message</label>
                             <frontend_type>textarea</frontend_type>
-                            <sort_order>200</sort_order>
+                            <sort_order>235</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -548,7 +720,7 @@
                         <popup_width translate="label comment">
                             <label>Popup Width</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>210</sort_order>
+                            <sort_order>240</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -562,7 +734,7 @@
                             <label>Subscribe customer</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>220</sort_order>
+                            <sort_order>245</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -575,7 +747,7 @@
                             <label>Customer can close Popup</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>230</sort_order>
+                            <sort_order>250</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -587,7 +759,7 @@
                         <popup_cookie_time translate="label comment">
                             <label>When popup cancelled show again after</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>240</sort_order>
+                            <sort_order>255</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -600,7 +772,7 @@
                         <popup_insist translate="label comment">
                             <label>Limit of times popup will get shown</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>250</sort_order>
+                            <sort_order>260</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -614,7 +786,7 @@
                             <label>Create Coupon?</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>260</sort_order>
+                            <sort_order>265</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>

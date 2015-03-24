@@ -373,7 +373,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 			Mage::getSingleton('core/session')->setMonkeyPost( serialize(Mage::app()->getRequest()->getPost()) );
 			if(!is_null($subscribe)||!is_null($force)){
 				Mage::getSingleton('core/session')->setMonkeyCheckout(true);
-
 			}
 		}
         if($oneStep){

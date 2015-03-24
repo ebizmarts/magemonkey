@@ -16,7 +16,8 @@ class Ebizmarts_Autoresponder_Model_System_Config_Newordertrigger
     {
         $this->_options = array(
             array('value'=> 0, 'label' => 'Days after order'),
-            array('value'=> 1, 'label' => 'Order status')
+            array('value'=> 1, 'label' => 'Order status'),
+            array('value'=> 2, 'label' => 'Days after order status changed to')
         );
         return $this->_options;
     }
