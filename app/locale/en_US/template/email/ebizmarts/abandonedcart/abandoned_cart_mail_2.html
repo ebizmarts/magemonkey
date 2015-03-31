@@ -22,6 +22,9 @@
                                 {{depend discount}}
                                 and obtain a discount of {{var discount}} only until {{var todate}}
                                 {{/depend}}
+                                {{depend points}}
+                                <br />You currently have {{var points}} points available.
+                                {{/depend}}
                                 <br>If you have any questions about your order please contact us at <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#1E7EC8;">{{config path='trans_email/ident_support/email'}}</a> or call us at <span class="nobr">{{config path='general/store_information/phone'}}</span> Monday - Friday, 8am - 5pm PST.
                             </p>
                         </td>
@@ -36,7 +39,7 @@
                     </tr>
                     <tr>
                         <td align="center">
-                            <div style="margin-top: 30px; margin-bottom:20px;"><a bgcolor="#EAEAEA" style="background:#EAEAEA; text-align:center;  display:cell-block; color:black; border-radius: 10px; text-decoration:none; padding:22px; box-shadow: inset 0px 1px 1px #909193, 0px 1px 0px #fff; font-size:15px" href="{{var url}}" >Resume your oder {{depend couponcode}} and redeem coupon code {{/depend}}{{var couponcode}} {{depend discount}} to get {{var discount}}% off!{{/depend}}</a></div>
+                            <div style="margin-top: 30px; margin-bottom:20px;"><a bgcolor="#EAEAEA" style="background:#EAEAEA; text-align:center;  display:cell-block; color:black; border-radius: 10px; text-decoration:none; padding:22px; box-shadow: inset 0px 1px 1px #909193, 0px 1px 0px #fff; font-size:15px" href="{{var url}}" >Resume your order {{depend couponcode}} and redeem coupon code {{/depend}}{{var couponcode}} {{depend discount}} to get {{var discount}}% off!{{/depend}}</a></div>
                         </td>
                     </tr>
                     <tr>

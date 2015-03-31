@@ -1,0 +1,78 @@
+<?php
+/**
+ * @see Ebizmarts_SweetMonkey_Block_Adminhtml_System_Config_Autovars
+ */
+?>
+<table>
+    <tr>
+        <td>
+            <button onclick="createVars(); return false;" class="scalable" type="button" id="<?php echo $this->getHtmlId() ?>">
+                <span><?php echo $this->escapeHtml($this->getButtonLabel()); ?></span>
+            </button>
+        </td>
+        <td>
+            <button onclick="showVars(); return false;" class="scalable" type="button" id="<?php echo $this->getSndHtmlId() ?>">
+                <span><?php echo $this->escapeHtml($this->getSndButtonLabel()); ?></span>
+            </button>
+        </td>        
+    </tr>
+    <tr>
+        <td colspan="2" id="varscontainer">&nbsp;</td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    
+    showVars = function () {
+        
+       var html = new Element('ul');
+       var myTemplate = new Template('<li>#{name} <strong>#{tag}</strong></li>');
+        
+       new Ajax.Request('<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/mageMonkey/varsForList'); ?>', {
+         parameters: { "list_id":$('sweetmonkey_general_lists').getValue() },   
+         onComplete: function(response) {
+           if (200 == response.status){
+               var data = response.responseText.evalJSON();
+               var lis = '';
+               data.each(function(merge_var){
+                   lis += myTemplate.evaluate(merge_var);
+               });
+               
+               html.update(lis); 
+               $('varscontainer').update(html);               
+           }  
+         },
+         onLoading: function(){
+            $('varscontainer').update('...');
+        }
+       });
+    }
+    
+    createVars = function () {
+    
+        if(!confirm("<?php echo $this->__('Are you sure?'); ?>")){
+            return;
+        }
+    
+       var varsparams = $H({});
+       
+       var varsInput = $$('tr#row_sweetmonkey_general_merge_vars input[type=text]');
+        for(i=0;i<varsInput.length;i+=2){
+            varsparams.set(varsInput[i].getValue(), varsInput[i+1].getValue());
+        }
+       
+       new Ajax.Request('<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/mageMonkey/varsToList'); ?>', {
+         method: 'post',  
+         parameters: { "list_id":$('sweetmonkey_general_lists').getValue(), "merge_vars":varsparams.toQueryString() },   
+         onComplete: function(response) {
+           if (200 == response.status){ 
+               showVars();
+           }  
+         },
+         onLoading: function(){
+            $('varscontainer').update('...');
+        }
+       });
+    }    
+    
+</script>

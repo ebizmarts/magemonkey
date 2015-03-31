@@ -911,10 +911,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 ->setImportMode(TRUE)
                 ->setSubscriberEmail($email);
         }else{
-            $customer = Mage::getSingleton('customer/customer')->load($email);
-            if($customer->getId()){
-                $object = $customer;
-            }
+//            $customer = Mage::getSingleton('customer/customer')->load($email);
+//            if($customer->getId()){
+//                $object = $customer;
+//            }
             $subscriber = $object;
         }
 

@@ -254,6 +254,22 @@ class Ebizmarts_AbandonedCart_Model_Cron
                             $vars = array('quote' => $quote, 'url' => $url, 'unsubscribeurl' => $unsubscribeUrl, 'tags' => array($mandrillTag));
 
                         }
+
+                        $customer = Mage::getModel('customer/customer')
+                            ->setStore(Mage::app()->getStore($storeId))
+                            ->loadByEmail($email);
+                        $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
+                        foreach($tbtPoints as $key => $field){
+                            if($key == 'points'){
+                                $vars[$key] = 10;
+//                                if($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+//                                    $vars[$key] = $field;
+//                                }
+                            }else{
+                                $vars[$key] = $field;
+                            }
+                        }
+
                         Mage::app()->getTranslator()->init('frontend', true);
                         $translate = Mage::getSingleton('core/translate');
                         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailsubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
@@ -309,6 +325,10 @@ class Ebizmarts_AbandonedCart_Model_Cron
             } else {
                 $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_CODE);
                 $vars = array('couponcode' => $couponcode, 'name' => $pseudoName, 'tags' => array($tags));
+            }
+            $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
+            if($tbtPoints){
+                $vars['sweetMonkey'] = $tbtPoints;
             }
             $translate = Mage::getSingleton('core/translate');
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);

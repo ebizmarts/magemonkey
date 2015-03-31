@@ -19,6 +19,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 	 */
 	public function handleSubscriber(Varien_Event_Observer $observer)
 	{
+        Mage::log('handleSubscriber', null, 'santiago.log', true);
         if(!Mage::helper('monkey')->canMonkey()){
 			return $observer;
 		}
@@ -31,6 +32,8 @@ class Ebizmarts_MageMonkey_Model_Observer
         if( !Mage::helper('monkey')->isAdmin() &&
             (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1) ){
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
+        }elseif(Mage::helper('monkey')->isAdmin()){
+            $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
         }
 
 		if( $subscriber->getBulksync() ){
@@ -343,8 +346,15 @@ class Ebizmarts_MageMonkey_Model_Observer
                 } else {
                     $subscriber = Mage::getModel('newsletter/subscriber')
                         ->loadByEmail($customer->getEmail());
-                    $subscriber->setImportMode(TRUE)->unsubscribe();
-                    Mage::getSingleton('monkey/api', $customer->getStoreId())->listUnsubscribe($defaultList, $customer->getEmail());
+                    if($subscriber->getId()) {
+                        $subscriber->setImportMode(TRUE)->unsubscribe();
+                        Mage::getSingleton('monkey/api', $customer->getStoreId())->listUnsubscribe($defaultList, $customer->getEmail());
+                    }else{
+                        Mage::getModel('newsletter/subscriber')
+                            ->setSubscriberEmail($customer->getEmail())
+                            ->setImportMode(TRUE)
+                            ->subscribe($customer->getEmail());
+                    }
                 }
             }
             Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);

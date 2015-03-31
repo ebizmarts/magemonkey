@@ -64,6 +64,9 @@ class Ebizmarts_MageMonkey_Model_Monkey {
                 $this->_updateEmail($data);
                     $cacheHelper->clearCache('listUpdateMember', $object);
                 break;
+            case 'profile':
+                $this->_profile($data);
+                break;
         }
 
         if (!is_null($store)) {
@@ -206,6 +209,35 @@ class Ebizmarts_MageMonkey_Model_Monkey {
                 Mage::logException($e);
             }
         }
+    }
+
+    protected function _profile($data){
+
+        $subscriber = $this->loadByEmail($data['email']);
+        $storeId = $subscriber->getStoreId();
+        $mapMerges = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_MAP_FIELDS, $storeId);
+
+        $customerCollection = Mage::getModel('customer/customer')->getCollection()
+            ->addFieldToFilter('email', array('eq' => $data['email']));
+        if(count($customerCollection) > 0){
+            $toUpdate = $customerCollection->getFirstItem();
+        }else{
+            $toUpdate = $subscriber;
+        }
+
+        $this->_mapFieldsToMagento($data, $toUpdate, $storeId);
+
+    }
+
+    protected function _mapFieldsToMagento($data, $toUpdate, $storeId){
+        $mapMerges = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_MAP_FIELDS, $storeId);
+
+        foreach($data['merges'] as $merge){
+            if(in_array($merge, $mapMerges['mailchimp'])){
+
+            }
+        }
+
     }
 
     /**

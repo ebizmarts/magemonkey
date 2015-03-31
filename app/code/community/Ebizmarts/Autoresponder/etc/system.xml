@@ -12,7 +12,7 @@
         <ebizmarts_autoresponder translate="label" module="ebizmarts_autoresponder">
             <label><![CDATA[Autoresponder Emails]]></label>
             <tab>monkey</tab>
-            <sort_order>400</sort_order>
+            <sort_order>500</sort_order>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>

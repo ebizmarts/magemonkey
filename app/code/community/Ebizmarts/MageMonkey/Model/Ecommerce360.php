@@ -321,13 +321,21 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             if($max == $count){
                 break;
             }
+            $ecommerceTable = Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce');
             if($state != 'all_status') {
                 $orders = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('main_table.store_id', array('eq' => $storeId));
-                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null AND main_table.status = \'' . $state . '\'')
+//                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null AND main_table.status = \'' . $state . '\'')
+//                    ->limit($max - $count);
+                $orders->getSelect()->where('main_table.status = \'' . $state . '\' ' .
+                    'AND main_table.entity_id NOT IN '.
+                    "(SELECT ecommerce.order_id FROM {$ecommerceTable} AS ecommerce WHERE ecommerce.store_id = {$storeId})")
                     ->limit($max - $count);
             }else{
                 $orders = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('main_table.store_id', array('eq' => $storeId));
-                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null')
+//                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null')
+//                    ->limit($max - $count);
+                $orders->getSelect()->where('main_table.entity_id NOT IN '.
+                    "(SELECT ecommerce.order_id FROM {$ecommerceTable} AS ecommerce WHERE ecommerce.store_id = {$storeId})")
                     ->limit($max - $count);
             }
             $count += count($orders);
