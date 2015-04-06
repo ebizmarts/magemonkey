@@ -48,6 +48,18 @@
                                 <active>1</active>
                             </depends>
                         </apikey>
+                        <subaccount translate="label comment">
+                            <label>Sub Account</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Optional: subaccount]]></comment>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </subaccount>
                         <enable_log translate="label comment">
                             <label>Enable Log</label>
                             <frontend_type>select</frontend_type>

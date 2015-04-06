@@ -19,7 +19,15 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
      */
     public function send($email, $name = null, array $variables = array())
     {
-        $storeId = Mage::app()->getStore()->getId();
+        //get store ID
+        if(isset($variables['store'])&& $variables['store'] instanceof Mage_Core_Model_Store){
+            $store = $variables['store'];
+            $storeId = $store->getId();
+        }
+        else{
+            $storeId = Mage::app()->getStore()->getId();
+        }
+
         if(!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE,$storeId)) {
            return parent::send($email, $name,$variables);
         }
@@ -71,8 +79,9 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $email['from_name'] = $this->getSenderName();
         $email['from_email'] = $this->getSenderEmail();
         $email['headers'] = $mail->getHeaders();
-        if(isset($variables['tags']) && count($variables['tags'])) {
-            $email ['tags'] = $variables['tags'];
+
+        if($sub_account = Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::SUBACCOUNT, $storeId)){
+            $email['subaccount'] = $sub_account;
         }
 
         if(isset($variables['tags']) && count($variables['tags'])) {
