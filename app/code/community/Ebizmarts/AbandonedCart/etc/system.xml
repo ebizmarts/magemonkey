@@ -185,7 +185,7 @@
                             <comment><![CDATA[The subject for the second email abandoned cart]]></comment>
                             <depends>
                                 <max separator=",">1,2,3,4</max>
-                                    <active>1</active>
+                                <active>1</active>
                             </depends>
                         </subject2>
                         <template2 translate="label">
@@ -210,7 +210,8 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <comment>
+                                <![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
                             <depends>
                                 <max separator=",">1,2,3,4</max>
                                 <active>1</active>
@@ -252,7 +253,8 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <comment>
+                                <![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
                             <depends>
                                 <max separator=",">2,3,4</max>
                                 <active>1</active>
@@ -294,7 +296,8 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <comment>
+                                <![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
                             <depends>
                                 <max separator=",">3,4</max>
                                 <active>1</active>
@@ -336,7 +339,8 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
+                            <comment>
+                                <![CDATA[This value is in days and is set since the moment cart was abandoned.]]></comment>
                             <depends>
                                 <max separator=",">4</max>
                                 <active>1</active>
@@ -666,7 +670,8 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>0</can_be_empty>
-                            <comment><![CDATA[The coupon will be created on testing email for Abandoned Cart number]]></comment>
+                            <comment>
+                                <![CDATA[The coupon will be created on testing email for Abandoned Cart number]]></comment>
                             <depends>
                                 <active separator=",">-0,-1,-2,-3,-4</active>
                             </depends>
@@ -689,7 +694,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[Create popup when customer access the site for the first time to catch email to use later on Abandoned Cart mailing.]]></comment>
+                            <comment>
+                                <![CDATA[Create popup when customer access the site for the first time to catch email to use later on Abandoned Cart mailing.]]></comment>
                         </popup_general>
                         <popup_heading translate="label comment">
                             <label>Popup Heading</label>
@@ -738,7 +744,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[When email confirmed on popup subscribe customer to newsletter.]]></comment>
+                            <comment>
+                                <![CDATA[When email confirmed on popup subscribe customer to newsletter.]]></comment>
                             <depends>
                                 <popup_general>1</popup_general>
                             </depends>
@@ -776,7 +783,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[If customer doesn't confirm popup, it will be shown this many times each time the customer reload the page.]]></comment>
+                            <comment>
+                                <![CDATA[If customer doesn't confirm popup, it will be shown this many times each time the customer reload the page.]]></comment>
                             <depends>
                                 <popup_general>1</popup_general>
                                 <popup_cancel>1</popup_cancel>

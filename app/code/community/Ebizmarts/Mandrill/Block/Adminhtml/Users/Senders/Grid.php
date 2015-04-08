@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_Mandrill_Block_Adminhtml_Users_Senders_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -28,10 +27,10 @@ class Ebizmarts_Mandrill_Block_Adminhtml_Users_Senders_Grid extends Mage_Adminht
 //        $mail    = $helper->api()->setApiKey($helper->getApiKey());
 //		$emails  = $mail->usersSenders();
         $storeId = Mage::app()->getStore()->getId();
-        $api  = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId));
+        $api = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
         $emails = $api->users->senders();
         Mage::log($emails);
-		if($emails !== FALSE){
+        if ($emails !== FALSE) {
 //			$_emails = array();
 //			foreach($emails as $email){
 //
@@ -49,10 +48,10 @@ class Ebizmarts_Mandrill_Block_Adminhtml_Users_Senders_Grid extends Mage_Adminht
 //									'created_at'   => $email->getCreatedAt(),
 //								  );
 //			}
-			$collection = Mage::getModel('ebizmarts_mandrill/customcollection', array($emails));
-		}else{
-			$collection = Mage::getModel('ebizmarts_mandrill/customcollection', array(array()));
-		}
+            $collection = Mage::getModel('ebizmarts_mandrill/customcollection', array($emails));
+        } else {
+            $collection = Mage::getModel('ebizmarts_mandrill/customcollection', array(array()));
+        }
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -61,65 +60,65 @@ class Ebizmarts_Mandrill_Block_Adminhtml_Users_Senders_Grid extends Mage_Adminht
     protected function _prepareColumns()
     {
         $this->addColumn('email', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('Email Address'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('Email Address'),
             'index' => 'address',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('sent', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of messages sent'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of messages sent'),
             'index' => 'sent',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('rejects', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of rejected messages'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of rejected messages'),
             'index' => 'rejects',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('complaints', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of spam complaints'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of spam complaints'),
             'index' => 'complaints',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('unsubs', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of unsubscribe requests'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of unsubscribe requests'),
             'index' => 'unsubs',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('opens', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of unique opens'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of unique opens'),
             'index' => 'opens',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('clicks', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of times unique tracked URLs have been clicked'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of times unique tracked URLs have been clicked'),
             'index' => 'clicks',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('hard_bounces', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of hard bounces'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of hard bounces'),
             'index' => 'hard_bounces',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('soft_bounces', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('# of soft bounces'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('# of soft bounces'),
             'index' => 'soft_bounces',
             'filter' => false,
             'sortable' => false
         ));
         $this->addColumn('created_at', array(
-            'header'=> Mage::helper('ebizmarts_mandrill')->__('Created At'),
+            'header' => Mage::helper('ebizmarts_mandrill')->__('Created At'),
             'index' => 'created_at',
             'filter' => false,
             'sortable' => false
-        ));        
+        ));
 
         return parent::_prepareColumns();
     }

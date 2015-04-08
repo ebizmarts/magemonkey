@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Progress extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
 {
     /**

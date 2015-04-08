@@ -2,10 +2,10 @@
     //<![CDATA[
     function check2() {
         new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>', {
-            method:     'get',
-            onSuccess: function(transport){
+            method: 'get',
+            onSuccess: function (transport) {
 
-                if (transport.responseText == 1){
+                if (transport.responseText == 1) {
                     alert('All remote orders for Ecommerce360 were deleted')
                 }
                 else {

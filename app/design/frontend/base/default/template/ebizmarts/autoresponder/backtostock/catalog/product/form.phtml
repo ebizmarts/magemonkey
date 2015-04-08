@@ -10,25 +10,30 @@
 ?>
 
 <?php
-    $_product = $this->getProduct();
-    $formAction = $this->getSubscribeUrl();
+$_product = $this->getProduct();
+$formAction = $this->getSubscribeUrl();
 ?>
-<?php if($_product && !$_product->getStockItem()->getIsInStock() && Mage::helper('ebizmarts_autoresponder')->config('backtostock/active')): ?>
+<?php if ($_product && !$_product->getStockItem()->getIsInStock() && Mage::helper('ebizmarts_autoresponder')->config('backtostock/active')): ?>
 
-    <?php if( $this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest()) ): ?>
+    <?php if ($this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest())): ?>
 
         <div class="box-collateral block-autoresponder-backtostock" style="padding: 20px 0 0;">
             <div class="form-add">
-                <form id="backtostock_form" action="<?php echo $formAction?>" method="post">
+                <form id="backtostock_form" action="<?php echo $formAction ?>" method="post">
                     <div>
                         <h2><?php echo $this->__('Get notified !'); ?></h2>
+
                         <p><?php echo $this->__('Subscribe to receive an email as soon as this product become available again!'); ?></p>
                         <ul class="form-list">
                             <li>
-                                <label for="subscriber_email"><?php echo $this->__('Enter your email address');?></label>
+                                <label
+                                    for="subscriber_email"><?php echo $this->__('Enter your email address'); ?></label>
+
                                 <div class="input-box">
                                     <?php $email = $this->isLoggedIn() ? Mage::getSingleton('customer/session')->getCustomer()->getEmail() : ''; ?>
-                                    <input type="text" class="input-text validate-email required-entry" name="subscriber_email" id="subscriber_email" size="35" value="<?php echo $email; ?>" />
+                                    <input type="text" class="input-text validate-email required-entry"
+                                           name="subscriber_email" id="subscriber_email" size="35"
+                                           value="<?php echo $email; ?>"/>
                                 </div>
                             </li>
                         </ul>
@@ -37,8 +42,8 @@
                                 <span><?php echo $this->__('Subscribe'); ?></span>
                             </span>
                         </button>
-                        <input type="hidden" name="redirect_url" value="<?php echo $_product->getProductUrl(); ?>" />
-                        <input type="hidden" name="product_id" value="<?php echo $_product->getId(); ?>" />
+                        <input type="hidden" name="redirect_url" value="<?php echo $_product->getProductUrl(); ?>"/>
+                        <input type="hidden" name="product_id" value="<?php echo $_product->getId(); ?>"/>
                     </div>
                 </form>
             </div>
@@ -48,7 +53,9 @@
             //<![CDATA[
             var dataForm = new VarienForm('backtostock_form', false);
 
-            function btsShowForm() { $('backtostock_form').scrollTo(); }
+            function btsShowForm() {
+                $('backtostock_form').scrollTo();
+            }
             //]]>
         </script>
 

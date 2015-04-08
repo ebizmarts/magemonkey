@@ -1,12 +1,36 @@
-ul.tabs a.ebizmarts-section:hover { background-color:#D8E6E6; background-image:url(../images/tabs_link_over_bg.gif); }
-ul.tabs a.ebizmarts-section {border-bottom: 1px; border-bottom-style: dotted;}
-ul.tabs a.ebizmarts-section:hover {border-bottom:1px; border-bottom-style: dotted;}
-ul.tabs a.ebizmarts-section span,
-ul.tabs a.ebizmarts-section:hover span {overflow:hidden; padding-top:5px;}
-ul.tabs a.ebizmarts-section.active, ul.tabs a.ebizmarts-section.active.last, ul.tabs a.ebizmarts-section.active:hover {background-color: white;border-bottom-color: #8BA5A5;}
-ul.tabs a.ebizmarts-section.last {border-bottom: none;}
+ul.tabs a.ebizmarts-section:hover {
+    background-color: #D8E6E6;
+    background-image: url(../images/tabs_link_over_bg.gif);
+}
 
-small { font-size: 9px; }
+ul.tabs a.ebizmarts-section {
+    border-bottom: 1px;
+    border-bottom-style: dotted;
+}
+
+ul.tabs a.ebizmarts-section:hover {
+    border-bottom: 1px;
+    border-bottom-style: dotted;
+}
+
+ul.tabs a.ebizmarts-section span,
+ul.tabs a.ebizmarts-section:hover span {
+    overflow: hidden;
+    padding-top: 5px;
+}
+
+ul.tabs a.ebizmarts-section.active, ul.tabs a.ebizmarts-section.active.last, ul.tabs a.ebizmarts-section.active:hover {
+    background-color: white;
+    border-bottom-color: #8BA5A5;
+}
+
+ul.tabs a.ebizmarts-section.last {
+    border-bottom: none;
+}
+
+small {
+    font-size: 9px;
+}
 
 div.ebizmarts-notice {
     background: none repeat scroll 0 0 #EAF0EE;

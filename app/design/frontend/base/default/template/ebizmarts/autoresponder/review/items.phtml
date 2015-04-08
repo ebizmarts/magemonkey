@@ -1,10 +1,10 @@
 <?php
-    $products = $this->getProducts();
-    $token = $this->getToken();
+$products = $this->getProducts();
+$token = $this->getToken();
 ?>
 <table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #EAEAEA;">
-    <?php foreach($products as $product): ?>
-        <?php if($product->getImage()=="no_selection"&&$product->getTypeId() == "configurable") {
+    <?php foreach ($products as $product): ?>
+        <?php if ($product->getImage() == "no_selection" && $product->getTypeId() == "configurable") {
             $conf = Mage::getModel('catalog/product_type_configurable')->setProduct($product);
             $simple_collection = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
             foreach ($simple_collection as $simple_product) {
@@ -14,23 +14,29 @@
                     break;
                 }
             }
-        }
-        else {
+        } else {
             $imageUrl = $product->getThumbnailUrl();
         }
         ?>
-    <tr>
-        <?php $parentId = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
-              if(isset($parentId[0])) {
-                  $product = Mage::getModel('catalog/product')->load($parentId[0]);
-              }
-              $url = Mage::getUrl('review/product/list', array('id'=> $product->getId()));
-              if($token) {
-                  $url .= 'token/'.$token;
-              }
-        ?>
-            <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo $url; ?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>" target="_blank"><img src="<?php echo $imageUrl;?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a></td>
-            <td valign="top" align="left" style="padding:3px 9px"><p><h2><a href="<?php echo $url; ?>"> Rate <?php echo $this->escapeHtml($product->getName()); ?></a></h2></p><?php echo $this->escapeHtml($product->getShortDescription()); ?></td>
-    </tr>
+        <tr>
+            <?php $parentId = Mage::getModel('catalog/product_type_configurable')->getParentIdsByChild($product->getId());
+            if (isset($parentId[0])) {
+                $product = Mage::getModel('catalog/product')->load($parentId[0]);
+            }
+            $url = Mage::getUrl('review/product/list', array('id' => $product->getId()));
+            if ($token) {
+                $url .= 'token/' . $token;
+            }
+            ?>
+            <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo $url; ?>"
+                                                                     alt="<?php echo $this->escapeHtml($product->getName()); ?>"
+                                                                     target="_blank"><img src="<?php echo $imageUrl; ?>"
+                                                                                          alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a>
+            </td>
+            <td valign="top" align="left" style="padding:3px 9px"><p>
+
+                <h2><a href="<?php echo $url; ?>"> Rate <?php echo $this->escapeHtml($product->getName()); ?></a>
+                </h2></p><?php echo $this->escapeHtml($product->getShortDescription()); ?></td>
+        </tr>
     <?php endforeach; ?>
 </table>

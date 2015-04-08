@@ -8,18 +8,19 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
-class Ebizmarts_MageMonkey_Model_Feed_Updates {
+class Ebizmarts_MageMonkey_Model_Feed_Updates
+{
 
     private $_key = 'monkey';
     private $_resources = array('Ebizmarts_MageMonkey', 'Ebizmarts_Global');
-    
+
     /**
      * Retrieve feed data as XML element
      *
      * @return SimpleXMLElement
      */
-    public function getFeedData($uri) {
+    public function getFeedData($uri)
+    {
         $curl = new Varien_Http_Adapter_Curl;
         $curl->setConfig(array(
             'timeout' => 30
@@ -43,7 +44,8 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates {
         return $xml;
     }
 
-    public function getConfig($key) {
+    public function getConfig($key)
+    {
         return Mage::getStoreConfig($this->_key . '/notifications/' . $key);
     }
 
@@ -53,20 +55,23 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates {
      * @param string $rssDate
      * @return string YYYY-MM-DD YY:HH:SS
      */
-    public function getDate($rssDate) {
+    public function getDate($rssDate)
+    {
         return gmdate('Y-m-d H:i:s', strtotime($rssDate));
-    }    
-    
+    }
+
     /**
      * Retrieve feed url
      *
      * @return string
      */
-    public function getFeedUrl() {
+    public function getFeedUrl()
+    {
         return $this->getConfig('updates_url');
     }
 
-    public function getLastUpdate($resource) {
+    public function getLastUpdate($resource)
+    {
         return Mage::app()->loadCache($this->_key . $resource . '_updates_feed_lastcheck');
     }
 
@@ -75,22 +80,24 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates {
      * Checks feed
      * @return
      */
-    public function check() {
+    public function check()
+    {
 
         if (!Mage::getSingleton('admin/session')->isLoggedIn()) {
             return $this;
-        }        
-        
-        foreach($this->_resources as $resource) {
-            
-            if(((int)$this->getConfig('check_frequency')) + $this->getLastUpdate($resource) < time()) {
+        }
+
+        foreach ($this->_resources as $resource) {
+
+            if (((int)$this->getConfig('check_frequency')) + $this->getLastUpdate($resource) < time()) {
                 $this->_getUpdates($resource);
             }
-            
+
         }
     }
 
-    protected function _getUpdates($resource) {
+    protected function _getUpdates($resource)
+    {
         $feedData = array();
 
         try {
@@ -102,20 +109,20 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates {
                 return false;
             }
 
-            foreach ($node->xpath('items/item') as $item) {        
-                
+            foreach ($node->xpath('items/item') as $item) {
+
                 $feedData[] = array(
-                    'severity' => (string) $item->severity,
-                    'date_added' => (string) $item->created_at,
-                    'title' => (string) $item->title,
-                    'description' => (string) $item->description,
-                    'url' => (string) $item->url,
+                    'severity' => (string)$item->severity,
+                    'date_added' => (string)$item->created_at,
+                    'title' => (string)$item->title,
+                    'description' => (string)$item->description,
+                    'url' => (string)$item->url,
                 );
             }
 
             if (count($feedData)) {
                 $inbox = Mage::getModel('adminnotification/inbox');
-                if ($inbox){
+                if ($inbox) {
                     $inbox->parse($feedData);
                 }
             }

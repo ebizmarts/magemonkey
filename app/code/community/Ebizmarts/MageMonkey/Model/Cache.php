@@ -8,8 +8,8 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
-class Ebizmarts_MageMonkey_Model_Cache {
+class Ebizmarts_MageMonkey_Model_Cache
+{
 
     /**
      * @var bool Store if cache type is enabled
@@ -25,7 +25,7 @@ class Ebizmarts_MageMonkey_Model_Cache {
      * @var int|null Cache lifetime in seconds or NULL for infinite lifetime
      */
     protected $_cacheLifetime = NULL;
-    
+
     /**
      * @const CACHE_TAG General cache tag
      */
@@ -39,7 +39,8 @@ class Ebizmarts_MageMonkey_Model_Cache {
     /**
      * Class constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->_isEnabled = Mage::app()->useCache(self::CACHE_ID);
     }
 
@@ -48,8 +49,9 @@ class Ebizmarts_MageMonkey_Model_Cache {
      *
      * @return bool
      */
-    public function isCacheEnabled() {
-        return (bool) $this->_isEnabled;
+    public function isCacheEnabled()
+    {
+        return (bool)$this->_isEnabled;
     }
 
     /**
@@ -57,7 +59,8 @@ class Ebizmarts_MageMonkey_Model_Cache {
      *
      * @return array Cache tags
      */
-    public function getCacheTags() {
+    public function getCacheTags()
+    {
         return $this->_cacheTags;
     }
 
@@ -66,7 +69,8 @@ class Ebizmarts_MageMonkey_Model_Cache {
      *
      * @return null|int
      */
-    public function getCacheLifetime() {
+    public function getCacheLifetime()
+    {
         return $this->_cacheLifetime;
     }
 
@@ -77,7 +81,8 @@ class Ebizmarts_MageMonkey_Model_Cache {
      * @param string $cacheId
      * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function saveCacheData($data, $cacheId, $tags = array()) {
+    public function saveCacheData($data, $cacheId, $tags = array())
+    {
         if (!$this->isCacheEnabled()) {
             return $this;
         }
@@ -95,7 +100,8 @@ class Ebizmarts_MageMonkey_Model_Cache {
      * @param string $cacheId Cache ID
      * @return mixed Cache data
      */
-    public function loadCacheData($cacheId) {
+    public function loadCacheData($cacheId)
+    {
         if (!$this->isCacheEnabled()) {
             return FALSE;
         }
@@ -109,7 +115,8 @@ class Ebizmarts_MageMonkey_Model_Cache {
      * @param string $cacheId Cache ID
      * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function removeCacheData($cacheId) {
+    public function removeCacheData($cacheId)
+    {
         if (!$this->isCacheEnabled()) {
             return FALSE;
         }
@@ -124,7 +131,8 @@ class Ebizmarts_MageMonkey_Model_Cache {
      *
      * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function cleanCache() {
+    public function cleanCache()
+    {
         Mage::app()->cleanCache(self::CACHE_TAG);
         return $this;
     }
@@ -134,9 +142,10 @@ class Ebizmarts_MageMonkey_Model_Cache {
      *
      * @return Ebizmarts_MageMonkey_Model_Cache
      */
-    public function invalidateCache() {
+    public function invalidateCache()
+    {
         Mage::app()->getCacheInstance()->invalidateType(self::CACHE_ID);
         return $this;
-    }    
-    
+    }
+
 }

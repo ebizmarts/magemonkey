@@ -2,22 +2,42 @@
 
 <layout version="0.1.0">
     <ebizmarts_abandonedcart_email_order_items>
-        <block type="ebizmarts_abandonedcart/email_order_items" name="items" template="ebizmarts/abandonedcart/email/order/items.phtml">
-            <action method="addItemRender"><type>default</type><block>ebizmarts_abandonedcart/email_order_items_order_default</block><template>ebizmarts/abandonedcart/email/order/items/order/default.phtml</template></action>
-            <action method="addItemRender"><type>grouped</type><block>ebizmarts_abandonedcart/email_order_items_order_grouped</block><template>ebizmarts/abandonedcart/email/order/items/order/default.phtml</template></action>
+        <block type="ebizmarts_abandonedcart/email_order_items" name="items"
+               template="ebizmarts/abandonedcart/email/order/items.phtml">
+            <action method="addItemRender">
+                <type>default</type>
+                <block>ebizmarts_abandonedcart/email_order_items_order_default</block>
+                <template>ebizmarts/abandonedcart/email/order/items/order/default.phtml</template>
+            </action>
+            <action method="addItemRender">
+                <type>grouped</type>
+                <block>ebizmarts_abandonedcart/email_order_items_order_grouped</block>
+                <template>ebizmarts/abandonedcart/email/order/items/order/default.phtml</template>
+            </action>
         </block>
-        <block type="core/text_list" name="additional.product.info" />
+        <block type="core/text_list" name="additional.product.info"/>
     </ebizmarts_abandonedcart_email_order_items>
 
     <default>
         <reference name="head">
-            <action method="addJs" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><script>prototype/window.js</script></action>
-            <action method="addJs" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><script>scriptaculous/scriptaculous.js</script></action>
-            <action method="addItem" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><type>js_css</type><script>prototype/windows/themes/default.css</script></action>
-            <action method="addItem" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general"><type>js_css</type><script>ebizmarts/abandonedcart/popup.css</script></action>
+            <action method="addJs" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general">
+                <script>prototype/window.js</script>
+            </action>
+            <action method="addJs" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general">
+                <script>scriptaculous/scriptaculous.js</script>
+            </action>
+            <action method="addItem" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general">
+                <type>js_css</type>
+                <script>prototype/windows/themes/default.css</script>
+            </action>
+            <action method="addItem" ifconfig="ebizmarts_abandonedcart/emailcatcher/popup_general">
+                <type>js_css</type>
+                <script>ebizmarts/abandonedcart/popup.css</script>
+            </action>
         </reference>
         <reference name="content">
-            <block type="ebizmarts_abandonedcart/popup_emailcatcher" name="emailcatcher" template="ebizmarts_abandonedcart/popup/emailcatcher.phtml"></block>
+            <block type="ebizmarts_abandonedcart/popup_emailcatcher" name="emailcatcher"
+                   template="ebizmarts_abandonedcart/popup/emailcatcher.phtml"></block>
         </reference>
     </default>
 </layout>

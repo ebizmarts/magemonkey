@@ -1,47 +1,67 @@
 <?php
 $lists = $this->getLists();
 $check = $this->checkStatus();
-$myLists       = $this->getSubscribedLists();
-$generalList   = $this->getGeneralList();
-$auto  = (($check === 1) or ($check === 3) or ($check === 4));
+$myLists = $this->getSubscribedLists();
+$generalList = $this->getGeneralList();
+$auto = (($check === 1) or ($check === 3) or ($check === 4));
 $force = $this->getForce();
 ?>
 <script type="text/javascript">
-    addSubscribeToPost = function (element){
+    addSubscribeToPost = function (element) {
 
         //save old clicked lists and then removes element
         var subscribeValue = '';
-        if($('magemonkey-subscribe')){
+        if ($('magemonkey-subscribe')) {
             var checkedLists = $('magemonkey-subscribe').getValue();
-            subscribeValue = checkedLists+',';
+            subscribeValue = checkedLists + ',';
             $('magemonkey-subscribe').remove();
         }
 
         //if checked add this element else remove it
-        if(element.checked){
-            var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: subscribeValue+element.readAttribute('value'), type: "hidden" });
-            var listValue = new Element('input', { name: element.readAttribute('name'), id: "subscribe-"+element.readAttribute('value'), value: element.readAttribute('value'), type: "hidden" });
-            var force = new Element('input', { name: "magemonkey_force", id: "magemonkey-force", value: "1", type: "hidden" });
-            try{
+        if (element.checked) {
+            var inputer = new Element('input', {
+                name: "magemonkey_subscribe",
+                id: "magemonkey-subscribe",
+                value: subscribeValue + element.readAttribute('value'),
+                type: "hidden"
+            });
+            var listValue = new Element('input', {
+                name: element.readAttribute('name'),
+                id: "subscribe-" + element.readAttribute('value'),
+                value: element.readAttribute('value'),
+                type: "hidden"
+            });
+            var force = new Element('input', {
+                name: "magemonkey_force",
+                id: "magemonkey-force",
+                value: "1",
+                type: "hidden"
+            });
+            try {
                 Element.insert(Form.findFirstElement(payment.form), inputer);
                 Element.insert(Form.findFirstElement(payment.form), listValue);
                 <?php if($force): ?>
                 Element.insert(Form.findFirstElement(payment.form), force);
                 <?php endif; ?>
-            }catch(notelem){
+            } catch (notelem) {
                 $("co-payment-form").insert(inputer);
                 $("co-payment-form").insert(listValue);
             }
-        }else{
+        } else {
             var arrCheckedLists = checkedLists.split(',');
             var pos = arrCheckedLists.indexOf(element.readAttribute('value'));
-            if(pos != -1) {
+            if (pos != -1) {
                 arrCheckedLists.splice(pos, 1);
                 checkedLists = arrCheckedLists.join(',');
-                var inputer = new Element('input', { name: "magemonkey_subscribe", id: "magemonkey-subscribe", value: checkedLists, type: "hidden" });
-                try{
+                var inputer = new Element('input', {
+                    name: "magemonkey_subscribe",
+                    id: "magemonkey-subscribe",
+                    value: checkedLists,
+                    type: "hidden"
+                });
+                try {
                     Element.insert(Form.findFirstElement(payment.form), inputer);
-                }catch(notelem){
+                } catch (notelem) {
                     $("co-payment-form").insert(inputer);
                 }
             }
@@ -49,35 +69,46 @@ $force = $this->getForce();
         }
 
     }
-    addGroupToPost = function (element){
+    addGroupToPost = function (element) {
 
-        if(element.checked){
+        if (element.checked) {
 
-            try{
-                var group = new Element('input', { name: element.readAttribute('name'), id: "subscribe"+element.readAttribute('id'), value: element.getValue(), checked:true, type: "checkbox" });
+            try {
+                var group = new Element('input', {
+                    name: element.readAttribute('name'),
+                    id: "subscribe" + element.readAttribute('id'),
+                    value: element.getValue(),
+                    checked: true,
+                    type: "checkbox"
+                });
                 Element.insert(Form.findFirstElement(payment.form), group);
-            }catch(notelem){
+            } catch (notelem) {
                 $("co-payment-form").insert(group);
             }
-        }else{
-            if($("subscribe"+element.readAttribute('id'))){
-                $("subscribe"+element.readAttribute('id')).remove();
+        } else {
+            if ($("subscribe" + element.readAttribute('id'))) {
+                $("subscribe" + element.readAttribute('id')).remove();
             }
         }
     }
-    addElementToPost = function (element){
+    addElementToPost = function (element) {
         var formInputId = element.readAttribute('id') + '-serialize';
-        if($(formInputId)){
+        if ($(formInputId)) {
             $(formInputId).remove();
         }
 
-        var inp = new Element('input', { name: element.readAttribute('name'), id: formInputId, value: element.getValue(), type: "hidden" });
+        var inp = new Element('input', {
+            name: element.readAttribute('name'),
+            id: formInputId,
+            value: element.getValue(),
+            type: "hidden"
+        });
 
-        Element.insert( Form.findFirstElement(payment.form), inp);
+        Element.insert(Form.findFirstElement(payment.form), inp);
 
     }
 </script>
-<div class="buttons-set"<?php if($check === 3): ?> style="display:none;"<?php endif;?>>
+<div class="buttons-set"<?php if ($check === 3): ?> style="display:none;"<?php endif; ?>>
     <!-- General Subscription -->
     <div class="page-title">
         <h1><?php echo $this->__('Newsletter Subscription'); ?></h1>
@@ -86,13 +117,20 @@ $force = $this->getForce();
     <div class="monkey-multisubscribe">
         <ul class="monkey-general-list">
             <li class="listdata"><?php echo $generalList['name']; ?>
-                <input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $generalList['id'] ?>][subscribed]" id="magemonkey-trigger" value="<?php echo $generalList['id']; ?>" title="<?php echo $generalList['name']; ?>" class="monkey-list-subscriber" />
-                <?php if(is_array($generalList['interest_groupings']) && $this->getCanModify() == 1): ?>
+                <input<?php if ($auto): ?> checked="checked"<?php endif; ?> type="checkbox"
+                                                                            onchange="addSubscribeToPost(this);"
+                                                                            name="list[<?php echo $generalList['id'] ?>][subscribed]"
+                                                                            id="magemonkey-trigger"
+                                                                            value="<?php echo $generalList['id']; ?>"
+                                                                            title="<?php echo $generalList['name']; ?>"
+                                                                            class="monkey-list-subscriber"/>
+                <?php if (is_array($generalList['interest_groupings']) && $this->getCanModify() == 1): ?>
                     <div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
-                        <?php foreach($generalList['interest_groupings'] as $group): ?>
-                            <?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                        <?php foreach ($generalList['interest_groupings'] as $group): ?>
+                            <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
                                 <div class="grouping">
-                                    <?php if ($group['form_field'] != 'hidden'): ?><strong><?php echo $group['name']; ?></strong><?php endif; ?>
+                                    <?php if ($group['form_field'] != 'hidden'): ?>
+                                        <strong><?php echo $group['name']; ?></strong><?php endif; ?>
                                     <?php echo $this->renderGroup($group, $generalList, $auto); ?>
                                 </div>
                             <?php endif; ?>
@@ -107,18 +145,25 @@ $force = $this->getForce();
         <!-- Additional Lists -->
         <ul class="monkey-additional-lists">
             <?php
-            foreach($lists as $list):
+            foreach ($lists as $list):
 
                 $igroups = $list['interest_groupings'];
                 ?>
                 <li class="listdata"><?php echo $list['name']; ?>
-                    <input<?php if($auto): ?> checked="checked"<?php endif;?> type="checkbox" onchange="addSubscribeToPost(this);" name="list[<?php echo $list['id'] ?>][subscribed]" id="magemonkey-trigger-<?php echo $list['id']; ?>" value="<?php echo $list['id']; ?>" title="<?php echo $list['name']; ?>" class="monkey-list-subscriber" />
-                    <?php if(is_array($igroups)): ?>
+                    <input<?php if ($auto): ?> checked="checked"<?php endif; ?> type="checkbox"
+                                                                                onchange="addSubscribeToPost(this);"
+                                                                                name="list[<?php echo $list['id'] ?>][subscribed]"
+                                                                                id="magemonkey-trigger-<?php echo $list['id']; ?>"
+                                                                                value="<?php echo $list['id']; ?>"
+                                                                                title="<?php echo $list['name']; ?>"
+                                                                                class="monkey-list-subscriber"/>
+                    <?php if (is_array($igroups)): ?>
                         <div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
-                            <?php foreach($igroups as $group): ?>
-                                <?php if($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                            <?php foreach ($igroups as $group): ?>
+                                <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
                                     <div class="grouping">
-                                        <?php if ($group['form_field'] != 'hidden'): ?><strong><?php echo $group['name']; ?></strong><?php endif; ?>
+                                        <?php if ($group['form_field'] != 'hidden'): ?>
+                                            <strong><?php echo $group['name']; ?></strong><?php endif; ?>
                                         <?php echo $this->renderGroup($group, $list, $auto); ?>
                                     </div>
                                 <?php endif; ?>
@@ -134,23 +179,23 @@ $force = $this->getForce();
 
 <script type="text/javascript">
     //Handle newsletter subscribe/unsubscribe checkbox events
-    $$('input.monkey-list-subscriber').each(function(chk){
+    $$('input.monkey-list-subscriber').each(function (chk) {
 
-        if( !chk.checked ){
-            var groupings = $('interest_groupings_'+chk.value);
-            if(groupings){
+        if (!chk.checked) {
+            var groupings = $('interest_groupings_' + chk.value);
+            if (groupings) {
                 groupings.select('select', 'input').invoke('writeAttribute', 'disabled', 'disabled');
             }
         }
 
-        chk.observe('change', function(){
+        chk.observe('change', function () {
 
-            var groupings = $('interest_groupings_'+this.value);
-            if(groupings){
+            var groupings = $('interest_groupings_' + this.value);
+            if (groupings) {
                 var elements = groupings.select('select', 'input');
-                if(this.checked){
+                if (this.checked) {
                     elements.invoke('removeAttribute', 'disabled');
-                }else{
+                } else {
                     elements.invoke('writeAttribute', 'disabled', 'disabled');
                 }
             }
@@ -158,66 +203,66 @@ $force = $this->getForce();
         });
     });
     //If force subscription or checked by default set the elements as clicked
-<?php if($auto):?>addSubscribeToPost($('magemonkey-trigger'));
+    <?php if($auto):?>addSubscribeToPost($('magemonkey-trigger'));
     <?php if($this->getCanModify() && is_array($generalList['interest_groupings'])): ?>
-        <?php foreach($generalList['interest_groupings'] as $group): ?>
-            <?php foreach($group['groups'] as $g): ?>
-                <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
-                <?php if($idToAdd): ?>
-                    if($(<?php Print(json_encode($idToAdd));?>)) {
-                        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
-                    }
-                <?php endif; ?>
-            <?php endforeach; ?>
-        <?php endforeach; ?>
+    <?php foreach($generalList['interest_groupings'] as $group): ?>
+    <?php foreach($group['groups'] as $g): ?>
+    <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
+    <?php if($idToAdd): ?>
+    if ($(<?php Print(json_encode($idToAdd));?>)) {
+        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
+    }
     <?php endif; ?>
-<?php endif; ?>
-<?php if($auto):
-    foreach($lists as $list):
-        $string = "magemonkey-trigger-".$list['id'];
-        ?>addSubscribeToPost($(<?php Print(json_encode($string)); ?>));
-        <?php if(is_array($list['interest_groupings'])): ?>
-            <?php foreach($list['interest_groupings'] as $group): ?>
-                <?php foreach($group['groups'] as $g): ?>
-                    <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
-                    <?php if($idToAdd): ?>
-                    if($(<?php Print(json_encode($idToAdd));?>)) {
-                        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
-                    }
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            <?php endforeach; ?>
-        <?php endif; ?>
     <?php endforeach; ?>
-<?php endif; ?>
+    <?php endforeach; ?>
+    <?php endif; ?>
+    <?php endif; ?>
+    <?php if($auto):
+        foreach($lists as $list):
+            $string = "magemonkey-trigger-".$list['id'];
+            ?>addSubscribeToPost($(<?php Print(json_encode($string)); ?>));
+    <?php if(is_array($list['interest_groupings'])): ?>
+    <?php foreach($list['interest_groupings'] as $group): ?>
+    <?php foreach($group['groups'] as $g): ?>
+    <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
+    <?php if($idToAdd): ?>
+    if ($(<?php Print(json_encode($idToAdd));?>)) {
+        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
+    }
+    <?php endif; ?>
+    <?php endforeach; ?>
+    <?php endforeach; ?>
+    <?php endif; ?>
+    <?php endforeach; ?>
+    <?php endif; ?>
 
 
-//    if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
-//
-//        var event = 'change';
-//
-//        //Radio||Checkbox
-//        $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
-//
-//            if(input.readAttribute('type') == 'radio'){
-//                event = 'click';
-//            }
-//
-//            input.observe(event, function(){
-//                addElementToPost(this);
-//            });
-//        });
-//
-//        $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
-//            ddl.observe(event, function(){
-//                addElementToPost(this);
-//            });
-//        });
-//
-//    }
+    //    if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
+    //
+    //        var event = 'change';
+    //
+    //        //Radio||Checkbox
+    //        $$('div#checkout-step-review div.monkey-multisubscribe input').each(function(input){
+    //
+    //            if(input.readAttribute('type') == 'radio'){
+    //                event = 'click';
+    //            }
+    //
+    //            input.observe(event, function(){
+    //                addElementToPost(this);
+    //            });
+    //        });
+    //
+    //        $$('div#checkout-step-review div.monkey-multisubscribe select').each(function(ddl){
+    //            ddl.observe(event, function(){
+    //                addElementToPost(this);
+    //            });
+    //        });
+    //
+    //    }
     //Handle newsletter groups subscribe/unsubscribe checkbox events
-    $$('.interest-groupings input').each(function(group){
-        group.observe('change', function(){
+    $$('.interest-groupings input').each(function (group) {
+        group.observe('change', function () {
             addGroupToPost(group);
         });
     });

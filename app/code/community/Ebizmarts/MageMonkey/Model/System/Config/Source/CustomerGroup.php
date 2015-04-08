@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
  * Date   : 8/29/14
@@ -8,7 +9,7 @@
  */
 class Ebizmarts_MageMonkey_Model_System_Config_Source_CustomerGroup
 {
-    protected $_group   = null;
+    protected $_group = null;
 
     /**
      * Load lists and store on class property
@@ -18,7 +19,7 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_CustomerGroup
     public function __construct()
     {
         $listId = Mage::helper('monkey')->config('list');
-        if( is_null($this->_group) ){
+        if (is_null($this->_group)) {
             $this->_group = Mage::getSingleton('monkey/api')
                 ->listInterestGroupings($listId);
         }

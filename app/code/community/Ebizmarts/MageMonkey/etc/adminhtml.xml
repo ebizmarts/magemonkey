@@ -6,45 +6,45 @@
                 <magemonkey translate="title" module="monkey">
                     <title>MailChimp</title>
                     <children>
-		                <ecommerce translate="title" module="monkey">
-		                    <title>Ecommerce 360 Orders</title>
+                        <ecommerce translate="title" module="monkey">
+                            <title>Ecommerce 360 Orders</title>
                             <children>
-				                <commerce translate="title" module="monkey">
-				                    <title>Magento sent orders</title>
-				                    <action>adminhtml/ecommerce</action>
-				                </commerce>
-				                <apicommerce translate="title" module="monkey">
-				                    <title>ALL orders from API</title>
-				                    <action>adminhtml/ecommerce/apiorders</action>
-				                </apicommerce>
+                                <commerce translate="title" module="monkey">
+                                    <title>Magento sent orders</title>
+                                    <action>adminhtml/ecommerce</action>
+                                </commerce>
+                                <apicommerce translate="title" module="monkey">
+                                    <title>ALL orders from API</title>
+                                    <action>adminhtml/ecommerce/apiorders</action>
+                                </apicommerce>
                             </children>
-		                </ecommerce>
-		                <bulksync translate="title" module="monkey">
-		                    <title>Bulk Sync</title>
-		                    <children>
-				                <mage_to_mc translate="title" module="monkey">
-				                    <title>Export</title>
-				                    <action>adminhtml/bulksync/export</action>
-				                </mage_to_mc>
-				                <mc_to_mage translate="title" module="monkey">
-				                    <title>Import</title>
-				                    <action>adminhtml/bulksync/import</action>
-				                </mc_to_mage>
-		                    </children>
-		                </bulksync>
+                        </ecommerce>
+                        <bulksync translate="title" module="monkey">
+                            <title>Bulk Sync</title>
+                            <children>
+                                <mage_to_mc translate="title" module="monkey">
+                                    <title>Export</title>
+                                    <action>adminhtml/bulksync/export</action>
+                                </mage_to_mc>
+                                <mc_to_mage translate="title" module="monkey">
+                                    <title>Import</title>
+                                    <action>adminhtml/bulksync/import</action>
+                                </mc_to_mage>
+                            </children>
+                        </bulksync>
                     </children>
                 </magemonkey>
             </children>
         </newsletter>
     </menu>
-	<acl>
-	    <resources>
-	      <admin>
-		    <children>
-                <newsletter>
-                   <children>
-                       <magemonkey translate="title" module="monkey">
-                           <title>MailChimp</title>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <newsletter>
+                        <children>
+                            <magemonkey translate="title" module="monkey">
+                                <title>MailChimp</title>
                                 <children>
                                     <ecommerce translate="title" module="monkey">
                                         <title>Ecommerce 360 Orders</title>
@@ -69,22 +69,22 @@
                                         </children>
                                     </bulksync>
                                 </children>
-                       </magemonkey>
-                   </children>
-                </newsletter>
-		        <system>
-		            <children>
-		                <config>
-		                    <children>
-		                        <monkey translate="title" module="monkey">
-		                            <title>MailChimp Configuration</title>
-		                        </monkey>
-		                    </children>
-		                </config>
-		            </children>
-		        </system>
-		    </children>
-		</admin>
-	    </resources>
-	</acl>
+                            </magemonkey>
+                        </children>
+                    </newsletter>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <monkey translate="title" module="monkey">
+                                        <title>MailChimp Configuration</title>
+                                    </monkey>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
 </config>

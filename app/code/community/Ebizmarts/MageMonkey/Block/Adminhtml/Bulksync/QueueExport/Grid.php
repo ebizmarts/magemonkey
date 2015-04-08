@@ -9,7 +9,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -26,7 +25,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
     protected function _prepareCollection()
     {
         $collection = Mage::getModel('monkey/bulksyncExport')
-					  	->getCollection();
+            ->getCollection();
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -35,27 +34,27 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
     protected function _prepareColumns()
     {
         $this->addColumn('id', array(
-            'header'=> Mage::helper('monkey')->__('ID'),
+            'header' => Mage::helper('monkey')->__('ID'),
             'index' => 'id',
             'type' => 'number'
         ));
 
         $this->addColumn('data_source_entity', array(
-            'header'=> Mage::helper('monkey')->__('Entity'),
+            'header' => Mage::helper('monkey')->__('Entity'),
             'index' => 'data_source_entity',
             'filter' => false,
             'sortable' => false,
         ));
 
         $this->addColumn('status', array(
-            'header'=> Mage::helper('monkey')->__('Status'),
+            'header' => Mage::helper('monkey')->__('Status'),
             'index' => 'status',
-            'type'  => 'options',
+            'type' => 'options',
             'options' => Mage::getModel('monkey/system_config_source_bulksyncStatus')->toOption()
         ));
 
         $this->addColumn('progress', array(
-            'header'=> Mage::helper('monkey')->__('Progress'),
+            'header' => Mage::helper('monkey')->__('Progress'),
             'index' => 'progress',
             'filter' => false,
             'sortable' => false,
@@ -63,7 +62,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
         ));
 
         $this->addColumn('lists', array(
-            'header'=> Mage::helper('monkey')->__('Lists'),
+            'header' => Mage::helper('monkey')->__('Lists'),
             'index' => 'lists',
             'filter' => false,
             'sortable' => false,
@@ -71,21 +70,21 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
         ));
 
         $this->addColumn('started_at', array(
-            'header'=> Mage::helper('monkey')->__('Started At'),
+            'header' => Mage::helper('monkey')->__('Started At'),
             'index' => 'started_at',
-            'type'  => 'datetime'
+            'type' => 'datetime'
         ));
 
         $this->addColumn('updated_at', array(
-            'header'=> Mage::helper('monkey')->__('Updated At'),
+            'header' => Mage::helper('monkey')->__('Updated At'),
             'index' => 'updated_at',
-            'type'  => 'datetime'
+            'type' => 'datetime'
         ));
 
         $this->addColumn('created_at', array(
-            'header'=> Mage::helper('monkey')->__('Created At'),
+            'header' => Mage::helper('monkey')->__('Created At'),
             'index' => 'created_at',
-            'type'  => 'datetime'
+            'type' => 'datetime'
         ));
 
         $views = Mage::getModel('core/store')->getCollection()->toOptionHash();
@@ -93,39 +92,39 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
 
         $this->addColumn('store_id',
             array(
-                'header'=> Mage::helper('monkey')->__('Store'),
+                'header' => Mage::helper('monkey')->__('Store'),
                 'width' => '100px',
-                'sortable'  => false,
-                'filter'  => false,
-                'index'     => 'store_id',
-                'type'      => 'options',
-                'options'   => $views,
-        ));
+                'sortable' => false,
+                'filter' => false,
+                'index' => 'store_id',
+                'type' => 'options',
+                'options' => $views,
+            ));
 
         $this->addColumn('action',
             array(
-                'header'    => Mage::helper('monkey')->__('Action'),
-                'width'     => '60px',
-                'type'      => 'action',
-                'getter'     => 'getId',
-                'actions'   => array(
+                'header' => Mage::helper('monkey')->__('Action'),
+                'width' => '60px',
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => array(
                     array(
                         'caption' => Mage::helper('monkey')->__('Delete'),
-                        'url'     => array('base' => '*/*/delete', 'params' => array('entity'=>'Export')),
-                        'field'   => 'job_id',
+                        'url' => array('base' => '*/*/delete', 'params' => array('entity' => 'Export')),
+                        'field' => 'job_id',
                         'confirm' => Mage::helper('monkey')->__('Are you sure?')
                     ),
                     array(
                         'caption' => Mage::helper('monkey')->__('Reset Status'),
-                        'url'     => array('base' => '*/*/reset', 'params' => array('entity'=>'Export')),
-                        'field'   => 'job_id',
+                        'url' => array('base' => '*/*/reset', 'params' => array('entity' => 'Export')),
+                        'field' => 'job_id',
                         'confirm' => Mage::helper('monkey')->__('Are you sure you want to reset status to IDLE?')
                     ),
                 ),
-                'filter'    => false,
-                'sortable'  => false,
+                'filter' => false,
+                'sortable' => false,
                 'is_system' => true,
-        ));
+            ));
 
         return parent::_prepareColumns();
     }

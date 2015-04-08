@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
  * Date   : 8/16/14
@@ -10,25 +11,25 @@ class Ebizmarts_Mandrill_Block_Adminhtml_Templates_Templates extends Mage_Adminh
 {
 
     public function __construct()
-{
-    $this->_controller = 'adminhtml_templates_templates';
-    $this->_blockGroup = 'ebizmarts_mandrill';
-    $this->_headerText = Mage::helper('ebizmarts_mandrill')->__('Mandrill Templates');
+    {
+        $this->_controller = 'adminhtml_templates_templates';
+        $this->_blockGroup = 'ebizmarts_mandrill';
+        $this->_headerText = Mage::helper('ebizmarts_mandrill')->__('Mandrill Templates');
 
-    parent::__construct();
+        parent::__construct();
 
 //    $this->removeButton('add');
 
-}
+    }
 
     public function getGridHtml()
-{
-    return $this->getChildHtml('store_switcher') . $this->getChildHtml('grid');
-}
+    {
+        return $this->getChildHtml('store_switcher') . $this->getChildHtml('grid');
+    }
 
     public function getCreateUrl()
-{
-    return $this->getUrl('*/*/new', array('store' => $this->getRequest()->getParam('store', 0)));
-}
+    {
+        return $this->getUrl('*/*/new', array('store' => $this->getRequest()->getParam('store', 0)));
+    }
 
 }

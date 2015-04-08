@@ -1,7 +1,9 @@
 <?php
 
-class Mandrill_Metadata {
-    public function __construct(Mandrill_Mandrill $master) {
+class Mandrill_Metadata
+{
+    public function __construct(Mandrill_Mandrill $master)
+    {
         $this->master = $master;
     }
 
@@ -13,7 +15,8 @@ class Mandrill_Metadata {
      *         - state string the current state of the metadata field, one of "active", "delete", or "index"
      *         - view_template string Mustache template to control how the metadata is rendered in your activity log
      */
-    public function getList() {
+    public function getList()
+    {
         $_params = array();
         return $this->master->call('metadata/list', $_params);
     }
@@ -27,7 +30,8 @@ class Mandrill_Metadata {
      *     - state string the current state of the metadata field, one of "active", "delete", or "index"
      *     - view_template string Mustache template to control how the metadata is rendered in your activity log
      */
-    public function add($name, $view_template=null) {
+    public function add($name, $view_template = null)
+    {
         $_params = array("name" => $name, "view_template" => $view_template);
         return $this->master->call('metadata/add', $_params);
     }
@@ -41,7 +45,8 @@ class Mandrill_Metadata {
      *     - state string the current state of the metadata field, one of "active", "delete", or "index"
      *     - view_template string Mustache template to control how the metadata is rendered in your activity log
      */
-    public function update($name, $view_template) {
+    public function update($name, $view_template)
+    {
         $_params = array("name" => $name, "view_template" => $view_template);
         return $this->master->call('metadata/update', $_params);
     }
@@ -54,7 +59,8 @@ class Mandrill_Metadata {
      *     - state string the current state of the metadata field, one of "active", "delete", or "index"
      *     - view_template string Mustache template to control how the metadata is rendered in your activity log
      */
-    public function delete($name) {
+    public function delete($name)
+    {
         $_params = array("name" => $name);
         return $this->master->call('metadata/delete', $_params);
     }

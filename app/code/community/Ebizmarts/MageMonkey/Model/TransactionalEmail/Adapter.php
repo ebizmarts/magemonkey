@@ -8,15 +8,14 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter
 {
-    const ADAPTER_STS      = 'sts';
+    const ADAPTER_STS = 'sts';
     const ADAPTER_MANDRILL = 'mandrill';
 
     public static function factory($adapter)
     {
-        switch($adapter) {
+        switch ($adapter) {
             case self::ADAPTER_STS:
                 return new Ebizmarts_MageMonkey_Model_TransactionalEmail_STS();
                 break;

@@ -1,15 +1,17 @@
 <?php
 
-class Mandrill_Rejects {
-    public function __construct(Mandrill_Mandrill $master) {
+class Mandrill_Rejects
+{
+    public function __construct(Mandrill_Mandrill $master)
+    {
         $this->master = $master;
     }
 
     /**
      * Adds an email to your email rejection blacklist. Addresses that you
-add manually will never expire and there is no reputation penalty
-for removing them from your blacklist. Attempting to blacklist an
-address that has been whitelisted will have no effect.
+     * add manually will never expire and there is no reputation penalty
+     * for removing them from your blacklist. Attempting to blacklist an
+     * address that has been whitelisted will have no effect.
      * @param string $email an email address to block
      * @param string $comment an optional comment describing the rejection
      * @param string $subaccount an optional unique identifier for the subaccount to limit the blacklist entry
@@ -17,16 +19,17 @@ address that has been whitelisted will have no effect.
      *     - email string the email address you provided
      *     - added boolean whether the operation succeeded
      */
-    public function add($email, $comment=null, $subaccount=null) {
+    public function add($email, $comment = null, $subaccount = null)
+    {
         $_params = array("email" => $email, "comment" => $comment, "subaccount" => $subaccount);
         return $this->master->call('rejects/add', $_params);
     }
 
     /**
      * Retrieves your email rejection blacklist. You can provide an email
-address to limit the results. Returns up to 1000 results. By default,
-entries that have expired are excluded from the results; set
-include_expired to true to include them.
+     * address to limit the results. Returns up to 1000 results. By default,
+     * entries that have expired are excluded from the results; set
+     * include_expired to true to include them.
      * @param string $email an optional email address to search by
      * @param boolean $include_expired whether to include rejections that have already expired.
      * @param string $subaccount an optional unique identifier for the subaccount to limit the blacklist
@@ -54,15 +57,16 @@ include_expired to true to include them.
      *             - unique_clicks integer the number of unique clicks for emails sent for this sender
      *         - subaccount string the subaccount that this blacklist entry applies to, or null if none.
      */
-    public function getList($email=null, $include_expired=false, $subaccount=null) {
+    public function getList($email = null, $include_expired = false, $subaccount = null)
+    {
         $_params = array("email" => $email, "include_expired" => $include_expired, "subaccount" => $subaccount);
         return $this->master->call('rejects/list', $_params);
     }
 
     /**
      * Deletes an email rejection. There is no limit to how many rejections
-you can remove from your blacklist, but keep in mind that each deletion
-has an affect on your reputation.
+     * you can remove from your blacklist, but keep in mind that each deletion
+     * has an affect on your reputation.
      * @param string $email an email address
      * @param string $subaccount an optional unique identifier for the subaccount to limit the blacklist deletion
      * @return struct a status object containing the address and whether the deletion succeeded.
@@ -70,7 +74,8 @@ has an affect on your reputation.
      *     - deleted boolean whether the address was deleted successfully.
      *     - subaccount string the subaccount blacklist that the address was removed from, if any
      */
-    public function delete($email, $subaccount=null) {
+    public function delete($email, $subaccount = null)
+    {
         $_params = array("email" => $email, "subaccount" => $subaccount);
         return $this->master->call('rejects/delete', $_params);
     }

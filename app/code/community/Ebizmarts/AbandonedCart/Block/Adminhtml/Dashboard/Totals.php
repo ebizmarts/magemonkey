@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Adminhtml_Block_Dashboard_Bar
 {
     /**
@@ -31,19 +30,18 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         $period = $this->getRequest()->getParam('period', '24h');
 
         $collection = Mage::getResourceModel('ebizmarts_abandonedcart/order_collection')
-                            ->addCreateAtPeriodFilter($period)
-                            ->calculateTotals($isFilter);
+            ->addCreateAtPeriodFilter($period)
+            ->calculateTotals($isFilter);
 //        $collection->getSelect()->join('sales_flat_quote' , 'main_table.increment_id = sales_flat_quote.reserved_order_id', 'ebizmarts_abandonedcart_flag');
-        $collection->addFieldToFilter('main_table.ebizmarts_abandonedcart_flag',array('eq' => 1));
-
+        $collection->addFieldToFilter('main_table.ebizmarts_abandonedcart_flag', array('eq' => 1));
 
 
         if ($this->getRequest()->getParam('store')) {
             $collection->addFieldToFilter('main_table.store_id', $this->getRequest()->getParam('store'));
-        } else if ($this->getRequest()->getParam('website')){
+        } else if ($this->getRequest()->getParam('website')) {
             $storeIds = Mage::app()->getWebsite($this->getRequest()->getParam('website'))->getStoreIds();
             $collection->addFieldToFilter('main_table.store_id', array('in' => $storeIds));
-        } else if ($this->getRequest()->getParam('group')){
+        } else if ($this->getRequest()->getParam('group')) {
             $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
             $collection->addFieldToFilter('main_table.store_id', array('in' => $storeIds));
         } elseif (!$collection->isLive()) {
@@ -62,10 +60,10 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
             ->calculateTotals($isFilter);
         if ($this->getRequest()->getParam('store')) {
             $collection2->addFieldToFilter('store_id', $this->getRequest()->getParam('store'));
-        } else if ($this->getRequest()->getParam('website')){
+        } else if ($this->getRequest()->getParam('website')) {
             $storeIds = Mage::app()->getWebsite($this->getRequest()->getParam('website'))->getStoreIds();
             $collection2->addFieldToFilter('store_id', array('in' => $storeIds));
-        } else if ($this->getRequest()->getParam('group')){
+        } else if ($this->getRequest()->getParam('group')) {
             $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
             $collection2->addFieldToFilter('store_id', array('in' => $storeIds));
         } elseif (!$collection2->isLive()) {
@@ -79,30 +77,30 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
         $totals2 = $collection2->getFirstItem();
 
         // add totals for generated orders
-        if($totals2->getQuantity()) {
-            $convrate = (string)($totals->getQuantity()*100/$totals2->getQuantity());
-            $convrate = round($convrate*100)/100;
-        }
-        else {
+        if ($totals2->getQuantity()) {
+            $convrate = (string)($totals->getQuantity() * 100 / $totals2->getQuantity());
+            $convrate = round($convrate * 100) / 100;
+        } else {
             $convrate = 0;
         }
-        $this->addTotal($this->__('Generated Revenue'),$totals->getRevenue());
+        $this->addTotal($this->__('Generated Revenue'), $totals->getRevenue());
         $this->addTotal($this->__('Generated Tax'), $totals->getTax());
         $this->addTotal($this->__('Generated Shipping'), $totals->getShipping());
-        $this->addTotal($this->__('Generated Orders'),$totals->getQuantity()*1,true);
-        $this->addTotal($this->__('Generated Conv. Rate'),$convrate.'%',true);
+        $this->addTotal($this->__('Generated Orders'), $totals->getQuantity() * 1, true);
+        $this->addTotal($this->__('Generated Conv. Rate'), $convrate . '%', true);
         // get Mandrill statistics
-        if(Mage::helper('core')->isModuleEnabled('Ebizmarts_Mandrill')
+        if (Mage::helper('core')->isModuleEnabled('Ebizmarts_Mandrill')
             && (version_compare(Mage::getConfig()->getNode()->modules->Ebizmarts_Mandrill->version, '1.0.4', '>'))
-            && Mage::helper('ebizmarts_mandrill')->useTransactionalService()) {
-            $particular = array('sent' => 0, 'soft_bounces' => 0,'hard_bounces'=>0,'unique_opens'=>0,'unique_clicks'=>0);
-            if(!$isFilter) {
+            && Mage::helper('ebizmarts_mandrill')->useTransactionalService()
+        ) {
+            $particular = array('sent' => 0, 'soft_bounces' => 0, 'hard_bounces' => 0, 'unique_opens' => 0, 'unique_clicks' => 0);
+            if (!$isFilter) {
                 $stores = Mage::app()->getStores();
                 $__particular = $particular;
-                foreach($stores as $__store => $val) {
+                foreach ($stores as $__store => $val) {
                     $storeid = Mage::app()->getStore($__store)->getId();
-                    $aux = $this->__getMandrillStatistics($period,$storeid);
-                    if($aux && !isset($aux['status'])) {
+                    $aux = $this->__getMandrillStatistics($period, $storeid);
+                    if ($aux && !isset($aux['status'])) {
                         $__particular['sent'] += $aux['sent'];
                         $__particular['soft_bounces'] += $aux['soft_bounces'];
                         $__particular['hard_bounces'] += $aux['hard_bounces'];
@@ -111,15 +109,14 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                     }
                 }
                 $particular = $__particular;
-            }
-            else {
-                $data = $this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'));
-                if(!isset($data['status'])){
-                    $particular = $this->__getMandrillStatistics($period,$this->getRequest()->getParam('store'));
+            } else {
+                $data = $this->__getMandrillStatistics($period, $this->getRequest()->getParam('store'));
+                if (!isset($data['status'])) {
+                    $particular = $this->__getMandrillStatistics($period, $this->getRequest()->getParam('store'));
                 }
             }
             // add totals for emails
-            if($particular) {
+            if ($particular) {
 
                 $_sent = $particular['sent'];
                 $_hard_bounces = $particular['hard_bounces'];
@@ -129,35 +126,35 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
 
                 //Emails Sent and Received
                 $aux = $_sent - $_hard_bounces; // - $particular['soft_bounces'];
-                if($aux > 0) {
-                    $aux2 = $aux/ $_sent*100;
-                }else{
+                if ($aux > 0) {
+                    $aux2 = $aux / $_sent * 100;
+                } else {
                     $aux2 = 0;
                 }
                 $received = sprintf('%d (%2.2f%%)', $aux, $aux2);
 
-                $this->addTotal($this->__('Emails Sent'), $_sent,true);
-                $this->addTotal($this->__('Emails Received'), $received,true);
+                $this->addTotal($this->__('Emails Sent'), $_sent, true);
+                $this->addTotal($this->__('Emails Received'), $received, true);
 
                 //Emails Opened
-                if($_unique_opens > 0) {
-                    $emailsOpened = $_unique_opens / $_sent*100;
-                }else{
+                if ($_unique_opens > 0) {
+                    $emailsOpened = $_unique_opens / $_sent * 100;
+                } else {
                     $emailsOpened = 0;
                 }
 
                 $opens = sprintf('%d (%2.2f%%)', $_unique_opens, $emailsOpened);
-                $this->addTotal($this->__('Emails Opened'),$opens,true);
+                $this->addTotal($this->__('Emails Opened'), $opens, true);
 
                 //Emails Clicked
-                if($_unique_clicks > 0){
-                    $emailsClicked = $_unique_clicks / $_unique_opens*100;
-                }else{
+                if ($_unique_clicks > 0) {
+                    $emailsClicked = $_unique_clicks / $_unique_opens * 100;
+                } else {
                     $emailsClicked = 0;
                 }
 
                 $clicks = sprintf('%d (%2.2f%%)', $_unique_clicks, $emailsClicked);
-                $this->addTotal($this->__('Emails Clicked'), $clicks,true);
+                $this->addTotal($this->__('Emails Clicked'), $clicks, true);
             }
         }
     }
@@ -167,16 +164,16 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
      * @param $store
      * @return array|bool
      */
-    private function __getMandrillStatistics($period,$store)
+    private function __getMandrillStatistics($period, $store)
     {
-        $api = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY,$store));
-        $mandrillTag = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MANDRILL_TAG, $store)."_$store";
+        $api = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $store));
+        $mandrillTag = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MANDRILL_TAG, $store) . "_$store";
         $tags = $api->tags->info($mandrillTag);
-        if(!$tags) {
+        if (!$tags) {
             return false;
         }
         $general = (array)$tags;
-        switch($period) {
+        switch ($period) {
             case '24h':
                 $index = 'today';
                 break;
@@ -197,7 +194,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 return $general;
 
         }
-        if(!isset($general['stats'])){
+        if (!isset($general['stats'])) {
             return false;
         }
         $stats = (array)$general['stats'];

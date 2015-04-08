@@ -19,7 +19,8 @@
                     <show_in_store>1</show_in_store>
                 </hint>
                 <general translate="label comment">
-                    <comment><![CDATA[<a href="http://mandrill.com/signup/?pid=ebizmart&source=website" target="_blank">Get a free Mandrill account now</a>]]></comment>
+                    <comment>
+                        <![CDATA[<a href="http://mandrill.com/signup/?pid=ebizmart&source=website" target="_blank">Get a free Mandrill account now</a>]]></comment>
                     <label><![CDATA[Mandrill, SMARTER EMAIL FOR APPS integration by ebizmarts]]></label>
                     <sort_order>10</sort_order>
                     <frontend_type>text</frontend_type>

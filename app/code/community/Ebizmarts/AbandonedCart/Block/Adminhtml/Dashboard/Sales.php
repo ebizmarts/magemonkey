@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Sales extends Mage_Adminhtml_Block_Dashboard_Bar
 {
     /**
@@ -34,15 +33,15 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Sales extends Mage_Admin
         $collection = Mage::getResourceModel('ebizmarts_abandonedcart/order_collection')
             ->calculateSales($isFilter);
 //        $collection->getSelect()->join('sales_flat_quote' , 'main_table.increment_id = sales_flat_quote.reserved_order_id', 'ebizmarts_abandonedcart_flag');
-        $collection->addFieldToFilter('main_table.ebizmarts_abandonedcart_flag',array('eq' => 1));
+        $collection->addFieldToFilter('main_table.ebizmarts_abandonedcart_flag', array('eq' => 1));
 
 
         if ($this->getRequest()->getParam('store')) {
             $collection->addFieldToFilter('main_table.store_id', $this->getRequest()->getParam('store'));
-        } else if ($this->getRequest()->getParam('website')){
+        } else if ($this->getRequest()->getParam('website')) {
             $storeIds = Mage::app()->getWebsite($this->getRequest()->getParam('website'))->getStoreIds();
             $collection->addFieldToFilter('main_table.store_id', array('in' => $storeIds));
-        } else if ($this->getRequest()->getParam('group')){
+        } else if ($this->getRequest()->getParam('group')) {
             $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
             $collection->addFieldToFilter('main_table.store_id', array('in' => $storeIds));
         }

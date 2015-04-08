@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
  * Date   : 8/6/14
@@ -25,21 +26,20 @@ class Ebizmarts_Mandrill_Model_System_Config_Source_Userinfo
     public function __construct()
     {
         $storeId = Mage::app()->getStore()->getId();
-        if(Mage::app()->getRequest()->getParam('store')) {
+        if (Mage::app()->getRequest()->getParam('store')) {
             $stores = Mage::app()->getStores();
-            foreach($stores as $store) {
-                if($store->getCode()==Mage::app()->getRequest()->getParam('store')) {
+            foreach ($stores as $store) {
+                if ($store->getCode() == Mage::app()->getRequest()->getParam('store')) {
                     $storeId = $store->getStoreId();
                     break;
                 }
             }
         }
-        if ((!is_array($this->_account_details) || isset($this->_account_details['status'])) && Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId)) {
-            $api = new Mandrill_Message(Mage::getStoreConfig( Ebizmarts_Mandrill_Model_System_Config::APIKEY,$storeId));
+        if ((!is_array($this->_account_details) || isset($this->_account_details['status'])) && Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId)) {
+            $api = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
             try {
                 $this->_account_details = $api->users->info();
-            }
-            catch(Exception $e) {
+            } catch (Exception $e) {
                 $this->_account_details = "--- Invalid API key ---";
             }
         }
@@ -53,8 +53,8 @@ class Ebizmarts_Mandrill_Model_System_Config_Source_Userinfo
     public function toOptionArray()
     {
         $helper = Mage::helper('ebizmarts_mandrill');
-        if(is_array($this->_account_details)){
-            if(!isset($this->_account_details['status'])) {
+        if (is_array($this->_account_details)) {
+            if (!isset($this->_account_details['status'])) {
                 return array(
                     array('value' => 0, 'label' => $helper->__("<strong>Username</strong>: %s %s", $this->_account_details["username"], "<small>used for SMTP authentication</small>")),
 
@@ -64,10 +64,10 @@ class Ebizmarts_Mandrill_Model_System_Config_Source_Userinfo
 
                     array('value' => 3, 'label' => $helper->__('<strong>Backlog</strong>: %s %s', $this->_account_details['backlog'], "<small>the number of emails that are queued for delivery due to exceeding your monthly or hourly quotas</small>"))
                 );
-            }else{
+            } else {
                 return array(array('value' => '', 'label' => $helper->__('--- Invalid API KEY ---')));
             }
-        }else{
+        } else {
             return array(array('value' => '', 'label' => $helper->__($this->_account_details)));
         }
     }

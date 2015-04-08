@@ -5,7 +5,7 @@
             <active>true</active>
             <codePool>community</codePool>
             <depends>
-                <Mage_Newsletter />
+                <Mage_Newsletter/>
             </depends>
         </Ebizmarts_MageMonkey>
     </modules>

@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -22,38 +21,38 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
 
     protected function _prepareCollection()
     {
-    	$customer = Mage::registry('current_customer');
-    	$email    = $customer->getEmail();
+        $customer = Mage::registry('current_customer');
+        $email = $customer->getEmail();
 
-    	$api      = Mage::getSingleton('monkey/api', array('apikey' => Mage::helper('monkey')->getApiKey($customer->getStore())));
-    	$activity = array();
-    	$lists    = $api->listsForEmail($email);
+        $api = Mage::getSingleton('monkey/api', array('apikey' => Mage::helper('monkey')->getApiKey($customer->getStore())));
+        $activity = array();
+        $lists = $api->listsForEmail($email);
 
-		$activityData = array();
-		if(is_array($lists)){
-			foreach($lists as $list){
-				$activity []= $api->listMemberActivity($list, $email);
-			}
-			if(!empty($activity)){
-				foreach($activity as $act){
+        $activityData = array();
+        if (is_array($lists)) {
+            foreach ($lists as $list) {
+                $activity [] = $api->listMemberActivity($list, $email);
+            }
+            if (!empty($activity)) {
+                foreach ($activity as $act) {
 
-					if(empty($act['data'][0])){
-						continue;
-					}
-					$activityData []= $act['data'];
-				}
-			}
-		}
-		if(empty($activityData)){
-			$activityData[] = array('action' => '', 'timestamp' => '', 'url' => '', 'bounce_type' => '', 'campaign_id' => '');
-		}
-		if (!is_array(current($activityData))) {
-			$activityData = array();
-		} else {
-			$activityData = current($activityData);
-		}
+                    if (empty($act['data'][0])) {
+                        continue;
+                    }
+                    $activityData [] = $act['data'];
+                }
+            }
+        }
+        if (empty($activityData)) {
+            $activityData[] = array('action' => '', 'timestamp' => '', 'url' => '', 'bounce_type' => '', 'campaign_id' => '');
+        }
+        if (!is_array(current($activityData))) {
+            $activityData = array();
+        } else {
+            $activityData = current($activityData);
+        }
 
-		$collection = Mage::getModel('monkey/custom_collection', $activityData);
+        $collection = Mage::getModel('monkey/custom_collection', $activityData);
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -62,27 +61,27 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
     {
 
         $this->addColumn('action', array(
-            'header'=> Mage::helper('monkey')->__('Action'),
+            'header' => Mage::helper('monkey')->__('Action'),
             'index' => 'action',
             'sortable' => false
         ));
         $this->addColumn('url', array(
-            'header'=> Mage::helper('monkey')->__('Url'),
+            'header' => Mage::helper('monkey')->__('Url'),
             'index' => 'url',
             'sortable' => false
         ));
         $this->addColumn('bounce_type', array(
-            'header'=> Mage::helper('monkey')->__('Bounce Type'),
+            'header' => Mage::helper('monkey')->__('Bounce Type'),
             'index' => 'bounce_type',
             'sortable' => false
         ));
         $this->addColumn('campaign_id', array(
-            'header'=> Mage::helper('monkey')->__('Campaign ID'),
+            'header' => Mage::helper('monkey')->__('Campaign ID'),
             'index' => 'campaign_id',
             'sortable' => false
         ));
         $this->addColumn('timestamp', array(
-            'header'=> Mage::helper('monkey')->__('Timestamp'),
+            'header' => Mage::helper('monkey')->__('Timestamp'),
             'index' => 'timestamp',
             'sortable' => false
         ));

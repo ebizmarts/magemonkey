@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Adminhtml_Controller_Action
 {
     /**
@@ -26,7 +25,7 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Ad
     protected function _initAction()
     {
         $this->loadLayout()
-        // Make the active menu match the menu config nodes (without 'children' inbetween)
+            // Make the active menu match the menu config nodes (without 'children' inbetween)
             ->_setActiveMenu('sales/ebizmarts_abandonedcart')
             ->_title($this->__('Sales'))->_title($this->__('Abandoned'))
             ->_addBreadcrumb($this->__('Sales'), $this->__('Sales'))
@@ -40,8 +39,8 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Ad
      */
     public function exportCsvAction()
     {
-        $fileName   = 'orders.csv';
-        $grid       = $this->getLayout()->createBlock('ebizmarts_abandonedcart/adminhtml_abandonedorder_grid');
+        $fileName = 'orders.csv';
+        $grid = $this->getLayout()->createBlock('ebizmarts_abandonedcart/adminhtml_abandonedorder_grid');
         $this->_prepareDownloadResponse($fileName, $grid->getCsvFile());
     }
 
@@ -50,8 +49,8 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Ad
      */
     public function exportExcelAction()
     {
-        $fileName   = 'orders.xml';
-        $grid       = $this->getLayout()->createBlock('ebizmarts_abandonedcart/adminhtml_abandonedorder_grid');
+        $fileName = 'orders.xml';
+        $grid = $this->getLayout()->createBlock('ebizmarts_abandonedcart/adminhtml_abandonedorder_grid');
         $this->_prepareDownloadResponse($fileName, $grid->getExcelFile($fileName));
     }
 
@@ -71,12 +70,12 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Ad
     {
 //        $this->_initAction()
 //            ->renderLayout();
-          $this->loadLayout()
-                ->_setActiveMenu('dashboard/ebizmarts_abandonedcart')
-                ->_title($this->__('Dashboard'))->_title($this->__('Abandoned'))
-                ->_addBreadcrumb($this->__('Dashboard'), $this->__('Dashboard'))
-                ->_addBreadcrumb($this->__('abandonedorder'), $this->__('Abandoned'))
-                ->renderLayout();
+        $this->loadLayout()
+            ->_setActiveMenu('dashboard/ebizmarts_abandonedcart')
+            ->_title($this->__('Dashboard'))->_title($this->__('Abandoned'))
+            ->_addBreadcrumb($this->__('Dashboard'), $this->__('Dashboard'))
+            ->_addBreadcrumb($this->__('abandonedorder'), $this->__('Abandoned'))
+            ->renderLayout();
 
     }
 
@@ -85,9 +84,9 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Ad
      */
     public function ajaxBlockAction()
     {
-        $output   = '';
+        $output = '';
         $blockTab = $this->getRequest()->getParam('block');
-        if ($blockTab =='totals') {
+        if ($blockTab == 'totals') {
             $output = $this->getLayout()->createBlock('ebizmarts_abandonedcart/adminhtml_dashboard_' . $blockTab)->toHtml();
         }
         $this->getResponse()->setBody($output);

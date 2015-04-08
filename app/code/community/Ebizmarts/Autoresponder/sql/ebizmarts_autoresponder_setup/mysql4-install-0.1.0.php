@@ -5,7 +5,7 @@
  * Time   : 11:20 AM
  * File   : ${FILE_NAME}
  * Module : ${PROJECT_NAME}
- */ 
+ */
 /* @var $installer Mage_Core_Model_Resource_Setup */
 $installer = $this;
 

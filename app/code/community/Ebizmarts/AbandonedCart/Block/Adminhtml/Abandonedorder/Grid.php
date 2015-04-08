@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedorder_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     /**
@@ -41,8 +40,8 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedorder_Grid extends Mage_A
         $collection = Mage::getResourceModel($this->_getCollectionClass());
         $this->setCollection($collection);
         $sales_flat_order_table = Mage::getSingleton('core/resource')->getTableName('sales_flat_order');
-        $collection->getSelect()->join($sales_flat_order_table , 'main_table.increment_id = '.$sales_flat_order_table.'.increment_id', 'ebizmarts_abandonedcart_flag');
-        $collection->addFieldToFilter($sales_flat_order_table.'.ebizmarts_abandonedcart_flag',array('eq' => 1));
+        $collection->getSelect()->join($sales_flat_order_table, 'main_table.increment_id = ' . $sales_flat_order_table . '.increment_id', 'ebizmarts_abandonedcart_flag');
+        $collection->addFieldToFilter($sales_flat_order_table . '.ebizmarts_abandonedcart_flag', array('eq' => 1));
         return parent::_prepareCollection();
     }
 
@@ -53,19 +52,19 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedorder_Grid extends Mage_A
     {
 
         $this->addColumn('real_order_id', array(
-            'header'=> Mage::helper('sales')->__('Order #'),
+            'header' => Mage::helper('sales')->__('Order #'),
             'width' => '80px',
-            'type'  => 'text',
+            'type' => 'text',
             'index' => 'increment_id',
         ));
 
         if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn('store_id', array(
-                'header'    => Mage::helper('sales')->__('Purchased From (Store)'),
-                'index'     => 'store_id',
+                'header' => Mage::helper('sales')->__('Purchased From (Store)'),
+                'index' => 'store_id',
                 'filter_index' => 'main_table.store_id',
-                'type'      => 'store',
-                'store_view'=> true,
+                'type' => 'store',
+                'store_view' => true,
                 'display_deleted' => true,
             ));
         }
@@ -91,21 +90,21 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedorder_Grid extends Mage_A
         $this->addColumn('base_grand_total', array(
             'header' => Mage::helper('sales')->__('G.T. (Base)'),
             'index' => 'base_grand_total',
-            'type'  => 'currency',
+            'type' => 'currency',
             'currency' => 'base_currency_code',
         ));
 
         $this->addColumn('grand_total', array(
             'header' => Mage::helper('sales')->__('G.T. (Purchased)'),
             'index' => 'grand_total',
-            'type'  => 'currency',
+            'type' => 'currency',
             'currency' => 'order_currency_code',
         ));
 
         $this->addColumn('status', array(
             'header' => Mage::helper('sales')->__('Status'),
             'index' => 'main_table.status',
-            'type'  => 'options',
+            'type' => 'options',
             'width' => '70px',
             'options' => Mage::getSingleton('sales/order_config')->getStatuses(),
         ));
@@ -146,6 +145,6 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedorder_Grid extends Mage_A
      */
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/grid', array('_current'=>true));
+        return $this->getUrl('*/*/grid', array('_current' => true));
     }
 }

@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Importypes extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
 {
     /**
@@ -19,7 +18,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Importypes extends Mage_Admi
      */
     public function render(Varien_Object $row)
     {
-    	$value = $this->_getValue($row);
+        $value = $this->_getValue($row);
 
         return implode(', ', $row->statuses());
     }

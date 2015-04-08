@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_Autoresponder_Block_Backtostock_Notice extends Mage_Core_Block_Template
 {
     public function __construct()
@@ -26,11 +25,11 @@ class Ebizmarts_Autoresponder_Block_Backtostock_Notice extends Mage_Core_Block_T
     {
         $email = false;
 
-        if(!$this->isLoggedIn()) {
+        if (!$this->isLoggedIn()) {
             return $email;
         }
 
-        if(Mage::helper('customer')->getCurrentCustomer()) {
+        if (Mage::helper('customer')->getCurrentCustomer()) {
             $email = Mage::helper('customer')->getCurrentCustomer()->getEmail();
         }
 

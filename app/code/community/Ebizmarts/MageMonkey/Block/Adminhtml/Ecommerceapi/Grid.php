@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerceapi_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -30,7 +29,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerceapi_Grid extends Mage_Adminh
     {
         $orders = array();
 
-        foreach(Mage::app()->getStores() as $storeId => $store){
+        foreach (Mage::app()->getStores() as $storeId => $store) {
             $api = Mage::getModel('monkey/api', array('store' => $storeId));
             $result = $api->ecommOrders(0, 500);
             $orders += $result['data'];
@@ -46,39 +45,39 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerceapi_Grid extends Mage_Adminh
     protected function _prepareColumns()
     {
         $this->addColumn('store_id', array(
-            'header'=> Mage::helper('monkey')->__('Store ID'),
+            'header' => Mage::helper('monkey')->__('Store ID'),
             'index' => 'store_id',
         ));
         $this->addColumn('store_name', array(
-            'header'=> Mage::helper('monkey')->__('Store Name'),
+            'header' => Mage::helper('monkey')->__('Store Name'),
             'index' => 'store_name',
         ));
         $this->addColumn('order_id', array(
-            'header'=> Mage::helper('monkey')->__('Order #'),
+            'header' => Mage::helper('monkey')->__('Order #'),
             'index' => 'order_id',
         ));
         $this->addColumn('email', array(
-            'header'=> Mage::helper('monkey')->__('Email'),
+            'header' => Mage::helper('monkey')->__('Email'),
             'index' => 'email',
         ));
         $this->addColumn('order_total', array(
-            'header'=> Mage::helper('monkey')->__('Order Total'),
+            'header' => Mage::helper('monkey')->__('Order Total'),
             'index' => 'order_total',
         ));
         $this->addColumn('tax_total', array(
-            'header'=> Mage::helper('monkey')->__('Tax Total'),
+            'header' => Mage::helper('monkey')->__('Tax Total'),
             'index' => 'tax_total',
         ));
         $this->addColumn('ship_total', array(
-            'header'=> Mage::helper('monkey')->__('Ship Total'),
+            'header' => Mage::helper('monkey')->__('Ship Total'),
             'index' => 'ship_total',
         ));
         $this->addColumn('order_date', array(
-            'header'=> Mage::helper('monkey')->__('Order Date'),
+            'header' => Mage::helper('monkey')->__('Order Date'),
             'index' => 'order_date',
         ));
         $this->addColumn('items', array(
-            'header'=> Mage::helper('monkey')->__('Items'),
+            'header' => Mage::helper('monkey')->__('Items'),
             'index' => 'items',
             'renderer' => 'monkey/adminhtml_ecommerceapi_renderer_items'
         ));

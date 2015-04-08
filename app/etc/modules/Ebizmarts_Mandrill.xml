@@ -5,7 +5,7 @@
             <active>true</active>
             <codePool>community</codePool>
             <depends>
-                <Mage_Core />
+                <Mage_Core/>
             </depends>
         </Ebizmarts_Mandrill>
     </modules>

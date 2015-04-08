@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
  * Date   : 8/18/14
@@ -27,7 +28,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetLocalEcommerce ext
     public function getAjaxCheckUrl()
     {
         $store = $this->getRequest()->getParam('store');
-        return Mage::helper('adminhtml')->getUrl('monkey/adminhtml_ecommerce/resetLocalEcommerce/store/'.$store);
+        return Mage::helper('adminhtml')->getUrl('monkey/adminhtml_ecommerce/resetLocalEcommerce/store/' . $store);
     }
 
     /**
@@ -39,9 +40,9 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetLocalEcommerce ext
     {
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
-                'id'        => 'resetecommerce_button',
-                'label'     => $this->helper('monkey')->__('Reset Local Orders Ecommerce360'),
-                'onclick'   => 'javascript:check(); return false;'
+                'id' => 'resetecommerce_button',
+                'label' => $this->helper('monkey')->__('Reset Local Orders Ecommerce360'),
+                'onclick' => 'javascript:check(); return false;'
             ));
 
         return $button->toHtml();

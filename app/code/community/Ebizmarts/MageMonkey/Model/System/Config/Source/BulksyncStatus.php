@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Model_System_Config_Source_BulksyncStatus
 {
 
@@ -20,29 +19,29 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_BulksyncStatus
     public function toOptionArray()
     {
         return array(
-        	array('value' => 'idle', 'label' => Mage::helper('monkey')->__('IDLE')),
+            array('value' => 'idle', 'label' => Mage::helper('monkey')->__('IDLE')),
             array('value' => 'running', 'label' => Mage::helper('monkey')->__('Running Now')),
             array('value' => 'chunk_running', 'label' => Mage::helper('monkey')->__('Running')),
             array('value' => 'finished', 'label' => Mage::helper('monkey')->__('Completed')),
         );
     }
 
-	/**
-	 * Another way of returning data
-	 *
-	 * @return array
-	 */
+    /**
+     * Another way of returning data
+     *
+     * @return array
+     */
     public function toOption()
     {
-    	$options = $this->toOptionArray();
+        $options = $this->toOptionArray();
 
-    	$ary = array();
+        $ary = array();
 
-    	foreach($options as $option){
-			$ary[$option['value']] = $option['label'];
-    	}
+        foreach ($options as $option) {
+            $ary[$option['value']] = $option['label'];
+        }
 
-    	return $ary;
+        return $ary;
     }
 
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
  * Date   : 8/19/14
@@ -27,7 +28,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetRemoteEcommerce ex
     public function getAjaxCheckUrl()
     {
         $store = $this->getRequest()->getParam('store');
-        return Mage::helper('adminhtml')->getUrl('monkey/adminhtml_ecommerce/resetRemoteEcommerce/store/'.$store);
+        return Mage::helper('adminhtml')->getUrl('monkey/adminhtml_ecommerce/resetRemoteEcommerce/store/' . $store);
     }
 
     /**
@@ -39,9 +40,9 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetRemoteEcommerce ex
     {
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
-                'id'        => 'resetecommerce_button',
-                'label'     => $this->helper('monkey')->__('Reset Remote Orders Ecommerce360'),
-                'onclick'   => 'javascript:check2(); return false;'
+                'id' => 'resetecommerce_button',
+                'label' => $this->helper('monkey')->__('Reset Remote Orders Ecommerce360'),
+                'onclick' => 'javascript:check2(); return false;'
             ));
 
         return $button->toHtml();

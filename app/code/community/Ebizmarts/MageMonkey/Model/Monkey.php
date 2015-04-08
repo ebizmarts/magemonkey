@@ -8,8 +8,8 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
-class Ebizmarts_MageMonkey_Model_Monkey {
+class Ebizmarts_MageMonkey_Model_Monkey
+{
     /**
      * Webhooks request url path
      *
@@ -24,7 +24,8 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param array $data
      * @return void
      */
-    public function processWebhookData(array $data) {
+    public function processWebhookData(array $data)
+    {
         $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
         $store = Mage::helper('monkey')->getStoreByList($listId);
 
@@ -38,23 +39,23 @@ class Ebizmarts_MageMonkey_Model_Monkey {
         $object->requestParams = array();
         $object->requestParams['id'] = $listId;
 
-        if( isset($data['data']['email']) ){
-            $object->requestParams['email_address']  = $data['data']['email'];
+        if (isset($data['data']['email'])) {
+            $object->requestParams['email_address'] = $data['data']['email'];
         }
         $cacheHelper = Mage::helper('monkey/cache');
 
         switch ($data['type']) {
             case 'subscribe':
-				$this->_subscribe($data);
-                    $cacheHelper->clearCache('listSubscribe', $object);
+                $this->_subscribe($data);
+                $cacheHelper->clearCache('listSubscribe', $object);
                 break;
             case 'unsubscribe':
                 $this->_unsubscribe($data);
-                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                $cacheHelper->clearCache('listUnsubscribe', $object);
                 break;
             case 'cleaned':
                 $this->_clean($data);
-                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                $cacheHelper->clearCache('listUnsubscribe', $object);
                 break;
             case 'campaign':
                 $this->_campaign($data);
@@ -62,7 +63,7 @@ class Ebizmarts_MageMonkey_Model_Monkey {
             //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
             case 'upemail':
                 $this->_updateEmail($data);
-                    $cacheHelper->clearCache('listUpdateMember', $object);
+                $cacheHelper->clearCache('listUpdateMember', $object);
                 break;
         }
 
@@ -77,7 +78,8 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param array $data
      * @return void
      */
-    protected function _updateEmail(array $data) {
+    protected function _updateEmail(array $data)
+    {
 
         $old = $data['data']['old_email'];
         $new = $data['data']['new_email'];
@@ -87,13 +89,13 @@ class Ebizmarts_MageMonkey_Model_Monkey {
 
         if (!$newSubscriber->getId() && $oldSubscriber->getId()) {
             $oldSubscriber->setSubscriberEmail($new)
-                    ->save();
+                ->save();
         } elseif (!$newSubscriber->getId() && !$oldSubscriber->getId()) {
 
             Mage::getModel('newsletter/subscriber')
-                    ->setImportMode(TRUE)
-                    ->setStoreId(Mage::app()->getStore()->getId())
-                    ->subscribe($new);
+                ->setImportMode(TRUE)
+                ->setStoreId(Mage::app()->getStore()->getId())
+                ->subscribe($new);
         }
     }
 
@@ -103,15 +105,16 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param array $data
      * @return void
      */
-    protected function _clean(array $data) {
+    protected function _clean(array $data)
+    {
 
-        if(Mage::helper('monkey')->isAdminNotificationEnabled()) {
+        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
             $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
 
             $this->_getInbox()
-            ->setTitle($text)
-            ->setDescription($text)
-            ->save();
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
         }
 
         //Delete subscriber from Magento
@@ -132,15 +135,16 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param array $data
      * @return void
      */
-    protected function _campaign(array $data) {
+    protected function _campaign(array $data)
+    {
 
-        if(Mage::helper('monkey')->isAdminNotificationEnabled()) {
+        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
             $text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
 
             $this->_getInbox()
-                    ->setTitle($text)
-                    ->setDescription($text)
-                    ->save();
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
         }
 
     }
@@ -151,7 +155,8 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param array $data
      * @return void
      */
-    protected function _subscribe(array $data) {
+    protected function _subscribe(array $data)
+    {
         try {
 
             //TODO: El método subscribe de Subscriber (Magento) hace un load by email
@@ -159,13 +164,13 @@ class Ebizmarts_MageMonkey_Model_Monkey {
             //VALIDAR si es lo que se requiere
 
             $subscriber = Mage::getModel('newsletter/subscriber')
-                    ->loadByEmail($data['data']['email']);
+                ->loadByEmail($data['data']['email']);
             if ($subscriber->getId()) {
                 $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
-                        ->save();
+                    ->save();
             } else {
                 Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
-                        ->subscribe($data['data']['email']);
+                    ->subscribe($data['data']['email']);
             }
         } catch (Exception $e) {
             Mage::logException($e);
@@ -178,23 +183,24 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param array $data
      * @return void
      */
-    protected function _unsubscribe(array $data) {
+    protected function _unsubscribe(array $data)
+    {
         $subscriber = $this->loadByEmail($data['data']['email']);
 
-        if(!$subscriber->getId()){
-        $subscriber = Mage::getModel('newsletter/subscriber')
-                            ->loadByEmail($data['data']['email']);
+        if (!$subscriber->getId()) {
+            $subscriber = Mage::getModel('newsletter/subscriber')
+                ->loadByEmail($data['data']['email']);
         }
 
-        if($subscriber->getId()){
+        if ($subscriber->getId()) {
             try {
 
                 switch ($data['data']['action']) {
                     case 'delete' :
                         //if config setting "Webhooks Delete action" is set as "Delete customer account"
-                        if(Mage::getStoreConfig("monkey/general/webhook_delete") == 1){
+                        if (Mage::getStoreConfig("monkey/general/webhook_delete") == 1) {
                             $subscriber->delete();
-                        }else{
+                        } else {
                             $subscriber->setImportMode(TRUE)->unsubscribe();
                         }
                         break;
@@ -213,10 +219,11 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      *
      * @return Mage_AdminNotification_Model_Inbox
      */
-    protected function _getInbox() {
+    protected function _getInbox()
+    {
         return Mage::getModel('adminnotification/inbox')
-                        ->setSeverity(4)//Notice
-                        ->setDateAdded(Mage::getModel('core/date')->gmtDate());
+            ->setSeverity(4)//Notice
+            ->setDateAdded(Mage::getModel('core/date')->gmtDate());
     }
 
     /**
@@ -225,12 +232,13 @@ class Ebizmarts_MageMonkey_Model_Monkey {
      * @param string $email
      * @return Mage_Newsletter_Model_Subscriber
      */
-    public function loadByEmail($email) {
+    public function loadByEmail($email)
+    {
         return Mage::getModel('newsletter/subscriber')
-                        ->getCollection()
-                        ->addFieldToFilter('subscriber_email', $email)
-                        ->addFieldToFilter('store_id', Mage::app()->getStore()->getId())
-                        ->getFirstItem();
+            ->getCollection()
+            ->addFieldToFilter('subscriber_email', $email)
+            ->addFieldToFilter('store_id', Mage::app()->getStore()->getId())
+            ->getFirstItem();
     }
 
 }

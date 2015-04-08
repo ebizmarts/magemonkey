@@ -1,20 +1,24 @@
-div.interest-groupings{
-	margin-left:20px;
+div.interest-groupings {
+    margin-left: 20px;
 }
-div.interest-groupings div.grouping{
-	margin-top:4px;
+
+div.interest-groupings div.grouping {
+    margin-top: 4px;
 }
-div.interest-groupings div.grouping ul.checkboxes li{
-	display:inline;
-	margin-left:20px;
+
+div.interest-groupings div.grouping ul.checkboxes li {
+    display: inline;
+    margin-left: 20px;
 }
+
 div.interest-groupings div.grouping div.groups-list input, div.interest-groupings div.grouping div.groups-list select {
-	margin-left:20px;
+    margin-left: 20px;
 }
+
 div.interest-groupings div.grouping div.groups-list select {
-	width:150px;
+    width: 150px;
 }
 
 ul.monkey-additional-lists li.listdata {
-	margin-bottom:15px;
+    margin-bottom: 15px;
 }

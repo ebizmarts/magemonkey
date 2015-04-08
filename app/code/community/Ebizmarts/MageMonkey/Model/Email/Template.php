@@ -8,23 +8,22 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Model_Email_Template extends Mage_Core_Model_Email_Template
 {
 
     /**
      * Send mail to recipient
      *
-     * @param   array|string       $email        E-mail(s)
-     * @param   array|string|null  $name         receiver name(s)
-     * @param   array              $variables    template variables
+     * @param   array|string $email E-mail(s)
+     * @param   array|string|null $name receiver name(s)
+     * @param   array $variables template variables
      * @return  boolean
      **/
     public function send($email, $name = null, array $variables = array())
     {
 
-		//Check if should use MC Transactional Email Service
-        if(FALSE === Mage::helper('monkey')->useTransactionalService()){
+        //Check if should use MC Transactional Email Service
+        if (FALSE === Mage::helper('monkey')->useTransactionalService()) {
             return parent::send($email, $name, $variables);
         }
 
@@ -49,13 +48,13 @@ class Ebizmarts_MageMonkey_Model_Email_Template extends Mage_Core_Model_Email_Te
         ini_set('smtp_port', Mage::getStoreConfig('system/smtp/port'));
 
 
-		$service = Mage::helper('monkey')->config('transactional_emails');
-		$apiKey  = Mage::helper('monkey')->getApiKey($this->getDesignConfig()->getStore());
-		if('mandrill' == $service){
-			$apiKey  = Mage::helper('monkey')->getMandrillApiKey($this->getDesignConfig()->getStore());
-		}
+        $service = Mage::helper('monkey')->config('transactional_emails');
+        $apiKey = Mage::helper('monkey')->getApiKey($this->getDesignConfig()->getStore());
+        if ('mandrill' == $service) {
+            $apiKey = Mage::helper('monkey')->getMandrillApiKey($this->getDesignConfig()->getStore());
+        }
 
-        $mail    = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory($service);
+        $mail = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory($service);
         $mail->setApiKey($apiKey);
 
         $this->setUseAbsoluteLinks(true);
@@ -63,22 +62,22 @@ class Ebizmarts_MageMonkey_Model_Email_Template extends Mage_Core_Model_Email_Te
 
         try {
 
-            $message = array (
-					        'html'       => $text,
-					        'text'       => $text,
-					        'subject'    => ('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?='),
-					        'from_name'  => $this->getSenderName(),
-					        'from_email' => $this->getSenderEmail(),
-					        'to_email'   => $emails,
-					        'to_name'    => $names
-				        );
+            $message = array(
+                'html' => $text,
+                'text' => $text,
+                'subject' => ('=?utf-8?B?' . base64_encode($this->getProcessedTemplateSubject($variables)) . '?='),
+                'from_name' => $this->getSenderName(),
+                'from_email' => $this->getSenderEmail(),
+                'to_email' => $emails,
+                'to_name' => $names
+            );
 
             $sent = $mail->sendEmail($message);
-            if($mail->errorCode){
-				return false;
-			}
+            if ($mail->errorCode) {
+                return false;
+            }
 
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             Mage::logException($e);
             return false;
         }

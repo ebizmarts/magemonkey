@@ -1,7 +1,7 @@
 <?php $products = $this->getProducts(); ?>
 <table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #EAEAEA;">
-    <?php foreach($products as $product): ?>
-        <?php if($product->getImage()=="no_selection"&&$product->getTypeId() == "configurable") {
+    <?php foreach ($products as $product): ?>
+        <?php if ($product->getImage() == "no_selection" && $product->getTypeId() == "configurable") {
             $conf = Mage::getModel('catalog/product_type_configurable')->setProduct($product);
             $simple_collection = $conf->getUsedProductCollection()->addAttributeToSelect('*')->addFilterByRequiredOptions();
             foreach ($simple_collection as $simple_product) {
@@ -11,14 +11,21 @@
                     break;
                 }
             }
-        }
-        else {
+        } else {
             $imageUrl = $product->getThumbnailUrl();
         }
         ?>
         <tr>
-            <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo $product->getProductUrl(); ?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>" target="_blank"><img src="<?php echo $imageUrl;?>" alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a></td>
-            <td valign="top" align="left" style="padding:3px 9px"><p><h2><a href="<?php echo $product->getProductUrl(); ?>"> <?php echo $this->escapeHtml($product->getName()); ?></a></h2></p><?php echo $this->escapeHtml($product->getShortDescription()); ?></td>
+            <td valign="top" align="left" style="padding:3px 9px"><a href="<?php echo $product->getProductUrl(); ?>"
+                                                                     alt="<?php echo $this->escapeHtml($product->getName()); ?>"
+                                                                     target="_blank"><img src="<?php echo $imageUrl; ?>"
+                                                                                          alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a>
+            </td>
+            <td valign="top" align="left" style="padding:3px 9px"><p>
+
+                <h2>
+                    <a href="<?php echo $product->getProductUrl(); ?>"> <?php echo $this->escapeHtml($product->getName()); ?></a>
+                </h2></p><?php echo $this->escapeHtml($product->getShortDescription()); ?></td>
         </tr>
     <?php endforeach; ?>
 </table>

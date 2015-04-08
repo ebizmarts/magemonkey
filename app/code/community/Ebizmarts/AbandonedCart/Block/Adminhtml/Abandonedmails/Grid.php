@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     public function __construct()
@@ -32,6 +31,7 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_A
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
+
     protected function _prepareColumns()
     {
 
@@ -88,13 +88,13 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Abandonedmails_Grid extends Mage_A
 
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/grid', array('_current'=>true));
+        return $this->getUrl('*/*/grid', array('_current' => true));
     }
 
     protected function getMailTypeOptions()
     {
-        return array('abandoned cart'=>'abandoned cart','happy birthday'=>'happy birthday','new order'=>'new order', 'related products'=>'related products',
-            'product review'=>'product review', 'no activity'=>'no activity', 'wishlist'=>'wishlist', 'review coupon' => 'review coupon' , 'back to stock' => 'back to stock');
+        return array('abandoned cart' => 'abandoned cart', 'happy birthday' => 'happy birthday', 'new order' => 'new order', 'related products' => 'related products',
+            'product review' => 'product review', 'no activity' => 'no activity', 'wishlist' => 'wishlist', 'review coupon' => 'review coupon', 'back to stock' => 'back to stock');
     }
 
 }

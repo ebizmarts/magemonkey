@@ -2,10 +2,10 @@
     //<![CDATA[
     function check() {
         new Ajax.Request('<?php echo $this->getAjaxCheckUrl() ?>', {
-            method:     'get',
-            onSuccess: function(transport){
+            method: 'get',
+            onSuccess: function (transport) {
 
-                if (transport.responseText == 1){
+                if (transport.responseText == 1) {
                     alert('All local orders for Ecommerce360 were deleted');
                 }
                 else {
@@ -16,30 +16,29 @@
     }
     function reloadGroups(evt) {
         var $list = $('monkey_general_list').getValue();
-        var $url = "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/config/getGroups'); ?>"+"list/"+$list;
+        var $url = "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/config/getGroups'); ?>" + "list/" + $list;
         new Ajax.Request($url, {
             method: 'get',
             onSuccess: function (transport) {
                 $el = $('monkey_general_cutomergroup');
-                while($el.firstChild) {
+                while ($el.firstChild) {
                     $el.removeChild($el.firstChild);
                 }
-                if(transport.responseJSON.length==0) {
+                if (transport.responseJSON.length == 0) {
                     opt = document.createElement('option');
                     opt.text = '--- No data ---';
                     opt.value = -1;
                     $el.options.add(opt);
                 }
                 else {
-                    transport.responseJSON.each(function(i) {
+                    transport.responseJSON.each(function (i) {
                             opt = document.createElement('option');
                             opt.text = i.label;
                             opt.value = i.value;
-                            if(i.style) {
+                            if (i.style) {
                                 opt.style = i.style;
                             }
-                            if(i.disabled)
-                            {
+                            if (i.disabled) {
                                 opt.disabled = 1;
                             }
                             opt.selected = i.selected;
@@ -50,10 +49,10 @@
             }
         });
     }
-    document.observe("dom:loaded", function() {
-        if($('monkey_general_list')) {
-            Element.observe('monkey_general_list','change',reloadGroups);
-            Element.observe(window,'load',reloadGroups);
+    document.observe("dom:loaded", function () {
+        if ($('monkey_general_list')) {
+            Element.observe('monkey_general_list', 'change', reloadGroups);
+            Element.observe(window, 'load', reloadGroups);
         }
     });
     //]]>

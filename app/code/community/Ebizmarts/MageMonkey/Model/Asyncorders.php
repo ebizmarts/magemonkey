@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
  * Date   : 9/12/14
@@ -6,7 +7,7 @@
  * File   : Asyncorders.php
  * Module : Ebizmarts_MageMonkey
  */
-class Ebizmarts_MageMonkey_Model_Asyncorders  extends Mage_Core_Model_Abstract
+class Ebizmarts_MageMonkey_Model_Asyncorders extends Mage_Core_Model_Abstract
 {
     /**
      * Initialize model

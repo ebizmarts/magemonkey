@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Reports_Model_Mysql4_Order_Collection
 {
     public function isLive()
@@ -32,8 +31,8 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
         }
 
         $this->addFieldToFilter($fieldToFilter, array(
-            'from'  => $from->toString(Varien_Date::DATETIME_INTERNAL_FORMAT),
-            'to'    => $to->toString(Varien_Date::DATETIME_INTERNAL_FORMAT)
+            'from' => $from->toString(Varien_Date::DATETIME_INTERNAL_FORMAT),
+            'to' => $to->toString(Varien_Date::DATETIME_INTERNAL_FORMAT)
         ));
 
         return $this;
@@ -53,7 +52,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
         }
         $adapter = $this->getConnection();
 
-        if (Mage::getStoreConfig('sales/dashboard/use_aggregated_data')==8) {
+        if (Mage::getStoreConfig('sales/dashboard/use_aggregated_data') == 8) {
             $this->setMainTable('sales/order_aggregated_created');
             $this->removeAllFieldsFromSelect();
             $averageExpr = $adapter->getCheckSql(
@@ -62,7 +61,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
                 0);
             $this->getSelect()->columns(array(
                 'lifetime' => 'SUM(main_table.total_revenue_amount)',
-                'average'  => $averageExpr
+                'average' => $averageExpr
             ));
 
             if (!$isFilter) {
@@ -74,12 +73,11 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
         } else {
             $this->setMainTable('sales/order');
             $this->removeAllFieldsFromSelect();
-            if(version_compare(Mage::getVersion(), '1.6.0.0')==1) {
+            if (version_compare(Mage::getVersion(), '1.6.0.0') == 1) {
                 $expr = 'IFNULL(main_table.base_subtotal, 0) - IFNULL(main_table.base_subtotal_refunded, 0)'
                     . ' - IFNULL(main_table.base_subtotal_canceled, 0) - ABS(IFNULL(main_table.base_discount_amount, 0))'
                     . ' + IFNULL(main_table.base_discount_refunded, 0)';
-            }
-            else if(version_compare(Mage::getVersion(), '1.6.0.0', '<')) {
+            } else if (version_compare(Mage::getVersion(), '1.6.0.0', '<')) {
                 $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
                     "IFNULL('main_table.base_total_invoiced', 0)",
                     "IFNULL('main_table.base_tax_invoiced', 0)",
@@ -88,8 +86,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
                     "IFNULL('main_table.base_tax_refunded', 0)",
                     "IFNULL('main_table.base_shipping_refunded', 0)"
                 );
-            }
-            else {
+            } else {
                 $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
                     $adapter->getIfNullSql('main_table.base_total_invoiced', 0),
                     $adapter->getIfNullSql('main_table.base_tax_invoiced', 0),
@@ -106,14 +103,14 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
 
             $this->getSelect()
                 ->columns(array(
-                'lifetime' => "SUM({$expr})",
-                'average'  => "AVG({$expr})"
-            ))
+                    'lifetime' => "SUM({$expr})",
+                    'average' => "AVG({$expr})"
+                ))
                 ->where('main_table.status NOT IN(?)', $statuses)
                 ->where('main_table.state NOT IN(?)', array(
-                    Mage_Sales_Model_Order::STATE_NEW,
-                    Mage_Sales_Model_Order::STATE_PENDING_PAYMENT)
-            );
+                        Mage_Sales_Model_Order::STATE_NEW,
+                        Mage_Sales_Model_Order::STATE_PENDING_PAYMENT)
+                );
         }
         return $this;
     }
@@ -127,7 +124,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
      */
     public function getDateRange($range, $customStart, $customEnd, $returnObjects = false)
     {
-        $dateEnd   = Mage::app()->getLocale()->date();
+        $dateEnd = Mage::app()->getLocale()->date();
         $dateStart = clone $dateEnd;
 
         // go to the end of a day
@@ -139,8 +136,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
         $dateStart->setMinute(0);
         $dateStart->setSecond(0);
 
-        switch ($range)
-        {
+        switch ($range) {
             case '24h':
                 $dateEnd = Mage::app()->getLocale()->date();
                 $dateEnd->addHour(1);
@@ -177,7 +173,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
                 break;
             case 'custom':
                 $dateStart = $customStart ? $customStart : $dateEnd;
-                $dateEnd   = $customEnd ? $customEnd : $dateEnd;
+                $dateEnd = $customEnd ? $customEnd : $dateEnd;
                 break;
 
             case '1y':
@@ -190,8 +186,7 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
                 $dateStart->setDay($startDay);
                 if ($range == '2y') {
                     $dateStart->subYear(1);
-                }
-                elseif($range == 'lifetime') {
+                } elseif ($range == 'lifetime') {
                     $dateStart->subYear(1000);
                 }
                 break;

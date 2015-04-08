@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Sts_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -24,20 +23,20 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Sts_Grid extends M
 
     protected function _prepareCollection()
     {
-		$apiKey  = Mage::helper('monkey')->getApiKey(0);
+        $apiKey = Mage::helper('monkey')->getApiKey(0);
         $mail = Ebizmarts_MageMonkey_Model_TransactionalEmail_Adapter::factory('sts')
-					->setApiKey($apiKey);
-		$emails = $mail->listVerifiedEmailAddresses();
+            ->setApiKey($apiKey);
+        $emails = $mail->listVerifiedEmailAddresses();
 
-		if($emails !== FALSE){
-			$_emails = array();
-			foreach($emails->email_addresses as $email){
-				$_emails []= array('email' => $email);
-			}
-			$collection = Mage::getModel('monkey/custom_collection', array($_emails));
-		}else{
-			$collection = Mage::getModel('monkey/custom_collection', array(array()));
-		}
+        if ($emails !== FALSE) {
+            $_emails = array();
+            foreach ($emails->email_addresses as $email) {
+                $_emails [] = array('email' => $email);
+            }
+            $collection = Mage::getModel('monkey/custom_collection', array($_emails));
+        } else {
+            $collection = Mage::getModel('monkey/custom_collection', array(array()));
+        }
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -46,7 +45,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Sts_Grid extends M
     protected function _prepareColumns()
     {
         $this->addColumn('email', array(
-            'header'=> Mage::helper('monkey')->__('Email Address'),
+            'header' => Mage::helper('monkey')->__('Email Address'),
             'index' => 'email',
             'filter' => false,
             'sortable' => false
@@ -54,24 +53,24 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Sts_Grid extends M
 
         $this->addColumn('action',
             array(
-                'header'    => Mage::helper('monkey')->__('Action'),
-                'width'     => '50px',
-                'type'      => 'action',
-                'getter'     => 'getEmail',
-                'actions'   => array(
+                'header' => Mage::helper('monkey')->__('Action'),
+                'width' => '50px',
+                'type' => 'action',
+                'getter' => 'getEmail',
+                'actions' => array(
                     array(
                         'caption' => Mage::helper('monkey')->__('Delete'),
                         'confirm' => Mage::helper('monkey')->__('This action takes immediate effect, so use it with care.'),
-                        'url'     => array(
+                        'url' => array(
                             'base' => '*/*/stsDelete',
                             'params' => array('store' => $this->getRequest()->getParam('store')),
                         ),
-                        'field'   => 'email'
+                        'field' => 'email'
                     )
                 ),
-                'filter'    => false,
-                'sortable'  => false,
-        ));
+                'filter' => false,
+                'sortable' => false,
+            ));
 
         return parent::_prepareColumns();
     }

@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerceapi_Renderer_Items extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Abstract
 {
 
@@ -17,8 +16,8 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerceapi_Renderer_Items extends M
         $lines = $row->getLines();
 
         $skus = array();
-        foreach($lines as $item){
-            $skus []= $item['product_sku'] . ' [' . $item['qty'] . ']';
+        foreach ($lines as $item) {
+            $skus [] = $item['product_sku'] . ' [' . $item['qty'] . ']';
         }
 
         return implode(', ', $skus);

@@ -8,212 +8,210 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Model_Cron
 {
-	/**
-	 * Limit var for SQL queries
-	 *
-	 * @var integer
-	 * @access protected
-	 */
-	protected $_limit = 1000;
+    /**
+     * Limit var for SQL queries
+     *
+     * @var integer
+     * @access protected
+     */
+    protected $_limit = 1000;
 
-	/**
-	 * Current Magento store
-	 *
-	 * @var Mage_Core_Model_Store
-	 * @access protected
-	 */
-	protected $_store;
+    /**
+     * Current Magento store
+     *
+     * @var Mage_Core_Model_Store
+     * @access protected
+     */
+    protected $_store;
 
-	/**
-	 * Process scheduled IMPORT tasks
-	 *
-	 * @return void
-	 */
-	public function bulksyncImportSubscribers()
-	{
-		$job = $this->_getJob('Import');
-		if(is_null($job)){
-			return $this;
-		}
+    /**
+     * Process scheduled IMPORT tasks
+     *
+     * @return void
+     */
+    public function bulksyncImportSubscribers()
+    {
+        $job = $this->_getJob('Import');
+        if (is_null($job)) {
+            return $this;
+        }
 
-		//Update total count on first run
-		$setcount = FALSE;
-		if(!$job->getTotalCount()){
-			$setcount = TRUE;
-		}
+        //Update total count on first run
+        $setcount = FALSE;
+        if (!$job->getTotalCount()) {
+            $setcount = TRUE;
+        }
 
-		if(!$job->getStartedAt()){
-			$job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
-		}
+        if (!$job->getStartedAt()) {
+            $job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
+        }
 
-		foreach($job->lists() as $listId){
+        foreach ($job->lists() as $listId) {
 
-			$toImport = array();
+            $toImport = array();
 
-			$store = $this->_helper()->getStoreByList($listId);
-			$websiteId = Mage::app()->getStore($store)->getWebsiteId();
-			$this->_store = Mage::app()->getStore($store);
+            $store = $this->_helper()->getStoreByList($listId);
+            $websiteId = Mage::app()->getStore($store)->getWebsiteId();
+            $this->_store = Mage::app()->getStore($store);
 
-			$exportapi = Mage::getModel('monkey/api', array('store' => $store, '_export_' => TRUE));
-			$api = Mage::getModel('monkey/api', array('store' => $store));
+            $exportapi = Mage::getModel('monkey/api', array('store' => $store, '_export_' => TRUE));
+            $api = Mage::getModel('monkey/api', array('store' => $store));
 
-			$mergevars = $api->listMergeVars($listId);
+            $mergevars = $api->listMergeVars($listId);
 
-			foreach($job->statuses() as $status){
+            foreach ($job->statuses() as $status) {
 
-				$members = $exportapi->listExport($listId, $status, NULL, $job->getSince());
+                $members = $exportapi->listExport($listId, $status, NULL, $job->getSince());
 
-				if(is_null($exportapi->errorCode) && $members){
-					if( !isset($toImport[$status]) ){
-						$toImport [$status] = array();
-					}
-					$mdata = $this->_helper('export')->parseMembers($members, $mergevars, $store);
+                if (is_null($exportapi->errorCode) && $members) {
+                    if (!isset($toImport[$status])) {
+                        $toImport [$status] = array();
+                    }
+                    $mdata = $this->_helper('export')->parseMembers($members, $mergevars, $store);
 
-					$toImport[$status] = array_merge($toImport[$status], $mdata);
+                    $toImport[$status] = array_merge($toImport[$status], $mdata);
 
-					if($setcount === TRUE){
-						$job->setTotalCount( (count($toImport[$status])+(int)$job->getTotalCount()) )->save();
-					}
-				}
+                    if ($setcount === TRUE) {
+                        $job->setTotalCount((count($toImport[$status]) + (int)$job->getTotalCount()))->save();
+                    }
+                }
 
-			}
+            }
 
-			if( count($toImport) > 0 ){
+            if (count($toImport) > 0) {
 
-				$job->setStatus('running')
-					->save();
+                $job->setStatus('running')
+                    ->save();
 
-				foreach($toImport as $type => $emails){
+                foreach ($toImport as $type => $emails) {
 
-					foreach($emails as $data){
+                    foreach ($emails as $data) {
 
-						//Run: subscribed, unsubscribed, cleaned or updated method
-						$this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
+                        //Run: subscribed, unsubscribed, cleaned or updated method
+                        $this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
 
-						$job->setProcessedCount( ((int)$job->getProcessedCount() + 1) )
-							->save();
-					}
+                        $job->setProcessedCount(((int)$job->getProcessedCount() + 1))
+                            ->save();
+                    }
 
-				}
+                }
 
-			$job->setStatus('finished')
-					->save();
+                $job->setStatus('finished')
+                    ->save();
 
-			}
+            }
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Return subscriber object with basic attribues
-	 *
-	 * @param string $email
-	 * @param string $status OPTIONAL
-	 * @return Mage_Newsletter_Model_Subscriber
-	 */
-	protected function _getSubscriberObject($email, $status = Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
-	{
-		$subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
-		$subscriber->setImportMode(TRUE)->setBulksync(TRUE);
+    /**
+     * Return subscriber object with basic attribues
+     *
+     * @param string $email
+     * @param string $status OPTIONAL
+     * @return Mage_Newsletter_Model_Subscriber
+     */
+    protected function _getSubscriberObject($email, $status = Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+    {
+        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+        $subscriber->setImportMode(TRUE)->setBulksync(TRUE);
 
-		if(!$subscriber->getId()){
-			$subscriber->setStoreId($this->_store->getId())
-			->setSubscriberConfirmCode(Mage::getModel('newsletter/subscriber')->randomSequence())
-			->setEmail($email);
-		}
+        if (!$subscriber->getId()) {
+            $subscriber->setStoreId($this->_store->getId())
+                ->setSubscriberConfirmCode(Mage::getModel('newsletter/subscriber')->randomSequence())
+                ->setEmail($email);
+        }
 
-		$subscriber->setStatus($status);
+        $subscriber->setStatus($status);
 
-		return $subscriber;
-	}
+        return $subscriber;
+    }
 
-	/**
-	 * Process <subscribed> data list when importing members
-	 *
-	 * @param array $member
-	 * @param integer $websiteId OPTIONAL
-	 * @param bool $createCustomer
-	 * @return void
-	 */
-	protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
-	{
-		$subscriber = $this->_getSubscriberObject($member['email']);
-		if( $createCustomer ){
-			$alreadyExist = false;
-			$websites = Mage::getModel('core/website')->getCollection()->getData();
-	        foreach($websites as $website){
-	        	$customer = Mage::getModel('customer/customer')->setWebsiteId($website['website_id'])
-															   ->loadByEmail($member['email']);
-				if($customer->getId()){
-			   		$alreadyExist = true;
-			   	}
-	        }
+    /**
+     * Process <subscribed> data list when importing members
+     *
+     * @param array $member
+     * @param integer $websiteId OPTIONAL
+     * @param bool $createCustomer
+     * @return void
+     */
+    protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
+    {
+        $subscriber = $this->_getSubscriberObject($member['email']);
+        if ($createCustomer) {
+            $alreadyExist = false;
+            $websites = Mage::getModel('core/website')->getCollection()->getData();
+            foreach ($websites as $website) {
+                $customer = Mage::getModel('customer/customer')->setWebsiteId($website['website_id'])
+                    ->loadByEmail($member['email']);
+                if ($customer->getId()) {
+                    $alreadyExist = true;
+                }
+            }
 
-			if(!$alreadyExist){
-				//Create customer if not exists, and subscribe
-				$customer = $this->_helper()->createCustomerAccount($member, $websiteId);
-			}
-			$subscriber
-	            ->setCustomerId($customer->getId())
-	            ->save();
-		}else{
-			//Just subscribe email
-			$subscriber->save();
-		}
+            if (!$alreadyExist) {
+                //Create customer if not exists, and subscribe
+                $customer = $this->_helper()->createCustomerAccount($member, $websiteId);
+            }
+            $subscriber
+                ->setCustomerId($customer->getId())
+                ->save();
+        } else {
+            //Just subscribe email
+            $subscriber->save();
+        }
 
-	}
+    }
 
-	/**
-	 * Process <updated> data list when importing members
-	 *
-	 * @param array $member
-	 * @param integer $websiteId OPTIONAL
-	 * @param bool $createCustomer
-	 * @return void
-	 */
-	protected function updated($member, $websiteId = null, $createCustomer = FALSE)
-	{
-		//TODO
-	}
+    /**
+     * Process <updated> data list when importing members
+     *
+     * @param array $member
+     * @param integer $websiteId OPTIONAL
+     * @param bool $createCustomer
+     * @return void
+     */
+    protected function updated($member, $websiteId = null, $createCustomer = FALSE)
+    {
+        //TODO
+    }
 
-	/**
-	 * Process <unsubscribed> data list when importing members
-	 *
-	 * @param array $member
-	 * @param integer $websiteId OPTIONAL
-	 * @param bool $createCustomer
-	 * @return void
-	 */
-	protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE)
-	{
-		$this->_getSubscriberObject($member['email'], Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
-										->save();
-	}
+    /**
+     * Process <unsubscribed> data list when importing members
+     *
+     * @param array $member
+     * @param integer $websiteId OPTIONAL
+     * @param bool $createCustomer
+     * @return void
+     */
+    protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE)
+    {
+        $this->_getSubscriberObject($member['email'], Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
+            ->save();
+    }
 
-	/**
-	 * Process <cleaned> data list when importing members
-	 *
-	 * @param array $member
-	 * @param integer $websiteId OPTIONAL
-	 * @param bool $createCustomer
-	 * @return void
-	 */
-	protected function cleaned($member, $websiteId = null, $createCustomer = FALSE)
-	{
-		return $this->unsubscribed($member, $websiteId, $createCustomer);
-	}
+    /**
+     * Process <cleaned> data list when importing members
+     *
+     * @param array $member
+     * @param integer $websiteId OPTIONAL
+     * @param bool $createCustomer
+     * @return void
+     */
+    protected function cleaned($member, $websiteId = null, $createCustomer = FALSE)
+    {
+        return $this->unsubscribed($member, $websiteId, $createCustomer);
+    }
 
 
-
-	/**
-	 * Process EXPORT tasks
-	 *
-	 * @return Ebizmarts_MageMonkey_Model_Cron
-	 */
-	public function bulksyncExportSubscribers()
+    /**
+     * Process EXPORT tasks
+     *
+     * @return Ebizmarts_MageMonkey_Model_Cron
+     */
+    public function bulksyncExportSubscribers()
     {
         $this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
         $job = $this->_getJob('Export');
@@ -243,210 +241,211 @@ class Ebizmarts_MageMonkey_Model_Cron
         if ($job->getDataSourceEntity() == 'newsletter_subscriber') {
             $collection->addFieldToFilter('subscriber_status', Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
             $orderBy = 'subscriber_id';
-        }elseif($job->getDataSourceEntity() == 'customer'){
+        } elseif ($job->getDataSourceEntity() == 'customer') {
             $orderBy = 'entity_id';
         }
 
-        if($orderBy){
+        if ($orderBy) {
             $collection->addOrder($orderBy, 'ASC');
         }
 
-		$collection->load();
+        $collection->load();
 
-		//Update total count on first run
-		if(!$job->getTotalCount()){
-			$allRows = $collection->getSize();
-			$job->setTotalCount($allRows)->save();
-		}
+        //Update total count on first run
+        if (!$job->getTotalCount()) {
+            $allRows = $collection->getSize();
+            $job->setTotalCount($allRows)->save();
+        }
 
-		$batch = array();
+        $batch = array();
 
-		foreach($job->lists() as $listId){
-			$store = $this->_helper()->getStoreByList($listId);
-			$api = Mage::getSingleton('monkey/api', array('store' => $store));
+        foreach ($job->lists() as $listId) {
+            $store = $this->_helper()->getStoreByList($listId);
+            $api = Mage::getSingleton('monkey/api', array('store' => $store));
 
-			$processedCount = 0;
-			foreach($collection as $item){
-				$processedCount += 1;
+            $processedCount = 0;
+            foreach ($collection as $item) {
+                $processedCount += 1;
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
-                if($isOnMailChimp){
+                if ($isOnMailChimp) {
                     $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
-                }else {
+                } else {
                     $batch [] = $this->_helper()->getMergeVars($item, TRUE);
                 }
-			}
-			if(count($batch) > 0){
+            }
+            if (count($batch) > 0) {
 
-				$job->setStatus('chunk_running')
-					->setUpdatedAt($this->_dbDate())
-					->save();
+                $job->setStatus('chunk_running')
+                    ->setUpdatedAt($this->_dbDate())
+                    ->save();
 
-				$vals = $api->listBatchSubscribe($listId, $batch, FALSE, TRUE, FALSE);
+                $vals = $api->listBatchSubscribe($listId, $batch, FALSE, TRUE, FALSE);
 
-				if ( is_null($api->errorCode) ){
+                if (is_null($api->errorCode)) {
 
-					$lastId = $collection->getLastItem()->getId();
-					$job->setLastProcessedId($lastId);
-					$job->setProcessedCount( ( $processedCount+$job->getProcessedCount() ));
+                    $lastId = $collection->getLastItem()->getId();
+                    $job->setLastProcessedId($lastId);
+                    $job->setProcessedCount(($processedCount + $job->getProcessedCount()));
 
-					$job
-					->setUpdatedAt($this->_dbDate())
-					->save();
+                    $job
+                        ->setUpdatedAt($this->_dbDate())
+                        ->save();
 
-				} else {
+                } else {
 
-					//TODO: Do something to handle errors
+                    //TODO: Do something to handle errors
 
-					/*echo "Batch Subscribe failed!\n";
-					echo "code:".$api->errorCode."\n";
-					echo "msg :".$api->errorMessage."\n";
-					die;*/
-					/*echo "added:   ".$vals['add_count']."\n";
-					echo "updated: ".$vals['update_count']."\n";
-					echo "errors:  ".$vals['error_count']."\n";
-					foreach($vals['errors'] as $val){
-						echo $val['email_address']. " failed\n";
-						echo "code:".$val['code']."\n";
-						echo "msg :".$val['message']."\n";
-					}
-					die;*/
+                    /*echo "Batch Subscribe failed!\n";
+                    echo "code:".$api->errorCode."\n";
+                    echo "msg :".$api->errorMessage."\n";
+                    die;*/
+                    /*echo "added:   ".$vals['add_count']."\n";
+                    echo "updated: ".$vals['update_count']."\n";
+                    echo "errors:  ".$vals['error_count']."\n";
+                    foreach($vals['errors'] as $val){
+                        echo $val['email_address']. " failed\n";
+                        echo "code:".$val['code']."\n";
+                        echo "msg :".$val['message']."\n";
+                    }
+                    die;*/
 
-				}
+                }
 
-			}else{
-				$job
-				->setStatus('finished')
-				->setUpdatedAt($this->_dbDate())
-				->save();
-			}
+            } else {
+                $job
+                    ->setStatus('finished')
+                    ->setUpdatedAt($this->_dbDate())
+                    ->save();
+            }
 
-		}
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get collection object for given entity type
-	 *
-	 * @todo Add default Billing and Shipping address data
-	 * @param string $type
-	 * @return Mage_Newsletter_Model_Mysql4_Subscriber_Collection|Mage_Customer_Model_Entity_Customer_Collection
-	 */
-	protected function _getEntityModel($type)
-	{
-		$model = null;
+    /**
+     * Get collection object for given entity type
+     *
+     * @todo Add default Billing and Shipping address data
+     * @param string $type
+     * @return Mage_Newsletter_Model_Mysql4_Subscriber_Collection|Mage_Customer_Model_Entity_Customer_Collection
+     */
+    protected function _getEntityModel($type)
+    {
+        $model = null;
 
-		switch ($type) {
-			case 'newsletter_subscriber':
-				$model = Mage::getResourceSingleton('newsletter/subscriber_collection')
-							//->showCustomerInfo(true)
-            				->addSubscriberTypeField()
-            				->showStoreInfo();
-				break;
-			case 'customer':
+        switch ($type) {
+            case 'newsletter_subscriber':
+                $model = Mage::getResourceSingleton('newsletter/subscriber_collection')
+                    //->showCustomerInfo(true)
+                    ->addSubscriberTypeField()
+                    ->showStoreInfo();
+                break;
+            case 'customer':
 
-				$model = Mage::getResourceModel('customer/customer_collection')
-							->addNameToSelect()
-							->addAttributeToSelect('gender')
-							->addAttributeToSelect('dob');
-				break;
-		}
+                $model = Mage::getResourceModel('customer/customer_collection')
+                    ->addNameToSelect()
+                    ->addAttributeToSelect('gender')
+                    ->addAttributeToSelect('dob');
+                break;
+        }
 
-		return $model;
-	}
+        return $model;
+    }
 
-	/**
-	 * Return ID field name for given entity type
-	 *
-	 * @param string $type
-	 * @return string
-	 */
-	protected function _getId($type)
-	{
-		$idFieldName = null;
+    /**
+     * Return ID field name for given entity type
+     *
+     * @param string $type
+     * @return string
+     */
+    protected function _getId($type)
+    {
+        $idFieldName = null;
 
-		switch ($type) {
-			case 'newsletter_subscriber':
-				$idFieldName = 'subscriber_id';
-				break;
-			default:
-				$idFieldName = 'entity_id';
-		}
+        switch ($type) {
+            case 'newsletter_subscriber':
+                $idFieldName = 'subscriber_id';
+                break;
+            default:
+                $idFieldName = 'entity_id';
+        }
 
-		return $idFieldName;
-	}
+        return $idFieldName;
+    }
 
-	/**
-	 * Get HELPER instance
-	 *
-	 * @param string $which
-	 * @return object
-	 */
-	protected function _helper($which = 'data')
-	{
-		return Mage::helper('monkey/'.$which);
-	}
+    /**
+     * Get HELPER instance
+     *
+     * @param string $which
+     * @return object
+     */
+    protected function _helper($which = 'data')
+    {
+        return Mage::helper('monkey/' . $which);
+    }
 
-	/**
-	 * Return GMT date
-	 *
-	 * @return string
-	 */
-	protected function _dbDate()
-	{
-		return Mage::getModel('core/date')->gmtDate();
-	}
+    /**
+     * Return GMT date
+     *
+     * @return string
+     */
+    protected function _dbDate()
+    {
+        return Mage::getModel('core/date')->gmtDate();
+    }
 
-	/**
-	 * Get first job to process in queue
-	 *
-	 * @param string $entity
-	 * @return null|Ebizmarts_MageMonkey_Model_BulksyncExport|Ebizmarts_MageMonkey_Model_BulksyncImport
-	 */
-	protected function _getJob($entity)
-	{
-		$job = Mage::getModel("monkey/bulksync{$entity}")
-					->getCollection()
-					->addFieldToFilter('status', array('IN' => array('idle', 'chunk_running') ))
-					->addOrder('created_at', 'asc')
-					->load();
-		if(!$job->getFirstItem()->getId()){
-			return null;
-		}
+    /**
+     * Get first job to process in queue
+     *
+     * @param string $entity
+     * @return null|Ebizmarts_MageMonkey_Model_BulksyncExport|Ebizmarts_MageMonkey_Model_BulksyncImport
+     */
+    protected function _getJob($entity)
+    {
+        $job = Mage::getModel("monkey/bulksync{$entity}")
+            ->getCollection()
+            ->addFieldToFilter('status', array('IN' => array('idle', 'chunk_running')))
+            ->addOrder('created_at', 'asc')
+            ->load();
+        if (!$job->getFirstItem()->getId()) {
+            return null;
+        }
 
-		return $job->getFirstItem();
-	}
+        return $job->getFirstItem();
+    }
 
-	/** Send order to MailChimp Automatically by Order Status
-	 *
-	 *
-	 *
-	 */
-	public function autoExportSubscribers()
-	{
+    /** Send order to MailChimp Automatically by Order Status
+     *
+     *
+     *
+     */
+    public function autoExportSubscribers()
+    {
         $allStores = Mage::app()->getStores();
-        foreach($allStores as $storeId => $val) {
-            if (Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE,$storeId) == 3 && Mage::getModel('monkey/ecommerce360')->isActive()){
+        foreach ($allStores as $storeId => $val) {
+            if (Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 3 && Mage::getModel('monkey/ecommerce360')->isActive()) {
                 Mage::getModel('monkey/ecommerce360')->autoExportJobs($storeId);
             }
         }
     }
+
     public function processAutoExportOrders()
     {
         $allStores = Mage::app()->getStores();
-        foreach($allStores as $storeId => $val)
-        {
-            if(Mage::getStoreConfig("monkey/general/active",$storeId)) {
+        foreach ($allStores as $storeId => $val) {
+            if (Mage::getStoreConfig("monkey/general/active", $storeId)) {
                 $this->_exportOrders($storeId);
             }
         }
     }
+
     public function sendordersAsync()
     {
         $collection = Mage::getModel('monkey/asyncorders')->getCollection();
-        $collection->addFieldToFilter('processed',array('eq'=>0));
+        $collection->addFieldToFilter('processed', array('eq' => 0));
         $storeId = null;
-        foreach($collection as $item) {
+        foreach ($collection as $item) {
             $info = (array)unserialize($item->getInfo());
 //            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
 //                ->addFieldToFilter('processed',array('eq'=>1))
@@ -493,32 +492,32 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
         }
     }
+
     public function cleanordersAsync()
     {
         $collection = Mage::getModel('monkey/asyncorders')->getCollection();
-        $collection->addFieldToFilter('processed',array('eq'=>1));
-        foreach($collection as $item)
-        {
+        $collection->addFieldToFilter('processed', array('eq' => 1));
+        foreach ($collection as $item) {
             $item->delete();
         }
     }
+
     public function sendSubscribersAsync()
     {
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
-        $collection->addFieldToFilter('processed',array('eq'=>0))
+        $collection->addFieldToFilter('processed', array('eq' => 0))
             ->setOrder('lists', 'desc');
         $batch = array();
         $oldList = '';
         $isConfirmNeed = FALSE;
-        foreach($collection as $item)
-        {
+        foreach ($collection as $item) {
             $newList = $item->getLists();
             $eachIsConfirmNeed = $item->getConfirm();
 
-            if($oldList == ''){
+            if ($oldList == '') {
                 $oldList = $newList;
             }
-            if($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed){
+            if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
                 Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
                 $isConfirmNeed = $eachIsConfirmNeed;
                 $oldList = $newList;
@@ -531,18 +530,18 @@ class Ebizmarts_MageMonkey_Model_Cron
             //$email = $item->getEmail();
             //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
             $item->setProcessed(1)->save();
-            if($item->getId() == $collection->getLastItem()->getId()){
+            if ($item->getId() == $collection->getLastItem()->getId()) {
                 Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
             }
         }
 
     }
+
     public function cleanSubscribersAsync()
     {
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
-        $collection->addFieldToFilter('processed',array('eq'=>1));
-        foreach($collection as $item)
-        {
+        $collection->addFieldToFilter('processed', array('eq' => 1));
+        foreach ($collection as $item) {
             $item->delete();
         }
     }

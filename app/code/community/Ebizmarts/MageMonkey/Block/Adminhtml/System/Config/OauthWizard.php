@@ -8,13 +8,14 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
-class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_OauthWizard extends Mage_Adminhtml_Block_System_Config_Form_Field {
+class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_OauthWizard extends Mage_Adminhtml_Block_System_Config_Form_Field
+{
 
     /**
      * Set template to itself
      */
-    protected function _prepareLayout() {
+    protected function _prepareLayout()
+    {
         parent::_prepareLayout();
         if (!$this->getTemplate()) {
             $this->setTemplate('magemonkey/system/config/oauth_wizard.phtml');
@@ -28,7 +29,8 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_OauthWizard extends Mag
      * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
-    public function render(Varien_Data_Form_Element_Abstract $element) {
+    public function render(Varien_Data_Form_Element_Abstract $element)
+    {
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
         return parent::render($element);
     }
@@ -39,21 +41,22 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_OauthWizard extends Mag
      * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
-    protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element) {
+    protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
+    {
         $originalData = $element->getOriginalData();
-        
+
         $label = $originalData['button_label'];
-        
+
         //Check if api key works
         $ping = Mage::getModel('monkey/api');
         $ping->ping();
-        if(!$ping->errorCode){
-			$label = "Change API credentials";
-		}
-        
+        if (!$ping->errorCode) {
+            $label = "Change API credentials";
+        }
+
         $this->addData(array(
             'button_label' => $this->helper('monkey')->__($label),
-            'button_url'   => $this->helper('monkey/oauth2')->authorizeRequestUrl(),
+            'button_url' => $this->helper('monkey/oauth2')->authorizeRequestUrl(),
             'html_id' => $element->getHtmlId(),
         ));
         return $this->_toHtml();

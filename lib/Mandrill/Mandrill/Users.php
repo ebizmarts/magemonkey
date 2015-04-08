@@ -1,7 +1,9 @@
 <?php
 
-class Mandrill_Users {
-    public function __construct(Mandrill_Mandrill $master) {
+class Mandrill_Users
+{
+    public function __construct(Mandrill_Mandrill $master)
+    {
         $this->master = $master;
     }
 
@@ -82,7 +84,8 @@ class Mandrill_Users {
      *             - clicks integer the number of URLs that have been clicked in the lifetime of the user's account
      *             - unique_clicks integer the number of unique clicks for emails sent in the lifetime of the user's account
      */
-    public function info() {
+    public function info()
+    {
         $_params = array();
         return $this->master->call('users/info', $_params);
     }
@@ -91,7 +94,8 @@ class Mandrill_Users {
      * Validate an API key and respond to a ping
      * @return string the string "PONG!"
      */
-    public function ping() {
+    public function ping()
+    {
         $_params = array();
         return $this->master->call('users/ping', $_params);
     }
@@ -100,7 +104,8 @@ class Mandrill_Users {
      * Validate an API key and respond to a ping (anal JSON parser version)
      * @return struct a struct with one key "PING" with a static value "PONG!"
      */
-    public function ping2() {
+    public function ping2()
+    {
         $_params = array();
         return $this->master->call('users/ping2', $_params);
     }
@@ -122,7 +127,8 @@ class Mandrill_Users {
      *         - unique_opens integer the number of unique opens for emails sent for this sender
      *         - unique_clicks integer the number of unique clicks for emails sent for this sender
      */
-    public function senders() {
+    public function senders()
+    {
         $_params = array();
         return $this->master->call('users/senders', $_params);
     }

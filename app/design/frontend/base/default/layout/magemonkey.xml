@@ -2,7 +2,7 @@
 
 <layout version="0.1.0">
 
-	<!-- Monkey Multiple Signup EXAMPLE Layout directive on how you can include template
+    <!-- Monkey Multiple Signup EXAMPLE Layout directive on how you can include template
     <default>
         <reference name="footer">
             <block type="monkey/signup" name="left.monkeysignup" template="magemonkey/lists.phtml"/>
@@ -10,46 +10,57 @@
     </default>
     EXAMPLE Layout directive on how you can include template Monkey Multiple Signup -->
 
-	<!-- Checkout -->
-	<checkout_onepage_review>
+    <!-- Checkout -->
+    <checkout_onepage_review>
         <reference name="checkout.onepage.review.info.items.after">
-			<block type="monkey/checkout_subscribe" name="magemonkey.subscribe" template="magemonkey/checkout/subscribe.phtml">
-				<block type="monkey/signup" name="left.monkeysignup" template="magemonkey/lists.phtml" />
-			</block>
+            <block type="monkey/checkout_subscribe" name="magemonkey.subscribe"
+                   template="magemonkey/checkout/subscribe.phtml">
+                <block type="monkey/signup" name="left.monkeysignup" template="magemonkey/lists.phtml"/>
+            </block>
         </reference>
-	</checkout_onepage_review>
-	<!-- Checkout -->
+    </checkout_onepage_review>
+    <!-- Checkout -->
 
-	<!-- Customer -->
-	<customer_account>
-		<reference name="head">
-			<action method="addItem"><type>skin_js</type><name>magemonkey/monkey.js</name><params/></action>
-		</reference>
-	    <reference name="customer_account_navigation">
-	        <action method="addLink" ifconfig="monkey/general/active" translate="label" module="monkey">
-	        	<name>mailchimp</name>
-	        	<path>monkey/customer_account/index</path>
-	        	<label>Newsletter Subscriptions</label>
-	        </action>
-	    </reference>
-	</customer_account>
+    <!-- Customer -->
+    <customer_account>
+        <reference name="head">
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>magemonkey/monkey.js</name>
+                <params/>
+            </action>
+        </reference>
+        <reference name="customer_account_navigation">
+            <action method="addLink" ifconfig="monkey/general/active" translate="label" module="monkey">
+                <name>mailchimp</name>
+                <path>monkey/customer_account/index</path>
+                <label>Newsletter Subscriptions</label>
+            </action>
+        </reference>
+    </customer_account>
 
-	<monkey_customer_account_index>
-      <label>Customer My Account Mage Monkey</label>
-      <update handle="customer_account"/>
-	  <reference name="head">
-	  	<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
-	  </reference>
-      <reference name="my.account.wrapper">
-      	  <block type="monkey/customer_account_lists" name="magemonkey_additionallists" template="magemonkey/lists.phtml" />
-          <block type="customer/account_dashboard" name="customer.account.link.back" template="customer/account/link/back.phtml"/>
-      </reference>
-	</monkey_customer_account_index>
-	<!-- Customer -->
+    <monkey_customer_account_index>
+        <label>Customer My Account Mage Monkey</label>
+        <update handle="customer_account"/>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>magemonkey/magemonkey.css</stylesheet>
+            </action>
+        </reference>
+        <reference name="my.account.wrapper">
+            <block type="monkey/customer_account_lists" name="magemonkey_additionallists"
+                   template="magemonkey/lists.phtml"/>
+            <block type="customer/account_dashboard" name="customer.account.link.back"
+                   template="customer/account/link/back.phtml"/>
+        </reference>
+    </monkey_customer_account_index>
+    <!-- Customer -->
 
     <default>
         <reference name="head">
-            <action method="addJs" module="monkey"><script helper="monkey/getCanShowCampaignJs"></script></action>
+            <action method="addJs" module="monkey">
+                <script helper="monkey/getCanShowCampaignJs"></script>
+            </action>
         </reference>
     </default>
 

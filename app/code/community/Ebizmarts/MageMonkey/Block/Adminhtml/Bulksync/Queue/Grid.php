@@ -7,7 +7,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Queue_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -24,7 +23,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Queue_Grid extends Mage_Admi
     protected function _prepareCollection()
     {
         $collection = Mage::getModel('monkey/bulksyncExport')
-					  	->getCollection();
+            ->getCollection();
 
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -34,30 +33,30 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Queue_Grid extends Mage_Admi
     {
 
         $this->addColumn('id', array(
-            'header'=> Mage::helper('monkey')->__('ID'),
+            'header' => Mage::helper('monkey')->__('ID'),
             'width' => '80px',
             'index' => 'id',
             'type' => 'number'
         ));
 
         $this->addColumn('status', array(
-            'header'=> Mage::helper('monkey')->__('Status'),
+            'header' => Mage::helper('monkey')->__('Status'),
             'width' => '80px',
             'index' => 'status',
         ));
 
         $this->addColumn('updated_at', array(
-            'header'=> Mage::helper('monkey')->__('Date Sent'),
+            'header' => Mage::helper('monkey')->__('Date Sent'),
             'width' => '80px',
             'index' => 'updated_at',
-            'type'  => 'datetime'
+            'type' => 'datetime'
         ));
 
         $this->addColumn('created_at', array(
-            'header'=> Mage::helper('monkey')->__('Date Sent'),
+            'header' => Mage::helper('monkey')->__('Date Sent'),
             'width' => '80px',
             'index' => 'created_at',
-            'type'  => 'datetime'
+            'type' => 'datetime'
         ));
 
         return parent::_prepareColumns();

@@ -1,130 +1,136 @@
-<?php if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $this->_getStoreId()) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $this->_getStoreId())): ?>
+<?php if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $this->_getStoreId()) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $this->_getStoreId())): ?>
     <div id="email" style="text-align:center; display:none">
         <p><span id='email_error_msg' class="email_error" style="display:none">&nbsp;</span></p>
-        <div style="clear:both; margin-bottom:10px"><h2 style="color:rgb(36,131,199)"><?php echo $this->_popupHeading(); ?></h2><p><?php echo $this->_popupMessage(); ?></p></div>
-        <p><span class="email_label" style="margin-right: 5px">Email:</span><span class="email_input"><input type="text"/></span></p>
+
+        <div style="clear:both; margin-bottom:10px"><h2
+                style="color:rgb(36,131,199)"><?php echo $this->_popupHeading(); ?></h2>
+
+            <p><?php echo $this->_popupMessage(); ?></p></div>
+        <p><span class="email_label" style="margin-right: 5px">Email:</span><span class="email_input"><input
+                    type="text"/></span></p>
+
         <div style="text-align:left; clear:both; margin-top:10px">
         </div>
     </div>
 
     <script type="text/javascript">
         <?php if(!Mage::getSingleton('customer/session')->isLoggedIn()): ?>
-            if (navigator.cookieEnabled) {
-                <?php if(isset($_COOKIE['email'])):
-                    if($_COOKIE['email'] != 'none'):
-                        $email = str_replace(' ', '+', $_COOKIE['email']);
-                        $this->_createCoupon($email);
-                        if(isset($_COOKIE['subscribe'])):
-                            $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
-                            if(!$subscriber->getId()):
-                                Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)->subscribe($email); ?>
-                                document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-                                location.reload();
-                            <?php endif; ?>
+        if (navigator.cookieEnabled) {
+            <?php if(isset($_COOKIE['email'])):
+                if($_COOKIE['email'] != 'none'):
+                    $email = str_replace(' ', '+', $_COOKIE['email']);
+                    $this->_createCoupon($email);
+                    if(isset($_COOKIE['subscribe'])):
+                        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+                        if(!$subscriber->getId()):
+                            Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)->subscribe($email); ?>
+            document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+            location.reload();
+            <?php endif; ?>
+            <?php endif; ?>
+            <?php endif; ?>
+            <?php elseif($this->_canCancel()): ?>
+            document.observe('keydown', function (evt) {
+                if (evt.keyCode == 27) {
+                    win.cancelCallback();
+                }
+            });
+            <?php endif; ?>
+            document.observe('keydown', function (evt) {
+                if (evt.keyCode == 13) {
+                    win.okCallback();
+                }
+            });
+            var cookieStored = emailCookieExists();
+            if (!cookieStored) {
+                var win = Dialog.confirm($('email').innerHTML, {
+                    className: "popup",
+                    id: "popupDialog",
+                    width: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>,
+                    zIndex: 2001,
+                    okLabel: '<?php echo $this->__('Confirm') ?>',
+                    <?php if(!$this->_canCancel()): ?>closeOnEsc: false,
+                    <?php else: ?>
+                    cancelLabel: '<?php echo $this->__('Close') ?>',
+                    onCancel: function (win) {
+                        <?php if(isset($_COOKIE['counter'])):
+                        //check cookie counter for customer id and check actual counter
+                            $counterId = $_COOKIE['counter'];
+                            $counter = Mage::getModel('ebizmarts_abandonedcart/popup')->load($counterId);
+                            //if(counter en config == counter en db){
+                            if($counter->getCounter()+1 >= Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId())):
+                                ?>
+                        document.cookie = 'counter=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+                        createCookie('email=none', <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
+                        <?php else :
+                        $counter->setCounter(($counter->getCounter()+1));
+                        $counter->save();
+                        endif; ?>
+                        <?php else:
+                        //create cookie counter in 0
+                            if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId()) == 1): ?>
+                        createCookie('email=none', <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
+                        <?php else:
+                            $newCounter = Mage::getModel('ebizmarts_abandonedcart/popup');
+                            $newCounter->setCounter(1)->save();
+                            ?>
+                        createCookie('counter=' +<?php Print(json_encode($newCounter->getId())); ?>, <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
                         <?php endif; ?>
+                        <?php endif; ?>
+                    },
                     <?php endif; ?>
-                <?php elseif($this->_canCancel()): ?>
-                    document.observe('keydown', function(evt){
-                        if(evt.keyCode == 27) {
-                            win.cancelCallback();
+                    onOk: function (win) {
+                        var inputField = $$('.email_input input[type=text]').first();
+                        var email = inputField.value;
+                        if (validateEmail(email)) {
+                            var cookie = 'email=' + email;
+                            createCookie(cookie, 365);
+                            <?php if($this->_modalSubscribe()): ?>
+                            createCookie('subscribe=true', 365);
+                            location.reload();
+                            <?php else: ?>
+                            win.close();
+                            <?php endif ?>
+                        } else {
+                            $('email_error_msg').innerHTML = '<?php echo $this->__('Not a valid e-mail address') ?>';
+                            $('email_error_msg').setStyle({color: '#F00'});
+                            $('email_error_msg').show();
+                            Windows.focusedWindow.updateHeight();
+                            new Effect.Shake(Windows.focusedWindow.getId());
                         }
-                    });
-                <?php endif; ?>
-                document.observe('keydown', function(evt){
-                    if(evt.keyCode == 13) {
-                        win.okCallback();
                     }
                 });
-                var cookieStored = emailCookieExists();
-                if (!cookieStored) {
-                    var win = Dialog.confirm($('email').innerHTML, {
-                        className: "popup",
-                        id: "popupDialog",
-                        width: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>,
-                        zIndex: 2001,
-                        okLabel: '<?php echo $this->__('Confirm') ?>',
-                        <?php if(!$this->_canCancel()): ?>closeOnEsc: false,
-                        <?php else: ?>
-                        cancelLabel: '<?php echo $this->__('Close') ?>',
-                        onCancel: function (win) {
-                            <?php if(isset($_COOKIE['counter'])):
-                            //check cookie counter for customer id and check actual counter
-                                $counterId = $_COOKIE['counter'];
-                                $counter = Mage::getModel('ebizmarts_abandonedcart/popup')->load($counterId);
-                                //if(counter en config == counter en db){
-                                if($counter->getCounter()+1 >= Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId())): 
-                                	?>
-                            document.cookie = 'counter=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-                            createCookie('email=none', <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
-                                <?php else :
-                                $counter->setCounter(($counter->getCounter()+1));
-                                $counter->save();
-                                endif; ?>
-                            <?php else:
-                            //create cookie counter in 0
-                            	if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_INSIST, Mage::app()->getStore()->getId()) == 1): ?>
-                            		createCookie('email=none', <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
-                            	<?php else:
-		                            $newCounter = Mage::getModel('ebizmarts_abandonedcart/popup');
-		                            $newCounter->setCounter(1)->save();
-		                            ?>
-		                            createCookie('counter='+<?php Print(json_encode($newCounter->getId())); ?>, <?php Print(json_encode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COOKIE_TIME, $this->_getStoreId()))); ?>);
-		                        <?php endif; ?>
-                            <?php endif; ?>
-                        },
-                        <?php endif; ?>
-                        onOk: function (win) {
-                            var inputField = $$('.email_input input[type=text]').first();
-                            var email = inputField.value;
-                            if (validateEmail(email)) {
-                                var cookie = 'email=' + email;
-                                createCookie(cookie, 365);
-                                <?php if($this->_modalSubscribe()): ?>
-                                createCookie('subscribe=true', 365);
-                                location.reload();
-                                <?php else: ?>
-                                win.close();
-                                <?php endif ?>
-                            } else {
-                                $('email_error_msg').innerHTML = '<?php echo $this->__('Not a valid e-mail address') ?>';
-                                $('email_error_msg').setStyle({color: '#F00'});
-                                $('email_error_msg').show();
-                                Windows.focusedWindow.updateHeight();
-                                new Effect.Shake(Windows.focusedWindow.getId());
-                            }
-                        }
-                    });
                 <?php if(!$this->_canCancel()): ?>
                 $$('.cancel_button').each(function (element) {
                     element.remove();
                 });
                 <?php else: ?>
-                    Event.observe(window, 'load', function () {
-                        $('overlay_modal').observe('click', function(){
-                            win.close();
-                            win.cancelCallback();
-                        });
+                Event.observe(window, 'load', function () {
+                    $('overlay_modal').observe('click', function () {
+                        win.close();
+                        win.cancelCallback();
                     });
+                });
                 <?php endif; ?>
-                }
             }
+        }
         <?php endif; ?>
         function validateEmail(email) {
             var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             return re.test(email);
         }
-        function emailCookieExists(){
+        function emailCookieExists() {
             var cookie = document.cookie;
             var cookieArr = cookie.split(';');
             var cookieStored = false;
-            for(var i=0;i<cookieArr.length;i++){
-                if(cookieArr[i].indexOf('email=') > -1){
+            for (var i = 0; i < cookieArr.length; i++) {
+                if (cookieArr[i].indexOf('email=') > -1) {
                     cookieStored = true;
                 }
             }
             return cookieStored;
         }
-        function createCookie(cookie, expirationInDays){
+        function createCookie(cookie, expirationInDays) {
             var now = new Date();
             var expire = new Date(now.getTime() + (expirationInDays * 24 * 60) * 60000);//[(1 * 365 * 24 * 60) * 60000] == 1 year  -- (Years * Days * Hours * Minutes) * 60000
             document.cookie = cookie + '; expires=' + expire + '; path=/';

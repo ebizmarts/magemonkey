@@ -3,13 +3,13 @@
 
     <adminhtml_ecommerce_apiorders>
         <reference name="content">
-            <block type="monkey/adminhtml_ecommerceapi" name="ecommerceapi.list" />
+            <block type="monkey/adminhtml_ecommerceapi" name="ecommerceapi.list"/>
         </reference>
     </adminhtml_ecommerce_apiorders>
 
     <adminhtml_ecommerce_index>
         <reference name="content">
-            <block type="monkey/adminhtml_ecommerce" name="ecommerce.log.list" />
+            <block type="monkey/adminhtml_ecommerce" name="ecommerce.log.list"/>
         </reference>
     </adminhtml_ecommerce_index>
 
@@ -17,74 +17,97 @@
         <reference name="content">
             <block type="monkey/adminhtml_transactionalemail_mandrill" name="mc_transactionalemail_mandrill">
                 <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
-                    <action method="setUseConfirm"><params>0</params></action>
+                    <action method="setUseConfirm">
+                        <params>0</params>
+                    </action>
                 </block>
-			</block>
+            </block>
         </reference>
     </adminhtml_transactionalemail_mandrill>
     <adminhtml_transactionalemail_sts>
         <reference name="content">
             <block type="monkey/adminhtml_transactionalemail_sts" name="mc_transactionalemail_sts">
                 <block type="adminhtml/store_switcher" name="store_switcher" as="store_switcher">
-                    <action method="setUseConfirm"><params>0</params></action>
+                    <action method="setUseConfirm">
+                        <params>0</params>
+                    </action>
                 </block>
-			</block>
+            </block>
         </reference>
     </adminhtml_transactionalemail_sts>
     <adminhtml_transactionalemail_new>
         <reference name="content">
-            <block type="monkey/adminhtml_transactionalemail_newemail" name="mc_transemail_add" />
+            <block type="monkey/adminhtml_transactionalemail_newemail" name="mc_transemail_add"/>
         </reference>
     </adminhtml_transactionalemail_new>
 
     <adminhtml_bulksync_export>
-		<reference name="head">
-			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
-		</reference>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>magemonkey/magemonkey.css</stylesheet>
+            </action>
+        </reference>
         <reference name="content">
-            <block type="monkey/adminhtml_bulksync_export" name="mc_bulksyc_export" />
+            <block type="monkey/adminhtml_bulksync_export" name="mc_bulksyc_export"/>
         </reference>
     </adminhtml_bulksync_export>
     <adminhtml_bulksync_import>
-		<reference name="head">
-			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
-		</reference>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>magemonkey/magemonkey.css</stylesheet>
+            </action>
+        </reference>
         <reference name="content">
-            <block type="monkey/adminhtml_bulksync_import" name="mc_bulksyc_import" />
+            <block type="monkey/adminhtml_bulksync_import" name="mc_bulksyc_import"/>
         </reference>
     </adminhtml_bulksync_import>
     <adminhtml_bulksync_queue>
         <reference name="content">
-            <block type="monkey/adminhtml_bulksync_queue" name="mc_bulksyc_queue" />
+            <block type="monkey/adminhtml_bulksync_queue" name="mc_bulksyc_queue"/>
         </reference>
     </adminhtml_bulksync_queue>
 
-	<adminhtml_system_config_edit>
-		<reference name="head">
-			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
-			<action method="addItem"><type>skin_js</type><name>magemonkey/magemonkey.js</name></action>
-		</reference>
-	</adminhtml_system_config_edit>
+    <adminhtml_system_config_edit>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>magemonkey/magemonkey.css</stylesheet>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>magemonkey/magemonkey.js</name>
+            </action>
+        </reference>
+    </adminhtml_system_config_edit>
 
-	<magemonkey_adminhtml_ctemplate_edit>
-		<reference name="head">
-			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
-            <action method="addItem"><type>skin_js</type><name>magemonkey/magemonkey.js</name></action>
-		</reference>
-	</magemonkey_adminhtml_ctemplate_edit>
+    <magemonkey_adminhtml_ctemplate_edit>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>magemonkey/magemonkey.css</stylesheet>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>magemonkey/magemonkey.js</name>
+            </action>
+        </reference>
+    </magemonkey_adminhtml_ctemplate_edit>
 
-	<magemonkey_adminhtml_ctemplate_new>
-		<reference name="head">
-			<action method="addCss"><stylesheet>magemonkey/magemonkey.css</stylesheet></action>
-            <action method="addItem"><type>skin_js</type><name>magemonkey/magemonkey.js</name></action>
-		</reference>
-	</magemonkey_adminhtml_ctemplate_new>
+    <magemonkey_adminhtml_ctemplate_new>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>magemonkey/magemonkey.css</stylesheet>
+            </action>
+            <action method="addItem">
+                <type>skin_js</type>
+                <name>magemonkey/magemonkey.js</name>
+            </action>
+        </reference>
+    </magemonkey_adminhtml_ctemplate_new>
 
     <adminhtml_customer_edit>
         <reference name="customer_edit_tabs">
             <action method="addTab">
-            	<name>customer_edit_tab_monkey_memberactivity</name>
-            	<block>monkey/adminhtml_customer_edit_tab_memberactivity</block>
+                <name>customer_edit_tab_monkey_memberactivity</name>
+                <block>monkey/adminhtml_customer_edit_tab_memberactivity</block>
             </action>
         </reference>
     </adminhtml_customer_edit>

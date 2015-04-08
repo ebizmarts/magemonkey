@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
@@ -25,7 +24,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml
     protected function _prepareCollection()
     {
         $collection = Mage::getModel('monkey/ecommerce')
-        				->getCollection();
+            ->getCollection();
 
         $this->setCollection($collection);
 
@@ -35,35 +34,35 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml
     protected function _prepareColumns()
     {
         $this->addColumn('id', array(
-            'header'=> Mage::helper('monkey')->__('ID'),
+            'header' => Mage::helper('monkey')->__('ID'),
             'width' => '80px',
             'index' => 'id',
             'type' => 'number'
         ));
 
         $this->addColumn('order_increment_id', array(
-            'header'=> Mage::helper('monkey')->__('Order #'),
+            'header' => Mage::helper('monkey')->__('Order #'),
             'width' => '80px',
             'index' => 'order_increment_id',
         ));
 
         $this->addColumn('mc_campaign_id', array(
-            'header'=> Mage::helper('monkey')->__('Campaign #'),
+            'header' => Mage::helper('monkey')->__('Campaign #'),
             'width' => '80px',
             'index' => 'mc_campaign_id'
         ));
 
         $this->addColumn('mc_email_id', array(
-            'header'=> Mage::helper('monkey')->__('Email #'),
+            'header' => Mage::helper('monkey')->__('Email #'),
             'width' => '80px',
             'index' => 'mc_email_id'
         ));
 
         $this->addColumn('created_at', array(
-            'header'=> Mage::helper('monkey')->__('Date Sent'),
+            'header' => Mage::helper('monkey')->__('Date Sent'),
             'width' => '80px',
             'index' => 'created_at',
-            'type'  => 'datetime'
+            'type' => 'datetime'
         ));
 
         return parent::_prepareColumns();
@@ -81,14 +80,14 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerce_Grid extends Mage_Adminhtml
 
     protected function _prepareMassaction()
     {
-	    $this->setMassactionIdField('order_id');
-		$this->getMassactionBlock()->setFormFieldName('orders');
-		$this->getMassactionBlock()->addItem('delete', array(
-		'label'=> Mage::helper('monkey')->__('Delete'),
-		'url'  => $this->getUrl('*/*/massDelete', array('' => '')),
-		'confirm' => Mage::helper('tax')->__('Are you sure?')
-		));
-		return $this;
+        $this->setMassactionIdField('order_id');
+        $this->getMassactionBlock()->setFormFieldName('orders');
+        $this->getMassactionBlock()->addItem('delete', array(
+            'label' => Mage::helper('monkey')->__('Delete'),
+            'url' => $this->getUrl('*/*/massDelete', array('' => '')),
+            'confirm' => Mage::helper('tax')->__('Are you sure?')
+        ));
+        return $this;
     }
 
 }

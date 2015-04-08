@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Ebizmarts <info@ebizmarts.com>
  * Date   : 8/29/14
@@ -12,30 +13,26 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
     {
         $params = $this->getRequest()->getParams();
         $listId = $params['list'];
-        if(isset($params['store'])) {
+        if (isset($params['store'])) {
             $store = $params['store'];
             $store = $this->_getStoreByCode($store);
             $storeId = $store->getId();
-        }
-        else {
+        } else {
             $storeId = null;
         }
-        $originalGroups = Mage::getStoreConfig('monkey/general/cutomergroup',$storeId);
-        $originalGroups = explode(",",$originalGroups);
+        $originalGroups = Mage::getStoreConfig('monkey/general/cutomergroup', $storeId);
+        $originalGroups = explode(",", $originalGroups);
         $groups = Mage::getSingleton('monkey/api')->listInterestGroupings($listId);
         $rc = array();
-        if(is_array($groups)) {
-            foreach($groups as $group)
-            {
-                $rc[] = array('value'=>$group['id'],'label'=>$group['name'],'disabled'=>1,'style'=>'font-weight: bold');
+        if (is_array($groups)) {
+            foreach ($groups as $group) {
+                $rc[] = array('value' => $group['id'], 'label' => $group['name'], 'disabled' => 1, 'style' => 'font-weight: bold');
                 $prefix = $group['id'];
-                foreach($group['groups'] as $item)
-                {
-                    if(in_array($prefix.'_'.$item['name'],$originalGroups)) {
-                        $rc[] = array('value'=>$prefix.'_'.$item['name'],'label'=>$item['name'],'style'=>'padding-left:20px',"selected"=>true);
-                    }
-                    else {
-                        $rc[] = array('value'=>$prefix.'_'.$item['name'],'label'=>$item['name'],'style'=>'padding-left:20px',"selected"=>false);
+                foreach ($group['groups'] as $item) {
+                    if (in_array($prefix . '_' . $item['name'], $originalGroups)) {
+                        $rc[] = array('value' => $prefix . '_' . $item['name'], 'label' => $item['name'], 'style' => 'padding-left:20px', "selected" => true);
+                    } else {
+                        $rc[] = array('value' => $prefix . '_' . $item['name'], 'label' => $item['name'], 'style' => 'padding-left:20px', "selected" => false);
                     }
                 }
             }
@@ -45,12 +42,13 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         return;
 
     }
+
     protected function _getStoreByCode($storeCode)
     {
         $stores = array_keys(Mage::app()->getStores());
-        foreach($stores as $id){
+        foreach ($stores as $id) {
             $store = Mage::app()->getStore($id);
-            if($store->getCode()==$storeCode) {
+            if ($store->getCode() == $storeCode) {
                 return $store;
             }
         }

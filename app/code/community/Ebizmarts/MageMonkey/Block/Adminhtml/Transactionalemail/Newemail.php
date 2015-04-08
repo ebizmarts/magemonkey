@@ -8,7 +8,6 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
-
 class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Newemail extends Mage_Adminhtml_Block_Widget_Form_Container
 {
 
@@ -16,7 +15,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Newemail extends M
     {
         $this->_controller = 'adminhtml_transactionalemail';
         $this->_blockGroup = 'monkey';
-        $this->_mode       = 'newemail';
+        $this->_mode = 'newemail';
 
         parent::__construct();
 
@@ -25,7 +24,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Transactionalemail_Newemail extends M
 
     public function getHeaderText()
     {
-    	return Mage::helper('monkey')->__('Add valid email address');
+        return Mage::helper('monkey')->__('Add valid email address');
     }
 
 }
