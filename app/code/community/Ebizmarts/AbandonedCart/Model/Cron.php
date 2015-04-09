@@ -258,15 +258,16 @@ class Ebizmarts_AbandonedCart_Model_Cron
                         $customer = Mage::getModel('customer/customer')
                             ->setStore(Mage::app()->getStore($storeId))
                             ->loadByEmail($email);
-                        $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
-                        foreach($tbtPoints as $key => $field){
-                            if($key == 'points'){
-                                $vars[$key] = 10;
-//                                if($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
-//                                    $vars[$key] = $field;
-//                                }
-                            }else{
-                                $vars[$key] = $field;
+                        if($customer->getId()) {
+                            $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
+                            foreach ($tbtPoints as $key => $field) {
+                                if ($key == 'points') {
+                                    if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                        $vars[$key] = $field;
+                                    }
+                                } else {
+                                    $vars[$key] = $field;
+                                }
                             }
                         }
 
