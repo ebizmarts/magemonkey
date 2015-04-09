@@ -76,7 +76,6 @@ class Ebizmarts_SweetMonkey_Model_Observer {
                 }
 
                 $tbtCustomer = Mage::getModel('rewards/customer')->load($customer->getId());
-
                 //Point balance
                 if(array_key_exists('PTS', $tbtVars)) {
                     $tbtVars['PTS'] = $tbtCustomer->getPointsSummary();
@@ -132,6 +131,12 @@ class Ebizmarts_SweetMonkey_Model_Observer {
                         $val = date_format(date_create_from_format('d/m/Y', $val), 'Y-m-d');
                         $tbtVars['PTSEXP'] = $val;
                     }
+                }
+                foreach($tbtVars as $key => $var){
+                    $aux = str_replace('points', '', strtolower($var));
+                    $tbtVars[$key] = str_replace('no', 0, $aux);
+                    Mage::log('cambio '.$tbtVars[$key], null, 'santiago.log', true);
+
                 }
 
                 $tbtVars = array_filter($tbtVars);
