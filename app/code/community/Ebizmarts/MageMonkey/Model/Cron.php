@@ -518,7 +518,9 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $oldList = $newList;
             }
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
-                Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+                if(count($bach) > 0) {
+                    Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+                }
                 $isConfirmNeed = $eachIsConfirmNeed;
                 $oldList = $newList;
                 $batch = array();
@@ -530,7 +532,7 @@ class Ebizmarts_MageMonkey_Model_Cron
             //$email = $item->getEmail();
             //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
             $item->setProcessed(1)->save();
-            if ($item->getId() == $collection->getLastItem()->getId()) {
+            if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
                 Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
             }
         }
