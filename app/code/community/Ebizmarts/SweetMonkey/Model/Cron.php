@@ -5,7 +5,8 @@
  *
  * @author Ebizmarts Team <info@ebizmarts.com>
  */
-class Ebizmarts_SweetMonkey_Model_Cron {
+class Ebizmarts_SweetMonkey_Model_Cron
+{
 
     const XML_PATH_EXPIRY_EMAIL_TEMPLATE = 'sweetmonkey/general/warning/expiry_email_template';
     const XML_PATH_EXPIRY_EMAIL_IDENTITY = 'sweetmonkey/general/warning/expiry_email_identity';
@@ -20,11 +21,13 @@ class Ebizmarts_SweetMonkey_Model_Cron {
      *
      * @return void
      */
-    public function automatedEmails() {
+    public function automatedEmails()
+    {
         $this->checkAllCustomers();
     }
 
-    public function checkAllCustomers() {
+    public function checkAllCustomers()
+    {
         $customers = Mage::getModel('rewards/customer')->getCollection();
         foreach ($customers as $c) {
             if (!Mage::helper('rewards/expiry')->isEnabled($c->getStoreId()))
@@ -39,14 +42,14 @@ class Ebizmarts_SweetMonkey_Model_Cron {
                     'customer_name' => $c->getName(),
                     'customer_email' => $c->getEmail(),
                     'store_name' => $c->getStore()->getName(),
-                    'points_transferred' => (string) $points[1],
-                    'points_balance' => (string) $c->getPointsSummary(),
+                    'points_transferred' => (string)$points[1],
+                    'points_balance' => (string)$c->getPointsSummary(),
                     'days_left' => $days,
                     'days_until_expiry' => $this->_daysUntilExpiry
                 );
                 $email = Mage::getModel('core/email_template');
                 $email->sendTransactional(
-                        Mage::getStoreConfig(self::XML_PATH_EXPIRY_EMAIL_TEMPLATE), Mage::getStoreConfig(self::XML_PATH_EXPIRY_EMAIL_IDENTITY), $c->getEmail(), $c->getName(), $vars
+                    Mage::getStoreConfig(self::XML_PATH_EXPIRY_EMAIL_TEMPLATE), Mage::getStoreConfig(self::XML_PATH_EXPIRY_EMAIL_IDENTITY), $c->getEmail(), $c->getName(), $vars
                 );
             }
 
@@ -57,14 +60,14 @@ class Ebizmarts_SweetMonkey_Model_Cron {
                     'customer_name' => $c->getName(),
                     'customer_email' => $c->getEmail(),
                     'store_name' => $c->getStore()->getName(),
-                    'points_transferred' => (string) $points[1],
-                    'points_balance' => (string) $c->getPointsSummary(),
+                    'points_transferred' => (string)$points[1],
+                    'points_balance' => (string)$c->getPointsSummary(),
                     'days_left' => $days,
                     'points_to_notify' => $this->_pointsToNotify
                 );
                 $email = Mage::getModel('core/email_template');
                 $email->sendTransactional(
-                        Mage::getStoreConfig(self::XML_PATH_POINTS_EMAIL_TEMPLATE), Mage::getStoreConfig(self::XML_PATH_POINTS_EMAIL_IDENTITY), $c->getEmail(), $c->getName(), $vars
+                    Mage::getStoreConfig(self::XML_PATH_POINTS_EMAIL_TEMPLATE), Mage::getStoreConfig(self::XML_PATH_POINTS_EMAIL_IDENTITY), $c->getEmail(), $c->getName(), $vars
                 );
             }
         }
@@ -75,7 +78,8 @@ class Ebizmarts_SweetMonkey_Model_Cron {
      *
      * @return void
      */
-    public function pushMergeVarsForCustomers() {
+    public function pushMergeVarsForCustomers()
+    {
 
         $customers = Mage::getModel('rewards/customer')->getCollection();
 

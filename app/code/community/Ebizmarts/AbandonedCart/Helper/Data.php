@@ -94,29 +94,29 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract
                 if (is_null($earn) && $transfer->getQuantity() > 0) {
                     $earn = $this->_formatDateMerge($transfer->getEffectiveStart());
                 } else if (is_null($spent) && $transfer->getQuantity() < 0) {
-                        $spent = $this->_formatDateMerge($transfer->getEffectiveStart());
-                    }
+                    $spent = $this->_formatDateMerge($transfer->getEffectiveStart());
+                }
 
                 if (!is_null($spent) && !is_null($earn)) {
-                        break;
+                    break;
                 }
 
             }
         }
 
         if ($earn) {
-                $tbtVars['ptsearn'] = $earn;
-            }
+            $tbtVars['ptsearn'] = $earn;
+        }
         if ($spent) {
-                $tbtVars['ptsspent'] = $spent;
-            }
+            $tbtVars['ptsspent'] = $spent;
+        }
 
         //Expiration Points
         $val = Mage::getSingleton('rewards/expiry')
-                ->getExpiryDate($tbtCustomer);
+            ->getExpiryDate($tbtCustomer);
         if ($val) {
-                $tbtVars['ptsexp'] = $val;
-            }
+            $tbtVars['ptsexp'] = $val;
+        }
         return $tbtVars;
-     }
+    }
 }

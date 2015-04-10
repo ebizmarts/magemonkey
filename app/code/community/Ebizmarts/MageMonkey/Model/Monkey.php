@@ -217,7 +217,8 @@ class Ebizmarts_MageMonkey_Model_Monkey
         }
     }
 
-    protected function _profile($data){
+    protected function _profile($data)
+    {
 
         $subscriber = $this->loadByEmail($data['email']);
         $storeId = $subscriber->getStoreId();
@@ -225,9 +226,9 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
         $customerCollection = Mage::getModel('customer/customer')->getCollection()
             ->addFieldToFilter('email', array('eq' => $data['email']));
-        if(count($customerCollection) > 0){
+        if (count($customerCollection) > 0) {
             $toUpdate = $customerCollection->getFirstItem();
-        }else{
+        } else {
             $toUpdate = $subscriber;
         }
 
@@ -235,11 +236,12 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
     }
 
-    protected function _mapFieldsToMagento($data, $toUpdate, $storeId){
+    protected function _mapFieldsToMagento($data, $toUpdate, $storeId)
+    {
         $mapMerges = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_MAP_FIELDS, $storeId);
 
-        foreach($data['merges'] as $merge){
-            if(in_array($merge, $mapMerges['mailchimp'])){
+        foreach ($data['merges'] as $merge) {
+            if (in_array($merge, $mapMerges['mailchimp'])) {
 
             }
         }

@@ -5,7 +5,8 @@
  *
  * @author Ebizmarts Team <info@ebizmarts.com>
  */
-class Ebizmarts_SweetMonkey_Model_Observer {
+class Ebizmarts_SweetMonkey_Model_Observer
+{
 
     /**
      * Sende merge vars after customer logs in
@@ -13,7 +14,8 @@ class Ebizmarts_SweetMonkey_Model_Observer {
      * @param Varien_Event_Observer $observer
      * @return void
      */
-    public function customerLogin($observer) {
+    public function customerLogin($observer)
+    {
         $customer = $observer->getEvent()->getCustomer();
         Mage::helper('sweetmonkey')->pushVars($customer);
         return $this;
@@ -25,9 +27,10 @@ class Ebizmarts_SweetMonkey_Model_Observer {
      * @param Varien_Event_Observer $observer
      * @return void
      */
-    public function customerRewardSave($observer) {
+    public function customerRewardSave($observer)
+    {
         $obj = $observer->getEvent()->getObject();
-        if($obj instanceof TBT_Rewards_Model_Customer) {
+        if ($obj instanceof TBT_Rewards_Model_Customer) {
             Mage::helper('sweetmonkey')->pushVars($obj);
         }
 
@@ -40,13 +43,14 @@ class Ebizmarts_SweetMonkey_Model_Observer {
      * @param Varien_Event_Observer $observer
      * @return void
      */
-    public function pointsEvent($observer) {
-        $customer   = $observer->getEvent()->getCustomer();
-        if (! $customer) {
+    public function pointsEvent($observer)
+    {
+        $customer = $observer->getEvent()->getCustomer();
+        if (!$customer) {
             return $this;
         }
 
-	Mage::helper('sweetmonkey')->pushVars($customer);
+        Mage::helper('sweetmonkey')->pushVars($customer);
 
         return $this;
     }
@@ -57,39 +61,40 @@ class Ebizmarts_SweetMonkey_Model_Observer {
      * @param Varien_Event_Observer $observer
      * @return void
      */
-    public function attachTbtMergeVars($observer) {
+    public function attachTbtMergeVars($observer)
+    {
 
-        $holder         = $observer->getEvent()->getNewvars();
-        $helper         = Mage::helper('sweetmonkey');
+        $holder = $observer->getEvent()->getNewvars();
+        $helper = Mage::helper('sweetmonkey');
         $customerHelper = Mage::helper('customer');
-        $customer       = $observer->getEvent()->getCustomer();
-        if($helper->enabled() && ($customer->getId())) {
+        $customer = $observer->getEvent()->getCustomer();
+        if ($helper->enabled() && ($customer->getId())) {
 
 
             $merge = unserialize($helper->config('merge_vars'));
 
-            if(count($merge)){
+            if (count($merge)) {
 
                 $tbtVars = array();
-                foreach($merge as $varTag) {
+                foreach ($merge as $varTag) {
                     $tbtVars [$varTag['var_code']] = '-';
                 }
 
                 $tbtCustomer = Mage::getModel('rewards/customer')->load($customer->getId());
                 //Point balance
-                if(array_key_exists('PTS', $tbtVars)) {
+                if (array_key_exists('PTS', $tbtVars)) {
                     $tbtVars['PTS'] = $tbtCustomer->getPointsSummary();
                 }
 
-                if(array_key_exists('POINTS', $tbtVars)) {
+                if (array_key_exists('POINTS', $tbtVars)) {
                     $tbtVars['POINTS'] = $tbtCustomer->getUsablePointsBalance(1);
                 }
 
                 //Earn and Spent points
-                $existEarn  = array_key_exists('PTSEARN', $tbtVars);
+                $existEarn = array_key_exists('PTSEARN', $tbtVars);
                 $existSpent = array_key_exists('PTSSPENT', $tbtVars);
 
-                if($existEarn || $existSpent) {
+                if ($existEarn || $existSpent) {
 
                     $lastTransfers = $tbtCustomer->getTransfers()
                         ->selectOnlyActive()
@@ -97,26 +102,26 @@ class Ebizmarts_SweetMonkey_Model_Observer {
 
                     $spent = $earn = null;
 
-                    if($lastTransfers->getSize()) {
-                        foreach($lastTransfers as $transfer) {
+                    if ($lastTransfers->getSize()) {
+                        foreach ($lastTransfers as $transfer) {
 
-                            if(is_null($earn) && $transfer->getQuantity() > 0){
+                            if (is_null($earn) && $transfer->getQuantity() > 0) {
                                 $earn = date_format(date_create_from_format('Y-m-d H:i:s', $transfer->getEffectiveStart()), 'Y-m-d');
-                            }else if(is_null($spent) && $transfer->getQuantity() < 0) {
+                            } else if (is_null($spent) && $transfer->getQuantity() < 0) {
                                 $spent = date_format(date_create_from_format('Y-m-d H:i:s', $transfer->getEffectiveStart()), 'Y-m-d');
                             }
 
-                            if(!is_null($spent) && !is_null($earn)) {
+                            if (!is_null($spent) && !is_null($earn)) {
                                 break;
                             }
 
                         }
                     }
 
-                    if($existEarn && $earn) {
+                    if ($existEarn && $earn) {
                         $tbtVars['PTSEARN'] = $earn;
                     }
-                    if($existSpent && $spent) {
+                    if ($existSpent && $spent) {
                         $tbtVars['PTSSPENT'] = $spent;
                     }
 
@@ -124,18 +129,18 @@ class Ebizmarts_SweetMonkey_Model_Observer {
                 }
 
                 //Expiration Points
-                if(array_key_exists('PTSEXP', $tbtVars)) {
+                if (array_key_exists('PTSEXP', $tbtVars)) {
                     $val = Mage::getSingleton('rewards/expiry')
                         ->getExpiryDate($tbtCustomer);
-                    if($val){
+                    if ($val) {
                         $val = date_format(date_create_from_format('d/m/Y', $val), 'Y-m-d');
                         $tbtVars['PTSEXP'] = $val;
                     }
                 }
-                foreach($tbtVars as $key => $var){
+                foreach ($tbtVars as $key => $var) {
                     $aux = str_replace('points', '', strtolower($var));
                     $tbtVars[$key] = str_replace('no', 0, $aux);
-                    Mage::log('cambio '.$tbtVars[$key], null, 'santiago.log', true);
+                    Mage::log('cambio ' . $tbtVars[$key], null, 'santiago.log', true);
 
                 }
 
@@ -154,8 +159,9 @@ class Ebizmarts_SweetMonkey_Model_Observer {
      * @param string Date in format YYYY-MM-DD
      * @return string MM/DD/YYYY
      */
-    protected function _formatDateMerge($date) {
-		return preg_replace("/(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)/", "$2/$3/$1", $date);
+    protected function _formatDateMerge($date)
+    {
+        return preg_replace("/(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)/", "$2/$3/$1", $date);
     }
 
 }

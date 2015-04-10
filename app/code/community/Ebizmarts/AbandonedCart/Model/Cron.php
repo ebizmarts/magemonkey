@@ -255,7 +255,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                         $customer = Mage::getModel('customer/customer')
                             ->setStore(Mage::app()->getStore($storeId))
                             ->loadByEmail($email);
-                        if($customer->getId()) {
+                        if ($customer->getId()) {
                             $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
                             foreach ($tbtPoints as $key => $field) {
                                 if ($key == 'points') {
@@ -322,7 +322,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $vars = array('couponcode' => $couponcode, 'name' => $pseudoName, 'tags' => array($tags));
             }
             $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
-            if($tbtPoints){
+            if ($tbtPoints) {
                 $vars['sweetMonkey'] = $tbtPoints;
             }
             $translate = Mage::getSingleton('core/translate');
