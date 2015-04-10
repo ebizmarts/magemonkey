@@ -7,6 +7,7 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
 class Ebizmarts_Autoresponder_Model_Cron
 {
     /**
@@ -15,8 +16,9 @@ class Ebizmarts_Autoresponder_Model_Cron
     public function autoresponder()
     {
         $allStores = Mage::app()->getStores();
-        foreach ($allStores as $storeId => $val) {
-            if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE, $storeId)) {
+        foreach($allStores as $storeId => $val)
+        {
+            if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE,$storeId)) {
                 $this->_processStore($storeId);
             }
         }
@@ -28,409 +30,539 @@ class Ebizmarts_Autoresponder_Model_Cron
     protected function _processStore($storeId)
     {
         //Mage::app()->setCurrentStore($storeId);
-        Mage::unregister('_singleton/core/design_package');
+        Mage::unregister('_singleton/core/design_package' );
         Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
-        Mage::getSingleton('core/design_package')->setStore($storeId);
+        Mage::getSingleton('core/design_package' )->setStore($storeId);
 
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $storeId))) {
             $this->_processNewOrders($storeId);
         }
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CRON_TIME, $storeId))) {
             $this->_processRelated($storeId);
         }
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CRON_TIME, $storeId))) {
             $this->_processReview($storeId);
         }
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CRON_TIME, $storeId))) {
             $this->_processBirthday($storeId);
         }
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CRON_TIME, $storeId))) {
             $this->_processNoActivity($storeId);
         }
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_CRON_TIME, $storeId))) {
             $this->_processWishlist($storeId);
         }
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CRON_TIME, $storeId))) {
             $this->_processVisited($storeId);
         }
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_CRON_TIME, $storeId))) {
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE,$storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_CRON_TIME, $storeId))){
             $this->_processBackToStock($storeId);
         }
         $this->_cleanAutoresponderExpiredCoupons();
     }
-
     protected function _processNewOrders($storeId)
     {
-        $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CUSTOMER_GROUPS, $storeId));
-        $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_DAYS, $storeId);
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_MANDRILL_TAG, $storeId) . "_$storeId";
-        $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_SUBJECT, $storeId);
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TEMPLATE, $storeId);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CUSTOMER_GROUPS, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_DAYS,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_MANDRILL_TAG,$storeId)."_$storeId";
+        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TEMPLATE,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days-1, 'DAY'));
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
-        $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
-            ->addFieldToFilter('main_table.created_at', array('from' => $from, 'to' => $to));
-        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TRIGGER, $storeId) == 2) {
+        $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
+                    ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to));
+        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TRIGGER, $storeId) == 2){
             $collection->addFieldToFilter('main_table.status', array('eq' => strtolower(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ORDER_STATUS, $storeId))));
         }
-        if (count($customerGroups)) {
-            $collection->addFieldToFilter('main_table.customer_group_id', array('in' => $customerGroups));
+        if(count($customerGroups)) {
+            $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }
-        foreach ($collection as $order) {
+        foreach($collection as $order) {
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
-            if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'neworder', $storeId)) {
-                $name = $order->getCustomerFirstname() . ' ' . $order->getCustomerLastname();
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=neworder&email=' . $email . '&store=' . $storeId;
-                $vars = array('tags' => array($tags), 'url' => $url);
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'neworder',$storeId)) {
+                $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
+                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=neworder&email='.$email.'&store='.$storeId;
+                $vars = array('tags'=>array($tags),'url'=>$url);
 
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                $customer = Mage::getModel('customer/customer')
+                    ->setStore(Mage::app()->getStore($storeId))
+                    ->loadByEmail($email);
+                if($customer->getId()) {
+                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                    foreach ($tbtPoints as $key => $field) {
+                        if ($key == 'points') {
+                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                $vars[$key] = $field;
+                            }
+                        } else {
+                            $vars[$key] = $field;
+                        }
+                    }
+                }
+
+                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('new order', $email, $name, "", $storeId);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('new order',$email,$name,"",$storeId);
             }
         }
     }
-
     protected function _processBirthday($storeId)
     {
-        $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DAYS, $storeId);
-        $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_GROUPS, $storeId));
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_TEMPLATE, $storeId);
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_SUBJECT, $storeId);
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_MANDRILL_TAG, $storeId) . "_$storeId";
-        $sendCoupon = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON, $storeId);
-        $customerGroupsCoupon = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_COUPON, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DAYS,$storeId);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_GROUPS, $storeId));
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_TEMPLATE,$storeId);
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_SUBJECT,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_MANDRILL_TAG,$storeId)."_$storeId";
+        $sendCoupon     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON,$storeId);
+        $customerGroupsCoupon = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_CUSTOMER_COUPON, $storeId));
 
 
-        $collection = Mage::getModel('customer/customer')->getCollection();
-        $date2 = date("Y-m-d H:i:s", strtotime(" + $days days"));
-        $month = date("m", strtotime($date2));
-        $day = date("d", strtotime($date2));
+        $collection     = Mage::getModel('customer/customer')->getCollection();
+        $date2 = date("Y-m-d H:i:s",strtotime(" + $days days"));
+        $month = date("m",strtotime($date2));
+        $day = date("d",strtotime($date2));
         $moreselect = "MONTH(at_dob.value) = $month AND DAY(at_dob.value) = $day";
 
 
-        $collection->addAttributeToFilter('dob', array('neq' => 'null'))
-            ->addFieldToFilter('store_id', array('eq' => $storeId));
-        if (count($customerGroups)) {
-            $collection->addFieldToFilter('group_id', array('in' => $customerGroups));
+        $collection->addAttributeToFilter('dob',array('neq'=>'null'))
+                    ->addFieldToFilter('store_id',array('eq'=>$storeId));
+        if(count($customerGroups)) {
+            $collection->addFieldToFilter('group_id',array('in'=>$customerGroups));
         }
         $collection->getSelect()->where($moreselect);
-        foreach ($collection as $customer) {
+        foreach($collection as $customer) {
             $translate = Mage::getSingleton('core/translate');
             $cust = Mage::getModel('customer/customer')->load($customer->getEntityId());
             $email = $cust->getEmail();
-            $name = $cust->getFirstname() . ' ' . $cust->getLastname();
-            if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'birthday', $storeId)) {
+            $name = $cust->getFirstname().' '.$cust->getLastname();
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'birthday',$storeId)) {
                 $vars = array();
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=birthday&email=' . $email . '&store=' . $storeId;
+                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=birthday&email='.$email.'&store='.$storeId;
                 $couponcode = '';
-                if ($sendCoupon && in_array($customer->getGroupId(), $customerGroupsCoupon)) {
-                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_AUTOMATIC, $storeId) == Ebizmarts_Autoresponder_Model_Config::COUPON_AUTOMATIC) {
-                        list($couponcode, $discount, $toDate) = $this->_createNewCoupon($storeId, $email);
-                        $vars = array('couponcode' => $couponcode, 'discount' => $discount, 'todate' => $toDate, 'name' => $name, 'tags' => array($tags), 'url' => $url);
-                    } else {
+                if($sendCoupon && in_array($customer->getGroupId(),$customerGroupsCoupon)) {
+                    if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_AUTOMATIC,$storeId)==Ebizmarts_Autoresponder_Model_Config::COUPON_AUTOMATIC) {
+                        list($couponcode,$discount,$toDate) = $this->_createNewCoupon($storeId,$email);
+                        $vars = array('couponcode'=>$couponcode,'discount' => $discount, 'todate' => $toDate, 'name' => $name,'tags'=>array($tags),'url'=>$url);
+                    }
+                    else {
                         $couponcode = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_CODE);
-                        $vars = array('couponcode' => $couponcode, 'name' => $name, 'tags' => array($tags), 'url' => $url);
+                        $vars = array('couponcode'=>$couponcode, 'name' => $name,'tags'=>array($tags),'url'=>$url);
                     }
 
                 }
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+
+                $customer = Mage::getModel('customer/customer')
+                    ->setStore(Mage::app()->getStore($storeId))
+                    ->loadByEmail($email);
+                if($customer->getId()) {
+                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                    foreach ($tbtPoints as $key => $field) {
+                        if ($key == 'points') {
+                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                $vars[$key] = $field;
+                            }
+                        } else {
+                            $vars[$key] = $field;
+                        }
+                    }
+                }
+
+                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('happy birthday', $email, $name, $couponcode, $storeId);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('happy birthday',$email,$name,$couponcode,$storeId);
             }
         }
 
     }
-
     protected function _processNoActivity($storeId)
     {
-        $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_DAYS, $storeId);
-        $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CUSTOMER_GROUPS, $storeId));
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_TEMPLATE, $storeId);
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_SUBJECT, $storeId);
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_MANDRILL_TAG, $storeId) . "_$storeId";
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_DAYS,$storeId);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CUSTOMER_GROUPS, $storeId));
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_TEMPLATE,$storeId);
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_SUBJECT,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_MANDRILL_TAG,$storeId)."_$storeId";
 
-        $collection = Mage::getModel('customer/customer')->getCollection();
+        $collection     = Mage::getModel('customer/customer')->getCollection();
 
 
-        if (count($customerGroups)) {
-            $collection->addFieldToFilter('group_id', array('in' => $customerGroups));
+        if(count($customerGroups)) {
+            $collection->addFieldToFilter('group_id',array('in'=>$customerGroups));
         }
-        $collection->addFieldToFilter('store_id', array('eq' => $storeId));
+        $collection->addFieldToFilter('store_id',array('eq'=>$storeId));
 
-        foreach ($collection as $customer) {
+        foreach($collection as $customer) {
             $customerId = $customer->getEntityId();
             // get the orders for this customer for this store
             $orderCollection = Mage::getModel('sales/order')->getCollection();
-            $orderCollection->addFieldToFilter('customer_id', array('eq' => $customerId))
-                ->addFieldToFilter('store_id', array('eq' => $storeId));
-            if ($orderCollection->getSize() > 0) { // if the customer has any order for this store
+            $orderCollection->addFieldToFilter('customer_id',array('eq'=>$customerId))
+                            ->addFieldToFilter('store_id',array('eq'=>$storeId));
+            if($orderCollection->getSize()>0) { // if the customer has any order for this store
                 $logCustomer = Mage::getModel('log/customer')->loadByCustomer($customer);
                 $lastVisited = $logCustomer->getLoginAt();
-                $limitup = date("Y-m-d H:i:s", strtotime(" - $days days"));
-                $daysAux = $days + 1;
-                $limitdown = date("Y-m-d H:i:s", strtotime(" - $daysAux days"));
-                if ($limitup > $lastVisited && $limitdown < $lastVisited) {
+                $limitup = date("Y-m-d H:i:s",strtotime(" - $days days"));
+                $daysAux = $days +1;
+                $limitdown = date("Y-m-d H:i:s",strtotime(" - $daysAux days"));
+                if($limitup>$lastVisited&&$limitdown<$lastVisited) {
                     $translate = Mage::getSingleton('core/translate');
                     $cust = Mage::getModel('customer/customer')->load($customerId);
                     $email = $cust->getEmail();
-                    $name = $cust->getFirstname() . ' ' . $cust->getLastname();
-                    if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'noactivity', $storeId)) {
-                        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=noactivity&email=' . $email . '&store=' . $storeId;
-                        $vars = array('name' => $name, 'tags' => array($tags), 'lastlogin' => $lastVisited, 'url' => $url);
-                        $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                    $name = $cust->getFirstname().' '.$cust->getLastname();
+                    if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'noactivity',$storeId)) {
+                        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=noactivity&email='.$email.'&store='.$storeId;
+                        $vars = array('name' => $name,'tags'=>array($tags),'lastlogin'=>$lastVisited,'url'=>$url);
+
+                        $customer = Mage::getModel('customer/customer')
+                            ->setStore(Mage::app()->getStore($storeId))
+                            ->loadByEmail($email);
+                        if($customer->getId()) {
+                            $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                            foreach ($tbtPoints as $key => $field) {
+                                if ($key == 'points') {
+                                    if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                        $vars[$key] = $field;
+                                    }
+                                } else {
+                                    $vars[$key] = $field;
+                                }
+                            }
+                        }
+
+                        $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                         $translate->setTranslateInLine(true);
-                        Mage::helper('ebizmarts_abandonedcart')->saveMail('no activity', $email, $name, "", $storeId);
+                        Mage::helper('ebizmarts_abandonedcart')->saveMail('no activity',$email,$name,"",$storeId);
                     }
                 }
             }
         }
 
     }
-
     protected function _processRelated($storeId)
     {
-        $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CUSTOMER_GROUPS, $storeId));
-        $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_DAYS, $storeId);
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MANDRILL_TAG, $storeId) . "_$storeId";
-        $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_SUBJECT, $storeId);
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_TEMPLATE, $storeId);
-        $maxRelated = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MAX, $storeId);
-        $status = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_STATUS, $storeId);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_CUSTOMER_GROUPS, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_DAYS,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MANDRILL_TAG,$storeId)."_$storeId";
+        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_TEMPLATE,$storeId);
+        $maxRelated     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MAX,$storeId);
+        $status         = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_STATUS,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days-1, 'DAY'));
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
-        $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
-            ->addFieldToFilter('main_table.created_at', array('from' => $from, 'to' => $to))
-            ->addFieldToFilter('main_table.status', array('eq' => $status));
+        $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
+            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.status',array('eq'=>$status));
 
-        if (count($customerGroups)) {
-            $collection->addFieldToFilter('main_table.customer_group_id', array('in' => $customerGroups));
+        if(count($customerGroups)) {
+            $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }
-        foreach ($collection as $order) {
+        foreach($collection as $order) {
             $counter = 0;
             $allRelated = array();
-            foreach ($order->getAllItems() as $itemId => $item) {
-                if ($maxRelated && $maxRelated < $counter) {
+            foreach($order->getAllItems() as $itemId => $item) {
+                if($maxRelated && $maxRelated < $counter) {
                     break;
                 }
                 $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                foreach ($product->getRelatedLinkCollection() as $related) {
-                    if ($maxRelated && $maxRelated < $counter) {
+                foreach($product->getRelatedLinkCollection() as $related) {
+                    if($maxRelated && $maxRelated < $counter) {
                         break;
                     }
                     $relatedProduct = Mage::getModel('catalog/product')->load($related->getLinkedProductId());
                     $allRelated[$counter++] = $relatedProduct;
                 }
             }
-            if ($counter > 0) {
+            if($counter > 0) {
                 $translate = Mage::getSingleton('core/translate');
                 $email = $order->getCustomerEmail();
-                if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'related', $storeId)) {
-                    $name = $order->getCustomerFirstname() . ' ' . $order->getCustomerLastname();
-                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=related&email=' . $email . '&store=' . $storeId;
-                    $vars = array('name' => $name, 'tags' => array($tags), 'related' => $allRelated, 'url' => $url);
-                    $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'related',$storeId)) {
+                    $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
+                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=related&email='.$email.'&store='.$storeId;
+                    $vars = array('name' => $name,'tags'=>array($tags),'related'=>$allRelated,'url'=>$url);
+
+                    $customer = Mage::getModel('customer/customer')
+                        ->setStore(Mage::app()->getStore($storeId))
+                        ->loadByEmail($email);
+                    if($customer->getId()) {
+                        $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                        foreach ($tbtPoints as $key => $field) {
+                            if ($key == 'points') {
+                                if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                    $vars[$key] = $field;
+                                }
+                            } else {
+                                $vars[$key] = $field;
+                            }
+                        }
+                    }
+
+                    $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                     $translate->setTranslateInLine(true);
-                    Mage::helper('ebizmarts_abandonedcart')->saveMail('related products', $email, $name, "", $storeId);
+                    Mage::helper('ebizmarts_abandonedcart')->saveMail('related products',$email,$name,"",$storeId);
                 }
             }
         }
 
     }
-
     protected function _processReview($storeId)
     {
-        $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CUSTOMER_GROUPS, $storeId));
-        $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_DAYS, $storeId);
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_MANDRILL_TAG, $storeId) . "_$storeId";
-        $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_SUBJECT, $storeId);
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_TEMPLATE, $storeId);
-        $status = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_STATUS, $storeId);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_CUSTOMER_GROUPS, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_DAYS,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_MANDRILL_TAG,$storeId)."_$storeId";
+        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_TEMPLATE,$storeId);
+        $status         = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_STATUS,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days-1, 'DAY'));
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
-        $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
+        $collection->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
 //            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
-            ->addFieldToFilter('main_table.updated_at', array('from' => $from, 'to' => $to))
-            ->addFieldToFilter('main_table.status', array('eq' => $status));
+            ->addFieldToFilter('main_table.updated_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.status',array('eq'=>$status));
 //        Mage::log((string)$collection->getSelect());
-        if (count($customerGroups)) {
-            $collection->addFieldToFilter('main_table.customer_group_id', array('in' => $customerGroups));
+        if(count($customerGroups)) {
+            $collection->addFieldToFilter('main_table.customer_group_id',array('in'=> $customerGroups));
         }
-        foreach ($collection as $order) {
+        foreach($collection as $order) {
             $translate = Mage::getSingleton('core/translate');
             $email = $order->getCustomerEmail();
-            if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'review', $storeId)) {
-                if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON, $storeId)) {
-                    srand((double)microtime() * 1000000);
-                    $token = md5(rand(0, 9999999));
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'review',$storeId)) {
+                if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON,$storeId)) {
+                    srand((double)microtime()*1000000);
+                    $token = md5(rand(0,9999999));
                     $review = Mage::getModel('ebizmarts_autoresponder/review');
                     $review->setCustomerId($order->getCustomerId())
-                        ->setStoreId($storeId)
-                        ->setItems($order->getTotalItemCount())
-                        ->setCounter(0)
-                        ->setToken($token)
-                        ->setOrderId($order->getIncrementId())
-                        ->save();
+                            ->setStoreId($storeId)
+                            ->setItems($order->getTotalItemCount())
+                            ->setCounter(0)
+                            ->setToken($token)
+                            ->setOrderId($order->getIncrementId())
+                            ->save();
                 }
-                $name = $order->getCustomerFirstname() . ' ' . $order->getCustomerLastname();
+                $name = $order->getCustomerFirstname().' '.$order->getCustomerLastname();
                 $products = array();
-                foreach ($order->getAllItems() as $item) {
+                foreach($order->getAllItems() as $item) {
                     $product = Mage::getModel('catalog/product')->load($item->getProductId());
-                    if ($product->isConfigurable()) {
+                    if($product->isConfigurable()) {
                         continue;
                     }
                     $products[] = $product;
                 }
                 $orderNum = $order->getIncrementId();
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=review&email=' . $email . '&store=' . $storeId;
-                if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON, $storeId)) {
-                    $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'ordernum' => $orderNum, 'url' => $url, 'token' => $token);
-                } else {
-                    $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'ordernum' => $orderNum, 'url' => $url);
+                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=review&email='.$email.'&store='.$storeId;
+                if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_HAS_COUPON,$storeId)) {
+                    $vars = array('name' => $name,'tags'=>array($tags),'products'=>$products,'ordernum'=>$orderNum,'url'=>$url, 'token' =>$token);
                 }
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                else {
+                    $vars = array('name' => $name,'tags'=>array($tags),'products'=>$products,'ordernum'=>$orderNum,'url'=>$url);
+                }
+
+                $customer = Mage::getModel('customer/customer')
+                    ->setStore(Mage::app()->getStore($storeId))
+                    ->loadByEmail($email);
+                if($customer->getId()) {
+                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                    foreach ($tbtPoints as $key => $field) {
+                        if ($key == 'points') {
+                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                $vars[$key] = $field;
+                            }
+                        } else {
+                            $vars[$key] = $field;
+                        }
+                    }
+                }
+
+                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('product review', $email, $name, "", $storeId);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('product review',$email,$name,"",$storeId);
             }
         }
 
     }
-
     protected function _processWishlist($storeId)
     {
-        $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_CUSTOMER_GROUPS, $storeId));
-        $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_DAYS, $storeId);
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_MANDRILL_TAG, $storeId) . "_$storeId";
-        $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_SUBJECT, $storeId);
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_TEMPLATE, $storeId);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_CUSTOMER_GROUPS, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_DAYS,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_MANDRILL_TAG,$storeId)."_$storeId";
+        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_TEMPLATE,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days-1, 'DAY'));
         $to = new Zend_Db_Expr($expr);
 
         $collection = Mage::getModel('wishlist/item')->getCollection();
-        $collection->addFieldToFilter('main_table.added_at', array('from' => $from, 'to' => $to))
-            ->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
-            ->setOrder('main_table.wishlist_id');
+        $collection->addFieldToFilter('main_table.added_at',array('from'=>$from,'to'=>$to))
+                    ->addFieldToFilter('main_table.store_id',array('eq'=>$storeId))
+                    ->setOrder('main_table.wishlist_id');
         $wishlist_ant = -1;
         $wishlistId = $collection->getFirstItem()->getWishlistId();
         $products = array();
-        foreach ($collection as $item) {
-            if ($wishlistId != $wishlist_ant) {
-                if ($wishlist_ant != -1 && count($products) > 0) {
-                    $translate = Mage::getSingleton('core/translate');
-                    $email = $customer->getEmail();
-                    if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'wishlist', $storeId)) {
-                        $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=wishlist&email=' . $email . '&store=' . $storeId;
-                        $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-                        $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+        foreach($collection as $item) {
+            if($wishlistId != $wishlist_ant) {
+                if($wishlist_ant != -1 && count($products) > 0) {
+                    $translate  = Mage::getSingleton('core/translate');
+                    $email      = $customer->getEmail();
+                    if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'wishlist',$storeId)) {
+                        $name       = $customer->getFirstname().' '.$customer->getLastname();
+                        $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=wishlist&email='.$email.'&store='.$storeId;
+                        $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
+
+                        $customer = Mage::getModel('customer/customer')
+                            ->setStore(Mage::app()->getStore($storeId))
+                            ->loadByEmail($email);
+                        if($customer->getId()) {
+                            $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                            foreach ($tbtPoints as $key => $field) {
+                                if ($key == 'points') {
+                                    if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                        $vars[$key] = $field;
+                                    }
+                                } else {
+                                    $vars[$key] = $field;
+                                }
+                            }
+                        }
+
+                        $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                         $translate->setTranslateInLine(true);
-                        Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist', $email, $name, "", $storeId);
+                        Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist',$email,$name,"",$storeId);
                     }
 
                 }
-                $wishlist_ant = $wishlistId;
-                $wishlistId = $item->getWishlistId();
-                $wishlist = Mage::getModel('wishlist/wishlist')->load($wishlistId);
-                $customer = Mage::getModel('customer/customer')->load($wishlist->getCustomerId());
-                $products = array();
+                $wishlist_ant   = $wishlistId;
+                $wishlistId     = $item->getWishlistId();
+                $wishlist       = Mage::getModel('wishlist/wishlist')->load($wishlistId);
+                $customer       = Mage::getModel('customer/customer')->load($wishlist->getCustomerId());
+                $products       = array();
             }
-            if (in_array($customer->getGroupId(), $customerGroups)) {
-                $products[] = Mage::getModel('catalog/product')->load($item->getProductId());
+            if(in_array($customer->getGroupId(),$customerGroups)) {
+                $products[]     = Mage::getModel('catalog/product')->load($item->getProductId());
             }
         }
-        if (count($products)) {
-            $translate = Mage::getSingleton('core/translate');
-            $email = $customer->getEmail();
-            if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'wishlist', $storeId)) {
-                $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=wishlist&email=' . $email . '&store=' . $storeId;
-                $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+        if(count($products)) {
+            $translate  = Mage::getSingleton('core/translate');
+            $email      = $customer->getEmail();
+            if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'wishlist',$storeId)) {
+                $name       = $customer->getFirstname().' '.$customer->getLastname();
+                $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=wishlist&email='.$email.'&store='.$storeId;
+                $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
+
+                $customer = Mage::getModel('customer/customer')
+                    ->setStore(Mage::app()->getStore($storeId))
+                    ->loadByEmail($email);
+                if($customer->getId()) {
+                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                    foreach ($tbtPoints as $key => $field) {
+                        if ($key == 'points') {
+                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                $vars[$key] = $field;
+                            }
+                        } else {
+                            $vars[$key] = $field;
+                        }
+                    }
+                }
+
+                $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist', $email, $name, "", $storeId);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist',$email,$name,"",$storeId);
             }
         }
 
     }
-
     protected function _processVisited($storeId)
     {
-        $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CUSTOMER_GROUPS, $storeId));
-        $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_DAYS, $storeId);
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MANDRILL_TAG, $storeId) . "_$storeId";
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_SUBJECT, $storeId);
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TEMPLATE, $storeId);
-        $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
-        $max = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MAX, $storeId);
+        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CUSTOMER_GROUPS, $storeId));
+        $days           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_DAYS,$storeId);
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MANDRILL_TAG,$storeId)."_$storeId";
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TEMPLATE,$storeId);
+        $adapter        = Mage::getSingleton('core/resource')->getConnection('sales_read');
+        $max            = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MAX,$storeId);
 
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days-1, 'DAY'));
         $to = new Zend_Db_Expr($expr);
 
         $collection = Mage::getModel('ebizmarts_autoresponder/visited')->getCollection();
         $collection
-            ->addFieldToFilter('main_table.visited_at', array('from' => $from, 'to' => $to))
-            ->addFieldToFilter('main_table.store_id', array('eq' => $storeId));
+            ->addFieldToFilter('main_table.visited_at',array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.store_id',array('eq'=>$storeId));
         $collection->getSelect()->order('main_table.customer_id asc')->order('main_table.visited_at desc');
 
         $customerIdPrev = 0;
         $products = array();
-        foreach ($collection as $item) {
-            if ($customerIdPrev != $item->getCustomerId()) {
-                if ($customerIdPrev != 0 && count($products) > 0) {
-                    $email = $customer->getEmail();
-                    if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
-                        $translate = Mage::getSingleton('core/translate');
-                        $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
-                        $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-                        $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+        foreach($collection as $item) {
+            if($customerIdPrev!=$item->getCustomerId()) {
+                if($customerIdPrev != 0 && count($products) > 0) {
+                    $email      = $customer->getEmail();
+                    if(Mage::helper('ebizmarts_autoresponder')->isSubscribed($email,'visitedproducts',$storeId)) {
+                        $translate  = Mage::getSingleton('core/translate');
+                        $name       = $customer->getFirstname().' '.$customer->getLastname();
+                        $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email='.$email.'&store='.$storeId;
+                        $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
+
+                        $customer = Mage::getModel('customer/customer')
+                            ->setStore(Mage::app()->getStore($storeId))
+                            ->loadByEmail($email);
+                        if($customer->getId()) {
+                            $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                            foreach ($tbtPoints as $key => $field) {
+                                if ($key == 'points') {
+                                    if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                        $vars[$key] = $field;
+                                    }
+                                } else {
+                                    $vars[$key] = $field;
+                                }
+                            }
+                        }
+
+                        $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                         $translate->setTranslateInLine(true);
-                        Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
+                        Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts',$email,$name,"",$storeId);
                     }
                 }
-                $products = array();
-                if ($item->getCustomerId()) {
+                $products       = array();
+                if($item->getCustomerId()){
                     $customer = Mage::getModel('customer/customer')->load($item->getCustomerId());
                     $customerIdPrev = $item->getCustomerId();
                 }
 
             }
-            if (count($products) > $max && $max != 0 || ($customer && !in_array($customer->getGroupId(), $customerGroups))) {
+            if(count($products) > $max && $max != 0 || ($customer && !in_array($customer->getGroupId(),$customerGroups))) {
                 continue;
             }
 //            $itemscollection = Mage::getModel('sales/order_item')->getCollection();
@@ -448,32 +580,49 @@ class Ebizmarts_Autoresponder_Model_Cron
 //                $products[]= Mage::getModel('catalog/product')->load($item->getProductId());
 //            }
             $itemscollection = Mage::getModel('sales/quote')->getCollection();
-            if ($item->getCustomerId()) {
+            if($item->getCustomerId()) {
                 $itemscollection->addFieldToFilter('main_table.customer_id', array('eq' => $item->getCustomerId()));
-            } else {
+            }else{
                 $itemscollection->addFieldToFilter('main_table.customer_email', array('eq' => $item->getCustomerEmail()));
             }
-            $itemscollection->addFieldToFilter('main_table.created_at', array('from' => $from))
-                ->addFieldToFilter('main_table.is_active', array('eq' => 0));
-            if (count($itemscollection) == 0) {
-                $products[] = Mage::getModel('catalog/product')->load($item->getProductId());
-            } else {
+            $itemscollection->addFieldToFilter('main_table.created_at',array('from'=>$from))
+                ->addFieldToFilter('main_table.is_active', array('eq'=>0));
+            if(count($itemscollection) == 0){
+                $products[]= Mage::getModel('catalog/product')->load($item->getProductId());
+            }else{
                 continue;
             }
 
-            if (!$item->getCustomerId()) {
+            if(!$item->getCustomerId()){
                 //add customer by email placed on Abandoned Cart Popup
-                $translate = Mage::getSingleton('core/translate');
+                $translate  = Mage::getSingleton('core/translate');
                 $email = $item->getCustomerEmail();
                 $name = 'customer';
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
-                $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email='.$email.'&store='.$storeId;
+                $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
+
+                $customer = Mage::getModel('customer/customer')
+                    ->setStore(Mage::app()->getStore($storeId))
+                    ->loadByEmail($email);
+                if($customer->getId()) {
+                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                    foreach ($tbtPoints as $key => $field) {
+                        if ($key == 'points') {
+                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                $vars[$key] = $field;
+                            }
+                        } else {
+                            $vars[$key] = $field;
+                        }
+                    }
+                }
+
+                $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts',$email,$name,"",$storeId);
             }
         }
-        if (count($products)) {
+        if(count($products)) {
             if ($item->getCustomerId()) {
                 $email = $customer->getEmail();
                 if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
@@ -481,20 +630,54 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $name = $customer->getFirstname() . ' ' . $customer->getLastname();
                     $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
                     $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
+
+                    $customer = Mage::getModel('customer/customer')
+                        ->setStore(Mage::app()->getStore($storeId))
+                        ->loadByEmail($email);
+                    if($customer->getId()) {
+                        $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                        foreach ($tbtPoints as $key => $field) {
+                            if ($key == 'points') {
+                                if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                    $vars[$key] = $field;
+                                }
+                            } else {
+                                $vars[$key] = $field;
+                            }
+                        }
+                    }
+
                     $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                     $translate->setTranslateInLine(true);
                     Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
                 }
             } else {
                 //add customer by email placed on Abandoned Cart Popup
-                $translate = Mage::getSingleton('core/translate');
+                $translate  = Mage::getSingleton('core/translate');
                 $email = $item->getCustomerEmail();
                 $name = 'customer';
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
-                $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                $url        = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email='.$email.'&store='.$storeId;
+                $vars       = array('name' => $name,'tags'=>array($tags),'products'=>$products,'url'=>$url);
+
+                $customer = Mage::getModel('customer/customer')
+                    ->setStore(Mage::app()->getStore($storeId))
+                    ->loadByEmail($email);
+                if($customer->getId()) {
+                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                    foreach ($tbtPoints as $key => $field) {
+                        if ($key == 'points') {
+                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                $vars[$key] = $field;
+                            }
+                        } else {
+                            $vars[$key] = $field;
+                        }
+                    }
+                }
+
+                $mail       = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$email,$name,$vars,$storeId);
                 $translate->setTranslateInLine(true);
-                Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
+                Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts',$email,$name,"",$storeId);
             }
         }
 
@@ -507,28 +690,28 @@ class Ebizmarts_Autoresponder_Model_Cron
     public function _processBackToStock($storeId)
     {
 //        $customerGroups = explode(",",Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_ACTIVE, $storeId));
-        $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_MANDRILL_TAG, $storeId) . "_$storeId";
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_SUBJECT, $storeId);
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_TEMPLATE, $storeId);
-        $mailType = Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_MAIL_TYPE_NAME;
+        $tags           = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_MANDRILL_TAG,$storeId)."_$storeId";
+        $mailSubject    = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_SUBJECT,$storeId);
+        $senderId       = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER,$storeId);
+        $sender         = array('name'=>Mage::getStoreConfig("trans_email/ident_$senderId/name",$storeId), 'email'=> Mage::getStoreConfig("trans_email/ident_$senderId/email",$storeId));
+        $templateId     = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_TEMPLATE,$storeId);
+        $mailType       = Ebizmarts_Autoresponder_Model_Config::BACKTOSTOCK_MAIL_TYPE_NAME;
 
         $errorMessage = false;
 
-        if (!$sender) {
+        if(!$sender) {
             $errorMessage = Mage::helper('ebizmarts_autoresponder')->__('ERROR - Back to Stock Notification: No sender is specified. Check System/Configuration/MageMonkey/Autoresponders/General');
         }
 
-        if (!$storeId) {
+        if(!$storeId) {
             $errorMessage = Mage::helper('ebizmarts_autoresponder')->__('ERROR - Back to Stock Notification: No Store ID is configured');
         }
 
-        if (!$templateId) {
+        if(!$templateId) {
             $errorMessage = Mage::helper('ebizmarts_autoresponder')->__('ERROR - Back to Stock Notification: No templateId. Check System/Configuration/MageMonkey/Autoresponders/Back to Stock/Email Template');
         }
 
-        if ($errorMessage) {
+        if($errorMessage) {
             Mage::helper('ebizmarts_autoresponder')->log($errorMessage);
             Mage::throwException($errorMessage);
             return;
@@ -540,43 +723,44 @@ class Ebizmarts_Autoresponder_Model_Cron
         $alert = Mage::getModel('ebizmarts_autoresponder/backtostockalert');
         $alert
             ->getCollection()
-            ->addFieldToFilter('is_active', array('eq' => 1));
+            ->addFieldToFilter('is_active', array('eq'=>1))
+        ;
 
-        if (count($alert) > 0) {
+        if(count($alert) > 0) {
 
             // Loop through all products that came back to stock
-            foreach ($alert->getCollection() as $productStockAlert) {
+            foreach($alert->getCollection() as $productStockAlert) {
 
                 // We'll validate if this products came back or not.
-                if ($productStockAlert->getProductId()) {
+                if($productStockAlert->getProductId()) {
                     $inventory = Mage::getModel('cataloginventory/stock_item');
                     $_product = Mage::getModel('catalog/product')->load($productStockAlert->getProductId());
 
                     // Check if Product is loaded
-                    if (!$_product->getId()) {
-                        Mage::helper('ebizmarts_autoresponder')->log('ERROR - Cannot load product ID ' . $productStockAlert->getProductId() . '. Existing alert and subscribers will now be disabled.');
+                    if(!$_product->getId()) {
+                        Mage::helper('ebizmarts_autoresponder')->log('ERROR - Cannot load product ID '. $productStockAlert->getProductId() .'. Existing alert and subscribers will now be disabled.');
                         $this->disableStockAlertsForProduct($productStockAlert->getProductId());
                         continue;
                     }
 
                     // Retrieve stock data for Product
-                    $_stock = $inventory->loadByProduct($_product->getId());
+                    $_stock = $inventory->loadByProduct( $_product->getId() );
 
-                    if (!$_stock->getData()) {
+                    if(!$_stock->getData()) {
                         Mage::helper('ebizmarts_autoresponder')->log('Cannot load Product ID ' . $productStockAlert->getProductId() . ' stock info. Check if product still exists.');
                         continue;
                     }
 
                     //@TODO check if this next two validations can be replaced with isSaleable()
                     // Validate if Product has Stock
-                    if (!$_stock->getData('is_in_stock') || $_stock->getData('qty') == 0) {
-                        Mage::helper('ebizmarts_autoresponder')->log('SKIPPED - Product ID ' . $_product->getId() . ' is not in stock yet.');
+                    if(!$_stock->getData('is_in_stock') || $_stock->getData('qty') == 0) {
+                        Mage::helper('ebizmarts_autoresponder')->log('SKIPPED - Product ID '. $_product->getId() .' is not in stock yet.');
                         continue;
                     }
 
                     // Validate if Product is Enabled
-                    if ($_product->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED) {
-                        Mage::helper('ebizmarts_autoresponder')->log('SKIPPED - Product ID ' . $_product->getId() . ' is not enabled (status = disabled).');
+                    if($_product->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED) {
+                        Mage::helper('ebizmarts_autoresponder')->log('SKIPPED - Product ID '. $_product->getId() .' is not enabled (status = disabled).');
                         continue;
                     }
 
@@ -591,28 +775,45 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $collection = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
                 $collection
                     ->addFieldToFilter('is_active', array('eq' => 1))
-                    ->addFieldToFilter('alert_id', array('eq' => $productStockAlert->getAlertId()));
+                    ->addFieldToFilter('alert_id', array('eq' => $productStockAlert->getAlertId()))
+                ;
 
-                if (count($collection) > 0) {
+                if(count($collection) > 0) {
 
                     // Loop through all subscribers that signed in to receive an email
                     // when this product become available again
-                    foreach ($collection as $subscriber) {
+                    foreach($collection as $subscriber) {
                         $_email = $subscriber->getEmail();
 
-                        if ($_email) {
-                            $translate = Mage::getSingleton('core/translate');
+                        if($_email) {
+                            $translate  = Mage::getSingleton('core/translate');
 
                             $customer = Mage::getModel('customer/customer');
                             $customer->setStore(Mage::app()->getStore($storeId));
                             $customer->loadByEmail($_email);
 
-                            $name = $customer->getFirstname() ? $customer->getFirstname() . ' ' . $customer->getLastname() : '';
+                            $name   = $customer->getFirstname() ? $customer->getFirstname() .' '. $customer->getLastname() : '';
 
-                            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=backtostock&email=' . $_email . '&store=' . $storeId;
-                            $vars = array('name' => $name, 'tags' => array($tags), 'product' => $_product, 'url' => $url);
+                            $url    = Mage::getModel('core/url')->setStore($storeId)->getUrl().'ebizautoresponder/autoresponder/unsubscribe?list=backtostock&email='.$_email.'&store='.$storeId;
+                            $vars   = array('name' => $name,'tags'=>array($tags),'product'=>$_product,'url'=>$url);
 
-                            $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $_email, $name, $vars, $storeId);
+                            $customer = Mage::getModel('customer/customer')
+                                ->setStore(Mage::app()->getStore($storeId))
+                                ->loadByEmail($_email);
+                            if($customer->getId()) {
+                                $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId());
+                                foreach ($tbtPoints as $key => $field) {
+                                    if ($key == 'points') {
+                                        if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
+                                            $vars[$key] = $field;
+                                        }
+                                    } else {
+                                        $vars[$key] = $field;
+                                    }
+                                }
+                            }
+
+                            $mail   = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId,$sender,$_email,$name,$vars,$storeId);
 
                             $translate->setTranslateInLine(true);
                             Mage::helper('ebizmarts_abandonedcart')->saveMail($mailType, $_email, $name, "", $storeId);
@@ -648,7 +849,7 @@ class Ebizmarts_Autoresponder_Model_Cron
      */
     private function disableStockAlertsForProduct($product_id)
     {
-        if (!$product_id) {
+        if(!$product_id) {
             return false;
         }
 
@@ -656,14 +857,14 @@ class Ebizmarts_Autoresponder_Model_Cron
         $stockAlert->addFieldToFilter('is_active', array('eq' => 1));
         $stockAlert->addFieldToFilter('product_id', array('eq' => $product_id));
 
-        if ($stockAlert->getSize() > 0) {
-            foreach ($stockAlert as $alert) {
+        if($stockAlert->getSize() > 0) {
+            foreach($stockAlert as $alert) {
                 $alert_id = $alert->getAlertId();
 
                 $subscribers = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
-                $subscribers->addFieldToFilter('alert_id', array('eq' => $alert_id));
+                $subscribers->addFieldToFilter('alert_id', array('eq'=> $alert_id));
 
-                foreach ($subscribers as $subscriber) {
+                foreach($subscribers as $subscriber) {
                     $subscriber->setIsActive(0);
                     $subscriber->save();
                 }
@@ -688,9 +889,9 @@ class Ebizmarts_Autoresponder_Model_Cron
 
         Mage::helper('ebizmarts_autoresponder')->log('MageMonkey Autoresponder BackToStock Cleanup - started');
 
-        if ($stockAlert->count() > 0) {
+        if($stockAlert->count() > 0) {
             Mage::helper('ebizmarts_autoresponder')->log('Cleaning out ' . $stockAlert->count() . ' backtostockalert.');
-            foreach ($stockAlert as $alert) {
+            foreach($stockAlert as $alert) {
                 $alert->delete();
             }
         }
@@ -700,10 +901,10 @@ class Ebizmarts_Autoresponder_Model_Cron
         $backToStock = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
         $backToStock->addFieldToFilter('is_active', array('eq' => 0));
 
-        if ($backToStock->count() > 0) {
+        if($backToStock->count() > 0) {
 
             Mage::helper('ebizmarts_autoresponder')->log('Cleaning out ' . $backToStock->count() . ' backtostock.');
-            foreach ($backToStock as $subscriber) {
+            foreach($backToStock as $subscriber) {
                 $subscriber->delete();
             }
 
@@ -716,31 +917,32 @@ class Ebizmarts_Autoresponder_Model_Cron
     }
 
 
-    protected function _createNewCoupon($store, $email)
+    protected function _createNewCoupon($store,$email)
     {
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array('like' => 'Birthday coupon ' . $email));
+            ->addFieldToFilter('name', array('like'=>'Birthday coupon ' . $email));
         if (!count($collection)) {
             $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
             $couponexpiredays = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_EXPIRE, $store);
             $coupontype = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT_TYPE, $store);
             $couponlength = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_LENGTH, $store);
             $couponlabel = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_LABEL, $store);
-            $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
+            $websiteid =  Mage::getModel('core/store')->load($store)->getWebsiteId();
 
             $fromDate = date("Y-m-d");
-            $toDate = date('Y-m-d', strtotime($fromDate . " + $couponexpiredays day"));
-            if ($coupontype == 1) {
+            $toDate = date('Y-m-d', strtotime($fromDate. " + $couponexpiredays day"));
+            if($coupontype == 1) {
                 $action = 'cart_fixed';
-                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . "$couponamount";
-            } elseif ($coupontype == 2) {
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()."$couponamount";
+            }
+            elseif($coupontype == 2) {
                 $action = 'by_percent';
                 $discount = "$couponamount%";
             }
             $customer_group = new Mage_Customer_Model_Group();
-            $allGroups = $customer_group->getCollection()->toOptionHash();
+            $allGroups  = $customer_group->getCollection()->toOptionHash();
             $groups = array();
-            foreach ($allGroups as $groupid => $name) {
+            foreach($allGroups as $groupid=>$name) {
                 $groups[] = $groupid;
             }
             $coupon_rule = Mage::getModel('salesrule/rule');
@@ -769,13 +971,13 @@ class Ebizmarts_Autoresponder_Model_Cron
             $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
             $coupon_rule->setCouponCode($uniqueId);
             $coupon_rule->save();
-            return array($uniqueId, $discount, $toDate);
-        } else {
+            return array($uniqueId,$discount,$toDate);
+        }else{
             $coupon = $collection->getFirstItem();
             if ($coupon->getSimpleAction() == 'cart_fixed') {
-                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . ($coupon->getDiscountAmount() + 0);
-            } else {
-                $discount = $coupon->getDiscountAmount() + 0;
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . ($coupon->getDiscountAmount()+0);
+            } else{
+                $discount = $coupon->getDiscountAmount()+0;
             }
             return array($coupon->getCode(), $discount, $coupon->getToDate());
         }
@@ -786,15 +988,14 @@ class Ebizmarts_Autoresponder_Model_Cron
         return sprintf('INTERVAL %d %s', $interval, $unit);
     }
 
-    protected function _cleanAutoresponderExpiredCoupons()
-    {
+    protected function _cleanAutoresponderExpiredCoupons(){
         $today = date('Y-m-d');
-        $reviewCouponFilter = array('like' => 'Review coupon%');
-        $birthdayCouponFilter = array('like' => 'Birthday coupon%');
+        $reviewCouponFilter = array('like'=>'Review coupon%');
+        $birthdayCouponFilter = array('like'=>'Birthday coupon%');
 
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array($reviewCouponFilter, $birthdayCouponFilter))
-            ->addFieldToFilter('to_date', array('lt' => $today));
+            ->addFieldToFilter('name', array($reviewCouponFilter,$birthdayCouponFilter))
+            ->addFieldToFilter('to_date', array('lt'=> $today));
 
         foreach ($collection as $toDelete) {
             $toDelete->delete();

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Ebizmarts_SweetMonkey>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Ebizmarts_SweetMonkey>
+    </modules>
+</config>
