@@ -20,12 +20,14 @@ class Ebizmarts_SweetMonkey_Model_Observer
                 $scope = 'default';
             }
 
-            $cleanCache = false;
             $store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode() : $observer->getEvent()->getStore();
             $config = new Mage_Core_Model_Config();
-            //$config->saveConfig(Mage::getStoreConfig(Mage::helper('sweetmonkey')->config('active')), false, $scope, $store);
-
+            $config->saveConfig('sweetmonkey/general/active', false, $scope, $store);
+            Mage::getConfig()->cleanCache();
+            $message = Mage::helper('sweetmonkey')->__('To activate Sweet Monkey you need to have <a href=https://www.sweettoothrewards.com/features/magento/>Sweet Tooth Rewards</a> enabled');
+            Mage::getSingleton('adminhtml/session')->addWarning($message);
         }
+        return $observer;
     }
 
     /**
