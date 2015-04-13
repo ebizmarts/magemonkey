@@ -115,53 +115,55 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract
         return $collection->getSize() == 0;
     }
 
-    public function getTBTPoints($customerId)
+    public function getTBTPoints($customerId, $storeId)
     {
 
-        $tbtCustomer = Mage::getModel('rewards/customer')->load($customerId);
+        if(Mage::getStoreConfig('sweetmonkey/general/active', $storeId)) {
+            $tbtCustomer = Mage::getModel('rewards/customer')->load($customerId);
 
-        //Point balance
-        $tbtVars['pts'] = $tbtCustomer->getPointsSummary();
+            //Point balance
+            $tbtVars['pts'] = $tbtCustomer->getPointsSummary();
 
-        $tbtVars['points'] = $tbtCustomer->getUsablePointsBalance(1);
+            $tbtVars['points'] = $tbtCustomer->getUsablePointsBalance(1);
 
-        //Earn and Spent points
-        $lastTransfers = $tbtCustomer->getTransfers()
-            ->selectOnlyActive()
-            ->addOrder('last_update_ts', Varien_Data_Collection::SORT_ORDER_DESC);
+            //Earn and Spent points
+            $lastTransfers = $tbtCustomer->getTransfers()
+                ->selectOnlyActive()
+                ->addOrder('last_update_ts', Varien_Data_Collection::SORT_ORDER_DESC);
 
-        $spent = $earn = null;
+            $spent = $earn = null;
 
-        if ($lastTransfers->getSize()) {
-            foreach ($lastTransfers as $transfer) {
+            if ($lastTransfers->getSize()) {
+                foreach ($lastTransfers as $transfer) {
 
-                if (is_null($earn) && $transfer->getQuantity() > 0) {
-                    $earn = $this->_formatDateMerge($transfer->getEffectiveStart());
-                } else if (is_null($spent) && $transfer->getQuantity() < 0) {
-                    $spent = $this->_formatDateMerge($transfer->getEffectiveStart());
+                    if (is_null($earn) && $transfer->getQuantity() > 0) {
+                        $earn = $this->_formatDateMerge($transfer->getEffectiveStart());
+                    } else if (is_null($spent) && $transfer->getQuantity() < 0) {
+                        $spent = $this->_formatDateMerge($transfer->getEffectiveStart());
+                    }
+
+                    if (!is_null($spent) && !is_null($earn)) {
+                        break;
+                    }
+
                 }
-
-                if (!is_null($spent) && !is_null($earn)) {
-                    break;
-                }
-
             }
-        }
 
-        if ($earn) {
-            $tbtVars['ptsearn'] = $earn;
-        }
-        if ($spent) {
-            $tbtVars['ptsspent'] = $spent;
-        }
+            if ($earn) {
+                $tbtVars['ptsearn'] = $earn;
+            }
+            if ($spent) {
+                $tbtVars['ptsspent'] = $spent;
+            }
 
-        //Expiration Points
-        $val = Mage::getSingleton('rewards/expiry')
-            ->getExpiryDate($tbtCustomer);
-        if ($val) {
-            $tbtVars['ptsexp'] = $val;
+            //Expiration Points
+            $val = Mage::getSingleton('rewards/expiry')
+                ->getExpiryDate($tbtCustomer);
+            if ($val) {
+                $tbtVars['ptsexp'] = $val;
+            }
+            return $tbtVars;
         }
-        return $tbtVars;
     }
 
 }

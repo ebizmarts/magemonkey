@@ -111,6 +111,16 @@
                 </Ebizmarts_SweetMonkey>
             </modules>
         </translate>
+        <events>
+            <admin_system_config_changed_section_sweetmonkey>
+                <observers>
+                    <ebizmarts_sweetmonkey_save_config>
+                        <class>sweetmonkey/observer</class>
+                        <method>saveConfig</method>
+                    </ebizmarts_sweetmonkey_save_config>
+                </observers>
+            </admin_system_config_changed_section_sweetmonkey>
+        </events>
     </adminhtml>
     <default>
         <sweetmonkey>

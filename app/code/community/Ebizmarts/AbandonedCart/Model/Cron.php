@@ -256,7 +256,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                             ->setStore(Mage::app()->getStore($storeId))
                             ->loadByEmail($email);
                         if ($customer->getId()) {
-                            $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
+                            $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId(), $storeId);
                             foreach ($tbtPoints as $key => $field) {
                                 if ($key == 'points') {
                                     if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
@@ -320,10 +320,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
             } else {
                 $couponcode = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_COUPON_CODE);
                 $vars = array('couponcode' => $couponcode, 'name' => $pseudoName, 'tags' => array($tags));
-            }
-            $tbtPoints = Mage::helper('ebizmarts_abandonedcart')->getTBTPoints($customer->getId());
-            if ($tbtPoints) {
-                $vars['sweetMonkey'] = $tbtPoints;
             }
             $translate = Mage::getSingleton('core/translate');
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);

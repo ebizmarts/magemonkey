@@ -8,6 +8,26 @@
 class Ebizmarts_SweetMonkey_Model_Observer
 {
 
+    public function saveConfig($observer){
+        Mage::log(Mage::helper('core')->isModuleEnabled('TBT_Common'), null, 'sweet', true);
+        if(!Mage::helper('core')->isModuleEnabled('TBT_Common')) {
+            Mage::log('entro', null, 'sweet', true);
+            if (Mage::app()->getRequest()->getParam('store')) {
+                $scope = 'store';
+            } elseif (Mage::app()->getRequest()->getParam('website')) {
+                $scope = 'website';
+            } else {
+                $scope = 'default';
+            }
+
+            $cleanCache = false;
+            $store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode() : $observer->getEvent()->getStore();
+            $config = new Mage_Core_Model_Config();
+            //$config->saveConfig(Mage::getStoreConfig(Mage::helper('sweetmonkey')->config('active')), false, $scope, $store);
+
+        }
+    }
+
     /**
      * Sende merge vars after customer logs in
      *
