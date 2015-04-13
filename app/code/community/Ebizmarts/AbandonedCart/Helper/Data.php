@@ -74,7 +74,7 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract
     public function getTBTPoints($customerId, $storeId)
     {
 
-        if(Mage::getStoreConfig('sweetmonkey/general/active', $storeId)) {
+        if (Mage::getStoreConfig('sweetmonkey/general/active', $storeId)) {
             $tbtCustomer = Mage::getModel('rewards/customer')->load($customerId);
 
             //Point balance

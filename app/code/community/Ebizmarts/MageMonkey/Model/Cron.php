@@ -518,7 +518,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $oldList = $newList;
             }
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
-                if(count($bach) > 0) {
+                if (count($bach) > 0) {
                     Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
                 }
                 $isConfirmNeed = $eachIsConfirmNeed;

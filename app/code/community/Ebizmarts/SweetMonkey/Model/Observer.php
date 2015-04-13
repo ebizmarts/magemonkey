@@ -8,9 +8,10 @@
 class Ebizmarts_SweetMonkey_Model_Observer
 {
 
-    public function saveConfig($observer){
+    public function saveConfig($observer)
+    {
         Mage::log(Mage::helper('core')->isModuleEnabled('TBT_Common'), null, 'sweet', true);
-        if(!Mage::helper('core')->isModuleEnabled('TBT_Common')) {
+        if (!Mage::helper('core')->isModuleEnabled('TBT_Common')) {
             Mage::log('entro', null, 'sweet', true);
             if (Mage::app()->getRequest()->getParam('store')) {
                 $scope = 'store';
