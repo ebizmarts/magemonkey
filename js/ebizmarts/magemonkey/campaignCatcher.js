@@ -28,6 +28,6 @@
     if (document.loaded) {
         getCampaign();
     } else {
-        document.observe('dom:loaded', getCampaign());
+        document.observe('dom:loaded', getCampaign);
     }
 })();
