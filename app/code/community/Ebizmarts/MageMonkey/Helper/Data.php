@@ -868,9 +868,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
-        if (!$post) {
-            $post = Mage::app()->getRequest()->getPost();
-        }
         $defaultList = Mage::helper('monkey')->config('list');
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
@@ -885,6 +882,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //Subscription for One Step Checkout with force subscription
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
             $this->subscribeToList($object, $db, $defaultList);
+        } elseif(!$post){
+            //subscribe customer from admin
+            $this->subscribeToList($object, $db, $defaultList, TRUE);
         }
 
     }
@@ -896,7 +896,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $db
      * @param null $listId
      */
-    public function subscribeToList($object, $db, $listId = NULL)
+    public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE)
     {
         if (!$listId) {
             $listId = Mage::helper('monkey')->config('list');
@@ -916,7 +916,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $defaultList = Mage::helper('monkey')->config('list');
-        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber()) {
+        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe/*from admin*/) {
             $subscriber->subscribe($email);
         } else {
 
@@ -928,7 +928,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if (count($alreadyOnList) == 0) {
                 $isConfirmNeed = FALSE;
                 if (!Mage::helper('monkey')->isAdmin() &&
-                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1)
+                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !$forceSubscribe)
                 ) {
                     $isConfirmNeed = TRUE;
                 }

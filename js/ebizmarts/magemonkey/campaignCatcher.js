@@ -26,8 +26,8 @@
     }
 
     if (document.loaded) {
-        getCampaign();
+        getCampaign;
     } else {
-        document.observe('dom:loaded', getCampaign());
+        document.observe('dom:loaded', getCampaign);
     }
 })();

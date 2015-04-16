@@ -31,12 +31,9 @@ class Ebizmarts_MageMonkey_Model_Subscriber extends Mage_Newsletter_Model_Subscr
     public function sendConfirmationSuccessEmail()
     {
         $store = Mage::helper('monkey')->getThisStore();
-        Mage::log('store ' . $store->getId(), null, 'santiago.log', true);
-        Mage::log(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $store), null, 'santiago.log', true);
         if (Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_ACTIVE, $store) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $store)) {
             return $this;
         } else {
-            Mage::log('parent', null, 'santiago.log', true);
             return parent::sendConfirmationSuccessEmail();
         }
     }

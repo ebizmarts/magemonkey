@@ -10,9 +10,7 @@ class Ebizmarts_SweetMonkey_Model_Observer
 
     public function saveConfig($observer)
     {
-        Mage::log(Mage::helper('core')->isModuleEnabled('TBT_Common'), null, 'sweet', true);
         if (!Mage::helper('core')->isModuleEnabled('TBT_Common')) {
-            Mage::log('entro', null, 'sweet', true);
             if (Mage::app()->getRequest()->getParam('store')) {
                 $scope = 'store';
             } elseif (Mage::app()->getRequest()->getParam('website')) {
@@ -163,7 +161,6 @@ class Ebizmarts_SweetMonkey_Model_Observer
                 foreach ($tbtVars as $key => $var) {
                     $aux = str_replace('points', '', strtolower($var));
                     $tbtVars[$key] = str_replace('no', 0, $aux);
-                    Mage::log('cambio ' . $tbtVars[$key], null, 'santiago.log', true);
 
                 }
 

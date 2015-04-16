@@ -155,12 +155,13 @@ class Ebizmarts_MageMonkey_Model_Cron
                 //Create customer if not exists, and subscribe
                 $customer = $this->_helper()->createCustomerAccount($member, $websiteId);
             }
-            $subscriber
+            $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
                 ->setCustomerId($customer->getId())
                 ->save();
         } else {
             //Just subscribe email
-            $subscriber->save();
+            $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+                ->save();
         }
 
     }
@@ -518,7 +519,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $oldList = $newList;
             }
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
-                if (count($bach) > 0) {
+                if (count($batch) > 0) {
                     Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
                 }
                 $isConfirmNeed = $eachIsConfirmNeed;

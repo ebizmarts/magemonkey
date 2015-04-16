@@ -18,7 +18,6 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function handleSubscriber(Varien_Event_Observer $observer)
     {
-        Mage::log('handleSubscriber', null, 'santiago.log', true);
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
@@ -28,11 +27,15 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
 
         $subscriber = $observer->getEvent()->getSubscriber();
+        if($subscriber->getOrigData('subscriber_status') == 1 && $subscriber->getData('subscriber_status') > 1){
+            $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $subscriber->getStoreId());
+            Mage::getSingleton('monkey/api')->listUnsubscribe($defaultList, $subscriber->getSubscriberEmail());
+        }
         if (!Mage::helper('monkey')->isAdmin() &&
             (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1)
         ) {
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
-        } elseif (Mage::helper('monkey')->isAdmin()) {
+        } elseif (Mage::helper('monkey')->isAdmin() && $subscriber->getOrigData('subscriber_status') == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) {
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
         }
 
@@ -44,16 +47,14 @@ class Ebizmarts_MageMonkey_Model_Observer
             return $observer;
         }
 
-        $post = Mage::app()->getRequest()->getPost();
         if (TRUE === $subscriber->getIsStatusChanged()) {
-
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
-            if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
+            if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
                 $saveOnDb = Mage::helper('monkey')->config('checkout_async');
                 Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
             } else {
                 $post = Mage::app()->getRequest()->getPost();
-                if (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || !isset($post['magemonkey_subscribe'])) {
+                if (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || Mage::getSingleton('core/session')->getIsUpdateCustomer() || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) {
                     Mage::helper('monkey')->subscribeToList($subscriber, 0);
                 }
             }
@@ -286,68 +287,68 @@ class Ebizmarts_MageMonkey_Model_Observer
             return $observer;
         }
 
+        $request = Mage::app()->getRequest();
+        $isAdmin = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $customer = $observer->getEvent()->getCustomer();
-
-        $isConfirmNeed = FALSE;
-        if (!Mage::helper('monkey')->isAdmin() &&
-            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $customer->getStoreId()) == 1)
-        ) {
-            $isConfirmNeed = TRUE;
-        }
-
-        $oldEmail = $customer->getOrigData('email');
-        $email = $customer->getEmail();
-        if (Mage::getSingleton('core/session')->getMonkeyCheckout()) {
-            $saveOnDb = Mage::helper('monkey')->config('checkout_async');
-        } else {
-            $saveOnDb = 0;
-        }
-        $defaultList = Mage::helper('monkey')->config('list');
-        if (!$oldEmail) {
-            $isSubscribed = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
-            $monkeyPost = unserialize(Mage::getSingleton('core/session')->getMonkeyPost());
-            if ($isSubscribed->getEmail() && !Mage::helper('monkey')->subscribedToList($email, $defaultList) || $monkeyPost) {
-                Mage::helper('monkey')->subscribeToList($customer, $saveOnDb);
-                //$api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
+        $isCheckout = $request->getModuleName() == 'checkout';
+//        $isConfirmNeed = FALSE;
+//        if (!Mage::helper('monkey')->isAdmin() &&
+//            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $customer->getStoreId()) == 1)
+//        ) {
+//            $isConfirmNeed = TRUE;
+//        }
+        if(!$isCheckout) {
+            $oldEmail = $customer->getOrigData('email');
+            $email = $customer->getEmail();
+            if (Mage::getSingleton('core/session')->getMonkeyCheckout()) {
+                $saveOnDb = Mage::helper('monkey')->config('checkout_async');
+            } else {
+                $saveOnDb = 0;
             }
-        } else {
-
-            $request = Mage::app()->getRequest();
-
-
-            Mage::getSingleton('core/session')->setIsUpdateCustomer(TRUE);
-            //subscribe to MailChimp newsletter
-            $api = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
-            $post = Mage::app()->getRequest()->getPost();
-            Mage::helper('monkey')->listsSubscription($customer, $post, $saveOnDb);
-            $lists = $api->listsForEmail($oldEmail);
-            if (is_array($lists)) {
-                foreach ($lists as $listId) {
-                    $mergeVars = Mage::helper('monkey')->mergeVars($customer, TRUE, $listId);
-                    $api->listUpdateMember($listId, $oldEmail, $mergeVars, '', false);
-                }
-            }
-
-            //subscribe to MailChimp when customer subscribed from admin
-            //unsubscribe from Magento when customer unsubscribed from admin
-            if ($request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName')) {
-                if (isset($post['subscription'])) {
+            $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $customer->getStoreId());
+            if (!$oldEmail) {
+                $subscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
+                $monkeyPost = unserialize(Mage::getSingleton('core/session')->getMonkeyPost());
+                if (!Mage::helper('monkey')->subscribedToList($email, $defaultList) && !$isAdmin && ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) || $monkeyPost) {
+                    Mage::helper('monkey')->subscribeToList($customer, $saveOnDb);
                     //$api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
-                } else {
-                    $subscriber = Mage::getModel('newsletter/subscriber')
-                        ->loadByEmail($customer->getEmail());
-                    if ($subscriber->getId()) {
+                }
+            } else {
+
+
+                Mage::getSingleton('core/session')->setIsUpdateCustomer(TRUE);
+                //subscribe to MailChimp newsletter
+                $api = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
+                $post = Mage::app()->getRequest()->getPost();
+                $subscriber = Mage::getModel('newsletter/subscriber')
+                    ->loadByEmail($customer->getEmail());
+                if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED && !$isAdmin) {
+                    Mage::helper('monkey')->listsSubscription($customer, $post, $saveOnDb);
+                }
+                $lists = $api->listsForEmail($oldEmail);
+                if (is_array($lists)) {
+                    foreach ($lists as $listId) {
+                        $mergeVars = Mage::helper('monkey')->mergeVars($customer, TRUE, $listId);
+                        $api->listUpdateMember($listId, $oldEmail, $mergeVars, '', false);
+                    }
+                }
+
+                //subscribe to MailChimp when customer subscribed from admin
+                //unsubscribe from Magento when customer unsubscribed from admin
+                if ($isAdmin) {
+                    if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED) {
                         $subscriber->setImportMode(TRUE)->unsubscribe();
-                        Mage::getSingleton('monkey/api', $customer->getStoreId())->listUnsubscribe($defaultList, $customer->getEmail());
+                        Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()))->listUnsubscribe($defaultList, $customer->getEmail());
                     } else {
                         Mage::getModel('newsletter/subscriber')
                             ->setSubscriberEmail($customer->getEmail())
+                            ->setStoreId($customer->getStoreId())
                             ->setImportMode(TRUE)
                             ->subscribe($customer->getEmail());
                     }
                 }
+                Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);
             }
-            Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);
         }
         return $observer;
     }
