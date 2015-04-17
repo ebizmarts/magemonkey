@@ -27,15 +27,15 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
 
         $subscriber = $observer->getEvent()->getSubscriber();
-        if($subscriber->getOrigData('subscriber_status') == 1 && $subscriber->getData('subscriber_status') > 1){
-            $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $subscriber->getStoreId());
+        $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $subscriber->getStoreId());
+        if($subscriber->getOrigData('subscriber_status') != 3 && $subscriber->getData('subscriber_status') == 3){
             Mage::getSingleton('monkey/api')->listUnsubscribe($defaultList, $subscriber->getSubscriberEmail());
         }
         if (!Mage::helper('monkey')->isAdmin() &&
-            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1)
+            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1 && Mage::helper('monkey')->subscribedToList($defaultList, $subscriber->getSubscriberEmail()))
         ) {
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
-        } elseif (Mage::helper('monkey')->isAdmin() && $subscriber->getOrigData('subscriber_status') == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) {
+            } elseif (Mage::helper('monkey')->isAdmin() && $subscriber->getOrigData('subscriber_status') == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED && $subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED) {
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
         }
 
@@ -336,15 +336,17 @@ class Ebizmarts_MageMonkey_Model_Observer
                 //subscribe to MailChimp when customer subscribed from admin
                 //unsubscribe from Magento when customer unsubscribed from admin
                 if ($isAdmin) {
-                    if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED) {
+                    if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED && !$customer->getData('is_subscribed')) {
                         $subscriber->setImportMode(TRUE)->unsubscribe();
                         Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()))->listUnsubscribe($defaultList, $customer->getEmail());
                     } else {
-                        Mage::getModel('newsletter/subscriber')
-                            ->setSubscriberEmail($customer->getEmail())
-                            ->setStoreId($customer->getStoreId())
-                            ->setImportMode(TRUE)
-                            ->subscribe($customer->getEmail());
+                        if($customer->getData('is_subscribed')) {
+                            Mage::getModel('newsletter/subscriber')
+                                ->setSubscriberEmail($customer->getEmail())
+                                ->setStoreId($customer->getStoreId())
+                                ->setImportMode(TRUE)
+                                ->subscribe($customer->getEmail());
+                        }
                     }
                 }
                 Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);
