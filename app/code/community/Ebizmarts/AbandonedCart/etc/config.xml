@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>0.1.31</version>
+            <version>1.1.32</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
