@@ -1,5 +1,5 @@
 <_>
-   <form_key>CbPtIm2Cut1YqW2E</form_key>
+   <form_key>YK6qB464ETBaMgVv</form_key>
    <name>Ebizmarts_MageMonkey</name>
    <channel>community</channel>
    <version_ids>
@@ -10,17 +10,11 @@
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>1.1.31</version>
+   <version>1.1.32</version>
    <stability>stable</stability>
-   <notes>1.1.31
+   <notes>1.1.32
         --------
-        Updated Sweet Monkey to stop sending automated emails.
-
-        Fixed subscription error on admin
-
-        Added Sweet Monkey to modman
-
-        Removed parentheses as suggested on prototype documentation.</notes>
+        Fix xml format.</notes>
    <authors>
       <name>
          <name>Ebizmarts Development Team</name>
@@ -49,7 +43,7 @@
             <max/>
          </max>
          <files>
-            <files> </files>
+            <files>    </files>
          </files>
       </package>
       <extension>
@@ -266,8 +260,4 @@
          <ignore/>
       </ignore>
    </contents>
-   <page>1</page>
-   <limit>200</limit>
-   <folder/>
-   <package/>
 </_>
