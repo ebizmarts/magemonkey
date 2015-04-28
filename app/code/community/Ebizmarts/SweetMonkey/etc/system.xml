@@ -70,8 +70,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>
-                                <![CDATA[If you set this to 0 it will always display the point balance.]]></comment>
+                            <comment><![CDATA[If you set this to 0 it will always display the point balance.]]></comment>
                         </email_points>
                     </fields>
                 </general>
