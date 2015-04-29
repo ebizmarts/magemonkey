@@ -232,7 +232,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $member = Mage::getSingleton('monkey/api')
                 ->listMemberInfo($listId, $email);
 
-            if (!is_string($member) && $member['success'] && ($member['data'][0]['status'] == 'subscribed' || $member['data'][0]['status'] == 'pending')) {
+            if (!is_string($member) && $member['success'] && ($member['data'][0]['status'] == 'subscribed' )) {
                 $on = TRUE;
             }
         }
@@ -866,6 +866,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($object, $db)
     {
+        Mage::log('listsSubscription', null, 'santiago.log', true);
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
         $defaultList = Mage::helper('monkey')->config('list');
@@ -898,6 +899,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE)
     {
+        Mage::log('subscribeToList', null, 'santiago.log', true);
         if (!$listId) {
             $listId = Mage::helper('monkey')->config('list');
         }
@@ -934,6 +936,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
 
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
+                Mage::log('isOnMailChimp '.$isOnMailChimp, null, 'santiago.log', true);
                 //if( TRUE === $subscriber->getIsStatusChanged() ){
                 if ($isOnMailChimp == 1) {
                     return false;

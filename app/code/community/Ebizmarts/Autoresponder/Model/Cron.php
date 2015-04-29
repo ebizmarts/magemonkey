@@ -70,9 +70,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
         $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TEMPLATE, $storeId);
 
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days + 1, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
@@ -262,9 +262,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         $maxRelated = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_MAX, $storeId);
         $status = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::RELATED_STATUS, $storeId);
 
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days + 1, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $to = new Zend_Db_Expr($expr);
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
@@ -335,10 +335,11 @@ class Ebizmarts_Autoresponder_Model_Cron
         $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_TEMPLATE, $storeId);
         $status = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_STATUS, $storeId);
 
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
-        $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
-        $to = new Zend_Db_Expr($expr);
+        $exprFrom = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days + 1, 'DAY'));
+        $from = new Zend_Db_Expr($exprFrom);
+        $exprTo = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+        $to = new Zend_Db_Expr($exprTo);
+
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
 //            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
@@ -416,9 +417,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
         $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_TEMPLATE, $storeId);
 
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days + 1, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $to = new Zend_Db_Expr($expr);
 
         $collection = Mage::getModel('wishlist/item')->getCollection();
@@ -514,9 +515,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $max = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MAX, $storeId);
 
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days + 1, 'DAY'));
         $from = new Zend_Db_Expr($expr);
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days - 1, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($days, 'DAY'));
         $to = new Zend_Db_Expr($expr);
 
         $collection = Mage::getModel('ebizmarts_autoresponder/visited')->getCollection();
