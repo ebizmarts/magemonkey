@@ -232,19 +232,6 @@ class Ebizmarts_MageMonkey_Model_Monkey
             $toUpdate = $subscriber;
         }
 
-        $this->_mapFieldsToMagento($data, $toUpdate, $storeId);
-
-    }
-
-    protected function _mapFieldsToMagento($data, $toUpdate, $storeId)
-    {
-        $mapMerges = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_MAP_FIELDS, $storeId);
-
-        foreach ($data['merges'] as $merge) {
-            if (in_array($merge, $mapMerges['mailchimp'])) {
-
-            }
-        }
 
     }
 

@@ -139,7 +139,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         $request = Mage::app()->getRequest();
 
         if (!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_ACTIVE, $store)) {
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, false, $scope, $store);
             Mage::getConfig()->cleanCache();
         }
@@ -217,6 +217,66 @@ class Ebizmarts_MageMonkey_Model_Observer
 
         $lists = $api->lists();
 
+        $this->_saveCustomerGroups($lists,$api);
+//        foreach ($lists['data'] as $list) {
+//
+//            if (in_array($list['id'], $selectedLists)) {
+//
+//                /**
+//                 * Customer Group - Interest Grouping
+//                 */
+//                $magentoGroups = Mage::helper('customer')->getGroups()->toOptionHash();
+//                array_push($magentoGroups, "NOT LOGGED IN");
+//                $customerGroup = array('field_type' => 'dropdown', 'choices' => $magentoGroups);
+//                $mergeVars = $api->listMergeVars($list['id']);
+//                $mergeExist = false;
+//                foreach ($mergeVars as $vars) {
+//                    if ($vars['tag'] == 'CGROUP') {
+//                        $mergeExist = true;
+//                        if ($magentoGroups === $vars['choices']) {
+//                            $update = false;
+//                        } else {
+//                            $update = true;
+//                        }
+//                    }
+//                }
+//                if ($mergeExist) {
+//                    if ($update) {
+//                        $newValue = array('choices' => $magentoGroups);
+//                        $api->listMergeVarUpdate($list['id'], 'CGROUP', $newValue);
+//                    }
+//                } else {
+//                    $api->listMergeVarAdd($list['id'], 'CGROUP', 'Customer Groups', $customerGroup);
+//                }
+//                /**
+//                 * Customer Group - Interest Grouping
+//                 */
+//
+//                /**
+//                 * Adding Webhooks
+//                 */
+//                $api->listWebhookAdd($list['id'], $hookUrl);
+//
+//                //If webhook was not added, add a message on Admin panel
+//                if ($api->errorCode && Mage::helper('monkey')->isAdmin()) {
+//
+//                    //Don't show an error if webhook already in, otherwise, show error message and code
+//                    if ($api->errorMessage !== "Setting up multiple WebHooks for one URL is not allowed.") {
+//                        $message = Mage::helper('monkey')->__('Could not add Webhook "%s" for list "%s", error code %s, %s', $hookUrl, $list['name'], $api->errorCode, $api->errorMessage);
+//                        Mage::getSingleton('adminhtml/session')->addError($message);
+//                    }
+//
+//                }
+//                /**
+//                 * Adding Webhooks
+//                 */
+//            }
+//
+//        }
+
+    }
+    protected function _saveCustomerGroups($lists,$api)
+    {
         foreach ($lists['data'] as $list) {
 
             if (in_array($list['id'], $selectedLists)) {
@@ -272,9 +332,7 @@ class Ebizmarts_MageMonkey_Model_Observer
             }
 
         }
-
     }
-
     /**
      * Update customer after_save event observer
      *

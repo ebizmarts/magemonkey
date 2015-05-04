@@ -20,7 +20,7 @@ class Ebizmarts_SweetMonkey_Model_Observer
             }
 
             $store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode() : $observer->getEvent()->getStore();
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig('sweetmonkey/general/active', false, $scope, $store);
             Mage::getConfig()->cleanCache();
             $message = Mage::helper('sweetmonkey')->__('To activate Sweet Monkey you need to have <a href=https://www.sweettoothrewards.com/features/magento/>Sweet Tooth Rewards</a> enabled');
@@ -124,19 +124,7 @@ class Ebizmarts_SweetMonkey_Model_Observer
                     $spent = $earn = null;
 
                     if ($lastTransfers->getSize()) {
-                        foreach ($lastTransfers as $transfer) {
-
-                            if (is_null($earn) && $transfer->getQuantity() > 0) {
-                                $earn = date_format(date_create_from_format('Y-m-d H:i:s', $transfer->getEffectiveStart()), 'Y-m-d');
-                            } else if (is_null($spent) && $transfer->getQuantity() < 0) {
-                                $spent = date_format(date_create_from_format('Y-m-d H:i:s', $transfer->getEffectiveStart()), 'Y-m-d');
-                            }
-
-                            if (!is_null($spent) && !is_null($earn)) {
-                                break;
-                            }
-
-                        }
+                        list($spent,$earn) = $this->spentAndErn($lastTransfers);
                     }
 
                     if ($existEarn && $earn) {
@@ -149,20 +137,21 @@ class Ebizmarts_SweetMonkey_Model_Observer
 
                 }
 
-                //Expiration Points
-                if (array_key_exists('PTSEXP', $tbtVars)) {
-                    $val = Mage::getSingleton('rewards/expiry')
-                        ->getExpiryDate($tbtCustomer);
-                    if ($val) {
-                        $val = date_format(date_create_from_format('d/m/Y', $val), 'Y-m-d');
-                        $tbtVars['PTSEXP'] = $val;
-                    }
-                }
-                foreach ($tbtVars as $key => $var) {
-                    $aux = str_replace('points', '', strtolower($var));
-                    $tbtVars[$key] = str_replace('no', 0, $aux);
-
-                }
+                $tbtVars = $this->expirationPoints($tbtVars,$tbtCustomer);
+//                //Expiration Points
+//                if (array_key_exists('PTSEXP', $tbtVars)) {
+//                    $val = Mage::getSingleton('rewards/expiry')
+//                        ->getExpiryDate($tbtCustomer);
+//                    if ($val) {
+//                        $val = date_format(date_create_from_format('d/m/Y', $val), 'Y-m-d');
+//                        $tbtVars['PTSEXP'] = $val;
+//                    }
+//                }
+//                foreach ($tbtVars as $key => $var) {
+//                    $aux = str_replace('points', '', strtolower($var));
+//                    $tbtVars[$key] = str_replace('no', 0, $aux);
+//
+//                }
 
                 $tbtVars = array_filter($tbtVars);
                 //Add data to MailChimp merge vars
@@ -172,7 +161,42 @@ class Ebizmarts_SweetMonkey_Model_Observer
         }
         return $this;
     }
+    private function spentAndErn($lastTransfers)
+    {
+        $spent = $earn = null;
+        foreach ($lastTransfers as $transfer) {
 
+            if (is_null($earn) && $transfer->getQuantity() > 0) {
+                $earn = date_format(date_create_from_format('Y-m-d H:i:s', $transfer->getEffectiveStart()), 'Y-m-d');
+            } else if (is_null($spent) && $transfer->getQuantity() < 0) {
+                $spent = date_format(date_create_from_format('Y-m-d H:i:s', $transfer->getEffectiveStart()), 'Y-m-d');
+            }
+
+            if (!is_null($spent) && !is_null($earn)) {
+                break;
+            }
+
+        }
+        return array($spent,$earn);
+    }
+
+    private function expirationPoints($tbtVars,$tbtCustomer)
+    {
+        if (array_key_exists('PTSEXP', $tbtVars)) {
+            $val = Mage::getSingleton('rewards/expiry')
+                ->getExpiryDate($tbtCustomer);
+            if ($val) {
+                $val = date_format(date_create_from_format('d/m/Y', $val), 'Y-m-d');
+                $tbtVars['PTSEXP'] = $val;
+            }
+        }
+        foreach ($tbtVars as $key => $var) {
+            $aux = str_replace('points', '', strtolower($var));
+            $tbtVars[$key] = str_replace('no', 0, $aux);
+
+        }
+        return $tbtVars;
+    }
     /**
      * Gets a date in format YYYY-MM-DD HH:m:s and returns MM/DD/YYYY
      *

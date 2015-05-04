@@ -23,33 +23,33 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         }
         $store = is_null($o->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode() : $o->getEvent()->getStore();
         if (!Mage::helper('ebizmarts_mandrill')->useTransactionalService()) {
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE, false, $scope, $store);
             Mage::getConfig()->cleanCache();
         }
         if (!Mage::helper('ebizmarts_mandrill')->useTransactionalService()) {
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, false, $scope, $store);
             $config->saveConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, false, $scope, $store);
             Mage::getConfig()->cleanCache();
         }
         if (!Mage::getStoreConfig('customer/address/dob_show')) {
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE, false, $scope, $store);
             Mage::getConfig()->cleanCache();
         }
         if (!Mage::getStoreConfig('customer/address/dob_show', $store)) {
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_ACTIVE, false, $scope, $store);
             Mage::getConfig()->cleanCache();
         }
         if (Mage::getStoreConfig('advanced/modules_disable_output/Mage_Wishlist', $store)) {
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::WISHLIST_ACTIVE, false, $scope, $store);
             Mage::getConfig()->cleanCache();
         }
         if (Mage::getStoreConfig('advanced/modules_disable_output/Mage_Review', $store)) {
-            $config = new Mage_Core_Model_Config();
+            $config = Mage::getModel('core/config');
             $config->saveConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_ACTIVE, false, $scope, $store);
             Mage::getConfig()->cleanCache();
         }

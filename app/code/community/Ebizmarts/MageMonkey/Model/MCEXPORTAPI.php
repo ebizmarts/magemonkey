@@ -8,6 +8,9 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
+// @codingStandardsIgnoreStart
+
 class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_MCAPI
 {
     var $version = "1.0";
@@ -21,7 +24,7 @@ class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_
     function __construct($apikey, $secure = false)
     {
         $this->secure = $secure;
-        $this->apiUrl = parse_url("http://api.mailchimp.com/export/" . $this->version . "/");
+        $this->apiUrl = Mage::getSingleton('core/url')->parseUrl("http://api.mailchimp.com/export/" . $this->version . "/" ); //parse_url("http://api.mailchimp.com/export/" . $this->version . "/");
         $this->api_key = $apikey;
     }
 
@@ -130,3 +133,4 @@ class Ebizmarts_MageMonkey_Model_MCEXPORTAPI extends Ebizmarts_MageMonkey_Model_
     }
 
 }
+// @codingStandardsIgnoreEnd

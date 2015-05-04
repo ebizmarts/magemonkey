@@ -76,8 +76,9 @@ class Ebizmarts_AbandonedCart_Model_EventObserver
         if (!Mage::getSingleton('customer/session')->isLoggedIn() && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $quote->getStoreId())) {
             $action = Mage::app()->getRequest()->getActionName();
             $onCheckout = ($action == 'saveOrder' || $action == 'savePayment' || $action == 'saveShippingMethod' || $action == 'saveBilling');
-            if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none' && !$onCheckout) {
-                $email = str_replace(' ', '+', $_COOKIE['email']);
+            if(Mage::getModel('core/cookie')->get('email') && Mage::getModel('core/cookie')->get('email')!= 'none' && !$onCheckout) {
+//            if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none' && !$onCheckout) {
+                $email = str_replace(' ', '+', Mage::getModel('core/cookie')->get('email'));
                 if ($quote->getCustomerEmail() != $email) {
                     $quote->setCustomerEmail($email)
                         ->save();

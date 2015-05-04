@@ -412,6 +412,68 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 ->toArray());
         }
 
+        $this->_setMaps($maps,$customer,$merge_vars);
+
+        //GUEST
+        if (!$customer->getId() && !$request->getPost('firstname')) {
+            $guestFirstName = $this->config('guest_name', $customer->getStoreId());
+
+            if ($guestFirstName) {
+                $merge_vars['FNAME'] = $guestFirstName;
+            }
+        }
+        if (!$customer->getId() && !$request->getPost('lastname')) {
+            $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
+
+            if ($guestLastName) {
+                $merge_vars['LNAME'] = $guestLastName;
+            }
+        }
+        //GUEST
+
+        if ($includeEmail) {
+            $merge_vars['EMAIL'] = $customer->getEmail();
+        }
+
+        $groups = $customer->getListGroups();
+        $groupings = array();
+
+        if (is_array($groups) && count($groups)) {
+            foreach ($groups as $groupId => $grupoptions) {
+                if (is_array($grupoptions)) {
+                    $grupOptionsEscaped = array();
+                    foreach ($grupoptions as $gopt) {
+                        $gopt = str_replace(",", "%C%", $gopt);
+                        $grupOptionsEscaped[] = $gopt;
+                    }
+                    $groupings[] = array(
+                        'id' => $groupId,
+                        'groups' => str_replace('%C%', '\\,', implode(', ', $grupOptionsEscaped))
+                    );
+                } else {
+                    $groupings[] = array(
+                        'id' => $groupId,
+                        'groups' => str_replace(',', '\\,', $grupoptions)
+                    );
+                }
+            }
+        }
+
+        $merge_vars['GROUPINGS'] = $groupings;
+
+        //magemonkey_mergevars_after
+        $blank = new Varien_Object;
+        Mage::dispatchEvent('magemonkey_mergevars_after',
+            array('vars' => $merge_vars, 'customer' => $customer, 'newvars' => $blank));
+        if ($blank->hasData()) {
+            $merge_vars = array_merge($merge_vars, $blank->toArray());
+        }
+        //magemonkey_mergevars_after
+
+        return $merge_vars;
+    }
+    private function _setMaps($maps,$customer,$merge_vars)
+    {
         foreach ($maps as $map) {
 
             $customAtt = $map['magento'];
@@ -438,36 +500,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         break;
                     case 'billing_address':
                     case 'shipping_address':
-
-                        $addr = explode('_', $customAtt);
-                        $address = $customer->{'getPrimary' . ucfirst($addr[0]) . 'Address'}();
-                        if (!$address) {
-                            if ($customer->{'getDefault' . ucfirst($addr[0])}()) {
-                                $address = Mage::getModel('customer/address')->load($customer->{'getDefault' . ucfirst($addr[0])}());
-                            }
-                        }
-                        if ($address) {
-                            $merge_vars[$key] = array(
-                                'addr1' => $address->getStreet(1),
-                                'addr2' => $address->getStreet(2),
-                                'city' => $address->getCity(),
-                                'state' => (!$address->getRegion() ? $address->getCity() : $address->getRegion()),
-                                'zip' => $address->getPostcode(),
-                                'country' => $address->getCountryId()
-                            );
-                            $telephone = $address->getTelephone();
-                            if ($telephone) {
-                                $merge_vars['TELEPHONE'] = $telephone;
-                            }
-                            $company = $address->getCompany();
-                            if ($company) {
-                                $merge_vars['COMPANY'] = $company;
-                            }
-                            $country = $address->getCountryId();
-                            if ($country) {
-                                $merge_vars['COUNTRY'] = $country;
-                            }
-                        }
+                        $this->_setAddress($customAtt,$merge_vars);
 
                         break;
                     case 'date_of_purchase':
@@ -528,66 +561,39 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
             }
         }
-
-        //GUEST
-        if (!$customer->getId() && !$request->getPost('firstname')) {
-            $guestFirstName = $this->config('guest_name', $customer->getStoreId());
-
-            if ($guestFirstName) {
-                $merge_vars['FNAME'] = $guestFirstName;
-            }
-        }
-        if (!$customer->getId() && !$request->getPost('lastname')) {
-            $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
-
-            if ($guestLastName) {
-                $merge_vars['LNAME'] = $guestLastName;
-            }
-        }
-        //GUEST
-
-        if ($includeEmail) {
-            $merge_vars['EMAIL'] = $customer->getEmail();
-        }
-
-        $groups = $customer->getListGroups();
-        $groupings = array();
-
-        if (is_array($groups) && count($groups)) {
-            foreach ($groups as $groupId => $grupoptions) {
-                if (is_array($grupoptions)) {
-                    $grupOptionsEscaped = array();
-                    foreach ($grupoptions as $gopt) {
-                        $gopt = str_replace(",", "%C%", $gopt);
-                        $grupOptionsEscaped[] = $gopt;
-                    }
-                    $groupings[] = array(
-                        'id' => $groupId,
-                        'groups' => str_replace('%C%', '\\,', implode(', ', $grupOptionsEscaped))
-                    );
-                } else {
-                    $groupings[] = array(
-                        'id' => $groupId,
-                        'groups' => str_replace(',', '\\,', $grupoptions)
-                    );
-                }
-            }
-        }
-
-        $merge_vars['GROUPINGS'] = $groupings;
-
-        //magemonkey_mergevars_after
-        $blank = new Varien_Object;
-        Mage::dispatchEvent('magemonkey_mergevars_after',
-            array('vars' => $merge_vars, 'customer' => $customer, 'newvars' => $blank));
-        if ($blank->hasData()) {
-            $merge_vars = array_merge($merge_vars, $blank->toArray());
-        }
-        //magemonkey_mergevars_after
-
-        return $merge_vars;
     }
-
+    protected function _setAddress($customAtt,$merge_vars)
+    {
+        $addr = explode('_', $customAtt);
+        $address = $customer->{'getPrimary' . ucfirst($addr[0]) . 'Address'}();
+        if (!$address) {
+            if ($customer->{'getDefault' . ucfirst($addr[0])}()) {
+                $address = Mage::getModel('customer/address')->load($customer->{'getDefault' . ucfirst($addr[0])}());
+            }
+        }
+        if ($address) {
+            $merge_vars[$key] = array(
+                'addr1' => $address->getStreet(1),
+                'addr2' => $address->getStreet(2),
+                'city' => $address->getCity(),
+                'state' => (!$address->getRegion() ? $address->getCity() : $address->getRegion()),
+                'zip' => $address->getPostcode(),
+                'country' => $address->getCountryId()
+            );
+            $telephone = $address->getTelephone();
+            if ($telephone) {
+                $merge_vars['TELEPHONE'] = $telephone;
+            }
+            $company = $address->getCompany();
+            if ($company) {
+                $merge_vars['COMPANY'] = $company;
+            }
+            $country = $address->getCountryId();
+            if ($country) {
+                $merge_vars['COUNTRY'] = $country;
+            }
+        }
+    }
     /**
      * Get Mergevars
      *
@@ -638,6 +644,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $post = unserialize($monkeyPost);
         }
         //if post exists && is not admin backend subscription && not footer subscription
+        $this->_checkGrouping($mergeVars,$post,$currentList);
+
+
+        return $mergeVars;
+    }
+    private function _checkGrouping($merge_vars,$post,$currentList)
+    {
         $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
         $customerSubscription = $request->getActionName() == 'saveadditional';
@@ -682,39 +695,36 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     }
 
                 }
-            }
-            if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
-                $mergeVars["GROUPINGS"] = $subscribeGroups;
-            }
+                if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
+                    $mergeVars["GROUPINGS"] = $subscribeGroups;
+                }
 
-            $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
-            $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
-            if (isset($post['magemonkey_subscribe']) && $map != "") {
-                $listsChecked = explode(',', $post['magemonkey_subscribe']);
-                $hasClicked = in_array($currentList, $listsChecked);
-                if ($hasClicked && $force != 3) {
-                    $mergeVars[$map] = "Yes";
-                } else {
+                $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
+                $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
+                if (isset($post['magemonkey_subscribe']) && $map != "") {
+                    $listsChecked = explode(',', $post['magemonkey_subscribe']);
+                    $hasClicked = in_array($currentList, $listsChecked);
+                    if ($hasClicked && $force != 3) {
+                        $mergeVars[$map] = "Yes";
+                    } else {
+                        $mergeVars[$map] = "No";
+                    }
+                } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
+                    $post2 = $request->getPost();
+                    if (isset($post['subscribe_newsletter']) || isset($post2['subscribe_newsletter'])) {
+                        $mergeVars[$map] = "Yes";
+                    } elseif (Mage::helper('monkey')->config('checkout_subscribe') > 2) {
+                        $mergeVars[$map] = "No";
+                    }
+                } elseif ($request->getModuleName() == 'checkout') {
                     $mergeVars[$map] = "No";
                 }
-            } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
-                $post2 = $request->getPost();
-                if (isset($post['subscribe_newsletter']) || isset($post2['subscribe_newsletter'])) {
-                    $mergeVars[$map] = "Yes";
-                } elseif (Mage::helper('monkey')->config('checkout_subscribe') > 2) {
-                    $mergeVars[$map] = "No";
-                }
-            } elseif ($request->getModuleName() == 'checkout') {
-                $mergeVars[$map] = "No";
+            } else {
+                $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
+                $mergeVars[$map] = "Yes";
             }
-        } else {
-            $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
-            $mergeVars[$map] = "Yes";
         }
-
-        return $mergeVars;
     }
-
     /**
      * Register on Magento's registry GUEST customer data for MergeVars for on checkout subscribe
      *
@@ -812,7 +822,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     protected function _McAddressToMage(array $data, $type, $customer)
     {
         $addressData = $data["{$type}_address"];
-        $address = explode(str_repeat(chr(32), 2), $addressData);
+        $address = explode(str_repeat(' ', 2), $addressData);
         list($addr1, $addr2, $city, $state, $zip, $country) = $address;
 
         $region = Mage::getModel('directory/region')->loadByName($state, $country);
@@ -993,7 +1003,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     {
         //<state> param is an html serialized field containing the default form state
         //before submission, we need to parse it as a request in order to save it to $odata and process it
-        parse_str($request->getPost('state'), $odata);
+//        parse_str($request->getPost('state'), $odata);
+        $m = explode('&',$request->getPost('state'));
+        $odata = array();
+        foreach($m as $v) {
+            $g = explode('=',$v);
+            $odata[$g[0]]=$g[1];
+        }
         $curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
         $lists = $request->getPost('list', array());
 
@@ -1030,7 +1046,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         ->addFieldToFilter('email', $email)
                         ->addFieldToFilter('processed', 0);
 
-                    if (count($alreadyOnDb) > 0) {
+                    if(count($alreadyOnDb) > 0) {
                         foreach ($alreadyOnDb as $listToDelete) {
                             $toDelete = Mage::getModel('monkey/asyncsubscribers')->load($listToDelete->getId());
                             $toDelete->delete();

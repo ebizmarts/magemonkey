@@ -111,8 +111,9 @@ class Ebizmarts_Autoresponder_AutoresponderController extends Mage_Core_Controll
             return;
         }
         if (!Mage::getSingleton('customer/session')->isLoggedIn()) {
-            if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none') {
-                $email = str_replace(' ', '+', $_COOKIE['email']);
+            if(Mage::getModel('core/cookie')->get('email')&&Mage::getModel('core/cookie')->get('email')!='none') {
+//            if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none') {
+                $email = str_replace(' ', '+', Mage::getModel('core/cookie')->get('email'));
             } else {
                 return;
             }

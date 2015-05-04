@@ -266,7 +266,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 
             $processedCount = 0;
             foreach ($collection as $item) {
-                $processedCount += 1;
+                $processedCount++;
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
                 if ($isOnMailChimp) {
                     $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
@@ -291,24 +291,6 @@ class Ebizmarts_MageMonkey_Model_Cron
                     $job
                         ->setUpdatedAt($this->_dbDate())
                         ->save();
-
-                } else {
-
-                    //TODO: Do something to handle errors
-
-                    /*echo "Batch Subscribe failed!\n";
-                    echo "code:".$api->errorCode."\n";
-                    echo "msg :".$api->errorMessage."\n";
-                    die;*/
-                    /*echo "added:   ".$vals['add_count']."\n";
-                    echo "updated: ".$vals['update_count']."\n";
-                    echo "errors:  ".$vals['error_count']."\n";
-                    foreach($vals['errors'] as $val){
-                        echo $val['email_address']. " failed\n";
-                        echo "code:".$val['code']."\n";
-                        echo "msg :".$val['message']."\n";
-                    }
-                    die;*/
 
                 }
 
