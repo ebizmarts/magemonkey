@@ -24,7 +24,6 @@ class Ebizmarts_SweetMonkey_Adminhtml_MageMonkeyController extends Mage_Adminhtm
         }
 
         $this->getResponse()->setBody(Zend_Json::encode($mergeVars));
-        return;
     }
 
     /**
@@ -38,7 +37,12 @@ class Ebizmarts_SweetMonkey_Adminhtml_MageMonkeyController extends Mage_Adminhtm
         if ($listId) {
 
             $api = Mage::getModel('monkey/api');
-            parse_str($this->getRequest()->getPost('merge_vars'), $mergeVars);
+            $e =explode('&',$this->getRequest()->getPost('merge_vars'));
+            $mergeVars = array();
+            foreach($e as $val) {
+                $m = explode('=',$val);
+                $mergeVars[$m[0]]=$m[1];
+            }
 
             $options = array();
             foreach ($mergeVars as $tag => $name) {
@@ -64,7 +68,6 @@ class Ebizmarts_SweetMonkey_Adminhtml_MageMonkeyController extends Mage_Adminhtm
         }
 
         $this->getResponse()->setBody(Zend_Json::encode(array()));
-        return;
     }
 
 }

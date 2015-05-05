@@ -46,8 +46,8 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $email = array('subject' => $this->getProcessedTemplateSubject($variables), 'to' => array());
 
         $mail = $this->getMail();
-
-        for ($i = 0; $i < count($emails); $i++) {
+        $max = count($emails);
+        for ($i = 0; $i < $max; $i++) {
             if (isset($names[$i])) {
                 $email['to'][] = array(
                     'email' => $emails[$i],

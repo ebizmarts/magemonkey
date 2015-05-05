@@ -8,6 +8,9 @@
  * @author     Ebizmarts Team <info@ebizmarts.com>
  * @license    http://opensource.org/licenses/osl-3.0.php
  */
+
+// @codingStandardsIgnoreStart
+
 class Ebizmarts_MageMonkey_Model_MCAPI
 {
     var $version = "1.3";
@@ -2590,3 +2593,4 @@ class Ebizmarts_MageMonkey_Model_MCAPI
     }
 
 }
+// @codingStandardsIgnoreEnd

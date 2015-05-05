@@ -37,6 +37,5 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard extends Mage_Adminhtml_B
             $output = $this->getLayout()->createBlock('ebizmarts_abandonedcart/adminhtml_dashboard_' . $blockTab)->toHtml();
         }
         $this->getResponse()->setBody($output);
-        return;
     }
 }
