@@ -1,5 +1,5 @@
 <_>
-   <form_key>YK6qB464ETBaMgVv</form_key>
+   <form_key>gveGebWj9soA7q8e</form_key>
    <name>Ebizmarts_MageMonkey</name>
    <channel>community</channel>
    <version_ids>
@@ -10,11 +10,13 @@
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>1.1.32</version>
+   <version>1.1.33</version>
    <stability>stable</stability>
-   <notes>1.1.32
+   <notes>1.1.33
         --------
-        Fix xml format.</notes>
+Improvement on the code display to fit Magento new standards.
+
+Removed filter to resend subscription confirmation email.</notes>
    <authors>
       <name>
          <name>Ebizmarts Development Team</name>
@@ -43,7 +45,7 @@
             <max/>
          </max>
          <files>
-            <files>    </files>
+            <files>      </files>
          </files>
       </package>
       <extension>
