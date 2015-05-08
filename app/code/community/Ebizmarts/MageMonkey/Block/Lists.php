@@ -277,7 +277,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                 $class = 'Varien_Data_Form_Element_Text';
                 break;
         }
-        $html = $this->_generateHtml($myGroups,$checked,$list);
+        $html = $this->_generateHtml($myGroups, $group, $checked, $list, $class, $fieldType);
 //        $object = new $class;
 //        $object->setForm($this->getForm());
 //
@@ -349,7 +349,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         return $html;
 
     }
-    protected function _generateHtml($myGroups,$group,$checked,$list)
+    protected function _generateHtml($myGroups,$group,$checked,$list,$class,$fieldType)
     {
         $object = new $class;
         $object->setForm($this->getForm());

@@ -508,10 +508,6 @@ class Ebizmarts_Autoresponder_Model_Cron
         $customerGroups = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_CUSTOMER_GROUPS, $storeId));
         $days = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_DAYS, $storeId);
         $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MANDRILL_TAG, $storeId) . "_$storeId";
-        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_SUBJECT, $storeId);
-        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
-        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
-        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TEMPLATE, $storeId);
         $adapter = Mage::getSingleton('core/resource')->getConnection('sales_read');
         $max = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_MAX, $storeId);
 
@@ -535,7 +531,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
                         $translate = Mage::getSingleton('core/translate');
                         $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                        $this->sendVisitedProductEmail($email,$storeId,$products);
+                        $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
 
 //                        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
 //                        $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
@@ -590,7 +586,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $translate = Mage::getSingleton('core/translate');
                 $email = $item->getCustomerEmail();
                 $name = 'customer';
-                $this->sendVisitedProductEmail($email,$storeId,$products);
+                $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
 
 
 //                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
@@ -623,7 +619,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
                     $translate = Mage::getSingleton('core/translate');
                     $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                    $this->sendVisitedProductEmail($email,$storeId,$products);
+                    $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
 
 //                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
 //                    $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
@@ -650,10 +646,9 @@ class Ebizmarts_Autoresponder_Model_Cron
                 }
             } else {
                 //add customer by email placed on Abandoned Cart Popup
-                $translate = Mage::getSingleton('core/translate');
                 $email = $item->getCustomerEmail();
                 $name = 'customer';
-                $this->sendVisitedProductEmail($email,$storeId,$products);
+                $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
 //                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
 //                $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
 //
@@ -680,8 +675,12 @@ class Ebizmarts_Autoresponder_Model_Cron
         }
 
     }
-    protected function sendVisitedProductEmail($email,$storeId,$products)
+    protected function _sendVisitedProductEmail($email,$storeId,$products,$name,$tags)
     {
+        $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_SUBJECT, $storeId);
+        $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
+        $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
+        $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TEMPLATE, $storeId);
         $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
         $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
 
@@ -701,6 +700,7 @@ class Ebizmarts_Autoresponder_Model_Cron
             }
         }
 
+        $translate = Mage::getSingleton('core/translate');
         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
         $translate->setTranslateInLine(true);
         Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);

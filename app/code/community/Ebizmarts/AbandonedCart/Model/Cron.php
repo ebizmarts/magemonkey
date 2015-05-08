@@ -106,7 +106,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
             if (!$this->days[$run]) {
                 return;
             }
-            $this->_proccessRun($adapter);
+            $this->_processRun($adapter, $run, $storeId, $abTesting, $suffix);
 //            // subtract days from latest run to get difference from the actual abandon date of the cart
 //            $diff = $this->days[$run];
 //            if ($run == 1 && $this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS) {
@@ -301,7 +301,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 //            }
             }
     }
-    protected function _processRun($adapter)
+    protected function _processRun($adapter, $run, $storeId, $abTesting, $suffix)
     {
         // subtract days from latest run to get difference from the actual abandon date of the cart
         $diff = $this->days[$run];
@@ -337,7 +337,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
         // for each cart of the current run
         foreach ($collection as $quote) {
-            $this->proccessCollection($quote);
+            $this->_proccessCollection($quote, $storeId);
 //            foreach ($quote->getAllVisibleItems() as $item) {
 //                $removeFromQuote = false;
 //                $product = Mage::getModel('catalog/product')->setStoreId($storeId)->load($item->getProductId());
@@ -498,7 +498,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         }
 
     }
-    protected function _proccessCollection($collection)
+    protected function _proccessCollection($quote, $storeId)
     {
         foreach ($quote->getAllVisibleItems() as $item) {
             $removeFromQuote = false;

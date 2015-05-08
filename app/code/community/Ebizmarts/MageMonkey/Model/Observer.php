@@ -217,7 +217,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
         $lists = $api->lists();
 
-        $this->_saveCustomerGroups($lists,$api);
+        $this->_saveCustomerGroups($lists,$api,$selectedLists,$hookUrl);
 //        foreach ($lists['data'] as $list) {
 //
 //            if (in_array($list['id'], $selectedLists)) {
@@ -275,7 +275,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 //        }
 
     }
-    protected function _saveCustomerGroups($lists,$api)
+    protected function _saveCustomerGroups($lists,$api,$selectedLists,$hookUrl)
     {
         foreach ($lists['data'] as $list) {
 

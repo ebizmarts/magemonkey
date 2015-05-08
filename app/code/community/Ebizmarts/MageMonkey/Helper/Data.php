@@ -412,7 +412,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 ->toArray());
         }
 
-        $this->_setMaps($maps,$customer,$merge_vars);
+        $this->_setMaps($maps,$customer,$merge_vars, $websiteId);
 
         //GUEST
         if (!$customer->getId() && !$request->getPost('firstname')) {
@@ -472,9 +472,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $merge_vars;
     }
-    private function _setMaps($maps,$customer,$merge_vars)
+    private function _setMaps($maps,$customer,$merge_vars, $websiteId)
     {
         foreach ($maps as $map) {
+            $request = Mage::app()->getRequest();
 
             $customAtt = $map['magento'];
             $chimpTag = $map['mailchimp'];
@@ -500,7 +501,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         break;
                     case 'billing_address':
                     case 'shipping_address':
-                        $this->_setAddress($customAtt,$merge_vars);
+                        $this->_setAddress($customAtt,$merge_vars, $customer, $key);
 
                         break;
                     case 'date_of_purchase':
@@ -562,7 +563,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
     }
-    protected function _setAddress($customAtt,$merge_vars)
+    protected function _setAddress($customAtt,$merge_vars, $customer, $key)
     {
         $addr = explode('_', $customAtt);
         $address = $customer->{'getPrimary' . ucfirst($addr[0]) . 'Address'}();
@@ -644,13 +645,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $post = unserialize($monkeyPost);
         }
         //if post exists && is not admin backend subscription && not footer subscription
-        $this->_checkGrouping($mergeVars,$post,$currentList);
+        $this->_checkGrouping($mergeVars,$post,$currentList, $object);
 
 
         return $mergeVars;
     }
-    private function _checkGrouping($merge_vars,$post,$currentList)
+    private function _checkGrouping($merge_vars,$post,$currentList, $object)
     {
+        $request = Mage::app()->getRequest();
         $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
         $customerSubscription = $request->getActionName() == 'saveadditional';
@@ -876,7 +878,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($object, $db)
     {
-        Mage::log('listsSubscription', null, 'santiago.log', true);
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
         $defaultList = Mage::helper('monkey')->config('list');
@@ -909,7 +910,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE)
     {
-        Mage::log('subscribeToList', null, 'santiago.log', true);
         if (!$listId) {
             $listId = Mage::helper('monkey')->config('list');
         }
@@ -946,7 +946,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
 
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
-                Mage::log('isOnMailChimp '.$isOnMailChimp, null, 'santiago.log', true);
                 //if( TRUE === $subscriber->getIsStatusChanged() ){
                 if ($isOnMailChimp == 1) {
                     return false;
