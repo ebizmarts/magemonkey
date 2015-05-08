@@ -1006,12 +1006,29 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         //<state> param is an html serialized field containing the default form state
         //before submission, we need to parse it as a request in order to save it to $odata and process it
 //        parse_str($request->getPost('state'), $odata);
+        Mage::log($request->getPost('state'), null, 'santiago.log', true);
         $m = explode('&',$request->getPost('state'));
         $odata = array();
+        $list = array();
         foreach($m as $v) {
+
             $g = explode('=',$v);
-            $odata[$g[0]]=$g[1];
+            $u = explode('%5B',$v);
+            if($u[0] == 'list') {
+                $suffixListId = $u[1];
+                $listId = substr($u[1], 0, (strlen($suffixListId)-3));
+                $list[$listId] = array();
+                $listIdArray = $list[$listId];
+                $tail = explode('%5D',$u[2]);
+                $subscribed = $tail[0];
+                $listIdArray[$subscribed] = $g[1];
+                $list[$listId] = $listIdArray;
+                $odata['list'] = $list;
+            }else {
+                $odata[$g[0]] = $g[1];
+            }
         }
+        Mage::log($odata, null, 'santiago.log', true);
         $curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
         $lists = $request->getPost('list', array());
 
