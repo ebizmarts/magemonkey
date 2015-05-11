@@ -32,7 +32,7 @@ class Ebizmarts_MageMonkey_Model_Observer
             Mage::getSingleton('monkey/api')->listUnsubscribe($defaultList, $subscriber->getSubscriberEmail());
         }
         if (!Mage::helper('monkey')->isAdmin() &&
-            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1 && Mage::helper('monkey')->subscribedToList($defaultList, $subscriber->getSubscriberEmail()))
+            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1 && Mage::helper('monkey')->subscribedToList($subscriber->getSubscriberEmail(), $defaultList))
         ) {
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
             } elseif (Mage::helper('monkey')->isAdmin() && $subscriber->getOrigData('subscriber_status') == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED && $subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED) {
