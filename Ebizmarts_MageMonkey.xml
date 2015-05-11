@@ -1,5 +1,5 @@
 <_>
-   <form_key>gveGebWj9soA7q8e</form_key>
+   <form_key>BjOutRh4APK9EY3O</form_key>
    <name>Ebizmarts_MageMonkey</name>
    <channel>community</channel>
    <version_ids>
@@ -45,7 +45,7 @@ Removed filter to resend subscription confirmation email.</notes>
             <max/>
          </max>
          <files>
-            <files>      </files>
+            <files>        </files>
          </files>
       </package>
       <extension>

@@ -940,7 +940,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if (count($alreadyOnList) == 0) {
                 $isConfirmNeed = FALSE;
                 if (!Mage::helper('monkey')->isAdmin() &&
-                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !$forceSubscribe)
+                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !$forceSubscribe && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $object->getStoreId()))
                 ) {
                     $isConfirmNeed = TRUE;
                 }
@@ -1006,7 +1006,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         //<state> param is an html serialized field containing the default form state
         //before submission, we need to parse it as a request in order to save it to $odata and process it
 //        parse_str($request->getPost('state'), $odata);
-        Mage::log($request->getPost('state'), null, 'santiago.log', true);
         $m = explode('&',$request->getPost('state'));
         $odata = array();
         $list = array();
@@ -1028,7 +1027,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $odata[$g[0]] = $g[1];
             }
         }
-        Mage::log($odata, null, 'santiago.log', true);
         $curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
         $lists = $request->getPost('list', array());
 
@@ -1122,13 +1120,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $subscriber->setListGroups($groupings);
                         $subscriber->setMcListId($listId);
                         $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
-                        $subscriber->setImportMode(TRUE);
                         $subscriber->subscribe($email);
                     } else {
                         $customer->setListGroups($groupings);
                         $customer->setMcListId($listId);
                         $subscriber = Mage::getModel('newsletter/subscriber')
-                            ->setImportMode(TRUE)
                             ->setSubscriberEmail($email);
                         $this->subscribeToList($subscriber, 0, $listId);
 
