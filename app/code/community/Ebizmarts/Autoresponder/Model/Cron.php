@@ -151,7 +151,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $couponcode = '';
                 if ($sendCoupon && in_array($customer->getGroupId(), $customerGroupsCoupon)) {
                     if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_AUTOMATIC, $storeId) == Ebizmarts_Autoresponder_Model_Config::COUPON_AUTOMATIC) {
-                        list($couponcode, $discount, $toDate) = $this->_createNewCoupon($storeId, $email);
+                        list($couponcode, $discount, $toDate) = $this->_createNewCoupon($storeId, $email, 'Birthday coupon');
                         $vars = array('couponcode' => $couponcode, 'discount' => $discount, 'todate' => $toDate, 'name' => $name, 'tags' => array($tags), 'url' => $url);
                     } else {
                         $couponcode = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_CODE);
@@ -193,6 +193,8 @@ class Ebizmarts_Autoresponder_Model_Cron
         $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_TEMPLATE, $storeId);
         $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_SUBJECT, $storeId);
         $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_MANDRILL_TAG, $storeId) . "_$storeId";
+        $sendCoupon = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_COUPON, $storeId);
+        $customerGroupsCoupon = explode(",", Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_CUSTOMER_COUPON, $storeId));
 
         $collection = Mage::getModel('customer/customer')->getCollection();
 
@@ -222,6 +224,16 @@ class Ebizmarts_Autoresponder_Model_Cron
                     if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'noactivity', $storeId)) {
                         $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=noactivity&email=' . $email . '&store=' . $storeId;
                         $vars = array('name' => $name, 'tags' => array($tags), 'lastlogin' => $lastVisited, 'url' => $url);
+
+                        if ($sendCoupon && in_array($cust->getGroupId(), $customerGroupsCoupon)) {
+                            if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NOACTIVITY_AUTOMATIC, $storeId) == Ebizmarts_Autoresponder_Model_Config::COUPON_AUTOMATIC) {
+                                list($couponcode, $discount, $toDate) = $this->_createNewCoupon($storeId, $email, 'No Activity coupon');
+                                $vars = array('couponcode' => $couponcode, 'discount' => $discount, 'todate' => $toDate, 'name' => $name, 'tags' => array($tags), 'lastlogin' => $lastVisited, 'url' => $url);
+                            } else {
+                                $couponcode = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_CODE);
+                                $vars = array('couponcode' => $couponcode, 'name' => $name, 'tags' => array($tags), 'lastlogin' => $lastVisited, 'url' => $url);
+                            }
+                        }
 
                         $customer = Mage::getModel('customer/customer')
                             ->setStore(Mage::app()->getStore($storeId))
@@ -938,10 +950,10 @@ class Ebizmarts_Autoresponder_Model_Cron
     }
 
 
-    protected function _createNewCoupon($store, $email)
+    protected function _createNewCoupon($store, $email, $string)
     {
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array('like' => 'Birthday coupon ' . $email));
+            ->addFieldToFilter('name', array('like' => $string . $email));
         if (!count($collection)) {
             $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
             $couponexpiredays = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_EXPIRE, $store);
@@ -966,8 +978,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $groups[] = $groupid;
             }
             $coupon_rule = Mage::getModel('salesrule/rule');
-            $coupon_rule->setName("Birthday coupon $email")
-                ->setDescription("Birthday coupon $email")
+            $coupon_rule->setName($string . ' ' . $email)
+                ->setDescription($string . ' ' . $email)
                 ->setFromDate($fromDate)
                 ->setToDate($toDate)
                 ->setIsActive(1)
@@ -1013,9 +1025,10 @@ class Ebizmarts_Autoresponder_Model_Cron
         $today = date('Y-m-d');
         $reviewCouponFilter = array('like' => 'Review coupon%');
         $birthdayCouponFilter = array('like' => 'Birthday coupon%');
+        $noActivityCouponFilter = array('like' => 'No Activity coupon%');
 
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array($reviewCouponFilter, $birthdayCouponFilter))
+            ->addFieldToFilter('name', array($reviewCouponFilter, $birthdayCouponFilter, $noActivityCouponFilter))
             ->addFieldToFilter('to_date', array('lt' => $today));
 
         foreach ($collection as $toDelete) {

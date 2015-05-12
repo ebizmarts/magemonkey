@@ -991,11 +991,141 @@
                                 <active>1</active>
                             </depends>
                         </customer>
+                        <coupon translate="label">
+                            <label>Create Coupon?</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>55</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                            </depends>
+                        </coupon>
+                        <customer_coupon translate="label comment">
+                            <label>Customer Groups for coupon</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>ebizmarts_autoresponder/system_config_customergroup</source_model>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                            </depends>
+                        </customer_coupon>
+                        <automatic translate="label">
+                            <label>Option</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_autoresponder/system_config_automatic</source_model>
+                            <sort_order>65</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                            </depends>
+                        </automatic>
+                        <coupon_code>
+                            <label>Coupon Code</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The code of an existing coupon]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <automatic>1</automatic>
+                            </depends>
+                        </coupon_code>
+                        <expire>
+                            <label>Expire on</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>75</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[The coupon expiration in days]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <automatic>2</automatic>
+                            </depends>
+                        </expire>
+                        <length>
+                            <label>Coupon length</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>80</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <automatic>2</automatic>
+                            </depends>
+                        </length>
+                        <discounttype>
+                            <label>Discount type</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>ebizmarts_autoresponder/system_config_discounttype</source_model>
+                            <sort_order>85</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Select percentage or fixed discount]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <automatic>2</automatic>
+                            </depends>
+                        </discounttype>
+                        <discount>
+                            <label>Discount amount</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[Amount]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <automatic>2</automatic>
+                            </depends>
+                        </discount>
+                        <couponlabel>
+                            <label>Label for coupon</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>95</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <can_be_empty>0</can_be_empty>
+                            <comment><![CDATA[]]></comment>
+                            <depends>
+                                <active>1</active>
+                                <coupon>1</coupon>
+                                <automatic>2</automatic>
+                            </depends>
+                        </couponlabel>
                         <cron-time translate="label">
                             <label>Hour to send emails</label>
                             <frontend_type>select</frontend_type>
                             <source_model>ebizmarts_autoresponder/system_config_hours</source_model>
-                            <sort_order>60</sort_order>
+                            <sort_order>100</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>

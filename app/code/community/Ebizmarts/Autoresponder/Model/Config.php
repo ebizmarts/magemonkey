@@ -84,6 +84,13 @@ class Ebizmarts_Autoresponder_Model_Config
     const NOACTIVITY_TEMPLATE = 'ebizmarts_autoresponder/noactivity/template';
     const NOACTIVITY_MANDRILL_TAG = 'ebizmarts_autoresponder/noactivity/mandrill-tag';
     const NOACTIVITY_SUBJECT = 'ebizmarts_autoresponder/noactivity/subject';
+    const NOACTIVITY_COUPON = 'ebizmarts_autoresponder/noactivity/coupon';
+    const NOACTIVITY_CUSTOMER_COUPON = 'ebizmarts_autoresponder/noactivity/customer_coupon';
+    const NOACTIVITY_AUTOMATIC = 'ebizmarts_autoresponder/noactivity/automatic';
+    const NOACTIVITY_COUPON_CODE = 'ebizmarts_autoresponder/noactivity/coupon_code';
+    const NOACTIVITY_EXPIRE = 'ebizmarts_autoresponder/noactivity/expire';
+    const NOACTIVITY_LENGTH = 'ebizmarts_autoresponder/noactivity/length';
+    const NOACTIVITY_DISCOUNT_TYPE = 'ebizmarts_autoresponder/noactivity/discounttype';
     const NOACTIVITY_CRON_TIME = 'ebizmarts_autoresponder/noactivity/cron-time';
 
     const WISHLIST_ACTIVE = 'ebizmarts_autoresponder/wishlist/active';

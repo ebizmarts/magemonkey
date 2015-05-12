@@ -597,7 +597,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
      * @param $email
      * @return array
      */
-    protected function _createNewCoupon($store, $email )
+    protected function _createNewCoupon($store, $email)
     {
         $collection = Mage::getModel('salesrule/rule')->getCollection()
             ->addFieldToFilter('name', array('like' => 'Abandoned coupon ' . $email));
