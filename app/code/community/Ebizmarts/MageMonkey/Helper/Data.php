@@ -506,14 +506,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         break;
                     case 'date_of_purchase':
 
-                        $last_order = Mage::getResourceModel('sales/order_collection')
-                            ->addFieldToFilter('customer_email', $customer->getEmail())
-                            ->addFieldToFilter('state', array('in' => Mage::getSingleton('sales/order_config')->getVisibleOnFrontStates()))
-                            ->setOrder('created_at', 'desc')
-                            ->setPageSize(1)
+                        $_customer = Mage::getModel('customer/customer')->load($customer->getId());
+                        $last_order = Mage::getResourceModel('monkey/lastorder')
+                            ->getCollection()
+                            ->addFieldToFilter('email', array('eq' => $_customer->getEmail()))
                             ->getFirstItem();
                         if ($last_order->getId()) {
-                            $merge_vars[$key] = date('m/d/Y', strtotime($last_order->getCreatedAt()));
+                            $merge_vars[$key] = $last_order->getDate();
                         }
 
                         break;
