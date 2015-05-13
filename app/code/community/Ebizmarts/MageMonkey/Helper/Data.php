@@ -910,8 +910,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE)
     {
+        $storeId = Mage::app()->getStore()->getId();
         if (!$listId) {
-            $listId = Mage::helper('monkey')->config('list');
+            $listId = $listId = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $storeId);
         }
         $email = $object->getEmail();
 
