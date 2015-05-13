@@ -880,7 +880,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
-        $defaultList = Mage::helper('monkey')->config('list');
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
@@ -893,10 +892,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
             //Subscription for One Step Checkout with force subscription
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
-            $this->subscribeToList($object, $db, $defaultList);
+            $this->subscribeToList($object, $db);
         } elseif(!$post){
             //subscribe customer from admin
-            $this->subscribeToList($object, $db, $defaultList, TRUE);
+            $this->subscribeToList($object, $db, TRUE);
         }
 
     }
@@ -910,12 +909,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE)
     {
-        $storeId = Mage::app()->getStore()->getId();
-        if (!$listId) {
-            $listId = $listId = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $storeId);
-        }
         $email = $object->getEmail();
-
+        $storeId = $object->getStoreId();
         if ($object instanceof Mage_Customer_Model_Customer) {
             $subscriber = Mage::getModel('newsletter/subscriber')
                 ->setImportMode(TRUE)
@@ -928,8 +923,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $subscriber = $object;
         }
 
-        $defaultList = Mage::helper('monkey')->config('list');
-        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe/*from admin*/) {
+        $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $storeId);
+        if ((!$listId || $listId == $defaultList) && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe/*from admin*/) {
             $subscriber->subscribe($email);
         } else {
 

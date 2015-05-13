@@ -484,7 +484,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
             if (!$toSubscribe->getEmail()) {
                 $toSubscribe = Mage::getModel('newsletter/subscriber')
-                    ->setImportMode(TRUE)
+                    ->setStoreId($order->getStoreId())
                     ->setEmail($order->getCustomerEmail());
             }
 
