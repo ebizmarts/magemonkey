@@ -20,7 +20,7 @@ class Ebizmarts_AbandonedCart_Model_System_Config_Yesnovariation
         }
         $options = array(
             array('value' => 0, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('No')),
-            array('value' => $active, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Yes'))
+            array('value' => ($active + 1), 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Yes'))
         );
         return $options;
     }

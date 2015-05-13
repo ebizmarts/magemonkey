@@ -54,7 +54,7 @@ class Ebizmarts_MageMonkey_Model_Observer
                 Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
             } else {
                 $post = Mage::app()->getRequest()->getPost();
-                if (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || Mage::getSingleton('core/session')->getIsUpdateCustomer() || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) {
+                if (isset($post['email']) || isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || Mage::getSingleton('core/session')->getIsUpdateCustomer() || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) {
                     Mage::helper('monkey')->subscribeToList($subscriber, 0);
                 }
             }

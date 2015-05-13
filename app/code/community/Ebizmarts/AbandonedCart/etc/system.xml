@@ -525,7 +525,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <active separator=",">0,1,2,3,4,-0,-1,-2,-3,-4</active>
+                                <active separator=",">1,2,3,4,5,-1,-2,-3,-4,-5</active>
                             </depends>
                         </mandrill_suffix>
                         <subject1 translate="label comment">
@@ -538,7 +538,7 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The subject for the first email abandoned cart]]></comment>
                             <depends>
-                                <active separator=",">0,1,2,3,4,-0,-1,-2,-3,-4</active>
+                                <active separator=",">1,2,3,4,5,-1,-2,-3,-4,-5</active>
                             </depends>
                         </subject1>
                         <template1 translate="label">
@@ -551,7 +551,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <active separator=",">0,1,2,3,4,-0,-1,-2,-3,-4</active>
+                                <active separator=",">1,2,3,4,5,-1,-2,-3,-4,-5</active>
                             </depends>
                         </template1>
                         <subject2 translate="label comment">
@@ -564,7 +564,7 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The subject for the second email abandoned cart]]></comment>
                             <depends>
-                                <active separator=",">1,2,3,4,-1,-2,-3,-4</active>
+                                <active separator=",">2,3,4,5,-1,-2,-3,-4,-5</active>
                             </depends>
                         </subject2>
                         <template2 translate="label">
@@ -577,7 +577,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <active separator=",">1,2,3,4,-1,-2,-3,-4</active>
+                                <active separator=",">2,3,4,5,-2,-3,-4,-5</active>
                             </depends>
                         </template2>
                         <subject3 translate="label comment">
@@ -590,7 +590,7 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The subject for the third email abandoned cart]]></comment>
                             <depends>
-                                <active separator=",">2,3,4,-2,-3,-4</active>
+                                <active separator=",">3,4,5,-2,-3,-4,-5</active>
                             </depends>
                         </subject3>
                         <template3 translate="label">
@@ -603,7 +603,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <active separator=",">2,3,4,-2,-3,-4</active>
+                                <active separator=",">3,4,5,-3,-4,-5</active>
                             </depends>
                         </template3>
                         <subject4 translate="label comment">
@@ -616,7 +616,7 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
                             <depends>
-                                <active separator=",">3,4,-3,-4</active>
+                                <active separator=",">4,5,-4,-5</active>
                             </depends>
                         </subject4>
                         <template4 translate="label">
@@ -629,7 +629,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <active separator=",">3,4,-3,-4</active>
+                                <active separator=",">4,5,-4,-5</active>
                             </depends>
                         </template4>
                         <subject5 translate="label comment">
@@ -642,7 +642,7 @@
                             <can_be_empty>0</can_be_empty>
                             <comment><![CDATA[The subject for the fourth email abandoned cart]]></comment>
                             <depends>
-                                <active separator=",">4,-4</active>
+                                <active separator=",">5,-5</active>
                             </depends>
                         </subject5>
                         <template5 translate="label">
@@ -655,7 +655,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends>
-                                <active separator=",">4,-4</active>
+                                <active separator=",">5,-5</active>
                             </depends>
                         </template5>
                         <A_Btesting_sendon translate="label">
@@ -669,7 +669,7 @@
                             <comment>
                                 <![CDATA[The coupon will be created on testing email for Abandoned Cart number]]></comment>
                             <depends>
-                                <active separator=",">-0,-1,-2,-3,-4</active>
+                                <active separator=",">-1,-2,-3,-4,-5</active>
                             </depends>
                         </A_Btesting_sendon>
                     </fields>
