@@ -106,6 +106,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                         }
                     }
                 }
+                $vars['order'] = $order;
 
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                 $translate->setTranslateInLine(true);
