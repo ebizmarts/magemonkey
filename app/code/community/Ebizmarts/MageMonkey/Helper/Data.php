@@ -506,10 +506,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         break;
                     case 'date_of_purchase':
 
-                        $_customer = Mage::getModel('customer/customer')->load($customer->getId());
-                        $last_order = Mage::getResourceModel('monkey/lastorder')
+                        $last_order = Mage::getModel('monkey/lastorder')
                             ->getCollection()
-                            ->addFieldToFilter('email', array('eq' => $_customer->getEmail()))
+                            ->addFieldToFilter('email', array('eq' => $customer->getEmail()))
                             ->getFirstItem();
                         if ($last_order->getId()) {
                             $merge_vars[$key] = $last_order->getDate();
@@ -923,7 +922,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $storeId);
-        if ((!$listId || $listId == $defaultList) && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe/*from admin*/) {
+        if(!$listId){
+            $listId = $defaultList;
+        }
+        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe/*from admin*/) {
             $subscriber->subscribe($email);
         } else {
 
