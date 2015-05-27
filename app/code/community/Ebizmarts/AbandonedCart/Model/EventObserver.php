@@ -78,7 +78,10 @@ class Ebizmarts_AbandonedCart_Model_EventObserver
             $onCheckout = ($action == 'saveOrder' || $action == 'savePayment' || $action == 'saveShippingMethod' || $action == 'saveBilling');
             if(Mage::getModel('core/cookie')->get('email') && Mage::getModel('core/cookie')->get('email')!= 'none' && !$onCheckout) {
 //            if (isset($_COOKIE['email']) && $_COOKIE['email'] != 'none' && !$onCheckout) {
-                $email = str_replace(' ', '+', Mage::getModel('core/cookie')->get('email'));
+                $emailCookie = Mage::getModel('core/cookie')->get('email');
+                $emailCookieArr = explode('/', $emailCookie);
+                $email = $emailCookieArr[0];
+                $email = str_replace(' ', '+', $email);
                 if ($quote->getCustomerEmail() != $email) {
                     $quote->setCustomerEmail($email)
                         ->save();

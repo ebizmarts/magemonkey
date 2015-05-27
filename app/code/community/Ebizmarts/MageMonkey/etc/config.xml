@@ -239,6 +239,15 @@
                     </monkey_load_config>
                 </observers>
             </controller_action_predispatch_adminhtml_system_config_edit>
+            <adminhtml_block_html_before>
+                <observers>
+                    <monkey_alter_newsletter_grid>
+                        <type>model</type>
+                        <class>monkey/observer</class>
+                        <method>alterNewsletterGrid</method>
+                    </monkey_alter_newsletter_grid>
+                </observers>
+            </adminhtml_block_html_before>
         </events>
     </adminhtml>
     <default>

@@ -172,8 +172,14 @@ class Ebizmarts_MageMonkey_Model_Monkey
                 $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
                     ->save();
             } else {
-                Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)
-                    ->subscribe($data['data']['email']);
+                $subscriber = Mage::getModel('newsletter/subscriber')->setImportMode(TRUE);
+                if(isset($data['data']['fname'])){
+                    $subscriber->setSubscriberFirstname($data['data']['fname']);
+                }
+                if(isset($data['data']['lname'])){
+                    $subscriber->setSubscriberLastname($data['data']['lname']);
+                }
+                $subscriber->subscribe($data['data']['email']);
             }
         } catch (Exception $e) {
             Mage::logException($e);

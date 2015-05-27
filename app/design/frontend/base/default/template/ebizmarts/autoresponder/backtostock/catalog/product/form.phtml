@@ -17,11 +17,11 @@ $formAction = $this->getSubscribeUrl();
 
     <?php if ($this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest())): ?>
 
-        <div class="box-collateral block-autoresponder-backtostock" style="padding: 20px 0 0;">
+        <div class="box-collateral block-autoresponder-backtostock" style="padding: 20px 0 0; float: left;">
             <div class="form-add">
                 <form id="backtostock_form" action="<?php echo $formAction ?>" method="post">
                     <div>
-                        <h2><?php echo $this->__('Get notified !'); ?></h2>
+                        <h2><?php echo $this->__('Get notified!'); ?></h2>
 
                         <p><?php echo $this->__('Subscribe to receive an email as soon as this product become available again!'); ?></p>
                         <ul class="form-list">

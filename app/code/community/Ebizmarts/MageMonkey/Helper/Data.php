@@ -412,18 +412,26 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 ->toArray());
         }
 
-        $this->_setMaps($maps,$customer,$merge_vars, $websiteId);
+        $merge_vars = $this->_setMaps($maps,$customer,$merge_vars, $websiteId);
 
         //GUEST
         if (!$customer->getId() && !$request->getPost('firstname')) {
-            $guestFirstName = $this->config('guest_name', $customer->getStoreId());
+            if($customer->getSubscriberFirstname()) {
+                $guestFirstName = $customer->getSubscriberFirstname();
+            }else{
+                $guestFirstName = $this->config('guest_name', $customer->getStoreId());
+            }
 
             if ($guestFirstName) {
                 $merge_vars['FNAME'] = $guestFirstName;
             }
         }
         if (!$customer->getId() && !$request->getPost('lastname')) {
-            $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
+            if($customer->getSubscriberLastname()){
+                $guestLastName = $customer->getSubscriberLastname();
+            }else {
+                $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
+            }
 
             if ($guestLastName) {
                 $merge_vars['LNAME'] = $guestLastName;
@@ -501,8 +509,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         break;
                     case 'billing_address':
                     case 'shipping_address':
-                        $this->_setAddress($customAtt,$merge_vars, $customer, $key);
-
+                        $merge_vars = array_merge($merge_vars, $this->_setAddress($customAtt,$merge_vars, $customer, $key));
                         break;
                     case 'date_of_purchase':
 
@@ -560,6 +567,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
             }
         }
+        return $merge_vars;
     }
     protected function _setAddress($customAtt,$merge_vars, $customer, $key)
     {
@@ -592,6 +600,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $merge_vars['COUNTRY'] = $country;
             }
         }
+        return $merge_vars;
     }
     /**
      * Get Mergevars
@@ -621,7 +630,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             } else {
                 $customer = $object;
             }
-
         }
 
         if (is_object($object)) {
@@ -911,7 +919,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $storeId = $object->getStoreId();
         if ($object instanceof Mage_Customer_Model_Customer) {
             $subscriber = Mage::getModel('newsletter/subscriber')
-                ->setImportMode(TRUE)
                 ->setSubscriberEmail($email);
         } else {
 //            $customer = Mage::getSingleton('customer/customer')->load($email);

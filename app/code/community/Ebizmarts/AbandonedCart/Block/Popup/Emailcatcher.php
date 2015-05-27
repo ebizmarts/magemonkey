@@ -50,4 +50,32 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
     {
         return Mage::app()->getStore()->getId();
     }
+
+    protected function _handleCookie(){
+        Mage::log('handleCookie', null, 'santiago.log', true);
+        $storeId = Mage::app()->getStore()->getId();
+        $emailCookie = Mage::getModel('core/cookie')->get('email');
+        $subscribeCookie = Mage::getModel('core/cookie')->get('subscribe');
+        $cookieValues = explode('/', $emailCookie);
+        $email = $cookieValues[0];
+        $email = str_replace(' ', '+', $email);
+        $fName = $cookieValues[1];
+        $lName = $cookieValues[2];
+        Mage::log($fName.' '.$lName, null, 'santiago.log', true);
+        if($subscribeCookie == 'true'){
+            $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+            if(!$subscriber->getId()) {
+                $subscriber = Mage::getModel('newsletter/subscriber')
+                    ->setStoreId($storeId);
+                if($fName){
+                    $subscriber->setSubscriberFirstname($fName);
+                }
+                if($lName){
+                    $subscriber->setSubscriberLastname($lName);
+                }
+                $subscriber->subscribe($email);
+                return 'location.reload';
+            }
+        }
+    }
 }

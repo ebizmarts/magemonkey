@@ -11,7 +11,6 @@
     font-family: Tahoma, Arial, sans-serif;
     font: 12px arial;
     background: #FDFDFD;
-    border-radius: 10px;
     margin: 10px 5px 5px 5px;
 }
 
@@ -19,12 +18,58 @@
     font: 12px arial;
     text-align: center;
     width: 100%;
-    padding-bottom: 10px;
+    line-height: 20px;
 }
 
 .popup_buttons {
     text-align: center;
     width: 100%;
+}
+
+#popup-heading {
+    width: 30%;
+    margin-right: 10px;
+    background:rgb(36,131,199);
+    float: right;
+    display: flex;
+    align-items: center;
+}
+
+#popup-heading > h2 {
+    color: white;
+}
+
+#popup-form-content {
+    width: 70%;
+    text-align: center;
+}
+
+#popup-form-data {
+    margin-right: 6%;
+    line-height: 45px;
+}
+
+#popup-form-data .required {
+    margin-left: 13pt;
+}
+
+.email_label {
+    margin: 5px;
+}
+
+#popup-text {
+    margin: 10px;
+}
+
+.cancel_button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-style : none;
+    color: transparent;
+    height: 32px;
+    width: 32px;
+    background: url(xmark.png) no-repeat;
 }
 
 

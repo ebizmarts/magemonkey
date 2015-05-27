@@ -54,7 +54,7 @@ class Ebizmarts_MageMonkey_Model_Observer
                 Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
             } else {
                 $post = Mage::app()->getRequest()->getPost();
-                if (isset($post['email']) || isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || Mage::getSingleton('core/session')->getIsUpdateCustomer() || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) {
+                if (isset($post['email']) || isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || Mage::getSingleton('core/session')->getIsUpdateCustomer() || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE) {
                     Mage::helper('monkey')->subscribeToList($subscriber, 0);
                 }
             }
@@ -485,6 +485,8 @@ class Ebizmarts_MageMonkey_Model_Observer
             if (!$toSubscribe->getEmail()) {
                 $toSubscribe = Mage::getModel('newsletter/subscriber')
                     ->setStoreId($order->getStoreId())
+                    ->setSubscriberFirstname($order->getCustomerFirstname())
+                    ->setSubscriberLastname($order->getCustomerLastname())
                     ->setEmail($order->getCustomerEmail());
             }
 
@@ -520,6 +522,30 @@ class Ebizmarts_MageMonkey_Model_Observer
                 ));
 
             }
+        }
+        return $observer;
+    }
+
+    public function alterNewsletterGrid(Varien_Event_Observer $observer){
+
+        $block = $observer->getEvent()->getBlock();
+        if (!isset($block)) {
+            return $this;
+        }
+        if($block instanceof Mage_Adminhtml_Block_Newsletter_Subscriber_Grid) {
+
+            $block->addColumnAfter('firstname', array(
+                'header' => Mage::helper('newsletter')->__('Customer First Name'),
+                'index' => 'customer_firstname',
+                'renderer' => 'monkey/adminhtml_newsletter_subscriber_renderer_firstname',
+                ), 'type'
+            );
+
+            $block->addColumnAfter('lastname', array(
+                'header' => Mage::helper('newsletter')->__('Customer Last Name'),
+                'index' => 'customer_lastname',
+                'renderer' => 'monkey/adminhtml_newsletter_subscriber_renderer_lastname'
+            ), 'firstname');
         }
         return $observer;
     }

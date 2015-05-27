@@ -70,7 +70,10 @@ class Ebizmarts_AbandonedCart_Model_Config
     const ENABLE_POPUP = 'ebizmarts_abandonedcart/emailcatcher/popup_general';
     const POPUP_HEADING = 'ebizmarts_abandonedcart/emailcatcher/popup_heading';
     const POPUP_TEXT = 'ebizmarts_abandonedcart/emailcatcher/popup_text';
+    const POPUP_FNAME = 'ebizmarts_abandonedcart/emailcatcher/popup_fname';
+    const POPUP_LNAME = 'ebizmarts_abandonedcart/emailcatcher/popup_lname';
     const POPUP_WIDTH = 'ebizmarts_abandonedcart/emailcatcher/popup_width';
+    const POPUP_HEIGHT = 'ebizmarts_abandonedcart/emailcatcher/popup_height';
     const POPUP_SUBSCRIPTION = 'ebizmarts_abandonedcart/emailcatcher/popup_subscription';
     const POPUP_CAN_CANCEL = 'ebizmarts_abandonedcart/emailcatcher/popup_cancel';
     const POPUP_COOKIE_TIME = 'ebizmarts_abandonedcart/emailcatcher/popup_cookie_time';

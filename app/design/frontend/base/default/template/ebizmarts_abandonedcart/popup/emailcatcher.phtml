@@ -1,15 +1,39 @@
 <?php if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $this->_getStoreId()) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $this->_getStoreId())): ?>
-    <div id="email" style="text-align:center; display:none">
-        <p><span id='email_error_msg' class="email_error" style="display:none">&nbsp;</span></p>
 
-        <div style="clear:both; margin-bottom:10px"><h2
-                style="color:rgb(36,131,199)"><?php echo $this->_popupHeading(); ?></h2>
+    <div id="email" style="text-align:right; display:none">
 
-            <p><?php echo $this->_popupMessage(); ?></p></div>
-        <p><span class="email_label" style="margin-right: 5px">Email:</span><span class="email_input"><input
-                    type="text"/></span></p>
 
-        <div style="text-align:left; clear:both; margin-top:10px">
+
+        <div id="popup-heading" style="min-height: <?php Print(json_decode((Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_HEIGHT, $this->_getStoreId())-25))); ?>px;">
+            <h2><?php echo $this->_popupHeading(); ?></h2>
+        </div>
+        <div id="popup-form-content">
+            <div id="popup-text">
+                <p><?php echo $this->_popupMessage(); ?></p>
+            </div>
+
+            <p><span id='email_error_msg' class="email_error" style="display:none">&nbsp;</span></p>
+
+            <div id="popup-form-data">
+                <p>
+                    <span class="required"></span>
+                    <span class="email_label">Email:</span>
+                    <span class="email_input"><input type="text"/></span>
+                </p>
+
+                <?php if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_FNAME, $this->_getStoreId())): ?>
+                <p>
+                    <span class="fname_label" style="margin-right: 5px">First Name:</span>
+                    <span class="fname_input"><input type="text"/></span>
+                </p>
+                <?php endif;
+                if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_LNAME, $this->_getStoreId())): ?>
+                <p>
+                    <span class="lname_label" style="margin-right: 5px">Last Name:</span>
+                    <span class="lname_input"><input type="text"/></span>
+                </p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 
@@ -18,16 +42,17 @@
         if (navigator.cookieEnabled) {
             <?php if(isset($_COOKIE['email'])):
                 if($_COOKIE['email'] != 'none'):
-                    $email = str_replace(' ', '+', $_COOKIE['email']);
-                    $this->_createCoupon($email);
-                    if(isset($_COOKIE['subscribe'])):
-                        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
-                        if(!$subscriber->getId()):
-                            Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)->subscribe($email); ?>
-            document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-            location.reload();
-            <?php endif; ?>
-            <?php endif; ?>
+                    Print(json_decode($this->_handleCookie()));
+//                    $email = str_replace(' ', '+', $_COOKIE['email']);
+//                    $this->_createCoupon($email);
+//                    if(isset($_COOKIE['subscribe'])):
+//                        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
+//                        if(!$subscriber->getId()):
+//                            Mage::getModel('newsletter/subscriber')->setImportMode(TRUE)->subscribe($email); ?>
+//            document.cookie = 'subscribe=; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+//                location.reload();
+//            <?php //endif; ?>
+<!--            --><?php //endif; ?>
             <?php endif; ?>
             <?php elseif($this->_canCancel()): ?>
             document.observe('keydown', function (evt) {
@@ -47,6 +72,7 @@
                     className: "popup",
                     id: "popupDialog",
                     width: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>,
+                    height: <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_HEIGHT, $this->_getStoreId()))); ?>,
                     zIndex: 2001,
                     okLabel: '<?php echo $this->__('Confirm') ?>',
                     <?php if(!$this->_canCancel()): ?>closeOnEsc: false,
@@ -80,10 +106,14 @@
                     },
                     <?php endif; ?>
                     onOk: function (win) {
-                        var inputField = $$('.email_input input[type=text]').first();
-                        var email = inputField.value;
+                        var inputFieldEmail = $$('.email_input input[type=text]').first();
+                        var inputFieldFName = $$('.fname_input input[type=text]').first();
+                        var inputFieldLName = $$('.lname_input input[type=text]').first();
+                        var email = inputFieldEmail.value;
+                        var fname = inputFieldFName.value;
+                        var lname = inputFieldLName.value;
                         if (validateEmail(email)) {
-                            var cookie = 'email=' + email;
+                            var cookie = 'email=' + email + '/' + fname + '/' + lname;
                             createCookie(cookie, 365);
                             <?php if($this->_modalSubscribe()): ?>
                             createCookie('subscribe=true', 365);

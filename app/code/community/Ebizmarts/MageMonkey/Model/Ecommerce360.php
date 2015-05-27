@@ -134,7 +134,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         if ($discount != 0) {
             $subtotal = $subtotal + ($discount);
         }
-        $createdAtArr = str_split($this->_order->getCreatedAt(), 10);
         $this->_info = array(
             'id' => $this->_order->getIncrementId(),
             'total' => $subtotal,
@@ -142,10 +141,13 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             'tax' => $this->_order->getBaseTaxAmount(),
             'store_id' => $this->_order->getStoreId(),
             'store_name' => $this->_order->getStoreName(),
-            'order_date' => $createdAtArr[0],
+            'order_date' => $this->_order->getCreatedAt(),
             'plugin_id' => 1215,
             'items' => array()
         );
+
+
+
 
         $emailCookie = $this->_getEmailCookie();
         $campaignCookie = $this->_getCampaignCookie();
@@ -373,7 +375,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 if ($discount != 0) {
                     $subtotal = $subtotal + ($discount);
                 }
-                $createdAtArr = str_split($this->_order->getCreatedAt(), 10);
 
                 $this->_info = array(
                     'id' => $this->_order->getIncrementId(),
@@ -382,7 +383,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                     'tax' => $this->_order->getBaseTaxAmount(),
                     'store_id' => $this->_order->getStoreId(),
                     'store_name' => $this->_order->getStoreName(),
-                    'order_date' => $createdAtArr[0],
+                    'order_date' => $this->_order->getCreatedAt(),
                     'plugin_id' => 1215,
                     'items' => array()
                 );
@@ -399,7 +400,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         $sync = Mage::getModel('monkey/asyncorders');
                         $this->_info['order_id'] = $this->_order->getId();
                         $sync->setInfo(serialize($this->_info))
-                            ->setCreatedAt($createdAtArr[0])//Mage::getModel('core/date')->gmtDate())
+                            ->setCreatedAt($this->_order->getCreatedAt())//Mage::getModel('core/date')->gmtDate())
                             ->setProcessed(0)
                             ->save();
                         $rs['complete'] = true;
@@ -426,7 +427,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         ->setOrderIncrementId($this->_info['id'])
                         ->setOrderId($this->_info['order_id'])
                         ->setMcEmailId($this->_info ['email'])
-                        ->setCreatedAt($createdAtArr[0])
+                        ->setCreatedAt($this->_order->getCreatedAt())
                         ->setStoreId($this->_info['store_id']);
                     if (isset($this->_info['campaign_id']) && $this->_info['campaign_id']) {
                         $order->setMcCampaignId($this->_info['campaign_id']);
