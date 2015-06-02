@@ -87,7 +87,7 @@ class Ebizmarts_SweetMonkey_Model_Observer
 
         $holder = $observer->getEvent()->getNewvars();
         $helper = Mage::helper('sweetmonkey');
-        $customerHelper = Mage::helper('customer');
+//        $customerHelper = Mage::helper('customer');
         $customer = $observer->getEvent()->getCustomer();
         if ($helper->enabled() && ($customer->getId())) {
 
@@ -102,6 +102,12 @@ class Ebizmarts_SweetMonkey_Model_Observer
                 }
 
                 $tbtCustomer = Mage::getModel('rewards/customer')->load($customer->getId());
+
+//                if(array_key_exists('REFERRALURL', $tbtVars)) {
+//                    $tbtVars['REFERRALURL'] = Mage::helper('rewardssocial/referral_share')->getReferralUrl($customer);
+//                    Mage::log($tbtVars['REFERRALURL'], null, 'santiago.log', true);
+//                }
+
                 //Point balance
                 if (array_key_exists('PTS', $tbtVars)) {
                     $tbtVars['PTS'] = $tbtCustomer->getPointsSummary();
