@@ -30,6 +30,8 @@ app/design/frontend/base/default/template/ebizmarts/autoresponder       app/desi
 app/design/frontend/base/default/template/ebizmarts_abandonedcart       app/design/frontend/base/default/template/ebizmarts_abandonedcart
 app/design/frontend/base/default/template/magemonkey                    app/design/frontend/base/default/template/magemonkey
 js/ebizmarts/abandonedcart                                              js/ebizmarts/abandonedcart
+js/ebizmarts/autoresponders                                             js/ebizmarts/autoresponders
+js/ebizmarts/magemonkey                                                 js/ebizmarts/magemonkey
 skin/adminhtml/default/default/abandonedcart                            skin/adminhtml/default/default/abandonedcart
 skin/adminhtml/default/default/ebizmarts                                skin/adminhtml/default/default/ebizmarts
 skin/adminhtml/default/default/magemonkey                               skin/adminhtml/default/default/magemonkey
