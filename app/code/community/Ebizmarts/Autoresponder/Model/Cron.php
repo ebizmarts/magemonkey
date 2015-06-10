@@ -94,7 +94,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $customer = Mage::getModel('customer/customer')
                     ->setStore(Mage::app()->getStore($storeId))
                     ->loadByEmail($email);
-                if ($customer->getId()) {
+                if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                     $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                     foreach ($tbtPoints as $key => $field) {
                         if ($key == 'points') {
@@ -164,7 +164,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $customer = Mage::getModel('customer/customer')
                     ->setStore(Mage::app()->getStore($storeId))
                     ->loadByEmail($email);
-                if ($customer->getId()) {
+                if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                     $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                     foreach ($tbtPoints as $key => $field) {
                         if ($key == 'points') {
@@ -239,7 +239,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                         $customer = Mage::getModel('customer/customer')
                             ->setStore(Mage::app()->getStore($storeId))
                             ->loadByEmail($email);
-                        if ($customer->getId()) {
+                        if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                             $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                             foreach ($tbtPoints as $key => $field) {
                                 if ($key == 'points') {
@@ -314,7 +314,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $customer = Mage::getModel('customer/customer')
                         ->setStore(Mage::app()->getStore($storeId))
                         ->loadByEmail($email);
-                    if ($customer->getId()) {
+                    if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                         $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                         foreach ($tbtPoints as $key => $field) {
                             if ($key == 'points') {
@@ -398,7 +398,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $customer = Mage::getModel('customer/customer')
                     ->setStore(Mage::app()->getStore($storeId))
                     ->loadByEmail($email);
-                if ($customer->getId()) {
+                if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                     $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                     foreach ($tbtPoints as $key => $field) {
                         if ($key == 'points') {
@@ -455,7 +455,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                         $customer = Mage::getModel('customer/customer')
                             ->setStore(Mage::app()->getStore($storeId))
                             ->loadByEmail($email);
-                        if ($customer->getId()) {
+                        if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                             $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                             foreach ($tbtPoints as $key => $field) {
                                 if ($key == 'points') {
@@ -495,7 +495,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $customer = Mage::getModel('customer/customer')
                     ->setStore(Mage::app()->getStore($storeId))
                     ->loadByEmail($email);
-                if ($customer->getId()) {
+                if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                     $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                     foreach ($tbtPoints as $key => $field) {
                         if ($key == 'points') {
@@ -700,7 +700,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $customer = Mage::getModel('customer/customer')
             ->setStore(Mage::app()->getStore($storeId))
             ->loadByEmail($email);
-        if ($customer->getId()) {
+        if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
             $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
             foreach ($tbtPoints as $key => $field) {
                 if ($key == 'points') {
@@ -834,7 +834,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                             $customer = Mage::getModel('customer/customer')
                                 ->setStore(Mage::app()->getStore($storeId))
                                 ->loadByEmail($_email);
-                            if ($customer->getId()) {
+                            if ($customer->getId() && Mage::helper('sweetmonkey')->enabled()) {
                                 $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
                                 foreach ($tbtPoints as $key => $field) {
                                     if ($key == 'points') {
