@@ -472,7 +472,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $merge_vars;
     }
-    private function _setMaps($maps,$customer,$merge_vars, $websiteId)
+    private function _setMaps($maps,$customer,&$merge_vars, $websiteId)
     {
         foreach ($maps as $map) {
             $request = Mage::app()->getRequest();
