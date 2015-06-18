@@ -420,7 +420,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         }
         return $html;
     }
-    protected function _setGrouping($groupings,$fieldType,$myGroups)
+    protected function _setGrouping($groupings,$fieldType,&$myGroups)
     {
         foreach ($groupings as $_group) {
             if (!empty($_group['groups'])) {
