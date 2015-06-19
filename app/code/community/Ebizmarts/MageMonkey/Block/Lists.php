@@ -255,7 +255,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                     }
                 }
                 if (isset($groupings)) {
-                    $this->_setGrouping($groupings,$fieldType,$myGroups);
+                    array_merge($this->_setGrouping($groupings,$fieldType,$myGroups), $myGroups);
                 }
             }
         }
@@ -466,6 +466,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
             }
         }
+        return $myGroups;
     }
     /**
      * Return element id for group to be added to the post on checkout

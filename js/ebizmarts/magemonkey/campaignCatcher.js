@@ -30,4 +30,4 @@
     } else {
         document.observe('dom:loaded', getCampaign);
     }
-})();
+});
