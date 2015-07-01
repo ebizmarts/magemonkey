@@ -236,7 +236,7 @@
             </ebizmarts_autoresponder>
             <ebizmarts_autoresponder_backtostock_cleanup>
                 <schedule>
-                    <cron_expr>0 0 1 * *</cron_expr>
+                    <cron_expr>0 1 * * *</cron_expr>
                 </schedule>
                 <run>
                     <model>ebizmarts_autoresponder/cron::cleanupBackToStock</model>
