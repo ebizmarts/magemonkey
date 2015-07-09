@@ -70,4 +70,14 @@ class Ebizmarts_SweetMonkey_Adminhtml_MageMonkeyController extends Mage_Adminhtm
         $this->getResponse()->setBody(Zend_Json::encode(array()));
     }
 
+    protected function _isAllowed() {
+        switch ($this->getRequest()->getActionName()) {
+            case 'varsToList':
+            case 'varsForList':
+                $acl = 'system/config/sweetmonkey';
+                break;
+        }
+        return Mage::getSingleton('admin/session')->isAllowed($acl);
+    }
+
 }
