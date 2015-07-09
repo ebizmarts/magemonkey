@@ -35,6 +35,23 @@
                 <children>
                     <system>
                         <children>
+                            <email_template>
+                                <children>
+                                    <mandrill translate="title" module="ebizmarts_mandrill">
+                                        <title>Mandrill</title>
+                                        <children>
+                                            <users_senders translate="title" module="ebizmarts_mandrill">
+                                                <title>Senders</title>
+                                                <action>adminhtml/mandrill_users/senders</action>
+                                            </users_senders>
+                                        </children>
+                                    </mandrill>
+                                </children>
+                            </email_template>
+                        </children>
+                    </system>
+                    <system>
+                        <children>
                             <config>
                                 <children>
                                     <mandrill translate="title" module="ebizmarts_mandrill">

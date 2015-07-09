@@ -35,4 +35,13 @@ class Ebizmarts_Mandrill_Adminhtml_Mandrill_UsersController extends Mage_Adminht
         $this->renderLayout();
     }
 
+    protected function _isAllowed() {
+        switch ($this->getRequest()->getActionName()) {
+            case 'senders':
+                $acl = 'system/email_template/mandrill/users_senders';
+                break;
+        }
+        return Mage::getSingleton('admin/session')->isAllowed($acl);
+    }
+
 }

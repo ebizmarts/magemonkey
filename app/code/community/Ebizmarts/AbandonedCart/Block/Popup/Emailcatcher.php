@@ -52,7 +52,6 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
     }
 
     protected function _handleCookie(){
-        Mage::log('handleCookie', null, 'santiago.log', true);
         $storeId = Mage::app()->getStore()->getId();
         $emailCookie = Mage::getModel('core/cookie')->get('email');
         $subscribeCookie = Mage::getModel('core/cookie')->get('subscribe');
@@ -61,7 +60,6 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
         $email = str_replace(' ', '+', $email);
         $fName = $cookieValues[1];
         $lName = $cookieValues[2];
-        Mage::log($fName.' '.$lName, null, 'santiago.log', true);
         if($subscribeCookie == 'true'){
             $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
             if(!$subscriber->getId()) {

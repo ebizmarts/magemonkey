@@ -28,7 +28,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetLocalEcommerce ext
     public function getAjaxCheckUrl()
     {
         $store = $this->getRequest()->getParam('store');
-        return Mage::helper('adminhtml')->getUrl('monkey/adminhtml_ecommerce/resetLocalEcommerce/store/' . $store);
+        return Mage::helper('adminhtml')->getUrl('adminhtml/ecommerce/resetLocalEcommerce/store/' . $store);
     }
 
     /**

@@ -92,4 +92,20 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Ad
         $this->getResponse()->setBody($output);
         return;
     }
+
+    protected function _isAllowed() {
+        switch ($this->getRequest()->getActionName()) {
+            case 'dashboard':
+            case 'ajaxBlock':
+                $acl = 'dashboard/ebizmarts_abandonedcart';
+                break;
+            case 'index':
+            case 'grid':
+            case 'exportExcel':
+            case 'exportCsv':
+                $acl = 'sales/ebizmarts_abandonedcart';
+                break;
+        }
+        return Mage::getSingleton('admin/session')->isAllowed($acl);
+    }
 }

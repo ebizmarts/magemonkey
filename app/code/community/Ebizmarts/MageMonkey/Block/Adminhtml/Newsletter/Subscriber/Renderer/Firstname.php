@@ -11,7 +11,6 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Newsletter_Subscriber_Renderer_Firstn
     {
         $subscriberFirstName = $row->getData('subscriber_firstname');
         $customerFirstName = $row->getData('customer_firstname');
-        Mage::log('render', null, 'santiago.log', true);
         if($subscriberFirstName){
             return $subscriberFirstName;
         }elseif($customerFirstName){

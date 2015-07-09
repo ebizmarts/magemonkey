@@ -105,7 +105,6 @@ class Ebizmarts_SweetMonkey_Model_Observer
 
 //                if(array_key_exists('REFERRALURL', $tbtVars)) {
 //                    $tbtVars['REFERRALURL'] = Mage::helper('rewardssocial/referral_share')->getReferralUrl($customer);
-//                    Mage::log($tbtVars['REFERRALURL'], null, 'santiago.log', true);
 //                }
 
                 //Point balance

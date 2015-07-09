@@ -53,4 +53,13 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         return false;
     }
 
+    protected function _isAllowed() {
+        switch ($this->getRequest()->getActionName()) {
+            case 'getGroups':
+                $acl = 'system/config/monkey';
+                break;
+        }
+        return Mage::getSingleton('admin/session')->isAllowed($acl);
+    }
+
 }

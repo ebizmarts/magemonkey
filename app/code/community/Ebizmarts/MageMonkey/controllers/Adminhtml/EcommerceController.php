@@ -168,4 +168,23 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
         Mage::app()->getResponse()->setBody($result);
     }
 
+    protected function _isAllowed() {
+        switch ($this->getRequest()->getActionName()) {
+            case 'index':
+            case 'grid':
+            case 'massend':
+            case 'massDelete':
+                $acl = 'newsletter/magemonkey/ecommerce/commerce';
+                break;
+            case 'apiorders':
+                $acl = 'newsletter/magemonkey/ecommerce/apicommerce';
+                break;
+            case 'resetLocalEcommerce':
+            case 'resetRemoteEcommerce':
+                $acl = 'system/config/monkey';
+            break;
+        }
+        return Mage::getSingleton('admin/session')->isAllowed($acl);
+    }
+
 }

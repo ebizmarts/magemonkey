@@ -201,4 +201,31 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         $this->_redirectReferer($this->_defredirect);
     }
 
+    protected function _isAllowed() {
+        switch ($this->getRequest()->getActionName()) {
+            case 'export':
+            case 'exportgrid':
+                $acl = 'newsletter/magemonkey/bulksync/mage_to_mc';
+                break;
+            case 'import':
+            case 'importgrid':
+                $acl = 'newsletter/magemonkey/bulksync/mc_to_mage';
+                break;
+            case 'save':
+            case 'delete':
+            case 'reset':
+            case 'queue':
+                $acl = 'newsletter/magemonkey/bulksync/mage_to_mc';
+                $acl2 = 'newsletter/magemonkey/bulksync/mc_to_mage';
+                break;
+        }
+        $ret = false;
+        if(!Mage::getSingleton('admin/session')->isAllowed($acl) && $acl2){
+            $ret = Mage::getSingleton('admin/session')->isAllowed($acl2);
+        }else{
+            $ret = Mage::getSingleton('admin/session')->isAllowed($acl);
+        }
+        return $ret;
+    }
+
 }
