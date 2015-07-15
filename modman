@@ -31,7 +31,7 @@ app/design/frontend/base/default/template/ebizmarts_abandonedcart       app/desi
 app/design/frontend/base/default/template/magemonkey                    app/design/frontend/base/default/template/magemonkey
 js/ebizmarts/abandonedcart                                              js/ebizmarts/abandonedcart
 js/ebizmarts/magemonkey                                                 js/ebizmarts/magemonkey
-js/ebizmarts/autoresponder                                              js/ebizmarts/autoresponder
+js/ebizmarts/autoresponders                                             js/ebizmarts/autoresponders
 skin/adminhtml/default/default/abandonedcart                            skin/adminhtml/default/default/abandonedcart
 skin/adminhtml/default/default/ebizmarts                                skin/adminhtml/default/default/ebizmarts
 skin/adminhtml/default/default/magemonkey                               skin/adminhtml/default/default/magemonkey
