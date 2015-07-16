@@ -11,10 +11,10 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Newsletter_Subscriber_Renderer_Lastna
     {
         $subscriberLastName = $row->getData('subscriber_lastname');
         $customerLastName = $row->getData('customer_lastname');
-        if($subscriberLastName){
-            return $subscriberLastName;
-        }elseif($customerLastName){
+        if($customerLastName){
             return $customerLastName;
+        }elseif($subscriberLastName){
+            return $subscriberLastName;
         }else{
             return '----';
         }

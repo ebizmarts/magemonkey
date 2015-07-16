@@ -69,7 +69,10 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 
         $email['from_name'] = $this->getSenderName();
         $email['from_email'] = $this->getSenderEmail();
-        $email['headers'] = $mail->getHeaders();
+        $headers = $mail->getHeaders();
+        $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
+        $email['headers'] = $headers;
+        Mage::log($email['headers'], null, 'santiago.log', true);
         if (isset($variables['tags']) && count($variables['tags'])) {
             $email ['tags'] = $variables['tags'];
         }

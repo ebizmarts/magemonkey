@@ -110,8 +110,12 @@
                         var inputFieldFName = $$('.fname_input input[type=text]').first();
                         var inputFieldLName = $$('.lname_input input[type=text]').first();
                         var email = inputFieldEmail.value;
-                        var fname = inputFieldFName.value;
-                        var lname = inputFieldLName.value;
+                        if(inputFieldFName) {
+                            var fname = inputFieldFName.value;
+                        }
+                        if(inputFieldLName) {
+                            var lname = inputFieldLName.value;
+                        }
                         if (validateEmail(email)) {
                             var cookie = 'email=' + email + '/' + fname + '/' + lname;
                             createCookie(cookie, 365);
