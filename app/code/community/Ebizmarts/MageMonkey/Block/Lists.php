@@ -255,7 +255,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                     }
                 }
                 if (isset($groupings)) {
-                    array_merge($this->_setGrouping($groupings,$fieldType,$myGroups), $myGroups);
+                    $myGroups = $this->_setGrouping($groupings,$fieldType,$myGroups);
                 }
             }
         }
