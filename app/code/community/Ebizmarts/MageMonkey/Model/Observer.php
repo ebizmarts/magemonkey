@@ -395,20 +395,20 @@ class Ebizmarts_MageMonkey_Model_Observer
 
                 //subscribe to MailChimp when customer subscribed from admin
                 //unsubscribe from Magento when customer unsubscribed from admin
-                if ($isAdmin) {
-                    if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED && !$customer->getData('is_subscribed')) {
-                        $subscriber->setImportMode(TRUE)->unsubscribe();
-                        Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()))->listUnsubscribe($defaultList, $customer->getEmail());
-                    } else {
-                        if($customer->getData('is_subscribed')) {
-                            Mage::getModel('newsletter/subscriber')
-                                ->setSubscriberEmail($customer->getEmail())
-                                ->setStoreId($customer->getStoreId())
-                                ->setImportMode(TRUE)
-                                ->subscribe($customer->getEmail());
-                        }
-                    }
-                }
+//                if ($isAdmin) {
+//                    if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED && !$customer->getData('is_subscribed')) {
+//                        $subscriber->setImportMode(TRUE)->unsubscribe();
+//                        Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()))->listUnsubscribe($defaultList, $customer->getEmail());
+//                    } else {
+//                        if($customer->getData('is_subscribed')) {
+//                            Mage::getModel('newsletter/subscriber')
+//                                ->setSubscriberEmail($customer->getEmail())
+//                                ->setStoreId($customer->getStoreId())
+//                                ->setImportMode(TRUE)
+//                                ->subscribe($customer->getEmail());
+//                        }
+//                    }
+//                }
                 Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);
             }
         }
