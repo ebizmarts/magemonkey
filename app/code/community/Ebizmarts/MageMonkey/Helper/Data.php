@@ -1044,7 +1044,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $customer = Mage::registry('mc_guest_customer');
         }
         $email = $guestEmail ? $guestEmail : $customer->getEmail();
+
+        // erisler@myntpartners.com - get list details from mailchimp so we can display the name
+        //      of the list when we subscribe or unsubscribe.
+        $mc_lists = $api->lists();
+        $listInfo = array();
+        foreach($mc_lists['data'] as $listData) {
+            $listInfo[$listData[id]] = $listData['name'];
+        }
+        
+
         if (!empty($curlists)) {
+            
+            // erisler@myntpartners.com - boolean set to true if user has been unsubscribed from ALL lists.
+            $unsubscribedFromAll = false;
+            
             //Handle Unsubscribe and groups update actions
             foreach ($curlists as $listId => $list) {
 
@@ -1052,13 +1066,30 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                     //Unsubscribe Email
 
-                    $item = Mage::getModel('monkey/monkey')->loadByEmail($email);
-                    if (!$item->getId()) {
-                        $item = Mage::getModel('newsletter/subscriber')
-                            ->loadByEmail($email);
-                    }
-                    if ($item->getSubscriberEmail()) {
-                        $item->unsubscribe();
+                    // $item = Mage::getModel('monkey/monkey')->loadByEmail($email);
+                    // if (!$item->getId()) {
+                    //     $item = Mage::getModel('newsletter/subscriber')
+                    //         ->loadByEmail($email);
+                    // }
+                    // if ($item->getSubscriberEmail()) {
+                    //     $item->unsubscribe();
+                    // }
+                    //
+                    // erisler@myntpartners.com - above doesn't seem to make sense...sets the magento subscriber status to unsubscribed even if 
+                    //  there are multiple lists and the subscriber could still be subscribed to one.
+                    //  So, I added a check to see if we had many lists we are still subscribed to before unsubscribing the
+                    //  the customer form the magento newsletter.
+                    if (count($lists) == 0 && !$unsubscribedFromAll) {
+                    
+                        $item = Mage::getModel('monkey/monkey')->loadByEmail($email);
+                        if (!$item->getId()) {
+                            $item = Mage::getModel('newsletter/subscriber')
+                                ->loadByEmail($email);
+                        }
+                        if ($item->getSubscriberEmail()) {
+                            $item->unsubscribe();
+                        }
+                        $unsubscribedFromAll = true; // so on next loop iteration we don't unsubscribe again.
                     }
 
                     //Unsubscribe Email
@@ -1073,11 +1104,28 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             $toDelete->delete();
                         }
                         Mage::getSingleton('core/session')
-                            ->addSuccess($this->__('You have been removed from Newsletter.'));
+                            ->addSuccess($this->__('You have been removed from %s.', $listInfo[$listId]));
                     } else {
+                        // erisler@myntpartners.com - clear the group data for this list/member then unsubscribe.
+                        //      If we don't, then the group data seems to still be returned by MC API
+                        //      and the checkboxes are still checked in the front end. weird.
+                        $listGroups = $api->listMemberInfo($listId, $email);
+                        $listGroups = isset($listGroups['data'][0]['merges']['GROUPINGS']) ? $listGroups['data'][0]['merges']['GROUPINGS'] : array();
+                        // set empty string.
+                        $groupings = array();
+                        foreach ($listGroups as $groupData) {
+                            $groupings[$groupData['id']][] = '';
+                        }
+                        // Get the merg vars
+                        $customer->setMcListId($listId);
+                        $customer->setListGroups($groupings);
+                        $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+                        // Update the list data before unsubscribing
+                        $api->listUpdateMember($listId, $email, $mergeVars);
+                        // unsubscribe
                         $api->listUnsubscribe($listId, $email);
                         Mage::getSingleton('core/session')
-                            ->addSuccess($this->__('You have been removed from Newsletter.'));
+                            ->addSuccess($this->__('You have been removed from %s.', $listInfo[$listId]));
                     }
 
                 } else {
