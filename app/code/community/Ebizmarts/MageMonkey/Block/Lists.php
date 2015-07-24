@@ -255,7 +255,15 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                     }
                 }
                 if (isset($groupings)) {
-                    array_merge($this->_setGrouping($groupings,$fieldType,$myGroups), $myGroups);
+                    // erisler 
+                    // 1. using array_merge cause numeric keys to reset starting from 0...which means we lose the group number.
+                    //      solution: use the union operator (+).
+                    // 2. $myGroups will always be array(0) since we didn't assing the array_merge return result.
+                    //      solution: assign the result to $myGroups so when the _generateHtml() call happen, the currently
+                    //              selected groups are selected in the GUI.
+                    // old: array_merge($this->_setGrouping($groupings,$fieldType,$myGroups), $myGroups);
+                    $myGroups = $this->_setGrouping($groupings,$fieldType,$myGroups) + $myGroups;
+                    
                 }
             }
         }
