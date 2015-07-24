@@ -23,6 +23,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
     protected $coupontype;
     protected $couponlength;
     protected $couponlabel;
+    protected $sendcoupondays;
 
     /**
      *
