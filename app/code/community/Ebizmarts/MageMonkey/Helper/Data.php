@@ -420,6 +420,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $guestFirstName = $this->config('guest_name', $customer->getStoreId());
             }elseif($customer->getSubscriberFirstname()) {
                 $guestFirstName = $customer->getSubscriberFirstname();
+            } else {
+                $guestFirstName = '';
             }
 
             if ($guestFirstName) {
@@ -431,6 +433,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
             }elseif($customer->getSubscriberLastname()){
                 $guestLastName = $customer->getSubscriberLastname();
+            } else {
+                $guestLastName = '';
             }
 
             if ($guestLastName) {
