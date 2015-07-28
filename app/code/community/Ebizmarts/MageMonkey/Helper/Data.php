@@ -415,6 +415,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $merge_vars = $this->_setMaps($maps,$customer,$merge_vars, $websiteId);
 
         //GUEST
+        $guestFirstName = '';
         if (!$customer->getId() && !$request->getPost('firstname')) {
             if($this->config('guest_name', $customer->getStoreId())){
                 $guestFirstName = $this->config('guest_name', $customer->getStoreId());
@@ -426,6 +427,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $merge_vars['FNAME'] = $guestFirstName;
             }
         }
+        $guestLastName = '';
         if (!$customer->getId() && !$request->getPost('lastname')) {
             if($this->config('guest_lastname', $customer->getStoreId())){
                 $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
