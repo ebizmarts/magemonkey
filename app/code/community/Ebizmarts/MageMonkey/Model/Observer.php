@@ -341,7 +341,6 @@ class Ebizmarts_MageMonkey_Model_Observer
     public function updateCustomer(Varien_Event_Observer $observer)
     {
 
-        Mage::log('updateCustomer', null, 'santiago.log', true);
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
@@ -356,13 +355,10 @@ class Ebizmarts_MageMonkey_Model_Observer
 //        ) {
 //            $isConfirmNeed = TRUE;
 //        }
-        Mage::log($request->getModuleName() == 'checkout', null, 'santiago.log', true);
-        Mage::log(Mage::getSingleton('core/session')->getIsOneStepCheckout(), null, 'santiago.log', true);
         if(!$isCheckout) {
             $oldEmail = $customer->getOrigData('email');
             $email = $customer->getEmail();
             $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $customer->getStoreId());
-            Mage::log(!$oldEmail, null, 'santiago.log', true);
             if (!$oldEmail) {
                 $subscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
                 $monkeyPost = unserialize(Mage::getSingleton('core/session')->getMonkeyPost());
@@ -371,7 +367,6 @@ class Ebizmarts_MageMonkey_Model_Observer
                     //$api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
                 }
             } else {
-                Mage::log('right track', null, 'santiago.log', true);
 
                 Mage::getSingleton('core/session')->setIsUpdateCustomer(TRUE);
                 //subscribe to MailChimp newsletter
@@ -380,14 +375,11 @@ class Ebizmarts_MageMonkey_Model_Observer
                 $subscriber = Mage::getModel('newsletter/subscriber')
                     ->loadByEmail($customer->getEmail());
                 if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED && !$isAdmin) {
-                    Mage::log('listsubscription', null, 'santiago.log', true);
                     Mage::helper('monkey')->listsSubscription($customer, $post, 0);
                 }
                 $lists = $api->listsForEmail($oldEmail);
-                Mage::log($lists, null, 'santiago.log', true);
                 if (is_array($lists)) {
                     foreach ($lists as $listId) {
-                        Mage::log('listupdate', null, 'santiago.log', true);
                         $mergeVars = Mage::helper('monkey')->mergeVars($customer, TRUE, $listId);
                         $api->listUpdateMember($listId, $oldEmail, $mergeVars, '', false);
                     }

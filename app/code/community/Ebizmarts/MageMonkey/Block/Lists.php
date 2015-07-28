@@ -215,6 +215,17 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         return $this->_info[$listId];
     }
 
+    public function hasGroupSelected($group){
+        $ret = false;
+        foreach($group['groups'] as $g){
+            if($this->_groupAllowed($g['name'])){
+                $ret = true;
+            }
+        }
+        return $ret;
+
+    }
+
     /**
      * Render interest grouping with its groups
      *
