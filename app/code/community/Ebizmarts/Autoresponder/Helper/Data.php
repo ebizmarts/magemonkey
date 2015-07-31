@@ -98,7 +98,7 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isSetTime($setTime)
     {
-        $now = date('H');
+        $now = date('H', Mage::getModel('core/date')->timestamp(time()));
         if ($now == $setTime) {
             return true;
         }
