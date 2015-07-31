@@ -166,6 +166,9 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 ->addFieldToFilter('main_table.customer_email', array('eq' => $quote->getCustomerEmail()))
                 ->addFieldToFilter('main_table.updated_at', array('from' => $quote->getUpdatedAt()));
             if ($collection2->getSize()) {
+                //Set counter to its max value to prevent this quote to slow the process in the future
+                $quote->setEbizmartsAbandonedcartCounter($this->maxtimes);
+                $quote->save();
                 continue;
             }
             //
