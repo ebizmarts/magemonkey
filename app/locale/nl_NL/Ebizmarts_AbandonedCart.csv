@@ -1,0 +1,50 @@
+;Config settings
+"Enabled","Ingeschakeld"
+"Sender","Afzender"
+"Email Template","Email template"
+"Email Template With Coupon","Email template met coupon"
+"Send email after","Stuur email na"
+"Max number of email to send","Maximaal aantal emails te versturen"
+"Create Coupon?","Coupon aanmaken?"
+"On email number?","Op email nummer?"
+"Expire on","Verloopt op"
+"Coupon length","Coupon lengte"
+"Discount type","Type korting"
+"Discount amount","Hoogte van de korting"
+"Label for coupon","Label voor coupon"
+"Days","Dagen"
+"Max","Max",
+"The coupon will be created on the email number","De coupon zal op het email nummer worden aangemaakt"
+"The coupon expiration in days","De coupon zal verlopen in zoveel dagen"
+"Select percentage or fixed discount","Selecteer percentage of vaste korting"
+;Config values
+"Fixed amount","Vaste hoeveelheid"
+"Percentage","Percentage"
+
+;Dashboard
+"Lifetime Generate Revenue","Levenslange gerealiseerde omzet"
+"Average Orders","Gemiddelde bestellingen"
+"Generated","Gegenereerd"
+"Generated Revenue","Gegenereerde omzet"
+"Generated Tax","Gegenereerde belasting"
+"Generated Shipping","Gegenereerde verzendkosten"
+"Generated Orders","Gegenereerde bestellingen"
+"Generated Conv. Rate","Gegenereerde conversie ratio"
+"Emails","Emails"
+"Emails Sent","Verstuurde emails"
+"Emails Received","Ontvangen emails"
+"Emails Opened","Geopende emails"
+"Emails Clicked","Geklikte emails"
+"Abandoned Cart Dashboard (Ebizmarts)","Verlaten winkelwagen dashboard (Ebizmarts)"
+"You may obtain more statistics if enable and configure","Je kunt meer statistieken verkgijgen wanneer ingeschakeld en geconfigureerd"
+"extension","extensie"
+
+;Menus
+"Abandoned Cart Dashboard","Verlaten winkelwagen dashboard"
+"Abandoned Cart Orders","Verlaten winkelwagen bestellingen"
+"Ebizmarts Abandoned Cart","Ebizmarts verlaten winkelwagen"
+
+;Emailcatcher popup
+"Confirm","Bevestig"
+"Close","Sluit"
+"Not a valid e-mail address","Dit is een ongeldig e-mail adres"
