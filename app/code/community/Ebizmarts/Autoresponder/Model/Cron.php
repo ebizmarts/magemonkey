@@ -544,7 +544,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
                         $translate = Mage::getSingleton('core/translate');
                         $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                        $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
+                        $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
 
 //                        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
 //                        $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
@@ -599,7 +599,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $translate = Mage::getSingleton('core/translate');
                 $email = $item->getCustomerEmail();
                 $name = 'customer';
-                $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
+                $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
 
 
 //                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
@@ -632,7 +632,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
                     $translate = Mage::getSingleton('core/translate');
                     $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                    $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
+                    $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
 
 //                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
 //                    $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);

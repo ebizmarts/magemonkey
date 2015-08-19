@@ -43,6 +43,11 @@ class Ebizmarts_MageMonkey_Model_Observer
             return $observer;
         }
 
+        if((Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE, $subscriber->getStoreId()))
+        {
+            return $observer;
+        }
+
         if (Mage::getSingleton('core/session')->getIsOneStepCheckout() && !Mage::getSingleton('core/session')->getMonkeyCheckout()) {
             return $observer;
         }
