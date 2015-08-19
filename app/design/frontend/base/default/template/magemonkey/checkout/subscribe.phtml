@@ -202,40 +202,42 @@ $force = $this->getForce();
 
         });
     });
-    //If force subscription or checked by default set the elements as clicked
-    <?php if($auto):?>addSubscribeToPost($('magemonkey-trigger'));
-    <?php if($this->getCanModify() && is_array($generalList['interest_groupings'])): ?>
-    <?php foreach($generalList['interest_groupings'] as $group): ?>
-    <?php foreach($group['groups'] as $g): ?>
-    <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
-    <?php if($idToAdd): ?>
-    if ($(<?php Print(json_encode($idToAdd));?>)) {
-        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
-    }
-    <?php endif; ?>
-    <?php endforeach; ?>
-    <?php endforeach; ?>
-    <?php endif; ?>
-    <?php endif; ?>
-    <?php if($auto):
-        foreach($lists as $list):
-            $string = "magemonkey-trigger-".$list['id'];
-            ?>addSubscribeToPost($(<?php Print(json_encode($string)); ?>));
-    <?php if(is_array($list['interest_groupings'])): ?>
-    <?php foreach($list['interest_groupings'] as $group): ?>
-    <?php foreach($group['groups'] as $g): ?>
-    <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
-    <?php if($idToAdd): ?>
-    if ($(<?php Print(json_encode($idToAdd));?>)) {
-        addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
-    }
-    <?php endif; ?>
-    <?php endforeach; ?>
-    <?php endforeach; ?>
-    <?php endif; ?>
-    <?php endforeach; ?>
-    <?php endif; ?>
 
+    document.observe("dom:loaded", function() {
+        //If force subscription or checked by default set the elements as clicked
+        <?php if($auto):?>addSubscribeToPost($('magemonkey-trigger'));
+        <?php if($this->getCanModify() && is_array($generalList['interest_groupings'])): ?>
+        <?php foreach($generalList['interest_groupings'] as $group): ?>
+        <?php foreach($group['groups'] as $g): ?>
+        <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
+        <?php if($idToAdd): ?>
+        if ($(<?php Print(json_encode($idToAdd));?>)) {
+            addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
+        }
+        <?php endif; ?>
+        <?php endforeach; ?>
+        <?php endforeach; ?>
+        <?php endif; ?>
+        <?php endif; ?>
+        <?php if($auto):
+            foreach($lists as $list):
+                $string = "magemonkey-trigger-".$list['id'];
+                ?>addSubscribeToPost($(<?php Print(json_encode($string)); ?>));
+        <?php if(is_array($list['interest_groupings'])): ?>
+        <?php foreach($list['interest_groupings'] as $group): ?>
+        <?php foreach($group['groups'] as $g): ?>
+        <?php $idToAdd = $this->getGroupId($g, TRUE); ?>
+        <?php if($idToAdd): ?>
+        if ($(<?php Print(json_encode($idToAdd));?>)) {
+            addGroupToPost($(<?php Print(json_encode($idToAdd));?>));
+        }
+        <?php endif; ?>
+        <?php endforeach; ?>
+        <?php endforeach; ?>
+        <?php endif; ?>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    });
 
     //    if( $$('div#checkout-step-review div.monkey-multisubscribe').length ){
     //
