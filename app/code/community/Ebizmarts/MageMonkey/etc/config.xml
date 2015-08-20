@@ -151,6 +151,14 @@
                     </monkey_subscribe_checkout>
                 </observers>
             </controller_action_postdispatch_checkout_onepage_saveOrder>
+            <controller_action_postdispatch_firecheckout_index_saveOrder>
+                <observers>
+                    <monkey_subscribe_checkout>
+                        <class>monkey/observer</class>
+                        <method>registerCheckoutSubscribe</method>
+                    </monkey_subscribe_checkout>
+                </observers>
+            </controller_action_postdispatch_firecheckout_index_saveOrder>
             <checkout_onepage_controller_success_action>
                 <observers>
                     <monkey_subscribe_checkoutsuccess>
