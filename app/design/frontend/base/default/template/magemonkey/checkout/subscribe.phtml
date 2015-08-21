@@ -127,7 +127,7 @@ $force = $this->getForce();
                 <?php if (is_array($generalList['interest_groupings']) && $this->getCanModify() == 1): ?>
                     <div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
                         <?php foreach ($generalList['interest_groupings'] as $group): ?>
-                            <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                            <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS' && $this->hasGroupSelected($group)): ?>
                                 <div class="grouping">
                                     <?php if ($group['form_field'] != 'hidden'): ?>
                                         <strong><?php echo $group['name']; ?></strong><?php endif; ?>
@@ -160,7 +160,7 @@ $force = $this->getForce();
                     <?php if (is_array($igroups)): ?>
                         <div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
                             <?php foreach ($igroups as $group): ?>
-                                <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                                <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS' && $this->hasGroupSelected($group)): ?>
                                     <div class="grouping">
                                         <?php if ($group['form_field'] != 'hidden'): ?>
                                             <strong><?php echo $group['name']; ?></strong><?php endif; ?>

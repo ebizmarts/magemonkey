@@ -172,7 +172,7 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
         switch ($this->getRequest()->getActionName()) {
             case 'index':
             case 'grid':
-            case 'massend':
+            case 'masssend':
             case 'massDelete':
                 $acl = 'newsletter/magemonkey/ecommerce/commerce';
                 break;
@@ -183,6 +183,8 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
             case 'resetRemoteEcommerce':
                 $acl = 'system/config/monkey';
             break;
+            case 'masssend':
+                $acl = 'sales/orders';
         }
         return Mage::getSingleton('admin/session')->isAllowed($acl);
     }

@@ -415,22 +415,24 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $merge_vars = $this->_setMaps($maps,$customer,$merge_vars, $websiteId);
 
         //GUEST
+        $guestFirstName = '';
         if (!$customer->getId() && !$request->getPost('firstname')) {
-            if($customer->getSubscriberFirstname()) {
-                $guestFirstName = $customer->getSubscriberFirstname();
-            }else{
+            if($this->config('guest_name', $customer->getStoreId())){
                 $guestFirstName = $this->config('guest_name', $customer->getStoreId());
+            }elseif($customer->getSubscriberFirstname()) {
+                $guestFirstName = $customer->getSubscriberFirstname();
             }
 
             if ($guestFirstName) {
                 $merge_vars['FNAME'] = $guestFirstName;
             }
         }
+        $guestLastName = '';
         if (!$customer->getId() && !$request->getPost('lastname')) {
-            if($customer->getSubscriberLastname()){
-                $guestLastName = $customer->getSubscriberLastname();
-            }else {
+            if($this->config('guest_lastname', $customer->getStoreId())){
                 $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
+            }elseif($customer->getSubscriberLastname()){
+                $guestLastName = $customer->getSubscriberLastname();
             }
 
             if ($guestLastName) {
@@ -477,7 +479,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $merge_vars = array_merge($merge_vars, $blank->toArray());
         }
         //magemonkey_mergevars_after
-
         return $merge_vars;
     }
     private function _setMaps($maps,$customer,$merge_vars, $websiteId)
@@ -555,7 +556,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         }
                         break;
                     default:
-
                         if (($value = (string)$customer->getData(strtolower($customAtt)))
                             OR ($value = (string)$request->getPost(strtolower($customAtt)))
                         ) {
@@ -652,7 +652,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         //if post exists && is not admin backend subscription && not footer subscription
         $this->_checkGrouping($mergeVars,$post,$currentList, $object);
-
 
         return $mergeVars;
     }
@@ -960,7 +959,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
 
                 $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
-
                 $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db);
             }
         }

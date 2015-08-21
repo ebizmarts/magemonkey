@@ -118,4 +118,9 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $tbtVars;
     }
+
+    protected function _formatDateMerge($date)
+    {
+        return preg_replace("/(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)/", "$2/$3/$1", $date);
+    }
 }

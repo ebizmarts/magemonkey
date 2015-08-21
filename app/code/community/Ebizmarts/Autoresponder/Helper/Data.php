@@ -98,7 +98,7 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isSetTime($setTime)
     {
-        $now = date('H');
+        $now = date('H', Mage::getModel('core/date')->timestamp(time()));
         if ($now == $setTime) {
             return true;
         }
@@ -164,6 +164,11 @@ class Ebizmarts_Autoresponder_Helper_Data extends Mage_Core_Helper_Abstract
             }
             return $tbtVars;
         }
+    }
+
+    protected function _formatDateMerge($date)
+    {
+        return preg_replace("/(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)\D+(\d+)/", "$2/$3/$1", $date);
     }
 
 }

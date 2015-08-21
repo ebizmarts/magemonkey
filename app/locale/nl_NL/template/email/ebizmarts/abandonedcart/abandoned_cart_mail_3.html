@@ -1,0 +1,71 @@
+
+<body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+<div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+            <td align="center" valign="top" style="padding:20px 0 20px 0">
+                <table bgcolor="#FFFFFF" cellspacing="0" cellpadding="10" border="0" width="650"
+                       style="border:1px solid #E0E0E0;">
+                    <!-- [ header starts here] -->
+                    <tr>
+                        <td valign="top"><a href="{{store url=""}}"><img src="{{var logo_url}}" alt="{{var logo_alt}}"
+                                                                         style="margin-bottom:10px;" border="0"/></a>
+                        </td>
+                    </tr>
+                    <!-- [ middle starts here] -->
+                    <tr>
+                        <td valign="top">
+                            <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;">Hallo,
+                                {{htmlescape var=$name}}</h1>
+
+                            <p style="font-size:12px; line-height:16px; margin:0;">
+                                Je hebt een winkelwagen achtergelaten op {{var store.getFrontendName()}}.
+                                {{depend couponcode}}
+                                <br>Je bent gekozen om een coupon te ontvangen die gebruikt kan worden met deze code: <b>{{var
+                                couponcode}}</b>
+                                {{/depend}}
+                                {{depend discount}}
+                                hiermee kun je een korting krijgen van {{var discount}} tot {{var todate}}
+                                {{/depend}}
+                                {{depend points}}
+                                <br/>Je hebt momenteel {{var points}} punten beschikbaar.
+                                {{/depend}}
+                                <br>Bekijk je winkelwagen via <a href="{{var url}}" style="color:#1E7EC8;">deze link</a>.
+                                <br>Mocht je nog vragen hebben over je bestelling, dan kun je contact met ons opnemen via <a
+                                    href="mailto:{{config path='trans_email/ident_support/email'}}"
+                                    style="color:#1E7EC8;">{{config path='trans_email/ident_support/email'}}</a> of bel ons op <span class="nobr">{{config path='general/store_information/phone'}}</span> Maandag - Vrijdag van 9 uur 's ochtends tot 5 uur 's avonds.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{block type='ebizmarts_abandonedcart/email_order_items' area='frontend'
+                            template='ebizmarts_abandonedcart/email/order/items.phtml' quote=$quote url}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td bgcolor="#EAEAEA" align="center" style="background:#EAEAEA; text-align:center;">
+                            <center><p style="font-size:12px; margin:0;">Met vriendelijke groeten, <strong>{{var
+                                store.getFrontendName()}}</strong></p></center>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <div style="margin-top: 30px; margin-bottom:20px;"><a bgcolor="#EAEAEA"
+                                                                                  style="background:#EAEAEA; text-align:center; color:black; border-radius: 10px; text-decoration:none; padding:22px; box-shadow: inset 0px 1px 1px #909193, 0px 1px 0px #fff; font-size:15px"
+                                                                                  href="{{var url}}">Hervat je bestelling
+                                {{depend couponcode}} en ontvang de coupon code {{/depend}}{{var couponcode}} {{depend
+                                discount}} om {{var discount}}% korting te krijgen!{{/depend}}</a></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Je kunt je uitschrijven van deze emails via <a href="{{var unsubscribeurl}}"
+                                                                           style="color:#1E7EC8;">deze link</a>.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>

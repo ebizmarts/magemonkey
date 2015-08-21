@@ -1,4 +1,4 @@
-(function () {
+
     function getCampaign() {
         var params = location.search.substr(1).split('&');
         var cookies = [];
@@ -30,4 +30,3 @@
     } else {
         document.observe('dom:loaded', getCampaign);
     }
-});

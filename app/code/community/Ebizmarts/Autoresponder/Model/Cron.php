@@ -544,30 +544,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
                         $translate = Mage::getSingleton('core/translate');
                         $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                        $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
-
-//                        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
-//                        $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-//
-//                        $customer = Mage::getModel('customer/customer')
-//                            ->setStore(Mage::app()->getStore($storeId))
-//                            ->loadByEmail($email);
-//                        if ($customer->getId()) {
-//                            $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
-//                            foreach ($tbtPoints as $key => $field) {
-//                                if ($key == 'points') {
-//                                    if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
-//                                        $vars[$key] = $field;
-//                                    }
-//                                } else {
-//                                    $vars[$key] = $field;
-//                                }
-//                            }
-//                        }
-//
-//                        $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
-//                        $translate->setTranslateInLine(true);
-//                        Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
+                        $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
                     }
                 }
                 $products = array();
@@ -599,31 +576,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $translate = Mage::getSingleton('core/translate');
                 $email = $item->getCustomerEmail();
                 $name = 'customer';
-                $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
-
-
-//                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
-//                $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-//
-//                $customer = Mage::getModel('customer/customer')
-//                    ->setStore(Mage::app()->getStore($storeId))
-//                    ->loadByEmail($email);
-//                if ($customer->getId()) {
-//                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
-//                    foreach ($tbtPoints as $key => $field) {
-//                        if ($key == 'points') {
-//                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
-//                                $vars[$key] = $field;
-//                            }
-//                        } else {
-//                            $vars[$key] = $field;
-//                        }
-//                    }
-//                }
-//
-//                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
-//                $translate->setTranslateInLine(true);
-//                Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
+                $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
             }
         }
         if (count($products)) {
@@ -632,58 +585,13 @@ class Ebizmarts_Autoresponder_Model_Cron
                 if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'visitedproducts', $storeId)) {
                     $translate = Mage::getSingleton('core/translate');
                     $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                    $this->sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
-
-//                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
-//                    $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-//
-//                    $customer = Mage::getModel('customer/customer')
-//                        ->setStore(Mage::app()->getStore($storeId))
-//                        ->loadByEmail($email);
-//                    if ($customer->getId()) {
-//                        $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
-//                        foreach ($tbtPoints as $key => $field) {
-//                            if ($key == 'points') {
-//                                if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
-//                                    $vars[$key] = $field;
-//                                }
-//                            } else {
-//                                $vars[$key] = $field;
-//                            }
-//                        }
-//                    }
-//
-//                    $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
-//                    $translate->setTranslateInLine(true);
-//                    Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
+                    $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
                 }
             } else {
                 //add customer by email placed on Abandoned Cart Popup
                 $email = $item->getCustomerEmail();
                 $name = 'customer';
                 $this->_sendVisitedProductEmail($email,$storeId,$products,$name,$tags);
-//                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
-//                $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
-//
-//                $customer = Mage::getModel('customer/customer')
-//                    ->setStore(Mage::app()->getStore($storeId))
-//                    ->loadByEmail($email);
-//                if ($customer->getId()) {
-//                    $tbtPoints = Mage::helper('ebizmarts_autoresponder')->getTBTPoints($customer->getId(), $storeId);
-//                    foreach ($tbtPoints as $key => $field) {
-//                        if ($key == 'points') {
-//                            if ($field >= Mage::getStoreConfig('sweetmonkey/general/email_points', $storeId)) {
-//                                $vars[$key] = $field;
-//                            }
-//                        } else {
-//                            $vars[$key] = $field;
-//                        }
-//                    }
-//                }
-//
-//                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
-//                $translate->setTranslateInLine(true);
-//                Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
             }
         }
 
