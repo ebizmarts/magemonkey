@@ -43,8 +43,8 @@
             <?php if(isset($_COOKIE['email'])):
                 if($_COOKIE['email'] != 'none'):
                     Print(json_decode($this->_handleCookie()));
-//                    $email = str_replace(' ', '+', $_COOKIE['email']);
-//                    $this->_createCoupon($email);
+                    $cookie = str_replace(' ', '+', $_COOKIE['email']);
+                    $this->_createCoupon($cookie);
 //                    if(isset($_COOKIE['subscribe'])):
 //                        $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
 //                        if(!$subscriber->getId()):
@@ -110,11 +110,13 @@
                         var inputFieldFName = $$('.fname_input input[type=text]').first();
                         var inputFieldLName = $$('.lname_input input[type=text]').first();
                         var email = inputFieldEmail.value;
+                        var fname = '';
+                        var lname = '';
                         if(inputFieldFName) {
-                            var fname = inputFieldFName.value;
+                            fname = inputFieldFName.value;
                         }
                         if(inputFieldLName) {
-                            var lname = inputFieldLName.value;
+                            lname = inputFieldLName.value;
                         }
                         if (validateEmail(email)) {
                             var cookie = 'email=' + email + '/' + fname + '/' + lname;
