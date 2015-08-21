@@ -1,6 +1,8 @@
 MailChimp official Magento extension
 ====================================
 
+<h3><a href="http://www.mailchimp.com/signup?pid=ebizmarts&source=website" target="_blank">Support MageMonkey, Subscribe for a free MailChimp Account!</a> </h3>
+
 ## Features
 
 * Send transactional emails using Mandrill (free up to 12K emails/month)
