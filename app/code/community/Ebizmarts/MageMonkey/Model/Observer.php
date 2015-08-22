@@ -348,7 +348,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         $request = Mage::app()->getRequest();
         $isAdmin = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $customer = $observer->getEvent()->getCustomer();
-        $isCheckout = $request->getModuleName() == 'checkout' || Mage::getSingleton('core/session')->getIsOneStepCheckout();
+        $isCheckout = $request->getModuleName() == 'checkout' || $request->getModuleName() == 'firecheckout' || Mage::getSingleton('core/session')->getIsOneStepCheckout();
 //        $isConfirmNeed = FALSE;
 //        if (!Mage::helper('monkey')->isAdmin() &&
 //            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $customer->getStoreId()) == 1)
