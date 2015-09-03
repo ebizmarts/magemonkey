@@ -31,13 +31,6 @@ class Ebizmarts_MageMonkey_Model_Observer
         if($subscriber->getOrigData('subscriber_status') != 3 && $subscriber->getData('subscriber_status') == 3){
             Mage::getSingleton('monkey/api', array('store' => $subscriber->getStoreId()))->listUnsubscribe($defaultList, $subscriber->getSubscriberEmail());
         }
-        if (!Mage::helper('monkey')->isAdmin() &&
-            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) == 1 && Mage::helper('monkey')->subscribedToList($subscriber->getSubscriberEmail(), $defaultList))
-        ) {
-            $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
-            } elseif (Mage::helper('monkey')->isAdmin() && $subscriber->getOrigData('subscriber_status') == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED && $subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED) {
-            $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
-        }
 
         if ($subscriber->getBulksync()) {
             return $observer;
@@ -45,6 +38,9 @@ class Ebizmarts_MageMonkey_Model_Observer
 
         if((Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE, $subscriber->getStoreId()))
         {
+            return $observer;
+        }
+        if(Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $subscriber->getStoreId()) && Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $subscriber->getStoreId()) && !Mage::getSingleton('customer/session')->isLoggedIn() && Mage::app()->getRequest()->getActionName() != 'createpost'){
             return $observer;
         }
 
@@ -64,7 +60,6 @@ class Ebizmarts_MageMonkey_Model_Observer
             }
             Mage::getSingleton('core/session')->setIsHandleSubscriber(FALSE);
         }
-
         return $observer;
     }
 
@@ -424,7 +419,7 @@ class Ebizmarts_MageMonkey_Model_Observer
             return $observer;
         }
 
-        $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
+        $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout' || Mage::app()->getRequest()->getModuleName() == 'checkout';
 
         if (Mage::app()->getRequest()->isPost()) {
             $subscribe = Mage::app()->getRequest()->getPost('magemonkey_subscribe');

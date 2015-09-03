@@ -232,7 +232,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $member = Mage::getSingleton('monkey/api')
                 ->listMemberInfo($listId, $email);
 
-            if (!is_string($member) && $member['success'] && ($member['data'][0]['status'] == 'subscribed' )) {
+            if (!is_string($member) && $member['success'] && ($member['data'][0]['status'] == 'subscribed' || $member['data'][0]['status'] == 'pending')) {
                 $on = TRUE;
             }
         }
@@ -395,7 +395,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $merge_vars = array();
         $maps = $this->getMergeMaps($customer->getStoreId());
 
-        if (!$maps) {
+        if (!$maps && !$customer->getListGroups()) {
             return;
         }
 
@@ -651,12 +651,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $post = unserialize($monkeyPost);
         }
         //if post exists && is not admin backend subscription && not footer subscription
-        $this->_checkGrouping($mergeVars,$post,$currentList, $object);
+        $mergeVars = $this->_checkGrouping($post,$currentList, $object) + $mergeVars;
 
         return $mergeVars;
     }
-    private function _checkGrouping($merge_vars,$post,$currentList, $object)
+    private function _checkGrouping($post,$currentList, $object)
     {
+        $mergeVars = array();
         $request = Mage::app()->getRequest();
         $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
@@ -702,9 +703,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     }
 
                 }
-                if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
-                    $mergeVars["GROUPINGS"] = $subscribeGroups;
-                }
 
                 $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
                 $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
@@ -730,7 +728,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
                 $mergeVars[$map] = "Yes";
             }
+            if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
+                $mergeVars["GROUPINGS"] = $subscribeGroups;
+            }
         }
+        return $mergeVars;
     }
     /**
      * Register on Magento's registry GUEST customer data for MergeVars for on checkout subscribe
@@ -900,7 +902,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $this->subscribeToList($object, $db);
         } elseif(!$post){
             //subscribe customer from admin
-            $this->subscribeToList($object, $db, TRUE);
+            $this->subscribeToList($object, $db, NULL, TRUE);
         }
 
     }
@@ -920,10 +922,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $subscriber = Mage::getModel('newsletter/subscriber')
                 ->setSubscriberEmail($email);
         } else {
-//            $customer = Mage::getSingleton('customer/customer')->load($email);
-//            if($customer->getId()){
-//                $object = $customer;
-//            }
             $subscriber = $object;
         }
 
@@ -931,10 +929,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         if(!$listId){
             $listId = $defaultList;
         }
-        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe/*from admin*/) {
+        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && $subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE/*from admin*/) {
             $subscriber->subscribe($email);
         } else {
-
             $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
                 ->addFieldToFilter('lists', $listId)
                 ->addFieldToFilter('email', $email)
@@ -1029,9 +1026,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $odata[$g[0]] = $g[1];
             }
         }
-        $curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
         $lists = $request->getPost('list', array());
 
+
+        $curlists = (TRUE === array_key_exists('list', $odata)) ? $odata['list'] : array();
         $defaultList = $this->getDefaultList(Mage::app()->getStore());
 
         $api = Mage::getSingleton('monkey/api');
@@ -1047,7 +1045,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             foreach ($curlists as $listId => $list) {
 
                 if (FALSE === array_key_exists($listId, $lists)) {
-
                     //Unsubscribe Email
 
                     $item = Mage::getModel('monkey/monkey')->loadByEmail($email);
