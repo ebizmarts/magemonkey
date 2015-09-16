@@ -651,11 +651,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $post = unserialize($monkeyPost);
         }
         //if post exists && is not admin backend subscription && not footer subscription
-        $this->_checkGrouping($mergeVars,$post,$currentList, $object);
+        $mergeVars = $this->_checkGrouping($mergeVars,$post,$currentList, $object);
 
         return $mergeVars;
     }
-    private function _checkGrouping($merge_vars,$post,$currentList, $object)
+    private function _checkGrouping($mergeVars,$post,$currentList, $object)
     {
         $request = Mage::app()->getRequest();
         $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
@@ -731,6 +731,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $mergeVars[$map] = "Yes";
             }
         }
+        
+        return $mergeVars;
     }
     /**
      * Register on Magento's registry GUEST customer data for MergeVars for on checkout subscribe
