@@ -702,9 +702,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     }
 
                 }
-                if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
-                    $mergeVars["GROUPINGS"] = $subscribeGroups;
-                }
 
                 $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
                 $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
@@ -730,6 +727,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
                 $mergeVars[$map] = "Yes";
             }
+        }
+        if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
+            $mergeVars["GROUPINGS"] = $subscribeGroups;
         }
     }
     /**
