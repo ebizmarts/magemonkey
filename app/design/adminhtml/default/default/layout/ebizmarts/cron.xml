@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_system_config_edit>
+        <reference name="head">
+            <action method="addJs"><script>lib/jquery/jquery-1.10.2.js</script></action>
+            <action method="addJs"><script>lib/jquery/jquery.modal.js</script></action>
+            <action method="addJs"><script>lib/jquery/noconflict.js</script></action>
+            <action method="addCss"><stylesheet>magemonkey/jquery.modal.css</stylesheet></action>
+        </reference>
+    </adminhtml_system_config_edit>
+</layout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <ebizmarts_cron translate="title" module="ebizmarts_cron">
+                                        <title>Ebizmarts Cron</title>
+                                    </ebizmarts_cron>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <translate>
+        <modules>
+            <Ebizmarts_Cron>
+                <files>
+                    <default>Ebizmarts_Cron.csv</default>
+                </files>
+            </Ebizmarts_Cron>
+        </modules>
+    </translate>
+</config>

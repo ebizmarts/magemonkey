@@ -1,0 +1,347 @@
+<?php
+    $name = $this->getName();
+    $publicKey = $this->getPk();
+    $image = $this->getImage();
+    $url = $this->getAjaxUrl();
+    $payUrl = $this->getPostUrl();
+    $merchant = $this->getMerchant();
+    $unpayed = $this->getUnpayed();
+    $restoreMerchantUrl = $this->getRestoreMechantUrl();
+?>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script>
+    $j(document).ready(
+        function() {
+            $j('#ebizmarts_cron_general_merchant').prop('readonly',true);
+        }
+    );
+</script>
+
+<?php
+    if($unpayed==Ebizmarts_Cron_Model_Config::NO_MERCHANT||$unpayed==Ebizmarts_Cron_Model_Config::NO_SUBSCRIPTION||$unpayed==Ebizmarts_Cron_Model_Config::WRONG_URL):
+        if($unpayed==Ebizmarts_Cron_Model_Config::NO_SUBSCRIPTION):
+?>
+            <div class="error-msg box">
+                <div style="padding: 0px 0px 0px 15px;">
+                    <p>This merchant don't have valid subscriptions.</p>
+                    <p>You need to purchase a new subscription, or restore an existing one</p>
+                </div>
+            </div>
+<?php
+        endif;
+        if($unpayed==Ebizmarts_Cron_Model_Config::WRONG_URL):
+?>
+            <div class="error-msg box">
+                <div style="padding: 0px 0px 0px 15px;">
+                    <p>This merchant is linked to other site.</p>
+                    <p>You need to purchase a new subscription, or restore an existing one</p>
+                </div>
+            </div>
+<?php
+        endif;
+?>
+        <div class="grid">
+            <button id="customButton">Purchase</button>
+            <button id="restoreButton">Restore Subscription</button>
+        </div>
+        <div id="restoreForm" class="modal" style="display: none;top: 50%;">
+            <h3 style="background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #2e5764, #1e3d47) repeat scroll 0 0;color: #fff;font-size: 14px;margin-top: -15px;padding: 10px;margin-left: -30px;margin-right: -30px">Restore an existing Merchant</h3>
+            <div class="entry-edit-head">
+                <p>
+                    <label style="color: #333;float: left;font-size: 13px;font-weight: bold;line-height: 22px;width: 110px;">Merchant</label>
+                    <input id='restore_merchant' style='border: 1px solid #ddd;font: 12px/18px "Lucida Grande",Verdana;padding: 3px;width: 200px;' type="text">
+                </p>
+                <p>
+                    <button id="restoreSendButton" style="margin: 0 auto;display: block;">Restore Merchant</button>
+                </p>
+                <div id="loading"   class="hidden" style="display:none;text-align: center">
+                    <img  src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif'); ?>" />
+                    <div style="margin-top: 10px; color: white">
+                        <b>Please wait</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script>
+    var handler = StripeCheckout.configure({
+        key: '<?php echo $publicKey;?>',
+        image: '<?php echo $image; ?>',
+        locale: 'auto',
+        token: function(token) {
+            // Use the token to create the charge with a server-side script.
+            // You can access the token ID with `token.id`
+            var selected = $j('#ebizmarts_cron_general_plan').val();
+            var jdata;
+            jQuery.getJSON('<?php echo $payUrl;?>',{
+                tokenId: token,
+                plan: selected
+            }).done(function(data) {
+                jdata = data;
+                $j('#ebizmarts_cron_general_merchant').val(jdata.id);
+            });
+        }
+    });
+
+    $j('#customButton').on('click', function(e) {
+        // Open Checkout with further options
+        var selected = $j('#ebizmarts_cron_general_plan').val();
+        var plan;
+        jQuery.getJSON('<?php echo $url; ?>'+'id/'+selected).done(function(data) {
+            plan = data;
+            handler.open({
+                name: '<?php echo $name; ?>',
+                description: plan.name,
+                amount: plan.amount,
+                allowRememberMe: false,
+                currency: plan.currency
+            });
+        });
+        e.preventDefault();
+    });
+
+    // Close Checkout on page navigation
+    $j(window).on('popstate', function() {
+        handler.close();
+    });
+    $j('#restoreButton').on('click', function(e){
+        e.preventDefault();
+        $j('#restoreForm').modal({clickClose: false});
+    });
+    $j('#restoreSendButton').on('click',function(e){
+        e.preventDefault();
+        $j('#loading').show();
+        var merchant= $j('#restore_merchant').val();;
+        var selected = $j('#ebizmarts_cron_general_plan').val();
+        jQuery.getJSON('<?php echo $restoreMerchantUrl;?>',{
+            merchant: merchant,
+            plan: selected
+        }).done(function(data) {
+            $j('#loading').hide();
+            if (typeof data.error != 'undefined') {
+                alert(data.error);
+                $j.modal.close();
+            }
+            else {
+                $j('#ebizmarts_cron_general_merchant').val(data.id);
+                $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
+                alert('Merchant changed');
+                $j.modal.close();
+                configForm.submit();
+            }
+        });
+    });
+</script>
+<?php
+    else:
+        $last4 = $this->getLast4();
+        $brand = $this->getBrand();
+        $email = $this->getEmail();
+?>
+        <div class="box">
+                <label>Your subscription email is  <?php echo $email; ?></label>
+        </div>
+<?php
+        if($unpayed==Ebizmarts_Cron_Model_Config::UNPAYED):
+            $changeCardUrl = $this->getChangeCardUrl();
+?>
+            <div class="error-msg box">
+                <label style="padding: 0px 0px 0px 15px;">You have unpayed invoices. The last 4 digits of your card are <?php echo $last4; ?></label>
+            </div>
+            <button id="PayButton">Change Card</button>
+
+            <script>
+                var handlerchange = StripeCheckout.configure({
+                    key: '<?php echo $publicKey;?>',
+                    image: '<?php echo $image; ?>',
+                    locale: 'auto',
+                    token: function(token) {
+                        // Use the token to create the charge with a server-side script.
+                        // You can access the token ID with `token.id`
+                        var selected = $j('#ebizmarts_cron_general_plan').val();
+                        var customer =$j('#ebizmarts_cron_general_merchant').val();
+                        var jdata;
+                        jQuery.getJSON('<?php echo $changeCardUrl;?>',{
+                            tokenId: token,
+                            plan: selected,
+                            customer: customer
+                        }).done(function(data) {
+                            jdata = data;
+                        });
+                    }
+                });
+
+                $j('#PayButton').on('click', function(e) {
+                    // Open Checkout with further options
+                    var selected = $j('#ebizmarts_cron_general_plan').val();
+                    var plan;
+                    jQuery.getJSON('<?php echo $url; ?>'+'id/'+selected).done(function(data) {
+                        plan = data;
+                        handlerchange.open({
+                            name: '<?php echo $name; ?>',
+                            description: plan.name,
+                            amount: plan.amount,
+                            allowRememberMe: false,
+                            currency: plan.currency
+                        });
+                    });
+                    e.preventDefault();
+                });
+
+                // Close Checkout on page navigation
+                $j(window).on('popstate', function() {
+                    handlerchange.close();
+                });
+            </script>
+
+<?php
+        else:
+            $planUrl = $this->getChangePlanUrl();
+            $cancelPlanUrl = $this->getCancelPlanUrl();
+?>
+            <div class="box">
+                <label>You are using a <?php echo $brand;?> card with last 4 digits <?php echo $last4; ?></label>
+            </div>
+            <div id="loading"   class="hidden" style="display:none;text-align: center">
+                <img  src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif'); ?>" />
+                <div style="margin-top: 10px; color: white">
+                    <b>Please wait</b>
+                </div>
+            </div>
+            <div class="grid">
+                <button id="planButton">Change Plan</button>
+            </div>
+            <div class="grid">
+                <button id="cancelButton">Cancel Plan</button>
+                <button id="restoreButton">Restore Merchant</button>
+            </div>
+            <div id="restoreForm" class="modal" style="display: none;top: 50%;">
+                <h3 style="background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #2e5764, #1e3d47) repeat scroll 0 0;color: #fff;font-size: 14px;margin-top: -15px;padding: 10px;margin-left: -30px;margin-right: -30px">Restore an existing Merchant</h3>
+                <div class="entry-edit-head">
+                    <p>
+                        <label style="color: #333;float: left;font-size: 13px;font-weight: bold;line-height: 22px;width: 110px;">Merchant</label>
+                        <input id='restore_merchant' style='border: 1px solid #ddd;font: 12px/18px "Lucida Grande",Verdana;padding: 3px;width: 200px;' type="text">
+                    </p>
+                    <p>
+                        <button id="restoreSendButton" style="margin: 0 auto;display: block;">Restore Merchant</button>
+                    </p>
+                    <div id="loadingRestore"   class="hidden" style="display:none;text-align: center">
+                        <img  src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif'); ?>" />
+                        <div style="margin-top: 10px; color: white">
+                            <b>Please wait</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cancelForm" class="modal" style="display: none;top: 50%;left: 50%">
+                <h3 style="background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #2e5764, #1e3d47) repeat scroll 0 0;color: #fff;font-size: 14px;margin-top: -15px;padding: 10px;margin-left: -30px;margin-right: -30px">Cancel Subscription</h3>
+                <div class="grid" style="padding-left: 140px">
+                    <button id="cancelYesButton">Yes</button>
+                    <button id="cancelNoButton">No</button>
+                    <div id="loadingCancel" class="hidden" style="margin: 0 auto;display: none;">
+                        <img  src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif'); ?>" />
+                        <div style="margin-top: 10px; color: white">
+                            <b>Please wait</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="planForm" class="modal" style="display: none;top: 50%;">
+                <h3 style="background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #2e5764, #1e3d47) repeat scroll 0 0;color: #fff;font-size: 14px;margin-top: -15px;padding: 10px;margin-left: -30px;margin-right: -30px">Cancel Subscription</h3>
+                <div class="grid" style="padding-left: 140px">
+                    <button id="planYesButton">Yes</button>
+                    <button id="planNoButton">No</button>
+                    <div id="loadingPlan"   class="hidden" style="display:none;text-align: center">
+                        <img  src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif'); ?>" />
+                        <div style="margin-top: 10px; color: white">
+                            <b>Please wait</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                $j('#restoreButton').on('click', function(e){
+                    e.preventDefault();
+                    $j('#restoreForm').modal({clickClose: false});
+                });
+                $j('#restoreSendButton').on('click',function(e){
+                    e.preventDefault();
+                    $('#loadingRestore').show()
+                    var merchant= $j('#restore_merchant').val();;
+                    var selected = $j('#ebizmarts_cron_general_plan').val();
+                    jQuery.getJSON('<?php echo $restoreMerchantUrl;?>',{
+                        merchant: merchant,
+                        plan: selected
+                    }).done(function(data) {
+                        $j('#loadingRestore').hide();
+                        if (typeof data.error != 'undefined') {
+                            alert(data.error);
+                            $j.modal.close();
+                        }
+                        else {
+                            $j('#ebizmarts_cron_general_merchant').val(data.id);
+                            $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
+                            alert('Merchant changed');
+                            $j.modal.close();
+                            configForm.submit();
+                        }
+                    });
+                });
+                $j('#cancelButton').on('click',function(e) {
+                    e.preventDefault();
+                    $j('#cancelForm').modal({clickClose: false});
+                });
+                $j('#cancelYesButton').on('click',function(e) {
+                    e.preventDefault();
+                    $j('#loadingCancel').show()
+                    jQuery.getJSON('<?php echo $cancelPlanUrl; ?>').done(function (data) {
+                        $j('#loadingCancel').hide();
+                        if (typeof data.error != 'undefined') {
+                            alert(data.error);
+                            $j.modal.close();
+                        }
+                        else {
+                            $j('#ebizmarts_cron_general_merchant').val('');
+                            alert('Plan canceled');
+                            $j.modal.close()
+                            configForm.submit();
+                        }
+                    });
+                    e.preventDefault();
+
+                });
+                $j('#cancelNoButton').on('click',function(e){
+                   $j.modal.close();
+                });
+                $j('#planButton').on('click',function(e) {
+                    e.preventDefault();
+                    $j('#planForm').modal({clickClose: false});
+                });
+                $j('#planYesButton').on('click',function(e) {
+                    $j('#loadingPlan').show();
+                    var selected = $j('#ebizmarts_cron_general_plan').val();
+                    jQuery.getJSON('<?php echo $planUrl; ?>',
+                        {
+                            plan: selected
+                        }
+                    ).done(function(data){
+                            $j('#loadingPlan').hide();
+                            if (typeof data.error != 'undefined') {
+                                alert(data.error);
+                                $j.modal.close();
+                            }
+                            else {
+                                alert('Plan changed');
+                                $j.modal.close();
+                                configForm.submit();
+                            }
+                    });
+                    e.preventDefault();
+                });
+                $j('#planNoButton').on('click',function(e){
+                    $j.modal.close();
+                });
+            </script>
+<?php
+        endif;
+    endif;
+?>
