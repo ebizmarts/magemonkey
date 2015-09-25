@@ -213,6 +213,14 @@
                     <model>ebizmarts_abandonedcart/cron::abandoned</model>
                 </run>
             </ebizmarts_abandoned_cart>
+            <ebizmarts_popup_coupon>
+                <schedule>
+                    <cron_expr>*/5 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>ebizmarts_abandonedcart/cron::sendPopupCoupon</model>
+                </run>
+            </ebizmarts_popup_coupon>
             <ebizmarts_abandoned_cart_clean_expiredcoupons>
                 <schedule>
                     <cron_expr>0 1 * * *</cron_expr>

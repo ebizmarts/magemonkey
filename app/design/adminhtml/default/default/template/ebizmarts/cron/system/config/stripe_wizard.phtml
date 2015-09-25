@@ -13,6 +13,7 @@
     $j(document).ready(
         function() {
             $j('#ebizmarts_cron_general_merchant').prop('readonly',true);
+            $j('#ebizmarts_cron_general_token').prop('readonly',true);
         }
     );
 </script>
@@ -78,6 +79,7 @@
             }).done(function(data) {
                 jdata = data;
                 $j('#ebizmarts_cron_general_merchant').val(jdata.id);
+                $j('#ebizmarts_cron_general_token').val(jdata.token);
             });
         }
     });
@@ -124,6 +126,7 @@
             else {
                 $j('#ebizmarts_cron_general_merchant').val(data.id);
                 $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
+                $j('#ebizmarts_cron_general_token').val(data.token);
                 alert('Merchant changed');
                 $j.modal.close();
                 configForm.submit();
@@ -265,7 +268,7 @@
                 });
                 $j('#restoreSendButton').on('click',function(e){
                     e.preventDefault();
-                    $('#loadingRestore').show()
+                    $j('#loadingRestore').show()
                     var merchant= $j('#restore_merchant').val();;
                     var selected = $j('#ebizmarts_cron_general_plan').val();
                     jQuery.getJSON('<?php echo $restoreMerchantUrl;?>',{
@@ -280,6 +283,7 @@
                         else {
                             $j('#ebizmarts_cron_general_merchant').val(data.id);
                             $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
+                            $j('#ebizmarts_cron_general_token').val(data.token);
                             alert('Merchant changed');
                             $j.modal.close();
                             configForm.submit();
@@ -301,6 +305,7 @@
                         }
                         else {
                             $j('#ebizmarts_cron_general_merchant').val('');
+                            $j('#ebizmarts_cron_general_token').val('');
                             alert('Plan canceled');
                             $j.modal.close()
                             configForm.submit();

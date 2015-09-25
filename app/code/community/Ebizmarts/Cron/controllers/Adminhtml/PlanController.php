@@ -62,6 +62,7 @@ class Ebizmarts_Cron_Adminhtml_PlanController extends Mage_Adminhtml_Controller_
         $params = $this->getRequest()->getParams();
         $baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $rc = Mage::getModel('ebizmarts_cron/proxy_api')->restoreMerchant($params['merchant'],$baseUrl);
+        Mage::log($rc);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));
     }

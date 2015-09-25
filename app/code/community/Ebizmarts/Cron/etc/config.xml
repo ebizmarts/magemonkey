@@ -23,6 +23,15 @@
         </helpers>
     </global>
     <frontend>
+        <routers>
+            <cron>
+                <use>standard</use>
+                <args>
+                    <module>Ebizmarts_Cron</module>
+                    <frontName>cron</frontName>
+                </args>
+            </cron>
+        </routers>
         <translate>
             <modules>
                 <Ebizmarts_Cron>

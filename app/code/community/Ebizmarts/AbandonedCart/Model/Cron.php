@@ -24,31 +24,84 @@ class Ebizmarts_AbandonedCart_Model_Cron
     protected $couponlength;
     protected $couponlabel;
     protected $sendcoupondays;
+    protected $emailsSent;
+    protected $emailReceivers = array();
 
     /**
      *
      */
     public function abandoned()
     {
-        $allStores = Mage::app()->getStores();
-        foreach ($allStores as $storeid => $val) {
-            if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $storeid)) {
-                $this->_proccess($storeid);
-            }
-            if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $storeid) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeid)) {
-                $this->_sendPopupCoupon($storeid);
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $store->getId())) {
+                        $this->_proccess($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
             }
         }
+        return $data;
+    }
+    public function sendPopupCoupon()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ENABLE_POPUP, $store->getId()) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $store->getId())) {
+                        $this->_sendPopupCoupon($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return $data;
     }
 
     public function cleanAbandonedCartExpiredCoupons()
     {
-        $allStores = Mage::app()->getStores();
-        foreach ($allStores as $storeid => $val) {
-            if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $storeid)) {
-                $this->_cleanCoupons($storeid);
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                $total = 0;
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, $store->getId())) {
+                        $count = $this->_cleanCoupons($store->getId());
+                        $total += $count;
+                        $storeData[] = array('name'=>$store->getName(),'deleted'=>$count);
+                    }
+                }
+                $data[] = array('name'=>$website->getName(),'deleted'=>$total,'store'=>$storeData);
             }
         }
+        return $data;
     }
 
     /**
@@ -94,7 +147,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
             }
             $this->_processRun($adapter, $run, $storeId);
 
-            }
+        }
     }
     protected function _processRun($adapter, $run, $storeId)
     {
@@ -251,10 +304,18 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     $quote2->setEbizmartsAbandonedcartCounter($quote2->getEbizmartsAbandonedcartCounter() + 1);
                     $quote2->setEbizmartsAbandonedcartToken($token);
                     $quote2->save();
-
+                    $this->emailsSent += 1;
                     if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId)) {
+                        $emailReceiversData = array('email'=>$email,"email#"=>$run,"abtesting"=>$abTesting,'currency'=>$quote->getQuoteCurrencyCode(),'total'=>$quote->getGrandTotal(),'items'=>$quote->getItemsCount());
                         $abTesting = !$abTesting;
                     }
+                    else {
+                        $emailReceiversData = array('email'=>$email,"email#"=>$run,'currency'=>$quote->getQuoteCurrencyCode(),'total'=>$quote->getGrandTotal(),'items'=>$quote->getItemsCount());
+                    }
+                    if($couponcode!='') {
+                        $emailReceiversData['coupon'] = $couponcode;
+                    }
+                    $this->emailReceivers[] = $emailReceiversData;
                     Mage::helper('ebizmarts_abandonedcart')->saveMail('abandoned cart', $email, $name, $couponcode, $storeId);
                 }
             }
@@ -358,6 +419,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);
             $item->setProcessed(1)->save();
             $translate->setTranslateInLine(true);
+            $this->emailsSent +=1;
+            $this->emailReceivers[] = array('email'=>$email,'coupon'=>$couponcode);
             Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon', $email, $pseudoName, $couponcode, $storeId);
         }
     }
@@ -557,14 +620,16 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
     protected function _cleanCoupons($store)
     {
+        $count = 0;
         $today = date('Y-m-d');
         $collection = Mage::getModel('salesrule/rule')->getCollection()
             ->addFieldToFilter('name', array('like' => 'Abandoned coupon%'))
             ->addFieldToFilter('to_date', array('lt' => $today));
 
         foreach ($collection as $toDelete) {
+            $count++;
             $toDelete->delete();
         }
-
+        return $count;
     }
 }

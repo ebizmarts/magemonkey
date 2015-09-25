@@ -14,6 +14,7 @@ class Ebizmarts_Cron_Model_Config
     const NAME      = 'ebizmarts_cron/name';
     const IMAGE     = 'ebizmarts_cron/image';
     const MERCHANT  = 'ebizmarts_cron/general/merchant';
+    const TOKEN     = 'ebizmarts_cron/general/token';
 
     const ALL_OK        = 0;
     const WRONG_URL     = 1;
