@@ -9,6 +9,9 @@
  */
 class Ebizmarts_Autoresponder_Model_Cron
 {
+    protected $emailsSent;
+    protected $emailReceivers = array();
+
     /**
      *
      */
@@ -57,6 +60,214 @@ class Ebizmarts_Autoresponder_Model_Cron
             $this->_processBackToStock($storeId);
         }
         $this->_cleanAutoresponderExpiredCoupons();
+    }
+    public function processNewOrders()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processNewOrders($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
+    }
+    public function processRelated()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processRelated($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
+    }
+    public function processReview()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processReview($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
+    }
+    public function processBirthday()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processBirthday($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
+    }
+    public function processNoActivity()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processNoActivity($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
+    }
+    public function processWishlist()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processWishlist($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
+    }
+    public function processVisited()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processVisited($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
+    }
+    public function processBackToStock()
+    {
+        $this->emailsSent = 0;
+        $this->emailReceivers = array();
+        $data = array();
+        foreach (Mage::app()->getWebsites() as $website) {
+            $totalSent = 0;
+            $totalReceivers = 0;
+            foreach ($website->getGroups() as $group) {
+                $stores = $group->getStores();
+                $storeData = array();
+                foreach ($stores as $store) {
+                    if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $store->getId()) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $store->getId()))) {
+                        $this->_processBackToStock($store->getId());
+                        $totalSent += $this->emailsSent;
+                        $totalReceivers += count($this->emailReceivers);
+                        $storeData[] = array('name'=>$store->getName(),'sent'=>$this->emailsSent,'receivers'=>$this->emailReceivers);
+                    }
+                    $this->emailsSent = 0;
+                    $this->emailReceivers = array();
+                }
+                $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
+            }
+        }
+        return array('website'=>$data);
     }
 
     protected function _processNewOrders($storeId)
@@ -111,6 +322,9 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('new order', $email, $name, "", $storeId);
+                $this->emailsSent += 1;
+                $this->emailReceivers[] = array('email'=>$email,'order'=>$order->getIncrementId());
+
             }
         }
     }
@@ -180,6 +394,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('happy birthday', $email, $name, $couponcode, $storeId);
+                $this->emailsSent += 1;
+                $this->emailReceivers[] = array('email'=>$email,'coupon'=>$couponcode);
             }
         }
 
@@ -222,6 +438,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $cust = Mage::getModel('customer/customer')->load($customerId);
                     $email = $cust->getEmail();
                     $name = $cust->getFirstname() . ' ' . $cust->getLastname();
+                    $couponcode="";
                     if (Mage::helper('ebizmarts_autoresponder')->isSubscribed($email, 'noactivity', $storeId)) {
                         $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=noactivity&email=' . $email . '&store=' . $storeId;
                         $vars = array('name' => $name, 'tags' => array($tags), 'lastlogin' => $lastVisited, 'url' => $url);
@@ -255,6 +472,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                         $translate->setTranslateInLine(true);
                         Mage::helper('ebizmarts_abandonedcart')->saveMail('no activity', $email, $name, "", $storeId);
+                        $this->emailsSent += 1;
+                        $this->emailReceivers[] = array('email'=>$email,'coupon'=>$couponcode);
                     }
                 }
             }
@@ -330,6 +549,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                     $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                     $translate->setTranslateInLine(true);
                     Mage::helper('ebizmarts_abandonedcart')->saveMail('related products', $email, $name, "", $storeId);
+                    $this->emailsSent += 1;
+                    $this->emailReceivers[] = array('email'=>$email);
                 }
             }
         }
@@ -414,6 +635,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('product review', $email, $name, "", $storeId);
+                $this->emailsSent += 1;
+                $this->emailReceivers[] = array('email'=>$email,'order'=>$orderNum);
             }
         }
 
@@ -471,6 +694,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                         $translate->setTranslateInLine(true);
                         Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist', $email, $name, "", $storeId);
+                        $this->emailsSent += 1;
+                        $this->emailReceivers[] = array('email'=>$email);
                     }
 
                 }
@@ -511,6 +736,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('wishlist', $email, $name, "", $storeId);
+                $this->emailsSent += 1;
+                $this->emailReceivers[] = array('email'=>$email);
             }
         }
 
@@ -625,7 +852,8 @@ class Ebizmarts_Autoresponder_Model_Cron
         $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
         $translate->setTranslateInLine(true);
         Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
-
+        $this->emailsSent += 1;
+        $this->emailReceivers[] = array('email'=>$email);
     }
     /**
      * Process and send all notifications of Back To Stock
@@ -759,6 +987,8 @@ class Ebizmarts_Autoresponder_Model_Cron
 
                             $translate->setTranslateInLine(true);
                             Mage::helper('ebizmarts_abandonedcart')->saveMail($mailType, $_email, $name, "", $storeId);
+                            $this->emailsSent += 1;
+                            $this->emailReceivers[] = array('email'=>$_email);
 
                             // Flag/Disable notification that we already send
                             $subscriber->setIsActive(0);

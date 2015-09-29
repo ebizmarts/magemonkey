@@ -14,9 +14,12 @@ class Ebizmarts_Cron_Model_System_Config_Plan
         $plans =Mage::getModel('ebizmarts_cron/proxy_api')->getPlans();
 
         foreach($plans as $plan) {
-            $amount = $plan->amount/100;
-            $symbol = Mage::app()->getLocale()->currency(strtoupper($plan->currency))->getSymbol();
-            $options[] = array('value' => $plan->id, 'label' => $plan->name." ($symbol $amount)");
+            if(isset($plan->metadata)&&isset($plan->metadata->service)&&$plan->metadata->service=='magemonkey')
+            {
+                $amount = $plan->amount/100;
+                $symbol = Mage::app()->getLocale()->currency(strtoupper($plan->currency))->getSymbol();
+                $options[] = array('value' => $plan->id, 'label' => $plan->name." ($symbol $amount)");
+            }
         }
         return $options;
     }

@@ -32,35 +32,65 @@ class Ebizmarts_Cron_CronController extends Mage_Core_Controller_Front_Action
                     {
                         switch($process->code)
                         {
+                            // abandonedcar crons
                             case 'abandoned':
                                 $data[$process->code] = Mage::getModel('ebizmarts_abandonedcart/cron')->abandoned();
                                 break;
                             case 'cleanAbandonedCartExpiredCoupons':
-                                $data[$process->code]->website = Mage::getModel('ebizmarts_abandonedcart/cron')->cleanAbandonedCartExpiredCoupons();
+                                $data[$process->code] = Mage::getModel('ebizmarts_abandonedcart/cron')->cleanAbandonedCartExpiredCoupons();
                                 break;
                             case 'sendPopupCoupon':
-                                $data[$process->code]->website = Mage::getModel('ebizmarts_abandonedcart/cron')->sendPopupCoupon();
+                                $data[$process->code] = Mage::getModel('ebizmarts_abandonedcart/cron')->sendPopupCoupon();
                                 break;
+                            // magemonkey crons
                             case 'bulksyncExportSubscribers':
-                                $data[$process->code]->website = Mage::getModel('monkey/cron')->bulksyncExportSubscribers();
+                                $data[$process->code] = Mage::getModel('monkey/cron')->bulksyncExportSubscribers();
                                 break;
                             case 'bulksyncImportSubscribers':
-                                $data[$process->code]->website = Mage::getModel('monkey/cron')->bulksyncImportSubscribers();
+                                $data[$process->code] = Mage::getModel('monkey/cron')->bulksyncImportSubscribers();
                                 break;
                             case 'autoExportSubscribers':
-                                $data[$process->code]->website = Mage::getModel('monkey/cron')->autoExportSubscribers();
+                                $data[$process->code] = Mage::getModel('monkey/cron')->autoExportSubscribers();
                                 break;
                             case 'sendordersAsync':
-                                $data[$process->code]->website = Mage::getModel('monkey/cron')->sendordersAsync();
+                                $data[$process->code] = Mage::getModel('monkey/cron')->sendordersAsync();
                                 break;
                             case 'cleanordersAsync':
-                                $data[$process->code]->website = Mage::getModel('monkey/cron')->cleanordersAsync();
+                                $data[$process->code] = Mage::getModel('monkey/cron')->cleanordersAsync();
                                 break;
                             case 'sendSubscribersAsync':
-                                $data[$process->code]->website = Mage::getModel('monkey/cron')->sendSubscribersAsync();
+                                $data[$process->code] = Mage::getModel('monkey/cron')->sendSubscribersAsync();
                                 break;
                             case 'cleanSubscribersAsync':
-                                $data[$process->code]->website = Mage::getModel('monkey/cron')->cleanSubscribersAsync();
+                                $data[$process->code] = Mage::getModel('monkey/cron')->cleanSubscribersAsync();
+                                break;
+                            // autoresponder crons
+                            case 'processNewOrders':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processNewOrders();
+                                break;
+                            case 'processRelated':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processRelated();
+                                break;
+                            case 'processReview':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processReview();
+                                break;
+                            case 'processBirthday':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processBirthday();
+                                break;
+                            case 'processNoActivity':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processNoActivity();
+                                break;
+                            case 'processWishlist':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processWishlist();
+                                break;
+                            case 'processVisited':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processVisited();
+                                break;
+                            case 'processBackToStock':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->processBackToStock();
+                                break;
+                            case 'cleanAutoresponderExpiredCoupons':
+                                $data[$process->code] = Mage::getModel('ebizmarts_autoresponder/cron')->cleanAutoresponderExpiredCoupons();
                                 break;
                         }
                     }

@@ -73,7 +73,8 @@
     </admin>
     <default>
         <ebizmarts_cron>
-            <apiendpoint><![CDATA[http://stripetest.local.com/]]></apiendpoint>
+            <!--apiendpoint><![CDATA[http://stripetest.local.com/]]></apiendpoint-->
+            <apiendpoint><![CDATA[https://2-dot-remote-cron-magemonkey.appspot.com/]]></apiendpoint>
             <name><![CDATA[ebizmarts corp]]></name>
             <pk><![CDATA[pk_test_zyFLO9LueDusKPPgLkOKVfci]]></pk>
             <image><![CDATA[https://pbs.twimg.com/profile_images/433212467431211008/mWvo9DGm_200x200.png]]></image>

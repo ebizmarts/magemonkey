@@ -54,7 +54,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
             }
         }
-        return $data;
+        return array('website'=>$data);
     }
     public function sendPopupCoupon()
     {
@@ -80,7 +80,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $data[] = array('name'=>$website->getName(),'sent'=>$totalSent,'receivers'=>$totalReceivers,'store'=>$storeData);
             }
         }
-        return $data;
+        return array('website'=>$data);
     }
 
     public function cleanAbandonedCartExpiredCoupons()
@@ -101,7 +101,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $data[] = array('name'=>$website->getName(),'deleted'=>$total,'store'=>$storeData);
             }
         }
-        return $data;
+        return array('website'=>$data);
     }
 
     /**

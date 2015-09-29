@@ -69,8 +69,6 @@
         image: '<?php echo $image; ?>',
         locale: 'auto',
         token: function(token) {
-            // Use the token to create the charge with a server-side script.
-            // You can access the token ID with `token.id`
             var selected = $j('#ebizmarts_cron_general_plan').val();
             var jdata;
             jQuery.getJSON('<?php echo $payUrl;?>',{
@@ -79,7 +77,8 @@
             }).done(function(data) {
                 jdata = data;
                 $j('#ebizmarts_cron_general_merchant').val(jdata.id);
-                $j('#ebizmarts_cron_general_token').val(jdata.token);
+//                $j('#ebizmarts_cron_general_token').val(jdata.token);
+                configForm.submit();
             });
         }
     });
@@ -126,7 +125,7 @@
             else {
                 $j('#ebizmarts_cron_general_merchant').val(data.id);
                 $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
-                $j('#ebizmarts_cron_general_token').val(data.token);
+//                $j('#ebizmarts_cron_general_token').val(data.token);
                 alert('Merchant changed');
                 $j.modal.close();
                 configForm.submit();
@@ -158,8 +157,6 @@
                     image: '<?php echo $image; ?>',
                     locale: 'auto',
                     token: function(token) {
-                        // Use the token to create the charge with a server-side script.
-                        // You can access the token ID with `token.id`
                         var selected = $j('#ebizmarts_cron_general_plan').val();
                         var customer =$j('#ebizmarts_cron_general_merchant').val();
                         var jdata;
@@ -249,7 +246,7 @@
                 </div>
             </div>
             <div id="planForm" class="modal" style="display: none;top: 50%;">
-                <h3 style="background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #2e5764, #1e3d47) repeat scroll 0 0;color: #fff;font-size: 14px;margin-top: -15px;padding: 10px;margin-left: -30px;margin-right: -30px">Cancel Subscription</h3>
+                <h3 style="background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #2e5764, #1e3d47) repeat scroll 0 0;color: #fff;font-size: 14px;margin-top: -15px;padding: 10px;margin-left: -30px;margin-right: -30px">Change Subscription Plan</h3>
                 <div class="grid" style="padding-left: 140px">
                     <button id="planYesButton">Yes</button>
                     <button id="planNoButton">No</button>
@@ -283,7 +280,7 @@
                         else {
                             $j('#ebizmarts_cron_general_merchant').val(data.id);
                             $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
-                            $j('#ebizmarts_cron_general_token').val(data.token);
+//                            $j('#ebizmarts_cron_general_token').val(data.token);
                             alert('Merchant changed');
                             $j.modal.close();
                             configForm.submit();
@@ -305,7 +302,7 @@
                         }
                         else {
                             $j('#ebizmarts_cron_general_merchant').val('');
-                            $j('#ebizmarts_cron_general_token').val('');
+//                            $j('#ebizmarts_cron_general_token').val('');
                             alert('Plan canceled');
                             $j.modal.close()
                             configForm.submit();
