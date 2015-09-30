@@ -9,6 +9,9 @@
 
 class Ebizmarts_Cron_CronController extends Mage_Core_Controller_Front_Action
 {
+    /**
+     * @throws Zend_Controller_Response_Exception
+     */
     public function indexAction()
     {
         $body = $this->getRequest()->getRawBody();
