@@ -633,7 +633,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         if (is_object($object)) {
-            if ($object->getListGroups()) {
+            if ($object->getListGroups() && !$customer->hasListGroups()) {
                 $customer->setListGroups($object->getListGroups());
             }
 
@@ -667,16 +667,18 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
             if ($currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
-                $subscribeGroups = array(0 => array());
+                $subscribeGroups = array();
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
-                        $subscribeGroups[0]['id'] = $toGroups;
-                        $subscribeGroups[0]['groups'] = implode(', ', array_unique($post['list'][$currentList][$subscribeGroups[0]['id']]));
+                        $subscribeGroups[] = array(
+                            'id' => $toGroups,
+                            'groups' => implode(', ', $value)
+                        );
                     }
                 }
                 $groups = NULL;
-            } elseif ($currentList == $defaultList) {
-                $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $object->getStoreId());
+            } elseif ($currentList == $defaultList && !isset($mergeVars['GROUPINGS'])) {
+                $groups = Mage::getStoreConfig('monkey/general/default_customergroup', $object->getStoreId());
                 $groups = explode(",", $groups);
                 if (isset($groups[0]) && $groups[0]) {
                     $subscribeGroups = array();
@@ -927,6 +929,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $subscriber = $object;
         }
 
+        $defaultGroups = $this->getDefaultGroups();
+        if (!empty($defaultGroups) && !$subscriber->hasListGroups()) {
+            $subscriber->setListGroups($defaultGroups);
+        }
+
         $defaultList = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST, $storeId);
         if(!$listId){
             $listId = $defaultList;
@@ -963,6 +970,56 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
 
+    }
+
+    /**
+     * Gets store default groupings with a mixin for extra
+     * groups in the form
+     * {groupId}_InterestName,...
+     *
+     * @param string $additionalListString
+     * @return array
+     */
+    public function getDefaultGroups($additionalListString = '')
+    {
+        $groups = Mage::helper('monkey')->config('default_customergroup');
+
+        if (strlen($groups) > 0 && strlen($additionalListString) > 0) {
+            $groups .= ',';
+        }
+        $groups .= $additionalListString;
+
+        return $this->_parseGroupString($groups);
+    }
+
+    /**
+     * Processes a group interest string of the form
+     * {groupId}_InterestName,...
+     *
+     * into an array of the form
+     * [groupId => [InterestName, ...], ...]
+     *
+     * @param $groupString
+     * @return array
+     */
+    protected function _parseGroupString($groupString)
+    {
+        $groups = explode(',', $groupString);
+        $groupArray = array();
+        foreach ($groups as $encodedGroup) {
+            $underscore = stripos($encodedGroup, '_');
+            if ($underscore !== false) {
+                $groupId = substr($encodedGroup, 0, $underscore);
+                $groupName = substr($encodedGroup, $underscore + 1);
+
+                if (!isset($groupArray[$groupId])) {
+                    $groupArray[$groupId] = array();
+                }
+                $groupArray[$groupId][] = $groupName;
+            }
+        }
+
+        return $groupArray;
     }
 
     /**
