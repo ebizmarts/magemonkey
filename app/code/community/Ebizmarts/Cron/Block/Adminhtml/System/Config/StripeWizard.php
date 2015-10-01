@@ -27,7 +27,7 @@ class Ebizmarts_Cron_Block_Adminhtml_System_Config_StripeWizard extends Mage_Adm
     {
         $originalData = $element->getOriginalData();
 
-        $label = $originalData['button_label'];
+        //$label = $originalData['button_label'];
 
         //Check if api key works
 //        $ping = Mage::getModel('monkey/api');
@@ -36,11 +36,11 @@ class Ebizmarts_Cron_Block_Adminhtml_System_Config_StripeWizard extends Mage_Adm
 //            $label = "Change API credentials";
 //        }
 
-        $this->addData(array(
-            'button_label' => $this->helper('ebizmarts_cron')->__($label),
-            'button_url' => $this->helper('monkey/oauth2')->authorizeRequestUrl(),
-            'html_id' => $element->getHtmlId(),
-        ));
+//        $this->addData(array(
+//            'button_label' => $this->helper('ebizmarts_cron')->__($label),
+//            'button_url' => $this->helper('monkey/oauth2')->authorizeRequestUrl(),
+//            'html_id' => $element->getHtmlId(),
+//        ));
         return $this->_toHtml();
     }
     public function getName()

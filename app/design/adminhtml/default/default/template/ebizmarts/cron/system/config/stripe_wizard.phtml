@@ -77,7 +77,7 @@
             }).done(function(data) {
                 jdata = data;
                 $j('#ebizmarts_cron_general_merchant').val(jdata.id);
-//                $j('#ebizmarts_cron_general_token').val(jdata.token);
+                $j('#ebizmarts_cron_general_token').val(jdata.apikey);
                 configForm.submit();
             });
         }
@@ -125,7 +125,7 @@
             else {
                 $j('#ebizmarts_cron_general_merchant').val(data.id);
                 $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
-//                $j('#ebizmarts_cron_general_token').val(data.token);
+                $j('#ebizmarts_cron_general_token').val(data.apikey);
                 alert('Merchant changed');
                 $j.modal.close();
                 configForm.submit();
@@ -280,7 +280,7 @@
                         else {
                             $j('#ebizmarts_cron_general_merchant').val(data.id);
                             $j('#ebizmarts_cron_general_plan').val(data.subscriptions.data[0].plan.id);
-//                            $j('#ebizmarts_cron_general_token').val(data.token);
+                            $j('#ebizmarts_cron_general_token').val(data.apikey);
                             alert('Merchant changed');
                             $j.modal.close();
                             configForm.submit();
@@ -302,7 +302,7 @@
                         }
                         else {
                             $j('#ebizmarts_cron_general_merchant').val('');
-//                            $j('#ebizmarts_cron_general_token').val('');
+                            $j('#ebizmarts_cron_general_token').val('');
                             alert('Plan canceled');
                             $j.modal.close()
                             configForm.submit();

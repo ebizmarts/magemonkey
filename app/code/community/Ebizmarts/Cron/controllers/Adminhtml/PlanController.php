@@ -35,7 +35,8 @@ class Ebizmarts_Cron_Adminhtml_PlanController extends Mage_Adminhtml_Controller_
     public function changecardAction()
     {
         $params = $this->getRequest()->getParams();
-        $data = array('token' => $params['tokenId'],'plan' => $params['plan'],"customer" => $params['customer']);
+        $apiKey = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::TOKEN);
+        $data = array('token' => $params['tokenId'],'plan' => $params['plan'],"customer" => $params['customer'],'apikey'=>$apiKey);
         $rc = Mage::getModel('ebizmarts_cron/proxy_api')->changeCard($data);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));
@@ -45,7 +46,8 @@ class Ebizmarts_Cron_Adminhtml_PlanController extends Mage_Adminhtml_Controller_
     {
         $merchant = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::MERCHANT);
         $params = $this->getRequest()->getParams();
-        $data = array('customer'=>$merchant,'plan'=>$params['plan']);
+        $apiKey = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::TOKEN);
+        $data = array('customer'=>$merchant,'plan'=>$params['plan'],'apikey'=>$apiKey);
         $rc = Mage::getModel('ebizmarts_cron/proxy_api')->changePlan($data);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));
@@ -53,7 +55,9 @@ class Ebizmarts_Cron_Adminhtml_PlanController extends Mage_Adminhtml_Controller_
     public function cancelplanAction()
     {
         $merchant = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::MERCHANT);
-        $rc = Mage::getModel('ebizmarts_cron/proxy_api')->cancelPlan($merchant);
+        $apiKey = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::TOKEN);
+        $data = array('apikey'=>$apiKey);
+        $rc = Mage::getModel('ebizmarts_cron/proxy_api')->cancelPlan($merchant,$data);
         Mage::log($rc);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));
@@ -63,7 +67,8 @@ class Ebizmarts_Cron_Adminhtml_PlanController extends Mage_Adminhtml_Controller_
         $params = $this->getRequest()->getParams();
         $baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $endpoint = Mage::getUrl('cron/cron');
-        $rc = Mage::getModel('ebizmarts_cron/proxy_api')->restoreMerchant($params['merchant'],array('base'=>$baseUrl,'endpoint'=>$endpoint));
+        $apiKey = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::TOKEN);
+        $rc = Mage::getModel('ebizmarts_cron/proxy_api')->restoreMerchant($params['merchant'],array('base'=>$baseUrl,'endpoint'=>$endpoint,'apikey'=>$apiKey));
         Mage::log($rc);
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));

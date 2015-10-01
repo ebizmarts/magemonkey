@@ -45,10 +45,10 @@ class Ebizmarts_Cron_Model_Proxy_Api
         $rc = json_decode($this->run($command,$data));
         return $rc;
     }
-    public function cancelPlan($id)
+    public function cancelPlan($id,$data)
     {
         $command = 'cancelPlan/'.$id;
-        $rc = json_decode($this->run($command));
+        $rc = json_decode($this->run($command,$data));
         return $rc;
     }
     public function restoreMerchant($id,$data)
@@ -61,7 +61,7 @@ class Ebizmarts_Cron_Model_Proxy_Api
     }
     protected function run($command,$data = null)
     {
-        Mage::log(__METHOD__);
+        Mage::log(__METHOD__.' '.$command);
         $json = json_encode($data);
         Mage::log($json);
         $endPoint = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::END_POINT).$command;
