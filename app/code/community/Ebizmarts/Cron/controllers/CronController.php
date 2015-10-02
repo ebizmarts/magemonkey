@@ -18,12 +18,12 @@ class Ebizmarts_Cron_CronController extends Mage_Core_Controller_Front_Action
         $params = json_decode($body);
         $responseCode = 0;
         $data = array();
-        if(isset($params->token))
+        if(isset($params->apikey))
         {
             $token = Mage::getStoreConfig(Ebizmarts_Cron_Model_Config::TOKEN);
-            if($token!=$params->token)
+            if($token!=$params->apikey)
             {
-                $data = array('error'=>'token don\'t match');
+                $data = array('error'=>'apikey don\'t match');
                 $responseCode = 401;
             }
             else
@@ -106,7 +106,7 @@ class Ebizmarts_Cron_CronController extends Mage_Core_Controller_Front_Action
             }
         }
         else {
-            $data = array('error' => 'no token was given');
+            $data = array('error' => 'no apikey was given');
             $responseCode = 400;
         }
         $this->getResponse()
