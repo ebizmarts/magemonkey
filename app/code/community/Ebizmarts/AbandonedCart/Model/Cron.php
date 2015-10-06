@@ -358,7 +358,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);
             $item->setProcessed(1)->save();
             $translate->setTranslateInLine(true);
-            Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon', $email, $pseudoName, $couponcode, $storeId);
+            Mage::helper('ebizmarts_abandonedcart')->saveMail('popup coupon', $email, $pseudoName, $couponcode, $storeId);
         }
     }
 
