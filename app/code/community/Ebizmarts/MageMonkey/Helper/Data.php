@@ -900,7 +900,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //Subscription for One Step Checkout with force subscription
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
             $this->subscribeToList($object, $db);
-        } elseif(!$post){
+        } elseif(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
             //subscribe customer from admin
             $this->subscribeToList($object, $db, NULL, TRUE);
         }
