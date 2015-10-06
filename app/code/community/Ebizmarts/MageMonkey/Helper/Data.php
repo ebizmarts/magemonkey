@@ -494,6 +494,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $key = strtoupper($chimpTag);
 
                 switch ($customAtt) {
+                    case 'store_code':
+                        $storeId = (string)$customer->getData('store_id');
+                        $storeCode = Mage::getModel('core/store')->load($storeId)->getCode();
+                        if ($storeCode) {
+                            $merge_vars[$key] = $storeCode;
+                        }
+                        break;
                     case 'gender':
                         $val = (int)$customer->getData(strtolower($customAtt));
                         if ($val == 1) {
