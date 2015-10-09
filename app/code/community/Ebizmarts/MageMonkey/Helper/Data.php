@@ -555,6 +555,13 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             $merge_vars[$key] = $customerGroup[$group_id];
                         }
                         break;
+                    case 'store_code':
+                        $storeId = (string)$customer->getData('store_id');
+                        $storeCode = Mage::getModel('core/store')->load($storeId)->getCode();
+                        if ($storeCode) {
+                            $merge_vars[$key] = $storeCode;
+                        }
+                        break;
                     default:
                         if (($value = (string)$customer->getData(strtolower($customAtt)))
                             OR ($value = (string)$request->getPost(strtolower($customAtt)))
@@ -651,7 +658,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $post = unserialize($monkeyPost);
         }
         //if post exists && is not admin backend subscription && not footer subscription
-        $mergeVars = $this->_checkGrouping($post,$currentList, $object) + $mergeVars;
+        $mergeVars = array_merge($this->_checkGrouping($post,$currentList, $object), $mergeVars);
 
         return $mergeVars;
     }
