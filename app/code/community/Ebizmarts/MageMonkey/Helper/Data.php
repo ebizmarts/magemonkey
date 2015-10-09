@@ -947,7 +947,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if (count($alreadyOnList) == 0) {
                 $isConfirmNeed = FALSE;
                 if (!Mage::helper('monkey')->isAdmin() &&
-                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !$forceSubscribe && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $object->getStoreId()))
+                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $object->getStoreId()) || $forceSubscribe)
                 ) {
                     $isConfirmNeed = TRUE;
                 }
