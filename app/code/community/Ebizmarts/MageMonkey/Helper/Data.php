@@ -908,7 +908,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
             $this->subscribeToList($object, $db);
         } elseif(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
-            //subscribe customer from admin
             $this->subscribeToList($object, $db, NULL, TRUE);
         }
 
@@ -936,7 +935,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         if(!$listId){
             $listId = $defaultList;
         }
-        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && $subscriber->getStatus() != Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE/*from admin*/) {
+        $alreadySubscribed = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
+        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && !$alreadySubscribed) {
             $subscriber->subscribe($email);
         } else {
             $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
@@ -947,7 +947,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if (count($alreadyOnList) == 0) {
                 $isConfirmNeed = FALSE;
                 if (!Mage::helper('monkey')->isAdmin() &&
-                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $object->getStoreId()) || $forceSubscribe)
+                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $object->getStoreId()) || $forceSubscribe && Mage::getSingleton('core/session')->getMonkeyCheckout())
                 ) {
                     $isConfirmNeed = TRUE;
                 }
@@ -955,7 +955,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
                 //if( TRUE === $subscriber->getIsStatusChanged() ){
                 if ($isOnMailChimp == 1) {
-                    return false;
+                    if(Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
+                        $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
+                        $this->_subscribe($listId, $email, $mergeVars, 0, 1);
+                    }
+                    return;
                 }
 
                 if ($isConfirmNeed) {
