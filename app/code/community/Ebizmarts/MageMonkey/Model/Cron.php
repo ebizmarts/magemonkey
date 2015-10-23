@@ -299,7 +299,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 
             }
             if($job->getProcessedCount() == $job->getTotalCount()) {
-
+                $job->setStatus('finished');
             }
             $job->save();
 
@@ -502,24 +502,28 @@ class Ebizmarts_MageMonkey_Model_Cron
             if ($oldList == '') {
                 $oldList = $newList;
             }
+            $mergeVars = unserialize($item->getMapfields());
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
                 if (count($batch) > 0) {
                     Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
                 }
-                $isConfirmNeed = $eachIsConfirmNeed;
                 $oldList = $newList;
                 $batch = array();
             }
 
-            $mergeVars = unserialize($item->getMapfields());
             $mergeVars['EMAIL'] = $item->getEmail();
-            $batch[] = $mergeVars;
-            //$email = $item->getEmail();
-            //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
-            $item->setProcessed(1)->save();
-            if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
-                Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+            $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $oldList);
+            if($isOnMailChimp) {
+                Mage::getSingleton('monkey/api')->listUpdateMember($oldList, $item->getEmail(), $mergeVars);
+            }else {
+                $batch[] = $mergeVars;
             }
+                //$email = $item->getEmail();
+                //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+                $item->setProcessed(1)->save();
+                if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
+                    Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+                }
         }
 
     }
