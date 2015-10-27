@@ -45,7 +45,9 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
                     ->addFieldToFilter('email', array('eq' => $email));
                 if (!count($collection)) {
                     $addEmail = Mage::getModel('ebizmarts_abandonedcart/popup');
-                    $addEmail->setEmail($email)->save();
+                    $addEmail->setEmail($email)
+                        //->setStoreId(Mage::app()->getStore()->getId())
+                        ->save();
                 }
             }
         }
