@@ -182,7 +182,7 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <monkey before="Mage_Adminhtml">Ebizmarts_MageMonkey_Adminhtml</monkey>
+                        <monkey after="Mage_Adminhtml">Ebizmarts_MageMonkey_Adminhtml</monkey>
                     </modules>
                 </args>
             </adminhtml>

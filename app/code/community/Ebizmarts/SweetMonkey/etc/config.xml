@@ -50,7 +50,7 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <sweetmonkey before="Mage_Adminhtml">Ebizmarts_SweetMonkey_Adminhtml</sweetmonkey>
+                        <sweetmonkey after="Mage_Adminhtml">Ebizmarts_SweetMonkey_Adminhtml</sweetmonkey>
                     </modules>
                 </args>
             </adminhtml>

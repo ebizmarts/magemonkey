@@ -141,7 +141,7 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <Ebizmarts_Abandonedcart before="Mage_Adminhtml">Ebizmarts_AbandonedCart_Adminhtml</Ebizmarts_Abandonedcart>
+                        <Ebizmarts_Abandonedcart after="Mage_Adminhtml">Ebizmarts_AbandonedCart_Adminhtml</Ebizmarts_Abandonedcart>
                     </modules>
                 </args>
             </adminhtml>
