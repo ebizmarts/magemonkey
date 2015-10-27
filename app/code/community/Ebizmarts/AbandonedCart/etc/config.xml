@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_AbandonedCart>
-            <version>1.1.35</version>
+            <version>1.1.36</version>
         </Ebizmarts_AbandonedCart>
     </modules>
     <global>
@@ -141,7 +141,7 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <Ebizmarts_Abandonedcart before="Mage_Adminhtml">Ebizmarts_AbandonedCart_Adminhtml</Ebizmarts_Abandonedcart>
+                        <Ebizmarts_Abandonedcart after="Mage_Adminhtml">Ebizmarts_AbandonedCart_Adminhtml</Ebizmarts_Abandonedcart>
                     </modules>
                 </args>
             </adminhtml>
