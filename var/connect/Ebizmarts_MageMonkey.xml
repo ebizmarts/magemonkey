@@ -1,5 +1,5 @@
 <_>
-   <form_key>bvPGjE5w8wyeXtLE</form_key>
+   <form_key>6zUeR0BNUGldMu3x</form_key>
    <name>Ebizmarts_MageMonkey</name>
    <channel>community</channel>
    <version_ids>
@@ -10,24 +10,29 @@
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>1.1.35</version>
+   <version>1.2.0</version>
    <stability>stable</stability>
-   <notes>1.1.35
+   <notes>1.2.0
         --------
-- Fixed typo in modman
-- Firstname sent to MailChimp if customer name is available.
-- Lastname sent to MailChimp if customer name is available.
-- Fixed problem when displaying customer groups.
-- Added storeId for unsubscription.
-- Added check to see if first and last name are enabled on popup.
-- Fixed typo error when sending orders to MailChimp manually.
-- Corrected typo error on isAllowed for send to MailChimp action at orders grid.
-- Fixed Yesnovariation.php to show A/B testing correctly.
-- Added Dutch translations. (marcobax)
-- Set Abandoned Cart to stop checking the same cart when an order has been made after its creation.
-- Fixed ecommerce360 problem.
-- Fixed problem with Popup coupon.
-- Added MailChimp sign in all the modules.</notes>
+Fixed multiple subscription confirmation message.
+Fixed problem with bulk sync export.
+Fixed issue when subscribing with Magento&apos;s email confirmation in stead of MailChimp&apos;s.
+Added compatibility with old One Step Checkout versions.
+Product description can now be put in html.
+Changed review Autoresponder to get the order with the created_at date instead of the updated_at.
+Changed popup coupon email name to be displayed on Emails Sent view.
+Fixed problem when subscribe on checkout disabled but MageMonkey subscribed anyways.
+Added store code to be sent to MailChimp by default
+Added confirmation email when subscription forced.
+Fixed problem on visited product table with new popup.
+Fixed problem when subscribing on checkout.
+Fixed finished status for export process.
+Added campaign title on Customer Information (Back end) tab MailChimp List Member Activity
+Added upgrade to allow custom blocks after new Magento patch.
+Changed the modules to be loaded after Magento&apos;s core.
+Popup is now responsive.
+Popup works depending on the store view.
+Fix for store id on popup table to send coupon for each store.</notes>
    <authors>
       <name>
          <name>Ebizmarts Development Team</name>
@@ -56,7 +61,7 @@
             <max/>
          </max>
          <files>
-            <files>            </files>
+            <files>              </files>
          </files>
       </package>
       <extension>

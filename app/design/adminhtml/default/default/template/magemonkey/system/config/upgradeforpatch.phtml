@@ -1,0 +1,20 @@
+<script type="text/javascript">
+    //<![CDATA[
+    function upgradeForPatch() {
+        new Ajax.Request('<?php echo $this->getAjaxUpgrade() ?>', {
+            method: 'get',
+            onSuccess: function (transport) {
+
+                if (transport.responseText == 1) {
+                    alert('Your MageMonkey was successfully upgraded.');
+                }
+                else {
+                    alert('En error happened when upgrading your MageMonkey. Please contact our support or try again later.');
+                }
+            }
+        });
+    }
+    //]]>
+</script>
+
+<?php echo $this->getButtonHtml(); ?>

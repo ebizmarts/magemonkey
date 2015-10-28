@@ -11,15 +11,17 @@
 $installer = $this;
 
 $installer->startSetup();
-
-$installer->getConnection()->insertMultiple(
-    $installer->getTable('admin/permission_block'),
-    array(
-        array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1),
-        array('block_name' => 'ebizmarts_autoresponder/email_related_items', 'is_allowed' => 1),
-        array('block_name' => 'ebizmarts_autoresponder/email_review_items', 'is_allowed' => 1),
-        array('block_name' => 'ebizmarts_autoresponder/email_wishlist_items', 'is_allowed' => 1),
-    )
-);
+$tableName = $installer->getTable('admin/permission_block');
+if ($installer->getConnection()->isTableExists($tableName)) {
+    $installer->getConnection()->insertMultiple(
+        $installer->getTable('admin/permission_block'),
+        array(
+            array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1),
+            array('block_name' => 'ebizmarts_autoresponder/email_related_items', 'is_allowed' => 1),
+            array('block_name' => 'ebizmarts_autoresponder/email_review_items', 'is_allowed' => 1),
+            array('block_name' => 'ebizmarts_autoresponder/email_wishlist_items', 'is_allowed' => 1),
+        )
+    );
+}
 
 $installer->endSetup();

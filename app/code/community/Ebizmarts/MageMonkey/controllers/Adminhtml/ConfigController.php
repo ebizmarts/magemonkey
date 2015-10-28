@@ -41,6 +41,34 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));
     }
 
+    public function upgradeForPatch(){
+
+        $resource = Mage::getSingleton('core/resource')
+            ->getConnection('core_write');
+
+        $table = $resource->getTableName('permission_block');
+        $exists = (bool)$resource->showTableStatus($table);
+        if($exists) {
+            $blocks = array(
+                array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_related_items', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_review_items', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_wishlist_items', 'is_allowed' => 1),
+            );
+            foreach ($blocks as $item) {
+                $currentRow = Mage::getModel('permission_block')->getCollection()
+                    ->addFieldToFilter('block_name', array('eq' => $item['block_name']))
+                    ->limit(1);
+                if (!$currentRow->getBlockId()) {
+                    $currentRow->setBlockName($item['block_name'])
+                        ->setIsAllowed($item['is_allowed'])
+                        ->save();
+                }
+            }
+        }
+    }
+
     protected function _getStoreByCode($storeCode)
     {
         $stores = array_keys(Mage::app()->getStores());
