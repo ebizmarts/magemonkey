@@ -752,7 +752,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
-                            <comment><![CDATA[This is in percentage of the window width.]]></comment>
+                            <comment><![CDATA[This is a percentage of the window width.]]></comment>
                             <depends>
                                 <popup_general>1</popup_general>
                             </depends>
@@ -765,7 +765,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <can_be_empty>1</can_be_empty>
-                            <comment><![CDATA[This is in percentage of the window height.]]></comment>
+                            <comment><![CDATA[This is a percentage of the window height.]]></comment>
                             <depends>
                                 <popup_general>1</popup_general>
                             </depends>
