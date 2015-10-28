@@ -15,7 +15,7 @@ $installer->startSetup();
 $installer->getConnection()->insertMultiple(
     $installer->getTable('admin/permission_block'),
     array(
-        array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1)
+        array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1)
     )
 );
 
