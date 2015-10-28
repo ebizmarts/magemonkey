@@ -20,7 +20,7 @@ $installer->getConnection()->insertMultiple(
 );
 
 $installer->getConnection()
-    ->addColumn($installer->getTable('ebizmarts_abandonedcart/popup'),'store_id', Varien_Db_Ddl_Table::TYPE_SMALLINT, 5, array(
+    ->addColumn($installer->getTable('ebizmarts_abandonedcart/popup'),'store_id', Varien_Db_Ddl_Table::TYPE_SMALLINT, null, array(
         'nullable'  => false,
     ), 'Store Id');
 
