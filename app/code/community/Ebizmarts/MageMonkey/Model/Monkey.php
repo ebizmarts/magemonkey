@@ -180,6 +180,17 @@ class Ebizmarts_MageMonkey_Model_Monkey
                     $subscriber->setSubscriberLastname($data['data']['lname']);
                 }
                 $subscriber->subscribe($data['data']['email']);
+
+            }
+            $customerExist = Mage::getSingleton('customer/customer')
+                ->getCollection()
+                ->addAttributeToFilter('email', array('eq' => $data['data']['email']) )
+                ->getFirstItem();
+            if($customerExist){
+                $storeId = $customerExist->getStoreId();
+            }
+            if($customerExist && Mage::getStoreConfig('sweetmonkey/general/active', $storeId)){
+                Mage::helper('sweetmonkey')->pushVars($customerExist);
             }
         } catch (Exception $e) {
             Mage::logException($e);

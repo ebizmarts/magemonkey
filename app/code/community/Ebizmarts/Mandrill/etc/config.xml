@@ -48,7 +48,7 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <mandrill before="Mage_Adminhtml">Ebizmarts_Mandrill_Adminhtml</mandrill>
+                        <mandrill after="Mage_Adminhtml">Ebizmarts_Mandrill_Adminhtml</mandrill>
                     </modules>
                 </args>
             </adminhtml>

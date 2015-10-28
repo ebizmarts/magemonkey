@@ -1,5 +1,5 @@
 <_>
-   <form_key>WTNGGCIDJhdL9MKX</form_key>
+   <form_key>bvPGjE5w8wyeXtLE</form_key>
    <name>Ebizmarts_MageMonkey</name>
    <channel>community</channel>
    <version_ids>
@@ -10,33 +10,24 @@
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>1.1.34</version>
+   <version>1.1.35</version>
    <stability>stable</stability>
-   <notes>1.1.34
+   <notes>1.1.35
         --------
-Email Catcher popup redesign.
-
-Fixed Warning on Abandoned Cart cron process.
-
-Fixed Warning on Autoresponder Emails cron process.
-
-Solved problem on customer information sent to MailChimp.
-
-Fixed problem on some displays of Back to Stock form.
-
-Time sent to MailChimp with orders.
-
-Added First and Last name to subscribers.
-
-Footer subscription when not logged in working correctly.
-
-Solved issue with Admin controllers isAllowed (Latest security patches).
-
-Fixed issue with reset ecommerce orders.
-
-Misspelling when error occurs in reset ecommerce orders changed.
-
-Changed cron jobs timing to clean expired coupons.</notes>
+- Fixed typo in modman
+- Firstname sent to MailChimp if customer name is available.
+- Lastname sent to MailChimp if customer name is available.
+- Fixed problem when displaying customer groups.
+- Added storeId for unsubscription.
+- Added check to see if first and last name are enabled on popup.
+- Fixed typo error when sending orders to MailChimp manually.
+- Corrected typo error on isAllowed for send to MailChimp action at orders grid.
+- Fixed Yesnovariation.php to show A/B testing correctly.
+- Added Dutch translations. (marcobax)
+- Set Abandoned Cart to stop checking the same cart when an order has been made after its creation.
+- Fixed ecommerce360 problem.
+- Fixed problem with Popup coupon.
+- Added MailChimp sign in all the modules.</notes>
    <authors>
       <name>
          <name>Ebizmarts Development Team</name>
@@ -65,7 +56,7 @@ Changed cron jobs timing to clean expired coupons.</notes>
             <max/>
          </max>
          <files>
-            <files>          </files>
+            <files>            </files>
          </files>
       </package>
       <extension>
@@ -120,6 +111,10 @@ Changed cron jobs timing to clean expired coupons.</notes>
          <target>magelocale</target>
          <target>magecommunity</target>
          <target>magedesign</target>
+         <target>magelocale</target>
+         <target>magelocale</target>
+         <target>magelocale</target>
+         <target>magelocale</target>
       </target>
       <path>
          <path/>
@@ -160,6 +155,10 @@ Changed cron jobs timing to clean expired coupons.</notes>
          <path>en_US/Ebizmarts_SweetMonkey.csv</path>
          <path>Ebizmarts/SweetMonkey</path>
          <path>adminhtml/default/default/template/sweetmonkey</path>
+         <path>nl_NL/template/email/ebizmarts</path>
+         <path>nl_NL/Ebizmarts_MageMonkey.csv</path>
+         <path>nl_NL/Ebizmarts_SweetMonkey.csv</path>
+         <path>nl_NL/Ebizmarts_AbandonedCart.csv</path>
       </path>
       <type>
          <type>file</type>
@@ -200,8 +199,16 @@ Changed cron jobs timing to clean expired coupons.</notes>
          <type>file</type>
          <type>dir</type>
          <type>dir</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>file</type>
       </type>
       <include>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
          <include/>
          <include/>
          <include/>
@@ -280,10 +287,10 @@ Changed cron jobs timing to clean expired coupons.</notes>
          <ignore/>
          <ignore/>
          <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
       </ignore>
    </contents>
-   <page>1</page>
-   <limit>200</limit>
-   <folder/>
-   <package/>
 </_>

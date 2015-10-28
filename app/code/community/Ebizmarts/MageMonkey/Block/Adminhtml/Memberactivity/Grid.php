@@ -44,7 +44,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
             }
         }
         if (empty($activityData)) {
-            $activityData[] = array('action' => '', 'timestamp' => '', 'url' => '', 'bounce_type' => '', 'campaign_id' => '');
+            $activityData[] = array('action' => '', 'timestamp' => '', 'url' => '', 'bounce_type' => '', 'campaign_id' => '', 'title' => '');
         }
         if (!is_array(current($activityData))) {
             $activityData = array();
@@ -78,6 +78,11 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
         $this->addColumn('campaign_id', array(
             'header' => Mage::helper('monkey')->__('Campaign ID'),
             'index' => 'campaign_id',
+            'sortable' => false
+        ));
+        $this->addColumn('title', array(
+            'header' => Mage::helper('monkey')->__('Campaign Title'),
+            'index' => 'title',
             'sortable' => false
         ));
         $this->addColumn('timestamp', array(

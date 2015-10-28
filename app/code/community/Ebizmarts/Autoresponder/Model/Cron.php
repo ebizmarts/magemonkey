@@ -355,8 +355,7 @@ class Ebizmarts_Autoresponder_Model_Cron
 
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
-//            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
-            ->addFieldToFilter('main_table.updated_at', array('from' => $from, 'to' => $to))
+            ->addFieldToFilter('main_table.created_at',array('from'=>$from,'to'=>$to))
             ->addFieldToFilter('main_table.status', array('eq' => $status));
 //        Mage::log((string)$collection->getSelect());
         if (count($customerGroups)) {

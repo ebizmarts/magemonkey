@@ -226,7 +226,6 @@ class Ebizmarts_MageMonkey_Model_Cron
             $job->setStartedAt(Mage::getModel('core/date')->gmtDate())->save();
         }
 
-        $collection->setPageSize($this->_limit);
 
         //Condition for chunk batch
         if ($job->getLastProcessedId()) {
@@ -250,13 +249,15 @@ class Ebizmarts_MageMonkey_Model_Cron
             $collection->addOrder($orderBy, 'ASC');
         }
 
-        $collection->load();
-
         //Update total count on first run
         if (!$job->getTotalCount()) {
             $allRows = $collection->getSize();
             $job->setTotalCount($allRows)->save();
         }
+
+        $collection->setPageSize($this->_limit);
+        $collection->load();
+
 
         $batch = array();
 
@@ -265,41 +266,42 @@ class Ebizmarts_MageMonkey_Model_Cron
             $api = Mage::getSingleton('monkey/api', array('store' => $store));
 
             $processedCount = 0;
+            $lastId = '';
             foreach ($collection as $item) {
-                $processedCount++;
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
                 if ($isOnMailChimp) {
+                    $processedCount++;
                     $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
+                    $lastId = $item->getLastId();
                 } else {
                     $batch [] = $this->_helper()->getMergeVars($item, TRUE);
                 }
             }
-            if (count($batch) > 0) {
 
-                $job->setStatus('chunk_running')
-                    ->setUpdatedAt($this->_dbDate())
-                    ->save();
+            $job->setStatus('chunk_running')
+                ->setUpdatedAt($this->_dbDate());
+            $job->setLastProcessedId($lastId);
+            $job->setProcessedCount($processedCount + $job->getProcessedCount());
+
+            if (count($batch) > 0) {
 
                 $vals = $api->listBatchSubscribe($listId, $batch, FALSE, TRUE, FALSE);
 
                 if (is_null($api->errorCode)) {
 
+
+                    $job->setProcessedCount((count($batch) + $job->getProcessedCount()));
                     $lastId = $collection->getLastItem()->getId();
                     $job->setLastProcessedId($lastId);
-                    $job->setProcessedCount(($processedCount + $job->getProcessedCount()));
-
-                    $job
-                        ->setUpdatedAt($this->_dbDate())
-                        ->save();
+                    $job->setUpdatedAt($this->_dbDate());
 
                 }
 
-            } else {
-                $job
-                    ->setStatus('finished')
-                    ->setUpdatedAt($this->_dbDate())
-                    ->save();
             }
+            if($job->getProcessedCount() == $job->getTotalCount()) {
+                $job->setStatus('finished');
+            }
+            $job->save();
 
         }
 
@@ -500,24 +502,28 @@ class Ebizmarts_MageMonkey_Model_Cron
             if ($oldList == '') {
                 $oldList = $newList;
             }
+            $mergeVars = unserialize($item->getMapfields());
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
                 if (count($batch) > 0) {
                     Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
                 }
-                $isConfirmNeed = $eachIsConfirmNeed;
                 $oldList = $newList;
                 $batch = array();
             }
 
-            $mergeVars = unserialize($item->getMapfields());
             $mergeVars['EMAIL'] = $item->getEmail();
-            $batch[] = $mergeVars;
-            //$email = $item->getEmail();
-            //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
-            $item->setProcessed(1)->save();
-            if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
-                Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+            $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $oldList);
+            if($isOnMailChimp) {
+                Mage::getSingleton('monkey/api')->listUpdateMember($oldList, $item->getEmail(), $mergeVars);
+            }else {
+                $batch[] = $mergeVars;
             }
+                //$email = $item->getEmail();
+                //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+                $item->setProcessed(1)->save();
+                if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
+                    Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+                }
         }
 
     }

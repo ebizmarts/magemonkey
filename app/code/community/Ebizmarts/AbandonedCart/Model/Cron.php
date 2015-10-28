@@ -341,7 +341,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
         $collection = Mage::getModel('ebizmarts_abandonedcart/popup')->getCollection()
             ->addFieldToFilter('email', array('neq' => ''))
-            ->addFieldToFilter('processed', array('eq' => 0));
+            ->addFieldToFilter('processed', array('eq' => 0))
+            ->addFieldToFilter('store_id', array('eq' => $storeId));
 
         foreach ($collection as $item) {
             $email = $item->getEmail();
@@ -358,7 +359,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
             $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $pseudoName, $vars, $storeId);
             $item->setProcessed(1)->save();
             $translate->setTranslateInLine(true);
-            Mage::helper('ebizmarts_abandonedcart')->saveMail('review coupon', $email, $pseudoName, $couponcode, $storeId);
+            Mage::helper('ebizmarts_abandonedcart')->saveMail('popup coupon', $email, $pseudoName, $couponcode, $storeId);
         }
     }
 

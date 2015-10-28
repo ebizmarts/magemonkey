@@ -36,7 +36,7 @@ $token = $this->getToken();
             <td valign="top" align="left" style="padding:3px 9px"><p>
 
                 <h2><a href="<?php echo $url; ?>"> Rate <?php echo $this->escapeHtml($product->getName()); ?></a>
-                </h2></p><?php echo $this->escapeHtml($product->getShortDescription()); ?></td>
+                </h2></p><?php echo $product->getShortDescription(); ?></td>
         </tr>
     <?php endforeach; ?>
 </table>
