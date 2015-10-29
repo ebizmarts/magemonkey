@@ -49,6 +49,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         $table = $resource->getTableName('permission_block');
         $exists = (bool)$resource->showTableStatus($table);
         if($exists) {
+            Mage::log('exists', null, 'santiago.log', true);
             $blocks = array(
                 array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1),
                 array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1),
@@ -57,7 +58,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
                 array('block_name' => 'ebizmarts_autoresponder/email_wishlist_items', 'is_allowed' => 1),
             );
             foreach ($blocks as $item) {
-                $currentRow = Mage::getModel('permission_block')->getCollection()
+                $currentRow = Mage::getModel('admin/permission_block')->getCollection()
                     ->addFieldToFilter('block_name', array('eq' => $item['block_name']))
                     ->limit(1);
                 if (!$currentRow->getBlockId()) {
@@ -66,6 +67,8 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
                         ->save();
                 }
             }
+        }else{
+            Mage::log('dont exists', null, 'santiago.log', true);
         }
     }
 

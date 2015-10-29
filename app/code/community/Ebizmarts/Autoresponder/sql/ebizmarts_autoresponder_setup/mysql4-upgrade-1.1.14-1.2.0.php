@@ -11,7 +11,7 @@
 $installer = $this;
 
 $installer->startSetup();
-$tableName = $installer->getTable('admin/permission_block');
+$tableName = $installer->getTable('permission_block');
 if ($installer->getConnection()->isTableExists($tableName)) {
     $installer->getConnection()->insertMultiple(
         $installer->getTable('admin/permission_block'),

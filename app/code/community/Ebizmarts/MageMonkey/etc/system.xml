@@ -105,7 +105,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>Don't click this button unless you installed the patch SUPEE-6788 after installing MageMonkey</comment>
+                            <comment>![CDATA[This button will show up as soon as the patch SUPEE-6788 is installed. It will update the module to be compatible with it.
+                            If you already have the compatibility it won't be shown again.]]</comment>
                         </upgrade_for_patch_supee-6788>
                         <maxlistsamount translate="label comment">
                             <label>Max amount of lists to show</label>

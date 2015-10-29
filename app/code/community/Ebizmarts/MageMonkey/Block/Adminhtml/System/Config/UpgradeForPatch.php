@@ -7,7 +7,7 @@
  * File   : UpgradeForPatch.php
  * Module : magemonkey
  */
-class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetLocalEcommerce extends Mage_Adminhtml_Block_System_Config_Form_Field
+class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_UpgradeForPatch extends Mage_Adminhtml_Block_System_Config_Form_Field
 {
     protected function _construct()
     {
@@ -45,5 +45,24 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetLocalEcommerce ext
             ));
 
         return $button->toHtml();
+    }
+
+    protected function tableExists(){
+        $prefix = Mage::getConfig()->getTablePrefix();
+        if($prefix){
+            $pre = $prefix[0];
+        }else{
+            $pre = '';
+        }
+        Mage::log($prefix, null, 'santiago.log', true);
+        Mage::log($pre, null, 'santiago.log', true);
+        $resource = Mage::getSingleton('core/resource')
+            ->getConnection('core_write');
+
+        $table = $resource->getTableName($pre.'permission_block');
+        Mage::log($table, null, 'santiago.log', true);
+        $tableExists = (bool)$resource->showTableStatus($table);
+        Mage::log($tableExists, null, 'santiago.log', true);
+        return $tableExists;
     }
 }
