@@ -49,7 +49,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_UpgradeForPatch extends
 
     protected function tableExists(){
         $prefix = Mage::getConfig()->getTablePrefix();
-        if($prefix){
+        if($prefix[0]){
             $pre = $prefix[0];
         }else{
             $pre = '';

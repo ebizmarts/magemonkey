@@ -105,8 +105,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>0</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment>![CDATA[This button will show up as soon as the patch SUPEE-6788 is installed. It will update the module to be compatible with it.
-                            If you already have the compatibility it won't be shown again.]]</comment>
+                            <comment><![CDATA[You will see this button as soon as you install the patch SUPEE-6788. Upgrade it as soon as this happens and reload the page. If you don't see this button it means everything is okay.]]></comment>
                         </upgrade_for_patch_supee-6788>
                         <maxlistsamount translate="label comment">
                             <label>Max amount of lists to show</label>
