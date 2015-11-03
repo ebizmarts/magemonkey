@@ -262,18 +262,17 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             $cat_ids = $product->getCategoryIds();
 
             if (is_array($cat_ids) && count($cat_ids) > 0) {
-                $category = Mage::getModel('catalog/category')->load($cat_ids[0]);
-                $mcitem['category_id'] = $cat_ids[0];
-                $names[] = $category->getName();
-                while ($category->getParentId() && $category->getParentId() != 1) {
-                    $category = Mage::getModel('catalog/category')->load($category->getParentId());
+                foreach($cat_ids as $id){
+                    $category = Mage::getModel('catalog/category')->load($id);
                     $names[] = $category->getName();
+                    $mcitem['category_id'] = $id;
                 }
+//                while ($category->getParentId() && $category->getParentId() != 1) {
+//                    $category = Mage::getModel('catalog/category')->load($category->getParentId());
+//                    $names[] = $category->getName();
+//                }
             }
-            if (!isset($mcitem['category_id'])) {
-                $mcitem['category_id'] = 0;
-            }
-            $mcitem['category_name'] = (count($names)) ? implode(" - ", array_reverse($names)) : 'None';
+            $mcitem['category_name'] = (count($names)) ? implode(" - ", $names) : 'None';
             $mcitem['qty'] = $item->getQtyOrdered();
             $mcitem['cost'] = ($this->_auxPrice > 0) ? $this->_auxPrice : $item->getBasePrice();
             $this->_info['items'][] = $mcitem;

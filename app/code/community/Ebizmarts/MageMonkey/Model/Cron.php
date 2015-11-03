@@ -272,10 +272,10 @@ class Ebizmarts_MageMonkey_Model_Cron
                 if ($isOnMailChimp) {
                     $processedCount++;
                     $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
-                    $lastId = $item->getLastId();
                 } else {
                     $batch [] = $this->_helper()->getMergeVars($item, TRUE);
                 }
+                $lastId = $item->getId();
             }
 
             $job->setStatus('chunk_running')
@@ -298,7 +298,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 }
 
             }
-            if($job->getProcessedCount() == $job->getTotalCount()) {
+            if($job->getProcessedCount() >= $job->getTotalCount()) {
                 $job->setStatus('finished');
             }
             $job->save();
