@@ -417,9 +417,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         //GUEST
         $guestFirstName = '';
         if (!$customer->getId() && !$request->getPost('firstname')) {
-            if($this->config('guest_name', $customer->getStoreId())){
+            if($customer->getSubscriberFirstname()){
                 $guestFirstName = $this->config('guest_name', $customer->getStoreId());
-            }elseif($customer->getSubscriberFirstname()) {
+            }elseif($this->config('guest_name', $customer->getStoreId())) {
                 $guestFirstName = $customer->getSubscriberFirstname();
             }
 
@@ -429,9 +429,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $guestLastName = '';
         if (!$customer->getId() && !$request->getPost('lastname')) {
-            if($this->config('guest_lastname', $customer->getStoreId())){
+            if($customer->getSubscriberLastname()){
                 $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
-            }elseif($customer->getSubscriberLastname()){
+            }elseif($this->config('guest_lastname', $customer->getStoreId())){
                 $guestLastName = $customer->getSubscriberLastname();
             }
 

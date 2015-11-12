@@ -307,13 +307,13 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $stock = $product->getStockItem();
                 $stockQty = $stock->getQty();
             }
-
+            $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($product);
             if (
                 (
                     is_object($stock) && ($stock->getManageStock() ||
                         ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId())))
                 )
-                && $stockQty < $item->getQty()
+                && $stockQty < $item->getQty() && !$inventory->getBackorders()
             ) {
                 Mage::log('AbandonedCart; ' . $product->getSku() . ' is no longer in stock; remove from quote ' . $quote->getId() . ' for email', null, 'Ebizmarts_AbandonedCart.log');
                 $removeFromQuote = true;
@@ -380,7 +380,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
             $toDate = date('Y-m-d', strtotime($fromDate . " + $this->couponexpiredays day"));
             if ($this->coupontype == 1) {
                 $action = 'cart_fixed';
-                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . "$this->couponamount";
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()->getSymbol() . "$this->couponamount";
             } elseif ($this->coupontype == 2) {
                 $action = 'by_percent';
                 $discount = "$this->couponamount%";
@@ -422,7 +422,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         } else {
             $coupon = $collection->getFirstItem();
             if ($coupon->getSimpleAction() == 'cart_fixed') {
-                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . ($coupon->getDiscountAmount() + 0);
+                $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()->getSymbol() . ($coupon->getDiscountAmount() + 0);
             } else {
                 $discount = $coupon->getDiscountAmount() + 0;
             }
