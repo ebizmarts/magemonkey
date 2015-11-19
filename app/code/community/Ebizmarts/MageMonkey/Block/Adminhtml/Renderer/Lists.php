@@ -19,9 +19,9 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists extends Mage_Adminhtml
     public function render(Varien_Object $row)
     {
         $value = $this->_getValue($row);
-
-        $lists = Mage::getSingleton('monkey/api')
-            ->lists(array('list_id' => implode(', ', $row->lists())));
+        $storeId = $row->getData('store_id');
+        $api = Mage::getModel('monkey/api', array('store' => $storeId));
+        $lists = $api->lists(array('list_id' => implode(', ', $row->lists())));
 
         $listsNames = array();
 

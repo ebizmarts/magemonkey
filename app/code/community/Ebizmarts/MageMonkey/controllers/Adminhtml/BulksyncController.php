@@ -201,8 +201,20 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
         $this->_redirectReferer($this->_defredirect);
     }
 
+    public function getListsAction(){
+        $params = $this->getRequest()->getParams();
+        $storeId = $params['store_id'];
+        $curstore = Mage::app()->getStore();
+        Mage::app()->setCurrentStore($storeId);
+        $lists = Mage::getSingleton('monkey/system_config_source_list')->toOptionArray();
+        Mage::app()->setCurrentStore($curstore);
+        $this->getResponse()->setHeader('Content-type', 'application/json');
+        $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($lists));
+    }
+
     protected function _isAllowed() {
         switch ($this->getRequest()->getActionName()) {
+            case 'getLists':
             case 'export':
             case 'exportgrid':
                 $acl = 'newsletter/magemonkey/bulksync/mage_to_mc';

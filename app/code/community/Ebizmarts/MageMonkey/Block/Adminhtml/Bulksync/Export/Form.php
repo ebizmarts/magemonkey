@@ -52,6 +52,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export_Form extends Mage_Adm
             'name' => 'store_id',
             'label' => Mage::helper('monkey')->__('Store'),
             'title' => Mage::helper('monkey')->__('Store'),
+            'onchange' => 'javascript:getLists();',
             'required' => true,
             'values' => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false, true),
         ));

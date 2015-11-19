@@ -78,7 +78,8 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
                 if($lName){
                     $subscriber->setSubscriberLastname($lName);
                 }
-                $subscriber->subscribe($email);
+                $subscriber->setStoreId($storeId)
+                    ->subscribe($email);
                 return 'location.reload';
             }
         }

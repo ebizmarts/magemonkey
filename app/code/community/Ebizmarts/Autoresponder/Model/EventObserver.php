@@ -183,7 +183,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         $toDate = date('Y-m-d', strtotime($fromDate . " + $couponexpiredays day"));
         if ($coupontype == 1) {
             $action = 'cart_fixed';
-            $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . "$couponamount";
+            $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()->getSymbol() . "$couponamount";
         } elseif ($coupontype == 2) {
             $action = 'by_percent';
             $discount = "$couponamount%";
