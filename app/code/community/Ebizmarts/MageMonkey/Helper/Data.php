@@ -604,7 +604,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
             $country = $address->getCountryId();
             if ($country) {
-                $merge_vars['COUNTRY'] = $country;
+                $countryName = Mage::getModel('directory/country')->load($country)->getName();
+                $merge_vars['COUNTRY'] = $countryName;
             }
         }
         return $merge_vars;

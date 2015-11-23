@@ -888,6 +888,7 @@ class Ebizmarts_Autoresponder_Model_Cron
             $coupon_rule = Mage::getModel('salesrule/rule');
             $coupon_rule->setName($string . ' ' . $email)
                 ->setDescription($string . ' ' . $email)
+                ->setStopRulesProcessing(0)
                 ->setFromDate($fromDate)
                 ->setToDate($toDate)
                 ->setIsActive(1)
