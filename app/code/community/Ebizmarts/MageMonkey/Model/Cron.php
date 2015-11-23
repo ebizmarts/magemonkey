@@ -52,7 +52,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 
             $toImport = array();
 
-            $store = $this->_helper()->getStoreByList($listId);
+            $store = $job->getStoreId();
             $websiteId = Mage::app()->getStore($store)->getWebsiteId();
             $this->_store = Mage::app()->getStore($store);
 
@@ -90,7 +90,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                     foreach ($emails as $data) {
 
                         //Run: subscribed, unsubscribed, cleaned or updated method
-                        $this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
+                        $this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer(), $store);
 
                         $job->setProcessedCount(((int)$job->getProcessedCount() + 1))
                             ->save();
@@ -137,7 +137,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
+    protected function subscribed($member, $websiteId = null, $createCustomer = FALSE, $store = null)
     {
         $subscriber = $this->_getSubscriberObject($member['email']);
         if ($createCustomer) {
@@ -157,10 +157,12 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
                 ->setCustomerId($customer->getId())
+                ->setStoreId($store)
                 ->save();
         } else {
             //Just subscribe email
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+                ->setStoreId($store)
                 ->save();
         }
 
@@ -174,7 +176,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function updated($member, $websiteId = null, $createCustomer = FALSE)
+    protected function updated($member, $websiteId = null, $createCustomer = FALSE, $store = null)
     {
         //TODO
     }
@@ -187,7 +189,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE)
+    protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE, $store = null)
     {
         $this->_getSubscriberObject($member['email'], Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
             ->save();
@@ -201,7 +203,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function cleaned($member, $websiteId = null, $createCustomer = FALSE)
+    protected function cleaned($member, $websiteId = null, $createCustomer = FALSE, $store = null)
     {
         return $this->unsubscribed($member, $websiteId, $createCustomer);
     }

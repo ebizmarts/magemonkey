@@ -174,7 +174,8 @@ class Ebizmarts_MageMonkey_Adminhtml_BulksyncController extends Mage_Adminhtml_C
                 ->setStatus('idle')
                 ->setLists(serialize($request->getPost('list')))
                 ->setImportTypes(serialize($request->getPost('import_types')))
-                ->setCreateCustomer((int)$request->getPost('create_customers'));
+                ->setCreateCustomer((int)$request->getPost('create_customers'))
+                ->setStoreId((int)$request->getPost('store_id'));
 
             if ($request->getPost('since')) {
                 $job->setSince($request->getPost('since') . ' 00:00:00');

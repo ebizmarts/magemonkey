@@ -20,6 +20,7 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Import extends Mage_Adminhtm
         parent::__construct();
 
         $this->_updateButton('save', 'label', Mage::helper('monkey')->__('All set!'));
+        $this->setTemplate('magemonkey/bulksync/import/form.phtml');
     }
 
     public function getHeaderText()
