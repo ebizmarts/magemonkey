@@ -429,8 +429,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     public function sendordersAsync()
     {
+        $this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
         $collection = Mage::getModel('monkey/asyncorders')->getCollection();
-        $collection->addFieldToFilter('processed', array('eq' => 0));
+        $collection->addFieldToFilter('processed', array('eq' => 0))
+            ->setPageSize($this->_limit);
         $storeId = null;
         foreach ($collection as $item) {
             $info = (array)unserialize($item->getInfo());
@@ -491,8 +493,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     public function sendSubscribersAsync()
     {
+        $this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
         $collection->addFieldToFilter('processed', array('eq' => 0))
+            ->setPageSize($this->_limit)
             ->setOrder('lists', 'desc');
         $batch = array();
         $oldList = '';
