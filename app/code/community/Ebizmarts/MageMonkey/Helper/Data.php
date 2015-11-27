@@ -607,6 +607,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $countryName = Mage::getModel('directory/country')->load($country)->getName();
                 $merge_vars['COUNTRY'] = $countryName;
             }
+            $zipCode = $address->getPostcode();
+            if ($zipCode) {
+                $merge_vars['ZIPCODE'] = $zipCode;
+            }
         }
         return $merge_vars;
     }
@@ -937,7 +941,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $listId = $defaultList;
         }
         $alreadySubscribed = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
-        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && !$alreadySubscribed) {
+        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && (!$alreadySubscribed || !$alreadySubscribed->getId())) {
             $subscriber->subscribe($email);
         } else {
             $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
