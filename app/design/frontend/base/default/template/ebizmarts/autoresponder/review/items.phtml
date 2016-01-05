@@ -35,7 +35,7 @@ $token = $this->getToken();
             </td>
             <td valign="top" align="left" style="padding:3px 9px"><p>
 
-                <h2><a href="<?php echo $url; ?>"> Rate <?php echo $this->escapeHtml($product->getName()); ?></a>
+                <h2><a href="<?php echo $url; ?>"><?php echo ' ' . $this->__('Rate') . ' ' .  $this->escapeHtml($product->getName()); ?></a>
                 </h2></p><?php echo $product->getShortDescription(); ?></td>
         </tr>
     <?php endforeach; ?>
