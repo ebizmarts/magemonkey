@@ -1136,6 +1136,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $subscriber->setMcListId($listId);
                         $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
                         $subscriber->subscribe($email);
+                        Mage::getSingleton('core/session')->addSuccess($this->__('Thank you for your subscription.'));
                     } else {
                         $customer->setListGroups($groupings);
                         $customer->setMcListId($listId);
