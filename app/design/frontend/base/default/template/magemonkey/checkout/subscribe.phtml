@@ -116,7 +116,8 @@ $force = $this->getForce();
     <?php echo $this->getBlockHtml('formkey'); ?>
     <div class="monkey-multisubscribe">
         <ul class="monkey-general-list">
-            <li class="listdata"><?php echo $generalList['name']; ?>
+            <li class="listdata">
+                <label for="magemonkey-trigger"><?php echo $generalList['name']; ?></label>
                 <input<?php if ($auto): ?> checked="checked"<?php endif; ?> type="checkbox"
                                                                             onchange="addSubscribeToPost(this);"
                                                                             name="list[<?php echo $generalList['id'] ?>][subscribed]"
