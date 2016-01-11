@@ -52,7 +52,7 @@ class Ebizmarts_MageMonkey_Model_Cron
 
             $toImport = array();
 
-            $store = $job->getStoreId();
+            $store = $this->_helper()->getStoreByList($listId);
             $websiteId = Mage::app()->getStore($store)->getWebsiteId();
             $this->_store = Mage::app()->getStore($store);
 
@@ -90,7 +90,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                     foreach ($emails as $data) {
 
                         //Run: subscribed, unsubscribed, cleaned or updated method
-                        $this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer(), $store);
+                        $this->{$type}($data, $websiteId, (bool)$job->getCreateCustomer());
 
                         $job->setProcessedCount(((int)$job->getProcessedCount() + 1))
                             ->save();
@@ -137,7 +137,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function subscribed($member, $websiteId = null, $createCustomer = FALSE, $store = null)
+    protected function subscribed($member, $websiteId = null, $createCustomer = FALSE)
     {
         $subscriber = $this->_getSubscriberObject($member['email']);
         if ($createCustomer) {
@@ -157,12 +157,10 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
                 ->setCustomerId($customer->getId())
-                ->setStoreId($store)
                 ->save();
         } else {
             //Just subscribe email
             $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
-                ->setStoreId($store)
                 ->save();
         }
 
@@ -176,7 +174,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function updated($member, $websiteId = null, $createCustomer = FALSE, $store = null)
+    protected function updated($member, $websiteId = null, $createCustomer = FALSE)
     {
         //TODO
     }
@@ -189,7 +187,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE, $store = null)
+    protected function unsubscribed($member, $websiteId = null, $createCustomer = FALSE)
     {
         $this->_getSubscriberObject($member['email'], Mage_Newsletter_Model_Subscriber::STATUS_UNSUBSCRIBED)
             ->save();
@@ -203,7 +201,7 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param bool $createCustomer
      * @return void
      */
-    protected function cleaned($member, $websiteId = null, $createCustomer = FALSE, $store = null)
+    protected function cleaned($member, $websiteId = null, $createCustomer = FALSE)
     {
         return $this->unsubscribed($member, $websiteId, $createCustomer);
     }
@@ -273,7 +271,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
                 if ($isOnMailChimp) {
                     $processedCount++;
-                    $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
+                    $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->mergeVars($item));
                 } else {
                     $batch [] = $this->_helper()->getMergeVars($item, TRUE);
                 }
@@ -429,26 +427,11 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     public function sendordersAsync()
     {
-        $this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
         $collection = Mage::getModel('monkey/asyncorders')->getCollection();
-        $collection->addFieldToFilter('processed', array('eq' => 0))
-            ->setPageSize($this->_limit);
+        $collection->addFieldToFilter('processed', array('eq' => 0));
         $storeId = null;
         foreach ($collection as $item) {
             $info = (array)unserialize($item->getInfo());
-//            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
-//                ->addFieldToFilter('processed',array('eq'=>1))
-//                ->addFieldToFilter('email', array('eq'=>$info['email']));
-//            if(count($collection2) == 0){
-//                $storeId = $info['store_id'];
-//                $storeLists = Mage::helper('monkey')->getListsByStoreId($storeId);
-//                foreach($storeLists as $listId) {
-//                    $isOnMailChimp = Mage::helper('monkey')->subscribedToList($info['email'], $listId);
-//                    if ($isOnMailChimp != 1) {
-//                        continue 2;
-//                    }
-//                }
-//            }
             $orderId = $info['order_id'];
             unset($info['order_id']);
             if ($storeId != $info['store_id']) {
@@ -493,10 +476,8 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     public function sendSubscribersAsync()
     {
-        $this->_limit = (int)Mage::getStoreConfig("monkey/general/cron_export");
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
         $collection->addFieldToFilter('processed', array('eq' => 0))
-            ->setPageSize($this->_limit)
             ->setOrder('lists', 'desc');
         $batch = array();
         $oldList = '';
@@ -524,12 +505,12 @@ class Ebizmarts_MageMonkey_Model_Cron
             }else {
                 $batch[] = $mergeVars;
             }
-                //$email = $item->getEmail();
-                //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
-                $item->setProcessed(1)->save();
-                if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
-                    Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
-                }
+            //$email = $item->getEmail();
+            //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+            $item->setProcessed(1)->save();
+            if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
+                Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+            }
         }
 
     }
