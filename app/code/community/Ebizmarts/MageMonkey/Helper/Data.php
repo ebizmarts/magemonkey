@@ -663,7 +663,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $post = unserialize($monkeyPost);
         }
         //if post exists && is not admin backend subscription && not footer subscription
-        $mergeVars = array_merge($this->_checkGrouping($post,$currentList, $object), $mergeVars);
+        $mergeVars = array_merge($mergeVars, $this->_checkGrouping($post,$currentList, $object));
 
         return $mergeVars;
     }
