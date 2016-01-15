@@ -667,7 +667,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $mergeVars;
     }
-    private function _checkGrouping($post,$currentList, $object)
+    protected function _checkGrouping($post,$currentList, $object)
     {
         $mergeVars = array();
         $request = Mage::app()->getRequest();
