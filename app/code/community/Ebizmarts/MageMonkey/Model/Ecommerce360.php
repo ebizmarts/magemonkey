@@ -175,7 +175,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         ->save();
                     $rs = true;
                 } else {
-                    $rs = 'Order already sent or ready to get sent soon';
+                    $rs = 'Order already sent or ready to get sent the next time the cron job runs';
                 }
             } else {
                 //Send order to MailChimp
@@ -201,7 +201,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         ->save();
                     $rs = true;
                 } else {
-                    $rs = 'Order already sent or ready to get sent soon';
+                    $rs = 'Order already sent or ready to get sent the next time the cron job runs';
                 }
             } else {
                 $rs = $api->ecommOrderAdd($this->_info);
@@ -226,19 +226,19 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     private function setItemstoSend($storeId)
     {
         foreach ($this->_order->getAllItems() as $item) {
+
             $mcitem = array();
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
 
-            if (in_array($product->getTypeId(), $this->_productsToSkip) && $product->getPriceType() == 0) {
-                if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+            if (in_array($item->getProductType(), $this->_productsToSkip) && $product->getPriceType() == 0) {
+                if ($item->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                     $this->_auxPrice = $item->getBasePrice();
                 }
                 continue;
             }
-
-            $mcitem['product_id'] = $product->getEntityId();
-            $mcitem['sku'] = $product->getSku();
-            $mcitem['product_name'] = $product->getName();
+            $mcitem['product_id'] = $item->getId();
+            $mcitem['sku'] = $item->getSku();
+            $mcitem['product_name'] = $item->getName();
             $attributesToSend = explode(',', Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ATTRIBUTES, $storeId));
             $attributes = $product->getAttributes();
             $productAttributes = '';
@@ -273,6 +273,9 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 //                }
             }
             $mcitem['category_name'] = (count($names)) ? implode(" - ", $names) : 'None';
+            if(!$mcitem['category_id']) {
+                $mcitem['category_id'] = 0;
+            }
             $mcitem['qty'] = $item->getQtyOrdered();
             $mcitem['cost'] = ($this->_auxPrice > 0) ? $this->_auxPrice : $item->getBasePrice();
             $this->_info['items'][] = $mcitem;
