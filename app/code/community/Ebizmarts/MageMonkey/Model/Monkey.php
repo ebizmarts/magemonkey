@@ -248,8 +248,8 @@ class Ebizmarts_MageMonkey_Model_Monkey
         } else {
             $toUpdate = $subscriber;
         }
-        $toUpdate->setFirstname($data['data']['FNAME']);
-        $toUpdate->setLastname($data['data']['LNAME']);
+        $toUpdate->setFirstname($data['data']['merges']['FNAME']);
+        $toUpdate->setLastname($data['data']['merges']['LNAME']);
         $toUpdate->save();
 
 
