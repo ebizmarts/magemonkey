@@ -17,6 +17,7 @@
             <core>
                 <rewrite>
                     <email_template>Ebizmarts_Mandrill_Model_Email_Template</email_template>
+                    <email_queue>Ebizmarts_Mandrill_Model_Email_Queue</email_queue>
                 </rewrite>
             </core>
         </models>
