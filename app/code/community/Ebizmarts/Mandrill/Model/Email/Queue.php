@@ -9,7 +9,7 @@ class Ebizmarts_Mandrill_Model_Email_Queue extends Mage_Core_Model_Email_Queue
      */
     public function send()
     {
-
+        $storeId = Mage::app()->getStore()->getId();
         if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
             return parent::send();
         }

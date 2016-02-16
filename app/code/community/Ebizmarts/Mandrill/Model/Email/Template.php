@@ -97,6 +97,19 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
             }
         }
 
+        $setReturnPath = Mage::getStoreConfig(self::XML_PATH_SENDING_SET_RETURN_PATH);
+        switch ($setReturnPath) {
+            case 1:
+                $returnPathEmail = $this->getSenderEmail();
+                break;
+            case 2:
+                $returnPathEmail = Mage::getStoreConfig(self::XML_PATH_SENDING_RETURN_PATH_EMAIL);
+                break;
+            default:
+                $returnPathEmail = null;
+                break;
+        }
+
         if ($att = $mail->getAttachments()) {
             $email['attachments'] = $att;
         }
