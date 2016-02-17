@@ -17,7 +17,14 @@ class Ebizmarts_Autoresponder_Model_Cron
         $allStores = Mage::app()->getStores();
         foreach ($allStores as $storeId => $val) {
             if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE, $storeId)) {
+                $oldEnvironment = $emulation->startEnvironmentEmulation(
+                    $storeId, 
+                    Mage_Core_Model_App_Area::AREA_FRONTEND,
+                    true
+                );
+                Mage::app()->getTranslator()->init('frontend', true);
                 $this->_processStore($storeId);
+                $emulation->stopEnvironmentEmulation($oldEnvironment);
             }
         }
     }
