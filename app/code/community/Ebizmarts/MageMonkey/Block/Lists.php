@@ -281,81 +281,19 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
             case 'dropdown':
                 $class = 'Varien_Data_Form_Element_Select';
                 break;
-            case 'hidden':
-                $class = 'Varien_Data_Form_Element_Hidden';
-                break;
+//            case 'hidden':
+//                $class = 'Varien_Data_Form_Element_Hidden';
+//                break;
             default:
                 $class = 'Varien_Data_Form_Element_Text';
                 break;
         }
-        $html = $this->_generateHtml($myGroups, $group, $checked, $list, $class, $fieldType);
-//        $object = new $class;
-//        $object->setForm($this->getForm());
-//
-//        //Check/select values
-//        if (isset($myGroups[$group['id']]) && !$checked == 0 || $checked == 1) {
-//            $object->setValue($myGroups[$group['id']]);
-//        } else {
-//            $object->setValue(array());
-//        }
-//
-//        if ($fieldType == 'checkboxes' || $fieldType == 'dropdown') {
-//
-//            $options = array();
-//
-//            if ($fieldType == 'dropdown') {
-//                $options[''] = '';
-//            }
-//
-//            foreach ($group['groups'] as $g) {
-//                if ($this->helper('monkey')->config('list') == $list['id']) {
-//                    if ($this->_groupAllowed($g['name'])) {
-//                        $options [$g['name']] = $g['name'];
-//                    }
-//                } else {
-//                    $options [$g['name']] = $g['name'];
-//                }
-//            }
-//
-//            if (method_exists('Varien_Data_Form_Element_Checkboxes', 'addElementValues')) {
-//                $object->addElementValues($options);
-//            } else {
-//                $object->setValues($options);
-//            }
-//
-//            $object->setName($this->_htmlGroupName($list, $group, ($fieldType == 'checkboxes' ? TRUE : FALSE)));
-//            $object->setHtmlId('interest-group');
-//
-//            $html = $object->getElementHtml();
-//
-//        } elseif ($fieldType == 'radio' || $fieldType == 'hidden') {
-//
-//            $options = array();
-//            foreach ($group['groups'] as $g) {
-//                if ($this->helper('monkey')->config('list') == $list['id']) {
-//                    if ($this->_groupAllowed($g['name'])) {
-//                        $options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
-//                    }
-//                } else {
-//                    $options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
-//                }
-//            }
-//
-//            $object->setName($this->_htmlGroupName($list, $group));
-//            $object->setHtmlId('interest-group');
-//
-//            if (method_exists('Varien_Data_Form_Element_Checkboxes', 'addElementValues')) {
-//                $object->addElementValues($options);
-//            } else {
-//                $object->setValues($options);
-//            }
-//
-//            $html = $object->getElementHtml();
-//        }
-//
-//        if ($fieldType != 'checkboxes') {
-//            $html = "<div class=\"groups-list\">{$html}</div>";
-//        }
+        $html = '';
+        if($fieldType!='hidden')
+        {
+            $html = $this->_generateHtml($myGroups, $group, $checked, $list, $class, $fieldType);
+        }
+
 
         return $html;
 
