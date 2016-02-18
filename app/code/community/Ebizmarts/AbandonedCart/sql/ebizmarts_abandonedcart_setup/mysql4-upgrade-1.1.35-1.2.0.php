@@ -13,7 +13,9 @@ $installer = $this;
 $installer->startSetup();
 
 $tableName = $installer->getTable('permission_block');
-if ($installer->getConnection()->isTableExists($tableName)) {
+$result = $installer->getConnection()->fetchAll("SHOW TABLES LIKE '".$tableName."'");
+$tableExists = count($result) > 0;
+if ($tableExists) {
     $installer->getConnection()->insertMultiple(
         $installer->getTable('admin/permission_block'),
         array(
