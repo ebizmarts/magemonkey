@@ -165,7 +165,10 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 ->addFieldToFilter('main_table.reserved_order_id', array('neq' => 'NULL'))
                 ->addFieldToFilter('main_table.customer_email', array('eq' => $quote->getCustomerEmail()))
                 ->addFieldToFilter('main_table.updated_at', array('from' => $quote->getUpdatedAt()));
-            if ($collection2->getSize()) {
+            $collection3 = Mage::getModel('sales/order')->getCollection();
+            $collection3->addFieldToFilter('main_table.customer_email', array('eq' => $quote->getCustomerEmail()))
+                ->addFieldToFilter('main_table.updated_at', array('from' => $quote->getUpdatedAt()));
+            if ($collection2->getSize() || $collection3->getSize()) {
                 //Set counter to its max value to prevent this quote to slow the process in the future
                 $quote->setEbizmartsAbandonedcartCounter($this->maxtimes);
                 $quote->save();
@@ -273,7 +276,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
         foreach ($quote->getAllVisibleItems() as $item) {
             $removeFromQuote = false;
             $product = Mage::getModel('catalog/product')->setStoreId($storeId)->load($item->getProductId());
-            if (!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED) {
+            $stockItem = Mage::getModel('catalog/product')->load($product->getId())->getStockItem();
+            if (!$product || $product->getStatus() == Mage_Catalog_Model_Product_Status::STATUS_DISABLED && !$stockItem->getBackorders()) {
                 Mage::log('AbandonedCart; ' . $product->getSku() . ' is no longer present or enabled; remove from quote ' . $quote->getId() . ' for email', null, 'Ebizmarts_AbandonedCart.log');
                 $removeFromQuote = true;
             }
@@ -307,13 +311,13 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $stock = $product->getStockItem();
                 $stockQty = $stock->getQty();
             }
-
+            $inventory =  Mage::getModel('cataloginventory/stock_item')->loadByProduct($product);
             if (
                 (
                     is_object($stock) && ($stock->getManageStock() ||
                         ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId())))
                 )
-                && $stockQty < $item->getQty()
+                && $stockQty < $item->getQty() && (!$inventory->getBackorders() || $stockItem->getBackorders())
             ) {
                 Mage::log('AbandonedCart; ' . $product->getSku() . ' is no longer in stock; remove from quote ' . $quote->getId() . ' for email', null, 'Ebizmarts_AbandonedCart.log');
                 $removeFromQuote = true;

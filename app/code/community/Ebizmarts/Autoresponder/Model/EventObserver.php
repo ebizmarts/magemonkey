@@ -80,9 +80,14 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             if ($this->_generateReviewCoupon($reviewData)) {
                 //generate coupon
                 $customer = Mage::getModel('customer/customer')->load($reviewData->getCustomerId());
-                $email = $customer->getEmail();
-                $name = $customer->getFirstname() . ' ' . $customer->getLastname();
-                if (in_array($customer->getGroupId(), $customerGroupsCoupon)) {
+                if($customer->getId()) {
+                    $email = $customer->getEmail();
+                    $name = $customer->getFirstname() . ' ' . $customer->getLastname();
+                    $customerGroup = $customer->getGroupId();
+                }else{
+
+                }
+                if (in_array($customerGroup, $customerGroupsCoupon)) {
                     if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_AUTOMATIC, $storeId) == Ebizmarts_Autoresponder_Model_Config::COUPON_AUTOMATIC) {
                         list($couponcode, $discount, $toDate) = $this->_createNewCoupon($storeId, $email);
                         $vars = array('couponcode' => $couponcode, 'discount' => $discount, 'todate' => $toDate, 'name' => $name, 'tags' => array($tags));
@@ -183,7 +188,7 @@ class Ebizmarts_Autoresponder_Model_EventObserver
         $toDate = date('Y-m-d', strtotime($fromDate . " + $couponexpiredays day"));
         if ($coupontype == 1) {
             $action = 'cart_fixed';
-            $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode() . "$couponamount";
+            $discount = Mage::app()->getStore($store)->getCurrentCurrencyCode()->getSymbol() . "$couponamount";
         } elseif ($coupontype == 2) {
             $action = 'by_percent';
             $discount = "$couponamount%";

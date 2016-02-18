@@ -16,10 +16,9 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Export extends Mage_Adminhtm
         $this->_controller = 'adminhtml_bulksync';
         $this->_blockGroup = 'monkey';
         $this->_mode = 'export';
-
         parent::__construct();
-
         $this->_updateButton('save', 'label', Mage::helper('monkey')->__('All set!'));
+        $this->setTemplate('magemonkey/bulksync/export/form.phtml');
     }
 
     public function getHeaderText()

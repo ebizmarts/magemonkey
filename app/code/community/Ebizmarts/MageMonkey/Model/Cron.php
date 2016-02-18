@@ -271,11 +271,11 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $listId);
                 if ($isOnMailChimp) {
                     $processedCount++;
-                    $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->getMergeVars($item));
-                    $lastId = $item->getLastId();
+                    $api->listUpdateMember($listId, $item->getEmail(), $this->_helper()->mergeVars($item));
                 } else {
                     $batch [] = $this->_helper()->getMergeVars($item, TRUE);
                 }
+                $lastId = $item->getId();
             }
 
             $job->setStatus('chunk_running')
@@ -298,7 +298,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 }
 
             }
-            if($job->getProcessedCount() == $job->getTotalCount()) {
+            if($job->getProcessedCount() >= $job->getTotalCount()) {
                 $job->setStatus('finished');
             }
             $job->save();
@@ -432,19 +432,6 @@ class Ebizmarts_MageMonkey_Model_Cron
         $storeId = null;
         foreach ($collection as $item) {
             $info = (array)unserialize($item->getInfo());
-//            $collection2 = Mage::getmodel('monkey/asyncsubscribers')->getCollection()
-//                ->addFieldToFilter('processed',array('eq'=>1))
-//                ->addFieldToFilter('email', array('eq'=>$info['email']));
-//            if(count($collection2) == 0){
-//                $storeId = $info['store_id'];
-//                $storeLists = Mage::helper('monkey')->getListsByStoreId($storeId);
-//                foreach($storeLists as $listId) {
-//                    $isOnMailChimp = Mage::helper('monkey')->subscribedToList($info['email'], $listId);
-//                    if ($isOnMailChimp != 1) {
-//                        continue 2;
-//                    }
-//                }
-//            }
             $orderId = $info['order_id'];
             unset($info['order_id']);
             if ($storeId != $info['store_id']) {
@@ -518,12 +505,12 @@ class Ebizmarts_MageMonkey_Model_Cron
             }else {
                 $batch[] = $mergeVars;
             }
-                //$email = $item->getEmail();
-                //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
-                $item->setProcessed(1)->save();
-                if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
-                    Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
-                }
+            //$email = $item->getEmail();
+            //Mage::getSingleton('monkey/api')->listSubscribe($listId, $email, $mergeVars, 'html', $isConfirmNeed);
+            $item->setProcessed(1)->save();
+            if ($item->getId() == $collection->getLastItem()->getId() && count($batch) > 0) {
+                Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
+            }
         }
 
     }

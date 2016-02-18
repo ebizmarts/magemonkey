@@ -417,9 +417,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         //GUEST
         $guestFirstName = '';
         if (!$customer->getId() && !$request->getPost('firstname')) {
-            if($this->config('guest_name', $customer->getStoreId())){
+            if($customer->getSubscriberFirstname()){
                 $guestFirstName = $this->config('guest_name', $customer->getStoreId());
-            }elseif($customer->getSubscriberFirstname()) {
+            }elseif($this->config('guest_name', $customer->getStoreId())) {
                 $guestFirstName = $customer->getSubscriberFirstname();
             }
 
@@ -429,9 +429,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $guestLastName = '';
         if (!$customer->getId() && !$request->getPost('lastname')) {
-            if($this->config('guest_lastname', $customer->getStoreId())){
+            if($customer->getSubscriberLastname()){
                 $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
-            }elseif($customer->getSubscriberLastname()){
+            }elseif($this->config('guest_lastname', $customer->getStoreId())){
                 $guestLastName = $customer->getSubscriberLastname();
             }
 
@@ -578,6 +578,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     }
     protected function _setAddress($customAtt,$merge_vars, $customer, $key)
     {
+
         $addr = explode('_', $customAtt);
         $address = $customer->{'getPrimary' . ucfirst($addr[0]) . 'Address'}();
         if (!$address) {
@@ -604,7 +605,12 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             }
             $country = $address->getCountryId();
             if ($country) {
-                $merge_vars['COUNTRY'] = $country;
+                $countryName = Mage::getModel('directory/country')->load($country)->getName();
+                $merge_vars['COUNTRY'] = $countryName;
+            }
+            $zipCode = $address->getPostcode();
+            if ($zipCode) {
+                $merge_vars['ZIPCODE'] = $zipCode;
             }
         }
         return $merge_vars;
@@ -658,11 +664,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $post = unserialize($monkeyPost);
         }
         //if post exists && is not admin backend subscription && not footer subscription
-        $mergeVars = array_merge($this->_checkGrouping($post,$currentList, $object), $mergeVars);
+        $mergeVars = array_merge($mergeVars, $this->_checkGrouping($post,$currentList, $object));
 
         return $mergeVars;
     }
-    private function _checkGrouping($post,$currentList, $object)
+    protected function _checkGrouping($post,$currentList, $object)
     {
         $mergeVars = array();
         $request = Mage::app()->getRequest();
@@ -936,7 +942,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $listId = $defaultList;
         }
         $alreadySubscribed = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
-        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && !$alreadySubscribed) {
+        if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && (!$alreadySubscribed || !$alreadySubscribed->getId())) {
             $subscriber->subscribe($email);
         } else {
             $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
@@ -968,6 +974,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                 $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
                 $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db);
+                if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
+                    $subscriber->subscribe($email);
+                }
             }
         }
 
@@ -1131,6 +1140,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $subscriber->setMcListId($listId);
                         $subscriber->setMcStoreId(Mage::app()->getStore()->getId());
                         $subscriber->subscribe($email);
+                        Mage::getSingleton('core/session')->addSuccess($this->__('Thank you for your subscription.'));
                     } else {
                         $customer->setListGroups($groupings);
                         $customer->setMcListId($listId);

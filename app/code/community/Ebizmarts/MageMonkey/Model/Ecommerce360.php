@@ -106,7 +106,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 ->save();
         }
         if ((($this->_getCampaignCookie() &&
-                    $this->_getEmailCookie()) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2) &&
+                    $this->_getEmailCookie()) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 3) &&
             $this->isActive()
         ) {
             $this->logSale($order);
@@ -175,7 +175,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         ->save();
                     $rs = true;
                 } else {
-                    $rs = 'Order already sent or ready to get sent soon';
+                    $rs = 'Order already sent or ready to get sent the next time the cron job runs';
                 }
             } else {
                 //Send order to MailChimp
@@ -201,7 +201,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                         ->save();
                     $rs = true;
                 } else {
-                    $rs = 'Order already sent or ready to get sent soon';
+                    $rs = 'Order already sent or ready to get sent the next time the cron job runs';
                 }
             } else {
                 $rs = $api->ecommOrderAdd($this->_info);
@@ -226,19 +226,19 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     private function setItemstoSend($storeId)
     {
         foreach ($this->_order->getAllItems() as $item) {
+
             $mcitem = array();
             $product = Mage::getModel('catalog/product')->load($item->getProductId());
 
-            if (in_array($product->getTypeId(), $this->_productsToSkip) && $product->getPriceType() == 0) {
-                if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
+            if (in_array($item->getProductType(), $this->_productsToSkip) && $product->getPriceType() == 0) {
+                if ($item->getProductType() == Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE) {
                     $this->_auxPrice = $item->getBasePrice();
                 }
                 continue;
             }
-
-            $mcitem['product_id'] = $product->getEntityId();
-            $mcitem['sku'] = $product->getSku();
-            $mcitem['product_name'] = $product->getName();
+            $mcitem['product_id'] = $item->getId();
+            $mcitem['sku'] = $item->getSku();
+            $mcitem['product_name'] = $item->getName();
             $attributesToSend = explode(',', Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ATTRIBUTES, $storeId));
             $attributes = $product->getAttributes();
             $productAttributes = '';
@@ -262,18 +262,20 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             $cat_ids = $product->getCategoryIds();
 
             if (is_array($cat_ids) && count($cat_ids) > 0) {
-                $category = Mage::getModel('catalog/category')->load($cat_ids[0]);
-                $mcitem['category_id'] = $cat_ids[0];
-                $names[] = $category->getName();
-                while ($category->getParentId() && $category->getParentId() != 1) {
-                    $category = Mage::getModel('catalog/category')->load($category->getParentId());
+                foreach($cat_ids as $id){
+                    $category = Mage::getModel('catalog/category')->load($id);
                     $names[] = $category->getName();
+                    $mcitem['category_id'] = $id;
                 }
+//                while ($category->getParentId() && $category->getParentId() != 1) {
+//                    $category = Mage::getModel('catalog/category')->load($category->getParentId());
+//                    $names[] = $category->getName();
+//                }
             }
-            if (!isset($mcitem['category_id'])) {
+            $mcitem['category_name'] = (count($names)) ? implode(" - ", $names) : 'None';
+            if(!$mcitem['category_id']) {
                 $mcitem['category_id'] = 0;
             }
-            $mcitem['category_name'] = (count($names)) ? implode(" - ", array_reverse($names)) : 'None';
             $mcitem['qty'] = $item->getQtyOrdered();
             $mcitem['cost'] = ($this->_auxPrice > 0) ? $this->_auxPrice : $item->getBasePrice();
             $this->_info['items'][] = $mcitem;

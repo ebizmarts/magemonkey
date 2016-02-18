@@ -67,6 +67,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
                 break;
             case 'profile':
                 $this->_profile($data);
+                $cacheHelper->clearCache('listUpdateMember', $object);
                 break;
         }
 
@@ -234,20 +235,22 @@ class Ebizmarts_MageMonkey_Model_Monkey
         }
     }
 
-    protected function _profile($data)
+    protected function _profile(array $data)
     {
-
-        $subscriber = $this->loadByEmail($data['email']);
+        $email = $data['data']['email'];
+        $subscriber = $this->loadByEmail($email);
         $storeId = $subscriber->getStoreId();
-        $mapMerges = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_MAP_FIELDS, $storeId);
 
         $customerCollection = Mage::getModel('customer/customer')->getCollection()
-            ->addFieldToFilter('email', array('eq' => $data['email']));
+            ->addFieldToFilter('email', array('eq' => $email));
         if (count($customerCollection) > 0) {
             $toUpdate = $customerCollection->getFirstItem();
         } else {
             $toUpdate = $subscriber;
         }
+        $toUpdate->setFirstname($data['data']['merges']['FNAME']);
+        $toUpdate->setLastname($data['data']['merges']['LNAME']);
+        $toUpdate->save();
 
 
     }

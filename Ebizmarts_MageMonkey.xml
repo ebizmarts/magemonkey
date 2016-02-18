@@ -1,5 +1,5 @@
 <_>
-   <form_key>6zUeR0BNUGldMu3x</form_key>
+   <form_key>tBwjAVbI9jZj8U4x</form_key>
    <name>Ebizmarts_MageMonkey</name>
    <channel>community</channel>
    <version_ids>
@@ -10,29 +10,11 @@
    <description>Full MailChimp integration, automatic webhooks, multiple lists, interest groups</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>1.2.0</version>
+   <version>1.2.1</version>
    <stability>stable</stability>
-   <notes>1.2.0
+   <notes>1.2.1
         --------
-Fixed multiple subscription confirmation message.
-Fixed problem with bulk sync export.
-Fixed issue when subscribing with Magento&apos;s email confirmation in stead of MailChimp&apos;s.
-Added compatibility with old One Step Checkout versions.
-Product description can now be put in html.
-Changed review Autoresponder to get the order with the created_at date instead of the updated_at.
-Changed popup coupon email name to be displayed on Emails Sent view.
-Fixed problem when subscribe on checkout disabled but MageMonkey subscribed anyways.
-Added store code to be sent to MailChimp by default
-Added confirmation email when subscription forced.
-Fixed problem on visited product table with new popup.
-Fixed problem when subscribing on checkout.
-Fixed finished status for export process.
-Added campaign title on Customer Information (Back end) tab MailChimp List Member Activity
-Added upgrade to allow custom blocks after new Magento patch.
-Changed the modules to be loaded after Magento&apos;s core.
-Popup is now responsive.
-Popup works depending on the store view.
-Fix for store id on popup table to send coupon for each store.</notes>
+Fixed compatibility with patch SUPEE-6788 and older Magento versions.</notes>
    <authors>
       <name>
          <name>Ebizmarts Development Team</name>
@@ -61,7 +43,7 @@ Fix for store id on popup table to send coupon for each store.</notes>
             <max/>
          </max>
          <files>
-            <files>              </files>
+            <files>               </files>
          </files>
       </package>
       <extension>
@@ -298,4 +280,8 @@ Fix for store id on popup table to send coupon for each store.</notes>
          <ignore/>
       </ignore>
    </contents>
+   <page>1</page>
+   <limit>200</limit>
+   <folder/>
+   <package/>
 </_>

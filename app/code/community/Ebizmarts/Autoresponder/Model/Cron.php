@@ -666,7 +666,8 @@ class Ebizmarts_Autoresponder_Model_Cron
         $alert = Mage::getModel('ebizmarts_autoresponder/backtostockalert');
         $alert
             ->getCollection()
-            ->addFieldToFilter('is_active', array('eq' => 1));
+            ->addFieldToFilter('is_active', array('eq' => 1))
+            ->addFieldToFilter('store_id', array('eq' => $storeId));
 
         if (count($alert) > 0) {
 
@@ -717,7 +718,8 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $collection = Mage::getModel('ebizmarts_autoresponder/backtostock')->getCollection();
                 $collection
                     ->addFieldToFilter('is_active', array('eq' => 1))
-                    ->addFieldToFilter('alert_id', array('eq' => $productStockAlert->getAlertId()));
+                    ->addFieldToFilter('alert_id', array('eq' => $productStockAlert->getAlertId()))
+                ->addFieldToFilter('store_id', array('eq' => $storeId));
 
                 if (count($collection) > 0) {
 
@@ -888,6 +890,7 @@ class Ebizmarts_Autoresponder_Model_Cron
             $coupon_rule = Mage::getModel('salesrule/rule');
             $coupon_rule->setName($string . ' ' . $email)
                 ->setDescription($string . ' ' . $email)
+                ->setStopRulesProcessing(0)
                 ->setFromDate($fromDate)
                 ->setToDate($toDate)
                 ->setIsActive(1)

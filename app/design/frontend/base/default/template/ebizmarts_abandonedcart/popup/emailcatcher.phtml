@@ -67,7 +67,7 @@
                 }
             });
             var cookieStored = emailCookieExists();
-            if (!cookieStored) {
+            if (!cookieStored && $('popupDialog') == undefined) {
                 var popupWidth = <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_WIDTH, $this->_getStoreId()))); ?>*window.innerWidth/100;
                 var popupHeight = <?php Print(json_decode(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_HEIGHT, $this->_getStoreId()))); ?>*window.innerHeight/100;
                 var win = Dialog.confirm($('email').innerHTML, {
