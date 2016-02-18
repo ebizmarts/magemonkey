@@ -578,6 +578,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     }
     protected function _setAddress($customAtt,$merge_vars, $customer, $key)
     {
+
         $addr = explode('_', $customAtt);
         $address = $customer->{'getPrimary' . ucfirst($addr[0]) . 'Address'}();
         if (!$address) {
@@ -973,6 +974,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                 $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
                 $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db);
+                if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
+                    $subscriber->subscribe($email);
+                }
             }
         }
 

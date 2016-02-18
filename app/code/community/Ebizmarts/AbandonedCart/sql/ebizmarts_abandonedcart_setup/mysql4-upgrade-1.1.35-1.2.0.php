@@ -16,12 +16,16 @@ $tableName = $installer->getTable('permission_block');
 $result = $installer->getConnection()->fetchAll("SHOW TABLES LIKE '".$tableName."'");
 $tableExists = count($result) > 0;
 if ($tableExists) {
-    $installer->getConnection()->insertMultiple(
-        $installer->getTable('admin/permission_block'),
-        array(
-            array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1)
-        )
-    );
+    try {
+        $installer->getConnection()->insertMultiple(
+            $installer->getTable('admin/permission_block'),
+            array(
+                array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1)
+            )
+        );
+    }catch (Exception $e){
+
+    }
 }
 
 $installer->getConnection()

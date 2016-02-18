@@ -93,6 +93,13 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
         } else {
             try {
                 $ecommerce = Mage::getModel('monkey/ecommerce');
+                $asyncOrders = Mage::getModel('monkey/asyncorders')->getCollection();
+                foreach($asyncOrders as $order) {
+                    $info = unserialize($order->getInfo());
+                    if(in_array($info['order_id'], $orderIds)){
+                        $order->delete();
+                    }
+                }
                 foreach ($orderIds as $orderId) {
                     $ecommerce->load($orderId)->delete();
                 }
