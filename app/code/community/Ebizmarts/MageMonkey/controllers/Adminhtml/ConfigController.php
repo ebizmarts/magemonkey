@@ -94,6 +94,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
     protected function _isAllowed() {
         switch ($this->getRequest()->getActionName()) {
             case 'getGroups':
+            case 'upgradeForPatch':
                 $acl = 'system/config/monkey';
                 break;
         }
