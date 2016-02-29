@@ -154,9 +154,13 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 
         $this->setItemstoSend($this->_order->getStoreId());
         $rs = false;
+        $email = null;
+        $campaignId = null;
         if ($emailCookie && $campaignCookie) {
             $this->_info ['email_id'] = $emailCookie;
             $this->_info ['campaign_id'] = $campaignCookie;
+            $email = $emailCookie;
+            $campaignId = $campaignCookie;
             if (Mage::getStoreConfig('monkey/general/checkout_async')) {
                 $collection = Mage::getModel('monkey/asyncorders')->getCollection();
                 $alreadyOnDb = false;
@@ -182,7 +186,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $rs = $api->campaignEcommOrderAdd($this->_info);
             }
         } else {
-            $this->_info ['email'] = $this->_order->getCustomerEmail();
+            $email = $this->_order->getCustomerEmail();
+            $this->_info ['email'] = $email;
             if (Mage::getStoreConfig('monkey/general/checkout_async')) {
                 $collection = Mage::getModel('monkey/asyncorders')->getCollection();
                 $alreadyOnDb = false;
@@ -209,7 +214,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         }
 
         if ($rs === TRUE) {
-            $this->_logCall();
+            $this->_logCall($email, $campaignId);
             return true;
         } else {
             return $rs;
@@ -310,13 +315,13 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
      *
      * @return Ebizmarts_MageMonkey_Model_Ecommerce
      */
-    protected function _logCall()
+    protected function _logCall($email, $campaignCookie = null)
     {
         return Mage::getModel('monkey/ecommerce')
             ->setOrderIncrementId($this->_order->getIncrementId())
             ->setOrderId($this->_order->getId())
-            ->setMcCampaignId($this->_getCampaignCookie())
-            ->setMcEmailId($this->_getEmailCookie())
+            ->setMcCampaignId($email)
+            ->setMcEmailId($campaignCookie)
             ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
             ->setStoreId($this->_order->getStoreId())
             ->save();
