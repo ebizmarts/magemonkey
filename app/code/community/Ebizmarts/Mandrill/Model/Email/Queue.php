@@ -50,7 +50,7 @@ class Ebizmarts_Mandrill_Model_Email_Queue extends Mage_Core_Model_Email_Queue
                     );
                 }
                 if ($parameters->getReplyTo() !== null) {
-                    $mandrill['headers'] = array_merge($mandrill['headers'], ['Reply-To' => $parameters->getReplyTo()]);
+                    $mandrill['headers'] = array_merge($mandrill['headers'], array('Reply-To' => $parameters->getReplyTo()));
                 }
                 if ($parameters->getReturnTo() !== null) {
                     $mailer->setReturnPath($parameters->getReturnTo());
