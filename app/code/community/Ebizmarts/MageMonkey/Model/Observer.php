@@ -375,7 +375,6 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
         if ($oneStep) {
             Mage::getSingleton('core/session')->setIsOneStepCheckout(true);
-            Mage::getSingleton('core/session')->setMonkeyCheckout(true);
         }
         return $observer;
     }
@@ -428,7 +427,9 @@ class Ebizmarts_MageMonkey_Model_Observer
                     ->setEmail($order->getCustomerEmail());
             }
 
-            Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb);
+            if(Mage::getSingleton('core/session')->getMonkeyCheckout()) {
+                Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb);
+            }
 
         }
         Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
