@@ -278,7 +278,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 //                }
             }
             $mcitem['category_name'] = (count($names)) ? implode(" - ", $names) : 'None';
-            if(!$mcitem['category_id']) {
+            if(!isset($mcitem['category_id'])) {
                 $mcitem['category_id'] = 0;
             }
             $mcitem['qty'] = $item->getQtyOrdered();
@@ -320,8 +320,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         return Mage::getModel('monkey/ecommerce')
             ->setOrderIncrementId($this->_order->getIncrementId())
             ->setOrderId($this->_order->getId())
-            ->setMcCampaignId($email)
-            ->setMcEmailId($campaignCookie)
+            ->setMcCampaignId($campaignCookie)
+            ->setMcEmailId($email)
             ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
             ->setStoreId($this->_order->getStoreId())
             ->save();

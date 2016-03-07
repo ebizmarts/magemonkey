@@ -445,7 +445,8 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function massActionOption(Varien_Event_Observer $observer)
     {
-        if (!Mage::helper('monkey')->canMonkey()) {
+        $stores = Mage::app()->getStores();
+        if (!Mage::helper('monkey')->canMonkey($stores)) {
             return $observer;
         }
         $block = $observer->getEvent()->getBlock();

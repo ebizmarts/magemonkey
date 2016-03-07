@@ -266,9 +266,19 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @return bool
      */
-    public function canMonkey()
+    public function canMonkey($stores = null)
     {
-        return (bool)((int)$this->config('active') !== 0);
+        $ret = false;
+        if(is_array($stores)){
+            foreach($stores as $store){
+                if((bool)((int)$this->config('active', $store) !== 0)){
+                    $ret = true;
+                }
+            }
+        }else{
+            $ret = (bool)((int)$this->config('active') !== 0);
+        }
+        return $ret;
     }
 
     /**
