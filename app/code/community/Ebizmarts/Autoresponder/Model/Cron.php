@@ -135,8 +135,16 @@ class Ebizmarts_Autoresponder_Model_Cron
         $moreselect = "MONTH(at_dob.value) = $month AND DAY(at_dob.value) = $day";
 
 
-        $collection->addAttributeToFilter('dob', array('neq' => 'null'))
-            ->addFieldToFilter('store_id', array('eq' => $storeId));
+        $collection->addAttributeToFilter('dob', array('neq' => 'null'));
+        $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
+        $normalFilter = array('eq' => $storeId);
+        if($storeId == $defaultStore->getId()){
+            $newFilter = array('eq' => 0);
+            $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
+        }else{
+            $collection->addFieldToFilter('store_id', $normalFilter);
+        }
+
         if (count($customerGroups)) {
             $collection->addFieldToFilter('group_id', array('in' => $customerGroups));
         }
