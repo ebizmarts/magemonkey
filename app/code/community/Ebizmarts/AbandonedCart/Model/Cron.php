@@ -202,7 +202,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $today = idate('U', strtotime(now()));
                 $updatedAt = idate('U', strtotime($quote2->getUpdatedAt()));
                 $updatedAtDiff = ($today - $updatedAt) / 60 / 60 / 24;
-                if ($this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run == 0) {
+                if ($this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run <= 1) {
                     $updatedAtDiff = ($today - $updatedAt) / 60 / 60;
                 }
 
