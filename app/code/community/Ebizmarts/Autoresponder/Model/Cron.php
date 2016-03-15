@@ -185,7 +185,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     }
                 }
 
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->addBcc('santiago+bcc@ebizmarts.com')->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('happy birthday', $email, $name, $couponcode, $storeId);
             }
