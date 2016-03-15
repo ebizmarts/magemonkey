@@ -139,7 +139,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
         $normalFilter = array('eq' => $storeId);
         if($storeId == $defaultStore->getId()){
-            $newFilter = array('eq' => 0);
+            $newFilter = array('eq' => '0');
             $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
         }else{
             $collection->addFieldToFilter('store_id', $normalFilter);
@@ -185,7 +185,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                     }
                 }
 
-                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
+                $mail = Mage::getModel('core/email_template')->setTemplateSubject($mailSubject)->addBcc('santiago+bcc@ebizmarts.com')->sendTransactional($templateId, $sender, $email, $name, $vars, $storeId);
                 $translate->setTranslateInLine(true);
                 Mage::helper('ebizmarts_abandonedcart')->saveMail('happy birthday', $email, $name, $couponcode, $storeId);
             }
@@ -447,9 +447,9 @@ class Ebizmarts_Autoresponder_Model_Cron
             ->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
             ->setOrder('main_table.wishlist_id');
         $wishlist_ant = -1;
-        $wishlistId = $collection->getFirstItem()->getWishlistId();
         $products = array();
         foreach ($collection as $item) {
+            $wishlistId = $item->getWishlistId();
             if ($wishlistId != $wishlist_ant) {
                 if ($wishlist_ant != -1 && count($products) > 0) {
                     $translate = Mage::getSingleton('core/translate');
@@ -482,7 +482,6 @@ class Ebizmarts_Autoresponder_Model_Cron
 
                 }
                 $wishlist_ant = $wishlistId;
-                $wishlistId = $item->getWishlistId();
                 $wishlist = Mage::getModel('wishlist/wishlist')->load($wishlistId);
                 $customer = Mage::getModel('customer/customer')->load($wishlist->getCustomerId());
                 $products = array();
