@@ -686,11 +686,11 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $footerSubscription = $request->getActionName() == 'new' && $request->getControllerName() == 'subscriber' && $request->getModuleName() == 'newsletter';
         $customerSubscription = $request->getActionName() == 'saveadditional';
         $customerCreateAccountSubscription = $request->getActionName() == 'createpost';
-        if ($post && !$adminSubscription && !$customerSubscription && !$customerCreateAccountSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
+        if ($post && !$adminSubscription && !$customerSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
             $defaultList = Mage::helper('monkey')->config('list');
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
-            if ($currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
+            if (!$customerCreateAccountSubscription && $currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
                 $subscribeGroups = array(0 => array());
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
@@ -706,6 +706,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     $subscribeGroups = array();
                     $_prevGroup = null;
                     $checkboxes = array();
+                    $currentGroup = '';
                     foreach ($groups as $group) {
                         $item = explode("_", $group);
                         if ($item[0]) {
@@ -713,15 +714,18 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                             if ($currentGroup == $_prevGroup || $_prevGroup == null) {
                                 $checkboxes[] = $item[1];
                                 $_prevGroup = $currentGroup;
-                            } else {
-                                $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+                            } elseif($checkboxes && isset($item[1])) {
+                                    $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+                                    $checkboxes = array();
+                                    $_prevGroup = $currentGroup;
+                                    $checkboxes[] = $item[1];
+                            }else{
                                 $checkboxes = array();
-                                $_prevGroup = $currentGroup;
-                                $checkboxes[] = $item[1];
+                                $_prevGroup = null;
                             }
                         }
                     }
-                    if ($currentGroup) {
+                    if ($currentGroup && $checkboxes) {
                         $subscribeGroups[] = array('id' => $currentGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
                     }
 
