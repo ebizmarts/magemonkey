@@ -211,7 +211,14 @@ class Ebizmarts_Autoresponder_Model_Cron
         if (count($customerGroups)) {
             $collection->addFieldToFilter('group_id', array('in' => $customerGroups));
         }
-        $collection->addFieldToFilter('store_id', array('eq' => $storeId));
+        $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
+        $normalFilter = array('eq' => $storeId);
+        if($storeId == $defaultStore->getId()){
+            $newFilter = array('eq' => '0');
+            $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
+        }else{
+            $collection->addFieldToFilter('store_id', $normalFilter);
+        }
 
         foreach ($collection as $customer) {
             $customerId = $customer->getEntityId();

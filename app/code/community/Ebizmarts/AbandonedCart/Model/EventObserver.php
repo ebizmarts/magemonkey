@@ -21,6 +21,7 @@ class Ebizmarts_AbandonedCart_Model_EventObserver
 
         $cleanCache = false;
         $store = is_null($observer->getEvent()->getStore()) ? Mage::app()->getDefaultStoreView()->getCode() : $observer->getEvent()->getStore();
+        $config = null;
         if (!Mage::helper('ebizmarts_mandrill')->useTransactionalService()) {
             $config = new Mage_Core_Model_Config();
             $config->saveConfig(Ebizmarts_AbandonedCart_Model_Config::ACTIVE, false, $scope, $store);
