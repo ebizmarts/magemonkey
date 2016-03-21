@@ -90,4 +90,9 @@ class Ebizmarts_AbandonedCart_Model_Config
     const POPUP_COUPON_DISCOUNT = 'ebizmarts_abandonedcart/emailcatcher/popup_discount';
     const POPUP_COUPON_LABEL = 'ebizmarts_abandonedcart/emailcatcher/popup_couponlabel';
 
+    const GANALYTICS_ACTIVE = 'ebizmarts_abandonedcart/ganalytics/analytics_active';
+    const GANALYTICS_SOURCE = 'ebizmarts_abandonedcart/ganalytics/analytics_source';
+    const GANALYTICS_MEDIUM = 'ebizmarts_abandonedcart/ganalytics/analytics_medium';
+    const GANALYTICS_CAMPAIGN = 'ebizmarts_abandonedcart/ganalytics/analytics_campaign';
+
 }

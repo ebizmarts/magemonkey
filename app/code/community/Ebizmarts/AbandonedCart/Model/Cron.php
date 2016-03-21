@@ -148,7 +148,18 @@ class Ebizmarts_AbandonedCart_Model_Cron
         } else {
             $this->sendcoupondays = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_DAYS, $storeId);
         }
-
+        $ganalytics='';
+        if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_ACTIVE, $storeId)) {
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_SOURCE, $storeId)!='') {
+                $ganalytics .= '&utm_source='.Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_SOURCE, $storeId);
+            }
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_MEDIUM, $storeId)!='') {
+                $ganalytics .= '&utm_medium='.Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_MEDIUM, $storeId);
+            }
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_CAMPAIGN, $storeId)!='') {
+                $ganalytics .= '&utm_campaign='.Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_CAMPAIGN, $storeId);
+            }
+        }
         // for each cart of the current run
         foreach ($collection as $quote) {
             $this->_proccessCollection($quote, $storeId);
@@ -179,11 +190,11 @@ class Ebizmarts_AbandonedCart_Model_Cron
             //srand((double)microtime()*1000000);
             $token = md5(rand(0, 9999999));
             if ($abTesting) {
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token . '&' . $suffix;
+                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token . '&' . $suffix;
             } else {
                 $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token;
             }
-
+            $url .= $ganalytics;
             $data = array('AbandonedURL' => $url, 'AbandonedDate' => $quote->getUpdatedAt());
 
             // send email
