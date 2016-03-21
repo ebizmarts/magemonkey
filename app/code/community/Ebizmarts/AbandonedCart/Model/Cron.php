@@ -274,8 +274,15 @@ class Ebizmarts_AbandonedCart_Model_Cron
             }
         }
         if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId)) {
-            $counterCollection = Mage::getModel('ebizmarts_abandonedcart/abtesting')->getCollection()
-                ->addFieldToFilter('store_id', array('eq' => $storeId));
+            $counterCollection = Mage::getModel('ebizmarts_abandonedcart/abtesting')->getCollection();
+            $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
+            $normalFilter = array('eq' => $storeId);
+            if($storeId == $defaultStore->getId()){
+                $newFilter = array('eq' => '0');
+                $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
+            }else{
+                $collection->addFieldToFilter('store_id', $normalFilter);
+            }
             $counter = $counterCollection->getFirstItem();
             $counter->setCurrentStatus($counter->getCurrentStatus() + 1)
                 ->save();

@@ -93,23 +93,30 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     {
         $storeId = Mage::app()->getStore()->getId();
         $order = $observer->getEvent()->getOrder();
-        $customerEmail = $order->getCustomerEmail();
-        $collection = Mage::getModel('monkey/lastorder')->getCollection()
-            ->addFieldToFilter('email', array('eq' => $customerEmail));
-        if(count($collection) > 0){
-            //When saving the new date is automatically placed.
-            $item = $collection->getFirstItem();
-            $item->save();
-        }else{
-            Mage::getModel('monkey/lastorder')
-                ->setEmail($customerEmail)
-                ->save();
-        }
-        if ((($this->_getCampaignCookie() &&
-                    $this->_getEmailCookie()) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 3) &&
-            $this->isActive()
-        ) {
-            $this->logSale($order);
+        if (is_object($order) && $order->getId()) {
+            //Set Campaign Id if exist
+            $campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');
+            if ($campaign_id && $order->getEbizmartsMagemonkeyCampaignId() == null) {
+                $order->setEbizmartsMagemonkeyCampaignId($campaign_id)->save();
+            }
+            $customerEmail = $order->getCustomerEmail();
+            $collection = Mage::getModel('monkey/lastorder')->getCollection()
+                ->addFieldToFilter('email', array('eq' => $customerEmail));
+            if (count($collection) > 0) {
+                //When saving the new date is automatically placed.
+                $item = $collection->getFirstItem();
+                $item->save();
+            } else {
+                Mage::getModel('monkey/lastorder')
+                    ->setEmail($customerEmail)
+                    ->save();
+            }
+            if ((($this->_getCampaignCookie() &&
+                        $this->_getEmailCookie()) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 3) &&
+                $this->isActive()
+            ) {
+                $this->logSale($order);
+            }
         }
         return $observer;
     }
