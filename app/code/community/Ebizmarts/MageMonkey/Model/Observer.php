@@ -173,7 +173,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         if (isset($post['groups']['general']['fields']['additional_lists']['value'])) {
             $additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
         } else {
-            if ((string)$post['groups']['general']['fields']['additional_lists']['inherit'] == 1) {
+            if (isset($post['groups']['general']['fields']['additional_lists']['inherit']) && (string)$post['groups']['general']['fields']['additional_lists']['inherit'] == 1) {
                 $additionalLists = Mage::helper('monkey')->getAdditionalList(Mage::app()->getStore()->getId());
             }
         }
