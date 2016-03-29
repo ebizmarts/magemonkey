@@ -203,8 +203,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 $store = $configscope;
             }
         }
-
-        return Mage::getStoreConfig("monkey/general/$value", $store);
+        $storeExists = Mage::getModel('core/store')->load($store);
+        if ($storeExists->getId()) {
+            $ret = Mage::getStoreConfig("monkey/general/$value", $store);
+        }
+        else {
+            $ret = Mage::getStoreConfig("monkey/general/$value");
+        }
+        return $ret;
     }
 
     /**
