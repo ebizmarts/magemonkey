@@ -205,7 +205,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $storeExists = Mage::getModel('core/store')->load($store);
         if ($storeExists->getId()) {
-            $ret = Mage::getStoreConfig("monkey/general/$value", $store);
+            $ret = Mage::getStoreConfig("monkey/general/$value", $storeExists->getId());
         }
         else {
             $ret = Mage::getStoreConfig("monkey/general/$value");
