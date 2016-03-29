@@ -54,6 +54,9 @@ class Ebizmarts_AbandonedCart_Helper_Data extends Mage_Core_Helper_Abstract
                 case 'by_percent':
                     $couponType = 2;
                     break;
+                default:
+                    $couponType = 0;
+                    break;
             }
         } else {
             $couponType = 0;
