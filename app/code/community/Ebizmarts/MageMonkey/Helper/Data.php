@@ -196,19 +196,20 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         $store = is_null($store) ? Mage::app()->getStore() : $store;
 
         $configscope = Mage::app()->getRequest()->getParam('store');
+        $ret = null;
         if ($configscope && ($configscope !== 'undefined') && !is_array($configscope)) {
             if (is_array($configscope) && isset($configscope['code'])) {
                 $store = $configscope['code'];
             } else {
                 $store = $configscope;
             }
+            $storeExists = Mage::getModel('core/store')->load($store);
+            if ($storeExists->getId()) {
+                $ret = Mage::getStoreConfig("monkey/general/$value", $storeExists->getId());
+            }
         }
-        $storeExists = Mage::getModel('core/store')->load($store);
-        if ($storeExists->getId()) {
-            $ret = Mage::getStoreConfig("monkey/general/$value", $storeExists->getId());
-        }
-        else {
-            $ret = Mage::getStoreConfig("monkey/general/$value");
+        if(!$ret){
+            $ret = Mage::getStoreConfig("monkey/general/$value", $store);
         }
         return $ret;
     }
