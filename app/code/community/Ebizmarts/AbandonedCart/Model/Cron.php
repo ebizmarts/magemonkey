@@ -392,11 +392,11 @@ class Ebizmarts_AbandonedCart_Model_Cron
      */
     protected function _createNewCoupon($store, $email)
     {
+        $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array('like' => 'Abandoned coupon ' . $email));
+            ->addFieldToFilter('name', array('like' => 'Abandoned coupon ' . $email))
+            ->addFieldToFilter('website_ids', array('eq' => $websiteid));
         if (!count($collection)) {
-
-            $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
 
             $fromDate = date("Y-m-d");
             $toDate = date('Y-m-d', strtotime($fromDate . " + $this->couponexpiredays day"));
