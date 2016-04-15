@@ -22,7 +22,7 @@
                                                                                           alt="<?php echo $this->escapeHtml($product->getName()); ?>"/></a>
             </td>
             <td valign="top" align="left" style="padding:3px 9px">
-                <p><?php echo $this->escapeHtml($product->getName()); ?></p><?php echo $this->escapeHtml($product->getShortDescription()); ?>
+                <p><?php echo $this->escapeHtml($product->getName()); ?></p><?php echo $product->getShortDescription(); ?>
             </td>
         </tr>
     <?php endforeach; ?>

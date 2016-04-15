@@ -116,7 +116,8 @@ $force = $this->getForce();
     <?php echo $this->getBlockHtml('formkey'); ?>
     <div class="monkey-multisubscribe">
         <ul class="monkey-general-list">
-            <li class="listdata"><?php echo $generalList['name']; ?>
+            <li class="listdata">
+                <label for="magemonkey-trigger"><?php echo $generalList['name']; ?></label>
                 <input<?php if ($auto): ?> checked="checked"<?php endif; ?> type="checkbox"
                                                                             onchange="addSubscribeToPost(this);"
                                                                             name="list[<?php echo $generalList['id'] ?>][subscribed]"
@@ -127,7 +128,7 @@ $force = $this->getForce();
                 <?php if (is_array($generalList['interest_groupings']) && $this->getCanModify() == 1): ?>
                     <div id="interest_groupings_<?php echo $generalList['id']; ?>" class="interest-groupings">
                         <?php foreach ($generalList['interest_groupings'] as $group): ?>
-                            <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                            <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS' && $this->hasGroupSelected($group)): ?>
                                 <div class="grouping">
                                     <?php if ($group['form_field'] != 'hidden'): ?>
                                         <strong><?php echo $group['name']; ?></strong><?php endif; ?>
@@ -160,7 +161,7 @@ $force = $this->getForce();
                     <?php if (is_array($igroups)): ?>
                         <div id="interest_groupings_<?php echo $list['id']; ?>" class="interest-groupings">
                             <?php foreach ($igroups as $group): ?>
-                                <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS'): ?>
+                                <?php if ($group['name'] != 'MAGE_CUSTOMER_GROUPS' && $this->hasGroupSelected($group)): ?>
                                     <div class="grouping">
                                         <?php if ($group['form_field'] != 'hidden'): ?>
                                             <strong><?php echo $group['name']; ?></strong><?php endif; ?>

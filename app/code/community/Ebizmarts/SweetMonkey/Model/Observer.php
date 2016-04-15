@@ -30,19 +30,6 @@ class Ebizmarts_SweetMonkey_Model_Observer
     }
 
     /**
-     * Sende merge vars after customer logs in
-     *
-     * @param Varien_Event_Observer $observer
-     * @return void
-     */
-    public function customerLogin($observer)
-    {
-        $customer = $observer->getEvent()->getCustomer();
-        Mage::helper('sweetmonkey')->pushVars($customer);
-        return $this;
-    }
-
-    /**
      * Sende merge vars after Rewards/Customer saves
      *
      * @param Varien_Event_Observer $observer

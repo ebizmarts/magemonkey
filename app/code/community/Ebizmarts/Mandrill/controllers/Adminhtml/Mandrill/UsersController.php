@@ -21,7 +21,7 @@ class Ebizmarts_Mandrill_Adminhtml_Mandrill_UsersController extends Mage_Adminht
         $this->_title($this->__('Mandrill'));
 
         $this->loadLayout();
-        $this->_setActiveMenu('newsletter/magemonkey');
+        $this->_setActiveMenu('system');
         return $this;
     }
 

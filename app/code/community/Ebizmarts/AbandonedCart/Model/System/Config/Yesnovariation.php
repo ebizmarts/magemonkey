@@ -13,16 +13,18 @@ class Ebizmarts_AbandonedCart_Model_System_Config_Yesnovariation
     {
         $code = Mage::getSingleton('adminhtml/config_data')->getStore();
         $storeId = Mage::getModel('core/store')->load($code)->getId();
-        if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SEND_COUPON, $storeId)) {
+        $hasCoupon = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::SEND_COUPON, $storeId);
+        if ($hasCoupon) {
             $active = -Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MAXTIMES, $storeId);
         } else {
             $active = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::MAXTIMES, $storeId);
         }
         $options = array(
             array('value' => 0, 'label' => Mage::helper('ebizmarts_abandonedcart')->__('No')),
-            array('value' => ($active + 1), 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Yes'))
+            array('value' => ($active +($hasCoupon?-1:1) ), 'label' => Mage::helper('ebizmarts_abandonedcart')->__('Yes'))
         );
         return $options;
     }
+
 
 }

@@ -13,6 +13,7 @@ class Ebizmarts_Autoresponder_BacktostockController extends Mage_Core_Controller
     public function subscribeAction()
     {
         $params = $this->getRequest()->getParams();
+        $storeId = Mage::app()->getStore()->getId();
         $redirect = '/';
 
         if (isset($params['subscriber_email']) && isset($params['product_id'])) {
@@ -48,7 +49,8 @@ class Ebizmarts_Autoresponder_BacktostockController extends Mage_Core_Controller
             $backStock = Mage::getModel('ebizmarts_autoresponder/backtostock');
             $backStock
                 ->setAlertId($alertId)
-                ->setEmail($email);
+                ->setEmail($email)
+                ->setStoreId($storeId);
             $backStock->save();
 
 

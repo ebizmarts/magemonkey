@@ -41,6 +41,44 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));
     }
 
+    public function upgradeForPatchAction(){
+
+        $prefix = Mage::getConfig()->getTablePrefix();
+        if($prefix){
+            $pre = $prefix[0];
+        }else{
+            $pre = '';
+        }
+        $resource = Mage::getSingleton('core/resource')
+            ->getConnection('core_write');
+
+        $table = $resource->getTableName($pre.'permission_block');
+        $exists = (bool)$resource->showTableStatus($table);
+        if($exists) {
+            $blocks = array(
+                array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_related_items', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_review_items', 'is_allowed' => 1),
+                array('block_name' => 'ebizmarts_autoresponder/email_wishlist_items', 'is_allowed' => 1),
+            );
+            $notUpdated = false;
+            foreach ($blocks as $item) {
+                $currentRow = Mage::getResourceModel('admin/block_collection')
+                    ->addFieldToFilter('block_name', array('eq' => $item['block_name']));
+                $row = $currentRow->getFirstItem();
+                if (!$row->getBlockId()) {
+                    $notUpdated = true;
+                    $row->setBlockName($item['block_name'])
+                        ->setIsAllowed($item['is_allowed'])
+                        ->save();
+                }
+            }
+            Mage::app()->getResponse()->setBody($notUpdated);
+        }
+        return 0;
+    }
+
     protected function _getStoreByCode($storeCode)
     {
         $stores = array_keys(Mage::app()->getStores());

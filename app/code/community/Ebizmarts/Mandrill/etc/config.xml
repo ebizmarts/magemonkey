@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_Mandrill>
-            <version>2.0.6</version>
+            <version>2.0.8</version>
         </Ebizmarts_Mandrill>
     </modules>
     <global>
@@ -17,6 +17,7 @@
             <core>
                 <rewrite>
                     <email_template>Ebizmarts_Mandrill_Model_Email_Template</email_template>
+                    <email_queue>Ebizmarts_Mandrill_Model_Email_Queue</email_queue>
                 </rewrite>
             </core>
         </models>
@@ -48,7 +49,7 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <mandrill before="Mage_Adminhtml">Ebizmarts_Mandrill_Adminhtml</mandrill>
+                        <mandrill after="Mage_Adminhtml">Ebizmarts_Mandrill_Adminhtml</mandrill>
                     </modules>
                 </args>
             </adminhtml>

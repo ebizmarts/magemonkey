@@ -215,6 +215,17 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         return $this->_info[$listId];
     }
 
+    public function hasGroupSelected($group){
+        $ret = false;
+        foreach($group['groups'] as $g){
+            if($this->_groupAllowed($g['name'])){
+                $ret = true;
+            }
+        }
+        return $ret;
+
+    }
+
     /**
      * Render interest grouping with its groups
      *
@@ -255,15 +266,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                     }
                 }
                 if (isset($groupings)) {
-                    // erisler 
-                    // 1. using array_merge cause numeric keys to reset starting from 0...which means we lose the group number.
-                    //      solution: use the union operator (+).
-                    // 2. $myGroups will always be array(0) since we didn't assing the array_merge return result.
-                    //      solution: assign the result to $myGroups so when the _generateHtml() call happen, the currently
-                    //              selected groups are selected in the GUI.
-                    // old: array_merge($this->_setGrouping($groupings,$fieldType,$myGroups), $myGroups);
-                    $myGroups = $this->_setGrouping($groupings,$fieldType,$myGroups) + $myGroups;
-                    
+                    $myGroups = $this->_setGrouping($groupings,$fieldType,$myGroups);
                 }
             }
         }
@@ -278,81 +281,19 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
             case 'dropdown':
                 $class = 'Varien_Data_Form_Element_Select';
                 break;
-            case 'hidden':
-                $class = 'Varien_Data_Form_Element_Hidden';
-                break;
+//            case 'hidden':
+//                $class = 'Varien_Data_Form_Element_Hidden';
+//                break;
             default:
                 $class = 'Varien_Data_Form_Element_Text';
                 break;
         }
-        $html = $this->_generateHtml($myGroups, $group, $checked, $list, $class, $fieldType);
-//        $object = new $class;
-//        $object->setForm($this->getForm());
-//
-//        //Check/select values
-//        if (isset($myGroups[$group['id']]) && !$checked == 0 || $checked == 1) {
-//            $object->setValue($myGroups[$group['id']]);
-//        } else {
-//            $object->setValue(array());
-//        }
-//
-//        if ($fieldType == 'checkboxes' || $fieldType == 'dropdown') {
-//
-//            $options = array();
-//
-//            if ($fieldType == 'dropdown') {
-//                $options[''] = '';
-//            }
-//
-//            foreach ($group['groups'] as $g) {
-//                if ($this->helper('monkey')->config('list') == $list['id']) {
-//                    if ($this->_groupAllowed($g['name'])) {
-//                        $options [$g['name']] = $g['name'];
-//                    }
-//                } else {
-//                    $options [$g['name']] = $g['name'];
-//                }
-//            }
-//
-//            if (method_exists('Varien_Data_Form_Element_Checkboxes', 'addElementValues')) {
-//                $object->addElementValues($options);
-//            } else {
-//                $object->setValues($options);
-//            }
-//
-//            $object->setName($this->_htmlGroupName($list, $group, ($fieldType == 'checkboxes' ? TRUE : FALSE)));
-//            $object->setHtmlId('interest-group');
-//
-//            $html = $object->getElementHtml();
-//
-//        } elseif ($fieldType == 'radio' || $fieldType == 'hidden') {
-//
-//            $options = array();
-//            foreach ($group['groups'] as $g) {
-//                if ($this->helper('monkey')->config('list') == $list['id']) {
-//                    if ($this->_groupAllowed($g['name'])) {
-//                        $options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
-//                    }
-//                } else {
-//                    $options [] = new Varien_Object(array('value' => $g['name'], 'label' => $g['name']));
-//                }
-//            }
-//
-//            $object->setName($this->_htmlGroupName($list, $group));
-//            $object->setHtmlId('interest-group');
-//
-//            if (method_exists('Varien_Data_Form_Element_Checkboxes', 'addElementValues')) {
-//                $object->addElementValues($options);
-//            } else {
-//                $object->setValues($options);
-//            }
-//
-//            $html = $object->getElementHtml();
-//        }
-//
-//        if ($fieldType != 'checkboxes') {
-//            $html = "<div class=\"groups-list\">{$html}</div>";
-//        }
+        $html = '';
+        if($fieldType!='hidden')
+        {
+            $html = $this->_generateHtml($myGroups, $group, $checked, $list, $class, $fieldType);
+        }
+
 
         return $html;
 
@@ -508,6 +449,11 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         if (isset($allowedGroups)) {
             foreach ($allowedGroups as $group) {
                 $group = explode('_', $group);
+                if(count($group) > 2){
+                    for ($i = 2; $i < count($group); $i++){
+                        $group[1] .= '_'.$group[$i];
+                    }
+                }
                 if (isset($group[1]) && $group[1] == $groupName) {
                     $ret = true;
                 }

@@ -1,0 +1,39 @@
+<script type="text/javascript">
+    //<![CDATA[
+    function upgradeForPatch() {
+        new Ajax.Request('<?php echo $this->getAjaxUpgrade() ?>', {
+            method: 'get',
+            onSuccess: function (transport) {
+
+                if (transport.responseText == 1) {
+                    alert('Your MageMonkey was successfully upgraded.');
+                }
+                else {
+                    alert('Your MageMonkey is already updated to work with patch SUPEE-6788.');
+                }
+            }
+        });
+    }
+    //]]>
+</script>
+
+<?php
+
+if($this->tableExists()) {
+    $blocks = array(
+        array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1),
+        array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1),
+        array('block_name' => 'ebizmarts_autoresponder/email_related_items', 'is_allowed' => 1),
+        array('block_name' => 'ebizmarts_autoresponder/email_review_items', 'is_allowed' => 1),
+        array('block_name' => 'ebizmarts_autoresponder/email_wishlist_items', 'is_allowed' => 1),
+    );
+    foreach($blocks as $item){
+        $rowExists = Mage::getResourceModel('admin/block_collection')
+            ->addFieldToFilter('block_name', array('eq' => $item['block_name']));
+        $row = $rowExists->getFirstItem();
+        if(!$row->getBlockId()){
+            echo $this->getButtonHtml();
+            return;
+        }
+    }
+}?>

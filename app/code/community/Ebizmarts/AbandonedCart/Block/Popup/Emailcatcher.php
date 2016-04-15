@@ -33,15 +33,22 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
         return Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_SUBSCRIPTION, $storeId);
     }
 
-    protected function _createCoupon($email)
+    protected function _createCoupon($cookie)
     {
         $storeId = Mage::app()->getStore()->getId();
-        if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId)) {
-            $collection = Mage::getModel('ebizmarts_abandonedcart/popup')->getCollection()
-                ->addFieldToFilter('email', array('eq' => $email));
-            if (!count($collection)) {
-                $addEmail = Mage::getModel('ebizmarts_abandonedcart/popup');
-                $addEmail->setEmail($email)->save();
+        if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId)) {
+            $cookieValues = explode('/', $cookie);
+            $email = $cookieValues[0];
+            $email = str_replace(' ', '+', $email);
+            if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId)) {
+                $collection = Mage::getModel('ebizmarts_abandonedcart/popup')->getCollection()
+                    ->addFieldToFilter('email', array('eq' => $email));
+                if (!count($collection)) {
+                    $addEmail = Mage::getModel('ebizmarts_abandonedcart/popup');
+                    $addEmail->setEmail($email)
+                        ->setStoreId(Mage::app()->getStore()->getId())
+                        ->save();
+                }
             }
         }
     }
@@ -71,7 +78,8 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
                 if($lName){
                     $subscriber->setSubscriberLastname($lName);
                 }
-                $subscriber->subscribe($email);
+                $subscriber->setStoreId($storeId)
+                    ->subscribe($email);
                 return 'location.reload';
             }
         }

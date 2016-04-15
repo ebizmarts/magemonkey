@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_SweetMonkey>
-            <version>1.1.10</version>
+            <version>1.1.11.1</version>
         </Ebizmarts_SweetMonkey>
     </modules>
     <global>
@@ -22,22 +22,7 @@
             </sweetmonkey>
         </helpers>
         <events>
-            <rewards_points_indexer_update>
-                <observers>
-                    <sweetmonkey_send_vars>
-                        <class>sweetmonkey/observer</class>
-                        <method>pointsEvent</method>
-                    </sweetmonkey_send_vars>
-                </observers>
-            </rewards_points_indexer_update>
-            <model_save_after>
-                <observers>
-                    <sweetmonkey_send_vars>
-                        <class>sweetmonkey/observer</class>
-                        <method>customerRewardSave</method>
-                    </sweetmonkey_send_vars>
-                </observers>
-            </model_save_after>
+
             <magemonkey_mergevars_after>
                 <observers>
                     <sweetmonkey_merge_vars>
@@ -50,16 +35,6 @@
 
     </global>
     <frontend>
-        <events>
-            <customer_login>
-                <observers>
-                    <sweetmonkey_send_vars>
-                        <class>sweetmonkey/observer</class>
-                        <method>customerLogin</method>
-                    </sweetmonkey_send_vars>
-                </observers>
-            </customer_login>
-        </events>
         <translate>
             <modules>
                 <Ebizmarts_SweetMonkey>
@@ -75,7 +50,7 @@
             <adminhtml>
                 <args>
                     <modules>
-                        <sweetmonkey before="Mage_Adminhtml">Ebizmarts_SweetMonkey_Adminhtml</sweetmonkey>
+                        <sweetmonkey after="Mage_Adminhtml">Ebizmarts_SweetMonkey_Adminhtml</sweetmonkey>
                     </modules>
                 </args>
             </adminhtml>
@@ -118,16 +93,4 @@
             </general>
         </sweetmonkey>
     </default>
-    <crontab>
-        <jobs>
-            <sweetmonkey_send_vars>
-                <schedule>
-                    <cron_expr>0 1 * * *</cron_expr>
-                </schedule>
-                <run>
-                    <model>sweetmonkey/cron::pushMergeVarsForCustomers</model>
-                </run>
-            </sweetmonkey_send_vars>
-        </jobs>
-    </crontab>
 </config>
