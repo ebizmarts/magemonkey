@@ -698,11 +698,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
             if (!$customerCreateAccountSubscription && $currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
-                $subscribeGroups = array(0 => array());
+                // erisler - appears this logic will not allow customer to edit multiple groups. 
+                // Adjusted to allow multiple groups. 
+                // Also addressed warning when using dropdown type as group.
+                $subscribeGroups = array();
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
-                        $subscribeGroups[0]['id'] = $toGroups;
-                        $subscribeGroups[0]['groups'] = implode(', ', array_unique($post['list'][$currentList][$subscribeGroups[0]['id']]));
+                        $groupData = array();
+                        $groupData['id'] = $toGroups;
+                        $groups = $post['list'][$currentList][$toGroups];
+                        if (is_array($groups)) {
+                            $groups = implode(', ', array_unique($groups));
+                        }
+                        $groupData['groups'] = $groups;
+                        $subscribeGroups[] = $groupData;
+//                        $subscribeGroups[0]['id'] = $toGroups;
+//                        $subscribeGroups[0]['groups'] = implode(', ', array_unique($post['list'][$currentList][$subscribeGroups[0]['id']]));
                     }
                 }
                 $groups = NULL;
