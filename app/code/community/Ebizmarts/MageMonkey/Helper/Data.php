@@ -748,6 +748,20 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     }
 
                 }
+                
+                // erisler - logic update: if you update a subscriber from the Mailchimp web, MC will post 
+                // a webhook "profile" type back to Magento. The webhook code for profile runs a customer save
+                // after setting first/last name. The save triggers MageMonkey to update the cusotmer profile in mailchimp
+                // again. Because the loop above reads all highlighted interest groups form the Magento sytem config
+                // and sets them in the $subscribeGroups array, the effect is that the changes form Mailchimp webhook
+                // will be overwritten if you have interest groups highlighted in Magento system config.
+                // The $post data will contain the webhook selected groupings. We should simply use those and
+                // ignore the Magento ones form above.
+                if (is_array($post) && isset($post['data']) && isset($post['data']['list_id']) && $post['data']['list_id']===$currentList) {
+                    if (isset($post['data']['merges']['GROUPINGS'])) {
+                        $subscribeGroups = $post['data']['merges']['GROUPINGS'];
+                    }
+                }
 
                 $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
                 $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());

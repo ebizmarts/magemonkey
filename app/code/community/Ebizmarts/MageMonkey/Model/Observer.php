@@ -288,7 +288,6 @@ class Ebizmarts_MageMonkey_Model_Observer
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
-
         $request = Mage::app()->getRequest();
         $isAdmin = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $customer = $observer->getEvent()->getCustomer();
@@ -311,7 +310,6 @@ class Ebizmarts_MageMonkey_Model_Observer
                     //$api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
                 }
             } else {
-
                 Mage::getSingleton('core/session')->setIsUpdateCustomer(TRUE);
                 //subscribe to MailChimp newsletter
                 $api = Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()));
