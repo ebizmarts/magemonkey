@@ -211,7 +211,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
                 //if hour is set for first run calculates hours since cart was created else calculates days
                 $today = idate('U', strtotime(now()));
-                $updatedAt = idate('U', strtotime($quote2->getUpdatedAt()));
+                $updatedAt = idate('U', strtotime($quote->getUpdatedAt()));
                 $updatedAtDiff = ($today - $updatedAt) / 60 / 60 / 24;
                 if ($this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run == 0) {
                     $updatedAtDiff = ($today - $updatedAt) / 60 / 60;
