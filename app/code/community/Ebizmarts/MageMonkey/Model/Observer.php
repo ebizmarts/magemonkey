@@ -170,6 +170,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
         }
 
+        $additionalLists = null;
         if (isset($post['groups']['general']['fields']['additional_lists']['value'])) {
             $additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
         } else {

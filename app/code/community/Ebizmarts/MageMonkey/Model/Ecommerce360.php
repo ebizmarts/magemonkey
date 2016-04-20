@@ -111,8 +111,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                     ->setEmail($customerEmail)
                     ->save();
             }
-            if ((($this->_getCampaignCookie() &&
-                        $this->_getEmailCookie()) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 3) &&
+            if ((Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 1) &&
                 $this->isActive()
             ) {
                 $this->logSale($order);
