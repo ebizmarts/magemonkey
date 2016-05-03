@@ -687,6 +687,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     }
     protected function _checkGrouping($post,$currentList, $object)
     {
+        $storeId = Mage::app()->getStore()->getId() ? Mage::app()->getStore()->getId() : $object->getStoreId();
         $mergeVars = array();
         $request = Mage::app()->getRequest();
         $adminSubscription = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
@@ -696,7 +697,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         if ($post && !$adminSubscription || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
             $defaultList = Mage::helper('monkey')->config('list');
             //if can change customer set the groups set by customer else set the groups on MailChimp config
-            $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $object->getStoreId());
+            $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $storeId);
             if (!$customerCreateAccountSubscription && $currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
                 $subscribeGroups = array(0 => array());
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
@@ -707,7 +708,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 }
                 $groups = NULL;
             } elseif ($currentList == $defaultList) {
-                $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $object->getStoreId());
+                $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $storeId);
                 $groups = explode(",", $groups);
                 if (isset($groups[0]) && $groups[0]) {
                     $subscribeGroups = array();
@@ -738,8 +739,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                 }
 
-                $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $object->getStoreId());
-                $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
+                $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $storeId);
+                $map = Mage::getStoreConfig('monkey/general/markfield', $storeId);
                 if (isset($post['magemonkey_subscribe']) && $map != "") {
                     $listsChecked = explode(',', $post['magemonkey_subscribe']);
                     $hasClicked = in_array($currentList, $listsChecked);
@@ -759,7 +760,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     $mergeVars[$map] = "No";
                 }
             } else {
-                $map = Mage::getStoreConfig('monkey/general/markfield', $object->getStoreId());
+                $map = Mage::getStoreConfig('monkey/general/markfield', $storeId);
                 $mergeVars[$map] = "Yes";
             }
             if (isset($subscribeGroups[0]['id']) && $subscribeGroups[0]['id'] != -1) {
@@ -1131,10 +1132,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                     $customer->setMcListId($listId);
                     $customer->setListGroups($groupings);
-                    $mergeVars = Mage::helper('monkey')->getMergeVars($customer);
+                    $mergeVars = Mage::helper('monkey')->mergeVars($customer, FALSE, $listId);
 
                     //Handle groups update
-                    $api->listUpdateMember($listId, $email, $mergeVars);
+                    $api->listUpdateMember($listId, $email, $mergeVars, 'html' ,false);
                     Mage::getSingleton('core/session')
                         ->addSuccess($this->__('Your profile has been updated!'));
 
