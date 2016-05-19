@@ -876,15 +876,17 @@ class Ebizmarts_Autoresponder_Model_Cron
 
     protected function _createNewCoupon($store, $email, $string)
     {
+        $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array('like' => $string . $email));
+            ->addFieldToFilter('name', array('like' => $string . $email))
+            ->addFieldToFilter('website_ids', array('eq' => $websiteid));
+
         if (!count($collection)) {
             $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
             $couponexpiredays = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_EXPIRE, $store);
             $coupontype = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT_TYPE, $store);
             $couponlength = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_LENGTH, $store);
             $couponlabel = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_LABEL, $store);
-            $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
 
             $fromDate = date("Y-m-d");
             $toDate = date('Y-m-d', strtotime($fromDate . " + $couponexpiredays day"));
