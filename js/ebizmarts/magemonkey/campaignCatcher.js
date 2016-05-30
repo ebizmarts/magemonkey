@@ -1,7 +1,7 @@
 
     function getCampaign() {
         var params = location.search.substr(1).split('&');
-        var cookies = [];
+        var cookies = new Array();
         for (var i = 0; i < params.length; i++) {
             var cookie = params[i].split('=');
             var key = cookie[0];

@@ -370,7 +370,7 @@ class Ebizmarts_MageMonkey_Model_Observer
             $force = Mage::app()->getRequest()->getPost('magemonkey_force');
 
             Mage::getSingleton('core/session')->setMonkeyPost(serialize(Mage::app()->getRequest()->getPost()));
-            if (!is_null($subscribe) || !is_null($force)) {
+            if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE) >= 3) {
                 Mage::getSingleton('core/session')->setMonkeyCheckout(true);
             }
         }
