@@ -28,12 +28,15 @@ if($this->tableExists()) {
         array('block_name' => 'ebizmarts_autoresponder/email_wishlist_items', 'is_allowed' => 1),
     );
     foreach($blocks as $item){
-        $rowExists = Mage::getResourceModel('admin/block_collection')
-            ->addFieldToFilter('block_name', array('eq' => $item['block_name']));
-        $row = $rowExists->getFirstItem();
-        if(!$row->getBlockId()){
-            echo $this->getButtonHtml();
-            return;
+        $rowExists = Mage::getResourceModel('admin/block_collection');
+        if(is_object($rowExists)) {
+            $rowExists->addFieldToFilter('block_name', array('eq' => $item['block_name']));
+
+            $row = $rowExists->getFirstItem();
+            if (!$row->getBlockId()) {
+                echo $this->getButtonHtml();
+                return;
+            }
         }
     }
 }?>
