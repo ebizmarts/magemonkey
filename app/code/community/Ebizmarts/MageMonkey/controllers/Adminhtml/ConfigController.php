@@ -13,7 +13,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
     {
         $params = $this->getRequest()->getParams();
         $listId = $params['list'];
-        if (isset($params['store'])) {
+        if (isset($params['store']) && $params['store']) {
             $store = $params['store'];
             $store = $this->_getStoreByCode($store);
             $storeId = $store->getId();
