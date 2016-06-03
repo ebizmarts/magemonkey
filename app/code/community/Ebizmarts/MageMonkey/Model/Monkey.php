@@ -215,6 +215,9 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
         if ($subscriber->getId()) {
             try {
+                if(Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $subscriber->getStoreId())){
+                    $subscriber->setImportMode(true);
+                }
 
                 switch ($data['data']['action']) {
                     case 'delete' :
@@ -222,11 +225,11 @@ class Ebizmarts_MageMonkey_Model_Monkey
                         if (Mage::getStoreConfig("monkey/general/webhook_delete") == 1) {
                             $subscriber->delete();
                         } else {
-                            $subscriber->setImportMode(TRUE)->unsubscribe();
+                            $subscriber->unsubscribe();
                         }
                         break;
                     case 'unsub':
-                        $subscriber->setImportMode(TRUE)->unsubscribe();
+                        $subscriber->unsubscribe();
                         break;
                 }
             } catch (Exception $e) {
