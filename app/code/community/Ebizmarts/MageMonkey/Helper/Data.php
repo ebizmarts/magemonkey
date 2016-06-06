@@ -965,7 +965,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $alreadySubscribed = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
         if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && (!$alreadySubscribed || !$alreadySubscribed->getId())) {
-            $subscriber->subscribe($email);
+            $subscriber->setStoreId($storeId)->subscribe($email);
         } else {
             $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
                 ->addFieldToFilter('lists', $listId)
