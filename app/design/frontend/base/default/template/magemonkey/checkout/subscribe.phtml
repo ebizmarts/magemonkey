@@ -11,8 +11,9 @@ $force = $this->getForce();
 
         //save old clicked lists and then removes element
         var subscribeValue = '';
+        var checkedLists = '';
         if ($('magemonkey-subscribe')) {
-            var checkedLists = $('magemonkey-subscribe').getValue();
+            checkedLists = $('magemonkey-subscribe').getValue();
             subscribeValue = checkedLists + ',';
             $('magemonkey-subscribe').remove();
         }
@@ -68,7 +69,7 @@ $force = $this->getForce();
 
         }
 
-    }
+    };
     addGroupToPost = function (element) {
 
         if (element.checked) {
@@ -90,7 +91,7 @@ $force = $this->getForce();
                 $("subscribe" + element.readAttribute('id')).remove();
             }
         }
-    }
+    };
     addElementToPost = function (element) {
         var formInputId = element.readAttribute('id') + '-serialize';
         if ($(formInputId)) {
@@ -106,7 +107,7 @@ $force = $this->getForce();
 
         Element.insert(Form.findFirstElement(payment.form), inp);
 
-    }
+    };
 </script>
 <div class="buttons-set"<?php if ($check === 3): ?> style="display:none;"<?php endif; ?>>
     <!-- General Subscription -->
