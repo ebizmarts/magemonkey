@@ -111,7 +111,7 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates
 
             foreach ($node->xpath('items/item') as $item) {
 
-                if(!isset($item->date_end) || (time() - strtotime($item->date_end)) < 0) {
+                if(isset($item->date_end) && (time() - strtotime($item->date_end)) > 0) {
                     $feedData[] = array(
                         'severity' => (string)$item->severity,
                         'date_added' => (string)$item->created_at,
