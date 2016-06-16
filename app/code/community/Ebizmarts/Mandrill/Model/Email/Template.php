@@ -82,6 +82,20 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 
         $email['from_name'] = $this->getSenderName();
         $email['from_email'] = $this->getSenderEmail();
+        $mandrillSenders = $mail->senders->domains();
+        $senderExists = false;
+        foreach ($mandrillSenders as $sender)
+        {
+            $emailAddress = $sender['domain'];
+            if($email['from_email'] == $sender['domain'])
+            {
+                $senderExists = true;
+            }
+        }
+        if(!$senderExists)
+        {
+            $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email');
+        }
         $headers = $mail->getHeaders();
         $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
         $email['headers'] = $headers;

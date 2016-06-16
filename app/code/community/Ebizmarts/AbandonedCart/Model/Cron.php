@@ -148,7 +148,18 @@ class Ebizmarts_AbandonedCart_Model_Cron
         } else {
             $this->sendcoupondays = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_DAYS, $storeId);
         }
-
+        $ganalytics='';
+        if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_ACTIVE, $storeId)) {
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_SOURCE, $storeId)!='') {
+                $ganalytics .= '&utm_source='.Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_SOURCE, $storeId);
+            }
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_MEDIUM, $storeId)!='') {
+                $ganalytics .= '&utm_medium='.Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_MEDIUM, $storeId);
+            }
+            if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_CAMPAIGN, $storeId)!='') {
+                $ganalytics .= '&utm_campaign='.Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_CAMPAIGN, $storeId);
+            }
+        }
         // for each cart of the current run
         foreach ($collection as $quote) {
             $this->_proccessCollection($quote, $storeId);
@@ -179,11 +190,11 @@ class Ebizmarts_AbandonedCart_Model_Cron
             //srand((double)microtime()*1000000);
             $token = md5(rand(0, 9999999));
             if ($abTesting) {
-                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token . '&' . $suffix;
+                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token . '&' . $suffix;
             } else {
                 $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token;
             }
-
+            $url .= $ganalytics;
             $data = array('AbandonedURL' => $url, 'AbandonedDate' => $quote->getUpdatedAt());
 
             // send email
@@ -200,7 +211,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
 
                 //if hour is set for first run calculates hours since cart was created else calculates days
                 $today = idate('U', strtotime(now()));
-                $updatedAt = idate('U', strtotime($quote2->getUpdatedAt()));
+                $updatedAt = idate('U', strtotime($quote->getUpdatedAt()));
                 $updatedAtDiff = ($today - $updatedAt) / 60 / 60 / 24;
                 if ($this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run == 0) {
                     $updatedAtDiff = ($today - $updatedAt) / 60 / 60;
@@ -263,8 +274,15 @@ class Ebizmarts_AbandonedCart_Model_Cron
             }
         }
         if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId)) {
-            $counterCollection = Mage::getModel('ebizmarts_abandonedcart/abtesting')->getCollection()
-                ->addFieldToFilter('store_id', array('eq' => $storeId));
+            $counterCollection = Mage::getModel('ebizmarts_abandonedcart/abtesting')->getCollection();
+            $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
+            $normalFilter = array('eq' => $storeId);
+            if($storeId == $defaultStore->getId()){
+                $newFilter = array('eq' => '0');
+                $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
+            }else{
+                $collection->addFieldToFilter('store_id', $normalFilter);
+            }
             $counter = $counterCollection->getFirstItem();
             $counter->setCurrentStatus($counter->getCurrentStatus() + 1)
                 ->save();
@@ -374,11 +392,11 @@ class Ebizmarts_AbandonedCart_Model_Cron
      */
     protected function _createNewCoupon($store, $email)
     {
+        $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array('like' => 'Abandoned coupon ' . $email));
+            ->addFieldToFilter('name', array('like' => 'Abandoned coupon ' . $email))
+            ->addFieldToFilter('website_ids', array('eq' => $websiteid));
         if (!count($collection)) {
-
-            $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
 
             $fromDate = date("Y-m-d");
             $toDate = date('Y-m-d', strtotime($fromDate . " + $this->couponexpiredays day"));

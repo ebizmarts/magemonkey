@@ -44,6 +44,7 @@ $_quote = $this->getQuote();
                         $bundled_items = array();
                         $label = '';
                         $qty = '';
+                        $aux_options = array();
                         foreach ($selectionCollection as $option) {
                             foreach ($options['bundle_options'] as $bundle) {
                                 if ($bundle['value'][0]['title'] == $option->getName()) {

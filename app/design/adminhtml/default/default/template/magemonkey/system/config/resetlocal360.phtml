@@ -16,7 +16,7 @@
     }
     function reloadGroups(evt) {
         var $list = $('monkey_general_list').getValue();
-        var $url = "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/config/getGroups'); ?>" + "list/" + $list;
+        var $url = "<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/config/getGroups'); ?>" + "list/" + $list + '/store/' + "<?php echo Mage::app()->getRequest()->getParam('store'); ?>";
         new Ajax.Request($url, {
             method: 'get',
             onSuccess: function (transport) {

@@ -13,7 +13,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
     {
         $params = $this->getRequest()->getParams();
         $listId = $params['list'];
-        if (isset($params['store'])) {
+        if (isset($params['store']) && $params['store']) {
             $store = $params['store'];
             $store = $this->_getStoreByCode($store);
             $storeId = $store->getId();
@@ -22,7 +22,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         }
         $originalGroups = Mage::getStoreConfig('monkey/general/cutomergroup', $storeId);
         $originalGroups = explode(",", $originalGroups);
-        $groups = Mage::getSingleton('monkey/api')->listInterestGroupings($listId);
+        $groups = Mage::getModel('monkey/api', array('store' => $storeId))->listInterestGroupings($listId);
         $rc = array();
         if (is_array($groups)) {
             foreach ($groups as $group) {
@@ -81,9 +81,8 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
 
     protected function _getStoreByCode($storeCode)
     {
-        $stores = array_keys(Mage::app()->getStores());
-        foreach ($stores as $id) {
-            $store = Mage::app()->getStore($id);
+        $stores = Mage::app()->getStores();
+        foreach ($stores as $store) {
             if ($store->getCode() == $storeCode) {
                 return $store;
             }
@@ -94,6 +93,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
     protected function _isAllowed() {
         switch ($this->getRequest()->getActionName()) {
             case 'getGroups':
+            case 'upgradeForPatch':
                 $acl = 'system/config/monkey';
                 break;
         }

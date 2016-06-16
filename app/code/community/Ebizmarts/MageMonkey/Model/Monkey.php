@@ -27,8 +27,11 @@ class Ebizmarts_MageMonkey_Model_Monkey
     public function processWebhookData(array $data)
     {
         $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
-        $store = Mage::helper('monkey')->getStoreByList($listId);
-
+//        $store = Mage::helper('monkey')->getStoreByList($listId);
+        $subscriber = Mage::getModel('newsletter/subscriber')
+            ->loadByEmail($data['data']['email']);
+        $storeId = $subscriber->getStoreId();
+        $store = Mage::getModel('core/store')->load($storeId);
         if (!is_null($store)) {
             $curstore = Mage::app()->getStore();
             Mage::app()->setCurrentStore($store);
@@ -215,6 +218,9 @@ class Ebizmarts_MageMonkey_Model_Monkey
 
         if ($subscriber->getId()) {
             try {
+                if(!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $subscriber->getStoreId())){
+                    $subscriber->setImportMode(true);
+                }
 
                 switch ($data['data']['action']) {
                     case 'delete' :
@@ -222,11 +228,11 @@ class Ebizmarts_MageMonkey_Model_Monkey
                         if (Mage::getStoreConfig("monkey/general/webhook_delete") == 1) {
                             $subscriber->delete();
                         } else {
-                            $subscriber->setImportMode(TRUE)->unsubscribe();
+                            $subscriber->unsubscribe();
                         }
                         break;
                     case 'unsub':
-                        $subscriber->setImportMode(TRUE)->unsubscribe();
+                        $subscriber->unsubscribe();
                         break;
                 }
             } catch (Exception $e) {

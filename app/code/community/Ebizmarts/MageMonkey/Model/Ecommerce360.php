@@ -93,23 +93,29 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     {
         $storeId = Mage::app()->getStore()->getId();
         $order = $observer->getEvent()->getOrder();
-        $customerEmail = $order->getCustomerEmail();
-        $collection = Mage::getModel('monkey/lastorder')->getCollection()
-            ->addFieldToFilter('email', array('eq' => $customerEmail));
-        if(count($collection) > 0){
-            //When saving the new date is automatically placed.
-            $item = $collection->getFirstItem();
-            $item->save();
-        }else{
-            Mage::getModel('monkey/lastorder')
-                ->setEmail($customerEmail)
-                ->save();
-        }
-        if ((($this->_getCampaignCookie() &&
-                    $this->_getEmailCookie()) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 3) &&
-            $this->isActive()
-        ) {
-            $this->logSale($order);
+        if (is_object($order) && $order->getId()) {
+            //Set Campaign Id if exist
+            $campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');
+            if ($campaign_id && $order->getEbizmartsMagemonkeyCampaignId() == null) {
+                $order->setEbizmartsMagemonkeyCampaignId($campaign_id)->save();
+            }
+            $customerEmail = $order->getCustomerEmail();
+            $collection = Mage::getModel('monkey/lastorder')->getCollection()
+                ->addFieldToFilter('email', array('eq' => $customerEmail));
+            if (count($collection) > 0) {
+                //When saving the new date is automatically placed.
+                $item = $collection->getFirstItem();
+                $item->save();
+            } else {
+                Mage::getModel('monkey/lastorder')
+                    ->setEmail($customerEmail)
+                    ->save();
+            }
+            if ((Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 2 || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ACTIVE, $storeId) == 1) &&
+                $this->isActive()
+            ) {
+                $this->logSale($order);
+            }
         }
         return $observer;
     }
@@ -154,9 +160,13 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 
         $this->setItemstoSend($this->_order->getStoreId());
         $rs = false;
+        $email = null;
+        $campaignId = null;
         if ($emailCookie && $campaignCookie) {
             $this->_info ['email_id'] = $emailCookie;
             $this->_info ['campaign_id'] = $campaignCookie;
+            $email = $emailCookie;
+            $campaignId = $campaignCookie;
             if (Mage::getStoreConfig('monkey/general/checkout_async')) {
                 $collection = Mage::getModel('monkey/asyncorders')->getCollection();
                 $alreadyOnDb = false;
@@ -182,7 +192,8 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $rs = $api->campaignEcommOrderAdd($this->_info);
             }
         } else {
-            $this->_info ['email'] = $this->_order->getCustomerEmail();
+            $email = $this->_order->getCustomerEmail();
+            $this->_info ['email'] = $email;
             if (Mage::getStoreConfig('monkey/general/checkout_async')) {
                 $collection = Mage::getModel('monkey/asyncorders')->getCollection();
                 $alreadyOnDb = false;
@@ -209,7 +220,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         }
 
         if ($rs === TRUE) {
-            $this->_logCall();
+            $this->_logCall($email, $campaignId);
             return true;
         } else {
             return $rs;
@@ -273,7 +284,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 //                }
             }
             $mcitem['category_name'] = (count($names)) ? implode(" - ", $names) : 'None';
-            if(!$mcitem['category_id']) {
+            if(!isset($mcitem['category_id'])) {
                 $mcitem['category_id'] = 0;
             }
             $mcitem['qty'] = $item->getQtyOrdered();
@@ -310,13 +321,13 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
      *
      * @return Ebizmarts_MageMonkey_Model_Ecommerce
      */
-    protected function _logCall()
+    protected function _logCall($email, $campaignCookie = null)
     {
         return Mage::getModel('monkey/ecommerce')
             ->setOrderIncrementId($this->_order->getIncrementId())
             ->setOrderId($this->_order->getId())
-            ->setMcCampaignId($this->_getCampaignCookie())
-            ->setMcEmailId($this->_getEmailCookie())
+            ->setMcCampaignId($campaignCookie)
+            ->setMcEmailId($email)
             ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
             ->setStoreId($this->_order->getStoreId())
             ->save();

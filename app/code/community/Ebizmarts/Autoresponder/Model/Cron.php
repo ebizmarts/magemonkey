@@ -135,8 +135,16 @@ class Ebizmarts_Autoresponder_Model_Cron
         $moreselect = "MONTH(at_dob.value) = $month AND DAY(at_dob.value) = $day";
 
 
-        $collection->addAttributeToFilter('dob', array('neq' => 'null'))
-            ->addFieldToFilter('store_id', array('eq' => $storeId));
+        $collection->addAttributeToFilter('dob', array('neq' => 'null'));
+        $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
+        $normalFilter = array('eq' => $storeId);
+        if($storeId == $defaultStore->getId()){
+            $newFilter = array('eq' => '0');
+            $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
+        }else{
+            $collection->addFieldToFilter('store_id', $normalFilter);
+        }
+
         if (count($customerGroups)) {
             $collection->addFieldToFilter('group_id', array('in' => $customerGroups));
         }
@@ -203,7 +211,14 @@ class Ebizmarts_Autoresponder_Model_Cron
         if (count($customerGroups)) {
             $collection->addFieldToFilter('group_id', array('in' => $customerGroups));
         }
-        $collection->addFieldToFilter('store_id', array('eq' => $storeId));
+        $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
+        $normalFilter = array('eq' => $storeId);
+        if($storeId == $defaultStore->getId()){
+            $newFilter = array('eq' => '0');
+            $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
+        }else{
+            $collection->addFieldToFilter('store_id', $normalFilter);
+        }
 
         foreach ($collection as $customer) {
             $customerId = $customer->getEntityId();
@@ -439,9 +454,9 @@ class Ebizmarts_Autoresponder_Model_Cron
             ->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
             ->setOrder('main_table.wishlist_id');
         $wishlist_ant = -1;
-        $wishlistId = $collection->getFirstItem()->getWishlistId();
         $products = array();
         foreach ($collection as $item) {
+            $wishlistId = $item->getWishlistId();
             if ($wishlistId != $wishlist_ant) {
                 if ($wishlist_ant != -1 && count($products) > 0) {
                     $translate = Mage::getSingleton('core/translate');
@@ -474,7 +489,6 @@ class Ebizmarts_Autoresponder_Model_Cron
 
                 }
                 $wishlist_ant = $wishlistId;
-                $wishlistId = $item->getWishlistId();
                 $wishlist = Mage::getModel('wishlist/wishlist')->load($wishlistId);
                 $customer = Mage::getModel('customer/customer')->load($wishlist->getCustomerId());
                 $products = array();
@@ -862,15 +876,17 @@ class Ebizmarts_Autoresponder_Model_Cron
 
     protected function _createNewCoupon($store, $email, $string)
     {
+        $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
         $collection = Mage::getModel('salesrule/rule')->getCollection()
-            ->addFieldToFilter('name', array('like' => $string . $email));
+            ->addFieldToFilter('name', array('like' => $string . $email))
+            ->addFieldToFilter('website_ids', array('eq' => $websiteid));
+
         if (!count($collection)) {
             $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
             $couponexpiredays = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_EXPIRE, $store);
             $coupontype = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT_TYPE, $store);
             $couponlength = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_LENGTH, $store);
             $couponlabel = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_COUPON_LABEL, $store);
-            $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
 
             $fromDate = date("Y-m-d");
             $toDate = date('Y-m-d', strtotime($fromDate . " + $couponexpiredays day"));

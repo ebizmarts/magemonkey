@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -143,14 +143,14 @@
                     </monkey_subscribe_checkout>
                 </observers>
             </controller_action_predispatch_onestepcheckout_index_index>
-            <controller_action_postdispatch_checkout_onepage_saveOrder>
+            <sales_order_place_before>
                 <observers>
                     <monkey_subscribe_checkout>
                         <class>monkey/observer</class>
                         <method>registerCheckoutSubscribe</method>
                     </monkey_subscribe_checkout>
                 </observers>
-            </controller_action_postdispatch_checkout_onepage_saveOrder>
+            </sales_order_place_before>
             <checkout_onepage_controller_success_action>
                 <observers>
                     <monkey_subscribe_checkoutsuccess>

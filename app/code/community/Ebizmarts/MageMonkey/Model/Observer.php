@@ -170,10 +170,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 
         }
 
+        $additionalLists = null;
         if (isset($post['groups']['general']['fields']['additional_lists']['value'])) {
             $additionalLists = $post['groups']['general']['fields']['additional_lists']['value'];
         } else {
-            if ((string)$post['groups']['general']['fields']['additional_lists']['inherit'] == 1) {
+            if (isset($post['groups']['general']['fields']['additional_lists']['inherit']) && (string)$post['groups']['general']['fields']['additional_lists']['inherit'] == 1) {
                 $additionalLists = Mage::helper('monkey')->getAdditionalList(Mage::app()->getStore()->getId());
             }
         }
@@ -292,7 +293,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         $request = Mage::app()->getRequest();
         $isAdmin = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $customer = $observer->getEvent()->getCustomer();
-        $isCheckout = $request->getModuleName() == 'checkout' || Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout();
+        $isCheckout = $request->getModuleName() == 'checkout' || $request->getModuleName() == 'sgps' || Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout();
 //        $isConfirmNeed = FALSE;
 //        if (!Mage::helper('monkey')->isAdmin() &&
 //            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $customer->getStoreId()) == 1)
@@ -369,13 +370,12 @@ class Ebizmarts_MageMonkey_Model_Observer
             $force = Mage::app()->getRequest()->getPost('magemonkey_force');
 
             Mage::getSingleton('core/session')->setMonkeyPost(serialize(Mage::app()->getRequest()->getPost()));
-            if (!is_null($subscribe) || !is_null($force)) {
+            if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE) >= 3) {
                 Mage::getSingleton('core/session')->setMonkeyCheckout(true);
             }
         }
         if ($oneStep) {
             Mage::getSingleton('core/session')->setIsOneStepCheckout(true);
-            Mage::getSingleton('core/session')->setMonkeyCheckout(true);
         }
         return $observer;
     }
@@ -428,7 +428,9 @@ class Ebizmarts_MageMonkey_Model_Observer
                     ->setEmail($order->getCustomerEmail());
             }
 
-            Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb);
+            if(Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
+                Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb);
+            }
 
         }
         Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
@@ -445,7 +447,8 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function massActionOption(Varien_Event_Observer $observer)
     {
-        if (!Mage::helper('monkey')->canMonkey()) {
+        $stores = Mage::app()->getStores();
+        if (!Mage::helper('monkey')->canMonkey($stores)) {
             return $observer;
         }
         $block = $observer->getEvent()->getBlock();

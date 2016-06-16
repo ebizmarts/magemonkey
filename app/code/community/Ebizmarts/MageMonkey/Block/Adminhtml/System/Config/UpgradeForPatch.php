@@ -54,10 +54,11 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_UpgradeForPatch extends
         }else{
             $pre = '';
         }
-        $resource = Mage::getSingleton('core/resource');
+        $resource = Mage::getSingleton('core/resource')
+            ->getConnection('core_write');
 
         $table = $resource->getTableName($pre.'permission_block');
-        $tableExists = (bool)$resource->getConnection()->showTableStatus($table);
+        $tableExists = (bool)$resource->showTableStatus($table);
         return $tableExists;
     }
 }

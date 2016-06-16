@@ -9,10 +9,6 @@
                         <ecommerce translate="title" module="monkey">
                             <title>Ecommerce 360 Orders</title>
                             <children>
-                                <commerce translate="title" module="monkey">
-                                    <title>Magento sent orders</title>
-                                    <action>adminhtml/ecommerce</action>
-                                </commerce>
                                 <apicommerce translate="title" module="monkey">
                                     <title>ALL orders from API</title>
                                     <action>adminhtml/ecommerce/apiorders</action>

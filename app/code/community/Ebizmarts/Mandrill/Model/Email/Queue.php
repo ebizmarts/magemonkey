@@ -32,25 +32,25 @@ class Ebizmarts_Mandrill_Model_Email_Queue extends Mage_Core_Model_Email_Queue
             if ($message->getId()) {
                 $parameters = new Varien_Object($message->getMessageParameters());
                 $mailer = $this->getMail();
-                $mandrill = [
+                $mandrill = array(
                     'subject' => $parameters->getSubject(),
-                    'to' => [],
+                    'to' => array(),
                     'from_email' => $parameters->getFromEmail(),
                     'from_name' => $parameters->getFromName(),
                     'headers' => $mailer->getHeaders(),
                     'html' => ($parameters->getIsPlain() ? "" : $message->getMessageBody()),
                     'text' => ($parameters->getIsPlain() ? $message->getMessageBody() : ""),
-                ];
+                );
                 foreach ($message->getRecipients() as $recipient) {
                     list($email, $name, $type) = $recipient;
-                    $mandrill['to'][] = [
+                    $mandrill['to'][] = array(
                         'type' => ($type == self::EMAIL_TYPE_BCC ? "bcc" : "to"),
                         'email' => $email,
                         'name' => $name
-                    ];
+                    );
                 }
                 if ($parameters->getReplyTo() !== null) {
-                    $mandrill['headers'] = array_merge($mandrill['headers'], ['Reply-To' => $parameters->getReplyTo()]);
+                    $mandrill['headers'] = array_merge($mandrill['headers'], array('Reply-To' => $parameters->getReplyTo()));
                 }
                 if ($parameters->getReturnTo() !== null) {
                     $mailer->setReturnPath($parameters->getReturnTo());
