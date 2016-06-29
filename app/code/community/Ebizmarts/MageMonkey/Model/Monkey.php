@@ -26,57 +26,64 @@ class Ebizmarts_MageMonkey_Model_Monkey
      */
     public function processWebhookData(array $data)
     {
-        $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
-//        $store = Mage::helper('monkey')->getStoreByList($listId);
-        $subscriber = Mage::getModel('newsletter/subscriber')
-            ->loadByEmail($data['data']['email']);
-        $storeId = $subscriber->getStoreId();
-        $store = Mage::getModel('core/store')->load($storeId);
-        if (!is_null($store)) {
-            $curstore = Mage::app()->getStore();
-            Mage::app()->setCurrentStore($store);
-        }
 
-        //Object for cache clean
-        $object = new stdClass();
-        $object->requestParams = array();
-        $object->requestParams['id'] = $listId;
 
-        if (isset($data['data']['email'])) {
-            $object->requestParams['email_address'] = $data['data']['email'];
-        }
-        $cacheHelper = Mage::helper('monkey/cache');
+          Mage::getModel('monkey/asyncwebhooks')
+              ->setWebhookType($data['type'])
+              ->setWebhookData(json_encode($data))
+              ->save();
 
-        switch ($data['type']) {
-            case 'subscribe':
-                $this->_subscribe($data);
-                $cacheHelper->clearCache('listSubscribe', $object);
-                break;
-            case 'unsubscribe':
-                $this->_unsubscribe($data);
-                $cacheHelper->clearCache('listUnsubscribe', $object);
-                break;
-            case 'cleaned':
-                $this->_clean($data);
-                $cacheHelper->clearCache('listUnsubscribe', $object);
-                break;
-            case 'campaign':
-                $this->_campaign($data);
-                break;
-            //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
-            case 'upemail':
-                $this->_updateEmail($data);
-                $cacheHelper->clearCache('listUpdateMember', $object);
-                break;
-            case 'profile':
-                $this->_profile($data);
-                $cacheHelper->clearCache('listUpdateMember', $object);
-                break;
-        }
-
-        if (!is_null($store)) {
-            Mage::app()->setCurrentStore($curstore);
-        }
+//        $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
+////        $store = Mage::helper('monkey')->getStoreByList($listId);
+//        $subscriber = Mage::getModel('newsletter/subscriber')
+//            ->loadByEmail($data['data']['email']);
+//        $storeId = $subscriber->getStoreId();
+//        $store = Mage::getModel('core/store')->load($storeId);
+//        if (!is_null($store)) {
+//            $curstore = Mage::app()->getStore();
+//            Mage::app()->setCurrentStore($store);
+//        }
+//
+//        //Object for cache clean
+//        $object = new stdClass();
+//        $object->requestParams = array();
+//        $object->requestParams['id'] = $listId;
+//
+//        if (isset($data['data']['email'])) {
+//            $object->requestParams['email_address'] = $data['data']['email'];
+//        }
+//        $cacheHelper = Mage::helper('monkey/cache');
+//
+//        switch ($data['type']) {
+//            case 'subscribe':
+//                $this->_subscribe($data);
+//                $cacheHelper->clearCache('listSubscribe', $object);
+//                break;
+//            case 'unsubscribe':
+//                $this->_unsubscribe($data);
+//                $cacheHelper->clearCache('listUnsubscribe', $object);
+//                break;
+//            case 'cleaned':
+//                $this->_clean($data);
+//                $cacheHelper->clearCache('listUnsubscribe', $object);
+//                break;
+//            case 'campaign':
+//                $this->_campaign($data);
+//                break;
+//            //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
+//            case 'upemail':
+//                $this->_updateEmail($data);
+//                $cacheHelper->clearCache('listUpdateMember', $object);
+//                break;
+//            case 'profile':
+//                $this->_profile($data);
+//                $cacheHelper->clearCache('listUpdateMember', $object);
+//                break;
+//        }
+//
+//        if (!is_null($store)) {
+//            Mage::app()->setCurrentStore($curstore);
+//        }
     }
 
     /**
