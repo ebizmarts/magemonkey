@@ -520,4 +520,112 @@ class Ebizmarts_MageMonkey_Model_Cron
             $item->delete();
         }
     }
+
+
+    public function processWebhookData($cron)
+    {
+
+        $collection = Mage::getModel('monkey/asyncwebhooks')->getCollection();
+        $collection->addFieldToFilter('processed', array('eq' => 0));
+
+        foreach ($collection as $item) {
+            $data=$item->getWebhookData();
+            Mage::log($data,NULL,"keller.log",true);
+            $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
+            $store = Mage::helper('monkey')->getStoreByList($listId);
+            $subscriber = Mage::getModel('newsletter/subscriber')
+                ->loadByEmail($data['data']['email']);
+            $storeId = $subscriber->getStoreId();
+            $store = Mage::getModel('core/store')->load($storeId);
+            if (!is_null($store)) {
+                $curstore = Mage::app()->getStore();
+                Mage::app()->setCurrentStore($store);
+            }
+            //        Object for cache clean
+            $object = new stdClass();
+            $object->requestParams = array();
+            $object->requestParams['id'] = $listId;
+
+            if (isset($data['data']['email'])) {
+                $object->requestParams['email_address'] = $data['data']['email'];
+            }
+            $cacheHelper = Mage::helper('monkey/cache');
+
+            switch ($data->getWebhookType()) {
+                case 'subscribe':
+                    $this->_subscribe($data);
+                    $cacheHelper->clearCache('listSubscribe', $object);
+                    break;
+                case 'unsubscribe':
+                    $this->_unsubscribe($data);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                    break;
+                case 'cleaned':
+                    $this->_clean($data);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                    break;
+                case 'campaign':
+                    $this->_campaign($data);
+                    break;
+                //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
+                case 'upemail':
+                    $this->_updateEmail($data);
+                    $cacheHelper->clearCache('listUpdateMember', $object);
+                    break;
+                case 'profile':
+                    $this->_profile($data);
+                    $cacheHelper->clearCache('listUpdateMember', $object);
+                    break;
+            }
+
+            if (!is_null($store)) {
+                Mage::app()->setCurrentStore($curstore);
+            }
+            $item(setProcessed(1))->save();
+
+        }
+
+
+    }
+
+
+    protected function _subscribe(array $data)
+    {
+        try {
+
+            //TODO: El método subscribe de Subscriber (Magento) hace un load by email
+            // entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
+            //VALIDAR si es lo que se requiere
+
+            $subscriber = Mage::getModel('newsletter/subscriber')
+                ->loadByEmail($data['data']['email']);
+            if ($subscriber->getId()) {
+                $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+                    ->save();
+            } else {
+                $subscriber = Mage::getModel('newsletter/subscriber')->setImportMode(TRUE);
+                if(isset($data['data']['fname'])){
+                    $subscriber->setSubscriberFirstname($data['data']['fname']);
+                }
+                if(isset($data['data']['lname'])){
+                    $subscriber->setSubscriberLastname($data['data']['lname']);
+                }
+                $subscriber->subscribe($data['data']['email']);
+
+            }
+            $customerExist = Mage::getSingleton('customer/customer')
+                ->getCollection()
+                ->addAttributeToFilter('email', array('eq' => $data['data']['email']) )
+                ->getFirstItem();
+            if($customerExist){
+                $storeId = $customerExist->getStoreId();
+            }
+            if($customerExist && Mage::getStoreConfig('sweetmonkey/general/active', $storeId)){
+                Mage::helper('sweetmonkey')->pushVars($customerExist);
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+    }
+
 }

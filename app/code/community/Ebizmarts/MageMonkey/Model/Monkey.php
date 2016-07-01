@@ -31,6 +31,7 @@ class Ebizmarts_MageMonkey_Model_Monkey
           Mage::getModel('monkey/asyncwebhooks')
               ->setWebhookType($data['type'])
               ->setWebhookData(json_encode($data))
+              ->setProcessed(0)
               ->save();
 
 //        $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
