@@ -185,7 +185,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         } elseif (is_array($additionalLists)) {
             foreach ($additionalLists as $additional) {
                 if ($additional == $selectedLists[0]) {
-                    $message = Mage::helper('monkey')->__('Be Careful! You have choosen the same list for "General Subscription" and "Additional Lists". Please change this values and save the configuration again');
+                    $message = Mage::helper('monkey')->__('Be Careful! You have choosen the same list for "General Subscription" and "Additionaloo Lists". Please change this values and save the configuration again');
                     Mage::getSingleton('adminhtml/session')->addWarning($message);
                 }
             }
@@ -193,31 +193,36 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
 
         $webhooksKey = Mage::helper('monkey')->getWebhooksKey();
+        $allowWebhooks = Mage::getStoreConfig('monkey/general/enable_webhooks');
 
         //Generating Webhooks URL
-        $hookUrl = '';
-        try {
-            $hookUrl = Mage::getModel('core/url')->setStore($store)->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
-        } catch (Exception $e) {
-            $hookUrl = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+        if($allowWebhooks) {
+            $hookUrl = '';
+            try {
+                $hookUrl = Mage::getModel('core/url')->setStore($store)->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+            } catch (Exception $e) {
+                $hookUrl = Mage::getModel('core/url')->getUrl(Ebizmarts_MageMonkey_Model_Monkey::WEBHOOKS_PATH, array('wkey' => $webhooksKey));
+            }
+
+            if (FALSE != strstr($hookUrl, '?', true)) {
+                $hookUrl = strstr($hookUrl, '?', true);
+            }
+
+            $api = Mage::getSingleton('monkey/api', array('apikey' => $apiKey));
+
+            //Validate API KEY
+            $api->ping();
+            if ($api->errorCode) {
+                Mage::getSingleton('adminhtml/session')->addError($api->errorMessage);
+                return $observer;
+            }
+
+            $lists = $api->lists();
+
+            $this->_saveCustomerGroups($lists,$api,$selectedLists,$hookUrl);
         }
 
-        if (FALSE != strstr($hookUrl, '?', true)) {
-            $hookUrl = strstr($hookUrl, '?', true);
-        }
-
-        $api = Mage::getSingleton('monkey/api', array('apikey' => $apiKey));
-
-        //Validate API KEY
-        $api->ping();
-        if ($api->errorCode) {
-            Mage::getSingleton('adminhtml/session')->addError($api->errorMessage);
-            return $observer;
-        }
-
-        $lists = $api->lists();
-
-        $this->_saveCustomerGroups($lists,$api,$selectedLists,$hookUrl);
+        return $observer;
 
     }
     protected function _saveCustomerGroups($lists,$api,$selectedLists,$hookUrl)
@@ -479,7 +484,7 @@ class Ebizmarts_MageMonkey_Model_Observer
                 'header' => Mage::helper('newsletter')->__('Customer First Name'),
                 'index' => 'customer_firstname',
                 'renderer' => 'monkey/adminhtml_newsletter_subscriber_renderer_firstname',
-                ), 'type'
+            ), 'type'
             );
 
             $block->addColumnAfter('lastname', array(
