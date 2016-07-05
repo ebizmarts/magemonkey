@@ -522,14 +522,14 @@ class Ebizmarts_MageMonkey_Model_Cron
     }
 
 
-    public function processWebhookData($cron)
+    public function processWebhookData($cron)  //This parameter isn't being used for some reason
     {
 
         $collection = Mage::getModel('monkey/asyncwebhooks')->getCollection();
         $collection->addFieldToFilter('processed', array('eq' => 0));
 
         foreach ($collection as $item) {
-            $data=$item->getWebhookData();
+            $data=json_decode($item->getWebhookData());
             Mage::log($data,NULL,"keller.log",true);
             $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
             $store = Mage::helper('monkey')->getStoreByList($listId);
