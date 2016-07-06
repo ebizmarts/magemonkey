@@ -522,15 +522,15 @@ class Ebizmarts_MageMonkey_Model_Cron
     }
 
 
-    public function processWebhookData($cron)  //This parameter isn't being used for some reason
+    public function processWebhookData()
     {
 
         $collection = Mage::getModel('monkey/asyncwebhooks')->getCollection();
         $collection->addFieldToFilter('processed', array('eq' => 0));
 
         foreach ($collection as $item) {
-            $data=json_decode($item->getWebhookData());
-            Mage::log($data,NULL,"keller.log",true);
+            $data=json_decode($item->getWebhookData(), true);
+//            Mage::log($data,NULL,"keller.log",true);
             $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
             $store = Mage::helper('monkey')->getStoreByList($listId);
             $subscriber = Mage::getModel('newsletter/subscriber')
@@ -550,8 +550,8 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $object->requestParams['email_address'] = $data['data']['email'];
             }
             $cacheHelper = Mage::helper('monkey/cache');
-
-            switch ($data->getWebhookType()) {
+//            Mage::log($item->getWebhookType(),NULL,"keller.log",true);
+            switch ($item->getWebhookType()) {
                 case 'subscribe':
                     $this->_subscribe($data);
                     $cacheHelper->clearCache('listSubscribe', $object);
@@ -577,17 +577,24 @@ class Ebizmarts_MageMonkey_Model_Cron
                     $cacheHelper->clearCache('listUpdateMember', $object);
                     break;
             }
-
+//            Mage::log('afterswitch',NULL,"keller.log",true);
             if (!is_null($store)) {
                 Mage::app()->setCurrentStore($curstore);
             }
-            $item(setProcessed(1))->save();
+            $item->setProcessed(1)->save();
 
         }
 
 
     }
 
+
+    /**
+     * Subscribe email to Magento list
+     *
+     * @param array $data
+     * @return void
+     */
 
     protected function _subscribe(array $data)
     {
@@ -596,13 +603,14 @@ class Ebizmarts_MageMonkey_Model_Cron
             //TODO: El método subscribe de Subscriber (Magento) hace un load by email
             // entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
             //VALIDAR si es lo que se requiere
-
-            $subscriber = Mage::getModel('newsletter/subscriber')
+            $subscriber = Mage::getSingleton('newsletter/subscriber')
                 ->loadByEmail($data['data']['email']);
             if ($subscriber->getId()) {
+
                 $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
                     ->save();
             } else {
+                Mage::log('else',NULL,"keller.log",true);
                 $subscriber = Mage::getModel('newsletter/subscriber')->setImportMode(TRUE);
                 if(isset($data['data']['fname'])){
                     $subscriber->setSubscriberFirstname($data['data']['fname']);
@@ -610,7 +618,17 @@ class Ebizmarts_MageMonkey_Model_Cron
                 if(isset($data['data']['lname'])){
                     $subscriber->setSubscriberLastname($data['data']['lname']);
                 }
+                if(isset($data['data']['merges']['STOREID'])){
+                    $subscriberStoreId=$data['data']['merges']['STOREID'];
+                }else {
+                    $subscriberStoreId = Mage::app()
+                        ->getWebsite(1)
+                        ->getDefaultGroup()
+                        ->getDefaultStoreId();
+                }
+                Mage::app()->setCurrentStore($subscriberStoreId);
                 $subscriber->subscribe($data['data']['email']);
+                Mage::app()->setCurrentStore(0);
 
             }
             $customerExist = Mage::getSingleton('customer/customer')
@@ -627,5 +645,77 @@ class Ebizmarts_MageMonkey_Model_Cron
             Mage::logException($e);
         }
     }
+
+
+    /**
+     * Unsubscribe or delete email from Magento list
+     *
+     * @param array $data
+     * @return void
+     */
+
+    protected function _unsubscribe(array $data)
+    {
+//        $subscriber = $this->loadByEmail($data['data']['email']);
+        $subscriber = Mage::getSingleton('newsletter/subscriber')
+            ->loadByEmail($data['data']['email']);
+        if (!$subscriber->getId()) {
+            $subscriber = Mage::getModel('newsletter/subscriber')
+                ->loadByEmail($data['data']['email']);
+        }
+        if($subscriber->getId()){
+            try {
+                if(!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $subscriber->getStoreId())){
+                    $subscriber->setImportMode(true);
+                }
+
+                switch ($data['data']['action']) {
+                    case 'delete' :
+                        //if config setting "Webhooks Delete action" is set as "Delete customer account"
+                        if (Mage::getStoreConfig("monkey/general/webhook_delete") == 1) {
+                            $subscriber->delete();
+                        } else {
+                            $subscriber->unsubscribe();
+                        }
+                        break;
+                    case 'unsub':
+                        $subscriber->unsubscribe();
+                        break;
+                }
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
+
+
+    protected function _clean(array $data)
+    {
+
+        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
+            Mage::log('afterif', NULL, "keller.log", true);
+            $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
+
+            $this->_getInbox()
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
+        }
+
+        //Delete subscriber from Magento
+        $s = $this->loadByEmail($data['data']['email']);
+        Mage::log('loadsemail?', NULL, "keller.log", true);
+        if ($s->getId()) {
+            Mage::log('afterif2', NULL, "keller.log", true);
+            try {
+                $s->delete();
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
+
+
+
 
 }
