@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ebizmarts_Mandrill>
-            <version>2.0.9</version>
+            <version>2.0.10</version>
         </Ebizmarts_Mandrill>
     </modules>
     <global>
