@@ -1,6 +1,6 @@
 <div style="background:#EAF0EE;border:1px solid #CCCCCC;margin-bottom:10px;padding:11px 0 0 10px;">
     <h4>
-        <img src="http://ebizmarts.com/extension-logo.php?<?php echo $this->getPxParams(); ?>"/><br>
+        <img width="244px" height="60px" src="https://ebizmarts-website.s3.amazonaws.com/Logo_Ebizmarts.png"/><br>
         <?php echo Mage::helper('ebizmarts_autoresponder')->__('<strong style="color:#EA7601;">Ebizmarts Autoresponder v%s</strong> <br>Need help? See our <a href="http://wiki.ebizmarts.com/configuration" target="_blank">Wiki</a> or browse our <a href="http://ebizmarts.com/forums/view/1" target="_blank">support forums</a> Got feedback? <a href="mailto:info@ebizmarts.com?Subject=Support Autoresponder Version %s">Email us</a>', $this->getVersion(), $this->getVersion()) ?>
 
         <?php if (!Mage::helper('ebizmarts_mandrill')->useTransactionalService()): ?>

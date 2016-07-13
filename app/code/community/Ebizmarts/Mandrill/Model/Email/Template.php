@@ -20,8 +20,9 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
      */
     public function send($email, $name = null, array $variables = array())
     {
-        $storeId = Mage::app()->getStore()->getId();
-        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
+//        $storeId = Mage::app()->getStore()->getId();
+//        $order = Mage::getModel('sales/order')->load
+        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE)) {
             return parent::send($email, $name, $variables);
         }
         if (!$this->isValidForSend()) {
