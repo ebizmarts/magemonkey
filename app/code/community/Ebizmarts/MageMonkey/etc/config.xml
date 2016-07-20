@@ -135,6 +135,14 @@
             </updates>
         </layout>
         <events>
+            <sagepaysuite_place_order>
+                <observers>
+                    <monkey_subscribe_checkout_with_sagepay>
+                        <class>monkey/observer</class>
+                        <method>registerCheckoutSubscribeWithSagePay</method>
+                    </monkey_subscribe_checkout_with_sagepay>
+                </observers>
+            </sagepaysuite_place_order>
             <controller_action_predispatch_onestepcheckout_index_index>
                 <observers>
                     <monkey_subscribe_checkout>

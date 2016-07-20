@@ -357,6 +357,24 @@ class Ebizmarts_MageMonkey_Model_Observer
         return $observer;
     }
 
+    public function registerCheckoutSubscribeWithSagePay(Varien_Event_Observer $observer){
+        if (!Mage::helper('monkey')->canMonkey()) {
+            return $observer;
+        }
+        $post = $observer->getEvent()->getPost();
+        $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
+        $subscribe = $post['magemonkey_subscribe'];
+
+        Mage::getSingleton('core/session')->setMonkeyPost(serialize($post));
+        if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE, Mage::app()->getStore()->getId()) >= 3) {
+            Mage::getSingleton('core/session')->setMonkeyCheckout(true);
+        }
+        if ($oneStep) {
+            Mage::getSingleton('core/session')->setIsOneStepCheckout(true);
+        }
+        return $observer;
+    }
+
     /**
      * Add flag on session to tell the module if on success page should subscribe customer
      *
@@ -368,19 +386,26 @@ class Ebizmarts_MageMonkey_Model_Observer
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
+        if (Mage::getSingleton('core/session')->getMonkeyPost()){
+            $order = $observer->getEvent()->getOrder();
+            $this->_handleCheckoutSubscription($order, true);
+        }else {
+            $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
+            if (Mage::app()->getRequest()->isPost()) {
+                $subscribe = Mage::app()->getRequest()->getPost('magemonkey_subscribe');
 
-        $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
-        if (Mage::app()->getRequest()->isPost()) {
-            $subscribe = Mage::app()->getRequest()->getPost('magemonkey_subscribe');
-            $force = Mage::app()->getRequest()->getPost('magemonkey_force');
-
-            Mage::getSingleton('core/session')->setMonkeyPost(serialize(Mage::app()->getRequest()->getPost()));
-            if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE) >= 3) {
-                Mage::getSingleton('core/session')->setMonkeyCheckout(true);
+                Mage::getSingleton('core/session')->setMonkeyPost(serialize(Mage::app()->getRequest()->getPost()));
+                if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE, Mage::app()->getStore()->getId()) >= 3) {
+                    Mage::getSingleton('core/session')->setMonkeyCheckout(true);
+                }
             }
-        }
-        if ($oneStep) {
-            Mage::getSingleton('core/session')->setIsOneStepCheckout(true);
+            if ($oneStep) {
+                Mage::getSingleton('core/session')->setIsOneStepCheckout(true);
+            }
+            if (Mage::getSingleton('core/session')->getMonkeyPost()){
+                $order = $observer->getEvent()->getOrder();
+                $this->_handleCheckoutSubscription($order, true);
+            }
         }
         return $observer;
     }
@@ -406,8 +431,40 @@ class Ebizmarts_MageMonkey_Model_Observer
         if ($orderId) {
             $order = Mage::getModel('sales/order')->load($orderId);
         }
+        $this->_handleCheckoutSubscription($order, false);
 
-        if (is_object($order) && $order->getId()) {
+        return $observer;
+    }
+
+    /** Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
+     *
+     * @param Varien_Event_Observer $observer
+     * @return void
+     */
+    public function massActionOption(Varien_Event_Observer $observer)
+    {
+        $stores = Mage::app()->getStores();
+        if (!Mage::helper('monkey')->canMonkey($stores)) {
+            return $observer;
+        }
+        $block = $observer->getEvent()->getBlock();
+
+        if ($block instanceof Mage_Adminhtml_Block_Widget_Grid_Massaction || $block instanceof Enterprise_SalesArchive_Block_Adminhtml_Sales_Order_Grid_Massaction) {
+
+            if ($block->getRequest()->getControllerName() == 'sales_order') {
+
+                $block->addItem('magemonkey_ecommerce360', array(
+                    'label' => Mage::helper('monkey')->__('Send to MailChimp'),
+                    'url' => Mage::getModel('adminhtml/url')->getUrl('adminhtml/ecommerce/masssend', Mage::app()->getStore()->isCurrentlySecure() ? array('_secure' => true) : array()),
+                ));
+
+            }
+        }
+        return $observer;
+    }
+
+    protected function _handleCheckoutSubscription($order, $isSaveOrderBefore = false){
+        if (is_object($order) && ($order->getId() || $isSaveOrderBefore)) {
             //Set Campaign Id if exist
             $campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');
             if ($campaign_id) {
@@ -442,34 +499,6 @@ class Ebizmarts_MageMonkey_Model_Observer
         Mage::getSingleton('core/session')->setMonkeyPost(NULL);
         Mage::getSingleton('core/session')->setIsOneStepCheckout(FALSE);
         Mage::getSingleton('core/session')->setRegisterCheckoutSuccess(FALSE);
-        return $observer;
-    }
-
-    /** Add mass action option to Sales -> Order grid in admin panel to send orders to MC (Ecommerce360)
-     *
-     * @param Varien_Event_Observer $observer
-     * @return void
-     */
-    public function massActionOption(Varien_Event_Observer $observer)
-    {
-        $stores = Mage::app()->getStores();
-        if (!Mage::helper('monkey')->canMonkey($stores)) {
-            return $observer;
-        }
-        $block = $observer->getEvent()->getBlock();
-
-        if ($block instanceof Mage_Adminhtml_Block_Widget_Grid_Massaction || $block instanceof Enterprise_SalesArchive_Block_Adminhtml_Sales_Order_Grid_Massaction) {
-
-            if ($block->getRequest()->getControllerName() == 'sales_order') {
-
-                $block->addItem('magemonkey_ecommerce360', array(
-                    'label' => Mage::helper('monkey')->__('Send to MailChimp'),
-                    'url' => Mage::getModel('adminhtml/url')->getUrl('adminhtml/ecommerce/masssend', Mage::app()->getStore()->isCurrentlySecure() ? array('_secure' => true) : array()),
-                ));
-
-            }
-        }
-        return $observer;
     }
 
     public function alterNewsletterGrid(Varien_Event_Observer $observer){
