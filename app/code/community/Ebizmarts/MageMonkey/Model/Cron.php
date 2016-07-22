@@ -694,22 +694,19 @@ class Ebizmarts_MageMonkey_Model_Cron
     protected function _cleaned(array $data)
     {
         if (Mage::helper('monkey')->isAdminNotificationEnabled()) {  //This 'if' returns false even if Admin Notification is enabled on the module sometimes, must check why
-            Mage::log('enters if_cleaned', NULL, "keller.log", true);
             $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
-            Mage::log($text, NULL, "keller.log", true);
             $temp1=$this->_getInbox()
                 ->setTitle($text)
                 ->setDescription($text)
                 ->save();
-            Mage::log($temp1, NULL, "keller.log", true);
+
         }
 
         //Delete subscriber from Magento
         $s = Mage::getSingleton('newsletter/subscriber')
             ->loadByEmail($data['data']['email']);
-        Mage::log('loadsemail?', NULL, "keller.log", true);
+
         if ($s->getId()) {
-            Mage::log('enters_if2', NULL, "keller.log", true);
             try {
                 $s->delete();
             } catch (Exception $e) {
@@ -728,16 +725,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     protected function _campaign(array $data)
     {
-        Mage::log('enters function campaign', NULL, "keller.log", true);
         if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
-            Mage::log('enters if', NULL, "keller.log", true);
             $text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
-            Mage::log($text, NULL, "keller.log", true);
-            $temp2=$this->_getInbox()
+            $this->_getInbox()
                 ->setTitle($text)
                 ->setDescription($text)
                 ->save();
-            Mage::log($temp2, NULL, "keller.log", true);
         }
 
     }
