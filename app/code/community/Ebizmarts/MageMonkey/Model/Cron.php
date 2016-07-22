@@ -530,9 +530,8 @@ class Ebizmarts_MageMonkey_Model_Cron
 
         foreach ($collection as $item) {
             $data=json_decode($item->getWebhookData(), true);
-//            Mage::log($data,NULL,"keller.log",true);
             $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
-            $store = Mage::helper('monkey')->getStoreByList($listId);
+//            $store = Mage::helper('monkey')->getStoreByList($listId);
             $subscriber = Mage::getModel('newsletter/subscriber')
                 ->loadByEmail(isset($data['data']['email']));
             $storeId = $subscriber->getStoreId();
@@ -550,7 +549,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $object->requestParams['email_address'] = $data['data']['email'];
             }
             $cacheHelper = Mage::helper('monkey/cache');
-//            Mage::log($item->getWebhookType(),NULL,"keller.log",true);
+
             switch ($item->getWebhookType()) {
                 case 'subscribe':
                     $this->_subscribe($data);
@@ -577,7 +576,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                     $cacheHelper->clearCache('listUpdateMember', $object);
                     break;
             }
-//            Mage::log('afterswitch',NULL,"keller.log",true);
+
             if (!is_null($store)) {
                 Mage::app()->setCurrentStore($curstore);
             }
