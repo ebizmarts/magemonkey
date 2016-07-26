@@ -552,7 +552,7 @@
                         <customer_coupon translate="label comment">
                             <label>Customer Groups for coupon</label>
                             <frontend_type>multiselect</frontend_type>
-                            <source_model>ebizmarts_autoresponder/system_config_customergroup</source_model>
+                            <source_model>ebizmarts_autoresponder/system_config_registeredcustomergroup</source_model>
                             <sort_order>110</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>

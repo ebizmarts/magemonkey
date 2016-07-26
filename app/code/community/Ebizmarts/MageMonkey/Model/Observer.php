@@ -268,13 +268,11 @@ class Ebizmarts_MageMonkey_Model_Observer
 
                 //If webhook was not added, add a message on Admin panel
                 if ($api->errorCode && Mage::helper('monkey')->isAdmin()) {
-
                     //Don't show an error if webhook already in, otherwise, show error message and code
                     if ($api->errorMessage !== "Setting up multiple WebHooks for one URL is not allowed.") {
                         $message = Mage::helper('monkey')->__('Could not add Webhook "%s" for list "%s", error code %s, %s', $hookUrl, $list['name'], $api->errorCode, $api->errorMessage);
                         Mage::getSingleton('adminhtml/session')->addError($message);
                     }
-
                 }
                 /**
                  * Adding Webhooks
