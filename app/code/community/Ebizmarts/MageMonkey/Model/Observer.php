@@ -485,7 +485,8 @@ class Ebizmarts_MageMonkey_Model_Observer
                     ->setStoreId($order->getStoreId())
                     ->setSubscriberFirstname($order->getCustomerFirstname())
                     ->setSubscriberLastname($order->getCustomerLastname())
-                    ->setEmail($order->getCustomerEmail());
+                    ->setEmail($order->getCustomerEmail())
+                    ->setOrderId($order->getId());
             }
 
             if(Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {

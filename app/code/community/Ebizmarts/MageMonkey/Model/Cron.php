@@ -487,6 +487,9 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $oldList = $newList;
             }
             $mergeVars = unserialize($item->getMapfields());
+            if($item->getOrderId()){
+                $mergeVars = $this->_addOrderData($item->getOrderId(), $mergeVars);
+            }
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
                 if (count($batch) > 0) {
                     Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
@@ -510,6 +513,13 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
         }
 
+    }
+
+    protected function _addOrderData($orderId, $mergeVars){
+        $order = Mage::getModel('sales/order')->load($orderId);
+        $maps = Mage::helper('monkey')->getMergeMaps($order->getStoreId());
+        $mergeVars = Mage::helper('monkey')->getMergeVarsFromOrder($maps, $order, $mergeVars);
+        return $mergeVars;
     }
 
     public function cleanSubscribersAsync()
