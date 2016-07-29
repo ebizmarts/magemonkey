@@ -485,12 +485,13 @@ class Ebizmarts_MageMonkey_Model_Observer
                     ->setStoreId($order->getStoreId())
                     ->setSubscriberFirstname($order->getCustomerFirstname())
                     ->setSubscriberLastname($order->getCustomerLastname())
-                    ->setEmail($order->getCustomerEmail())
-                    ->setOrderId($order->getId());
+                    ->setEmail($order->getCustomerEmail());
+
             }
+            $orderId = $order->getId();
 
             if(Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
-                Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb);
+                Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb, $orderId);
             }
 
         }

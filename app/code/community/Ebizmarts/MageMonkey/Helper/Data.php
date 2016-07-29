@@ -965,26 +965,27 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @param $object
      * @param $db
+     * @param $orderId
      */
-    public function listsSubscription($object, $db)
+    public function listsSubscription($object, $db, $orderId = null)
     {
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
-                $this->subscribeToList($object, $db, $listId);
+                $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
         } elseif (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe']) {
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
-                $this->subscribeToList($object, $db, $listId);
+                $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
             //Subscription for One Step Checkout with force subscription
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
-            $this->subscribeToList($object, $db);
+            $this->subscribeToList($object, $db, null, false, $orderId);
         } elseif(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
-            $this->subscribeToList($object, $db, NULL, TRUE);
+            $this->subscribeToList($object, $db, NULL, TRUE, $orderId);
         }
 
     }
@@ -995,8 +996,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $object
      * @param $db
      * @param null $listId
+     * @param $forceSubscribe
+     * @param $orderId
      */
-    public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE)
+    public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE, $orderId = null)
     {
         $email = $object->getEmail();
         $storeId = $object->getStoreId();
@@ -1030,7 +1033,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
                 //if( TRUE === $subscriber->getIsStatusChanged() ){
-                $orderId = ($object->getOrderId()) ? $object->getOrderId() : null;
                 if ($isOnMailChimp == 1) {
                     if(Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
                         $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
