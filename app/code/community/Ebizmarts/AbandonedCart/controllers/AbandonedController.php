@@ -48,10 +48,6 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
                 $quote->setCouponCode($params['coupon']);
                 $quote->save();
             }
-            if ((!isset($params['token']) || (isset($params['token']) && $params['token'] != $quote->getEbizmartsAbandonedcartToken())) && Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AUTOLOGIN, $quote->getStoreId())) {
-                Mage::getSingleton('customer/session')->addNotice("Your token cart is incorrect");
-                $this->_redirect($url);
-            } else {
                 $url = Mage::getUrl(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::PAGE, $quote->getStoreId()));
                 $first = true;
                 foreach($analytics as $key => $value) {
@@ -71,14 +67,6 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
                     $this->getResponse()
                         ->setRedirect($url, 301);
                 } else {
-                    if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AUTOLOGIN, $quote->getStoreId())) {
-                        $customer = Mage::getModel('customer/customer')->load($quote->getCustomerId());
-                        if ($customer->getId()) {
-                            Mage::getSingleton('customer/session')->setCustomerAsLoggedIn($customer);
-                        }
-                        $this->getResponse()
-                            ->setRedirect($url, 301);
-                    } else {
                         if (Mage::helper('customer')->isLoggedIn()) {
                             $this->getResponse()
                                 ->setRedirect($url, 301);
@@ -86,9 +74,7 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
                             Mage::getSingleton('customer/session')->addNotice("Login to complete your order");
                             $this->_redirect('customer/account');
                         }
-                    }
                 }
-            }
         }
 //        $this->_redirect('checkout/cart');
     }
