@@ -69,6 +69,9 @@
                     <lastorder>
                         <table>magemonkey_last_order</table>
                     </lastorder>
+                    <asyncwebhooks>
+                        <table>magemonkey_async_webhooks</table>
+                    </asyncwebhooks>
                 </entities>
             </monkey_mysql4>
             <newsletter>
@@ -344,6 +347,14 @@
                     <model>monkey/cron::cleanSubscribersAsync</model>
                 </run>
             </magemonkey_cleansubscribers_asynch>
+            <magemonkey_webhooks_asynch>
+                <schedule>
+                    <cron_expr>*/15 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>monkey/cron::processWebhookData</model>
+                </run>
+            </magemonkey_webhooks_asynch>
         </jobs>
     </crontab>
 </config>
