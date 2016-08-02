@@ -619,9 +619,9 @@ class Ebizmarts_Autoresponder_Model_Cron
         $storeCode=$store->getCode();
         $storeCodeUrl = Mage::getStoreConfig('web/url/use_store', $storeId);
         if($storeCodeUrl){
-            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . $storeCode . '/ebizautoresponder/autoresponder/unsubscribe?list=neworder&email=' . $email . '&store=' . $storeId;
+            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . $storeCode . '/ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
         }else {
-            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=neworder&email=' . $email . '&store=' . $storeId;
+            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
         }
         $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
 

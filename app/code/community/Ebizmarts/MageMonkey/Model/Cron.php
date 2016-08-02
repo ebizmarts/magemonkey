@@ -610,9 +610,6 @@ class Ebizmarts_MageMonkey_Model_Cron
     {
         try {
 
-            //TODO: El método subscribe de Subscriber (Magento) hace un load by email
-            // entonces si existe en un store, lo acutaliza y lo cambia de store, no lo agrega a otra store
-            //VALIDAR si es lo que se requiere
             $subscriber = Mage::getSingleton('newsletter/subscriber')
                 ->loadByEmail($data['data']['email']);
             if ($subscriber->getId()) {
