@@ -335,7 +335,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                     is_object($stock) && ($stock->getManageStock() ||
                         ($stock->getUseConfigManageStock() && Mage::getStoreConfig('cataloginventory/item_options/manage_stock', $quote->getStoreId())))
                 )
-                && $stockQty < $item->getQty() && (!$inventory->getBackorders() || $stockItem->getBackorders())
+                && $stockQty < $item->getQty() && (!$inventory->getBackorders() || !$stockItem->getBackorders())
             ) {
                 Mage::log('AbandonedCart; ' . $product->getSku() . ' is no longer in stock; remove from quote ' . $quote->getId() . ' for email', null, 'Ebizmarts_AbandonedCart.log');
                 $removeFromQuote = true;
