@@ -162,7 +162,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         }
         // for each cart of the current run
         foreach ($collection as $quote) {
-            $this->_proccessCollection($quote, $storeId);
+            $quote = $this->_proccessCollection($quote, $storeId);
 
             if (count($quote->getAllVisibleItems()) < 1) {
                 $quote2 = Mage::getModel('sales/quote')->loadByIdWithoutStore($quote->getId());
@@ -344,6 +344,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $quote->removeItem($item->getId());
             }
         }
+        return $quote;
     }
     protected function _sendPopupCoupon($storeId)
     {
