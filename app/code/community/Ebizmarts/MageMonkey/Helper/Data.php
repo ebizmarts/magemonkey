@@ -996,7 +996,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
                 $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
                 $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db);
-                if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
+                $subscriberExist=Mage::getModel('newsletter/subscriber')->loadbyEmail($email);
+                if(Mage::getSingleton('core/session')->getMonkeyCheckout() && !$subscriberExist->getId()){
                     $subscriber->subscribe($email);
                 }
             }
