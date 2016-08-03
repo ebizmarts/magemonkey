@@ -540,11 +540,10 @@ class Ebizmarts_MageMonkey_Model_Cron
 
         foreach ($collection as $item) {
             $data=json_decode($item->getWebhookData(), true);
-//            Mage::log($data,NULL,"keller.log",true);
             $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
-            $store = Mage::helper('monkey')->getStoreByList($listId);
+//            $store = Mage::helper('monkey')->getStoreByList($listId);
             $subscriber = Mage::getModel('newsletter/subscriber')
-                ->loadByEmail($data['data']['email']);
+                ->loadByEmail(isset($data['data']['email']));
             $storeId = $subscriber->getStoreId();
             $store = Mage::getModel('core/store')->load($storeId);
             if (!is_null($store)) {
@@ -560,7 +559,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $object->requestParams['email_address'] = $data['data']['email'];
             }
             $cacheHelper = Mage::helper('monkey/cache');
-//            Mage::log($item->getWebhookType(),NULL,"keller.log",true);
+
             switch ($item->getWebhookType()) {
                 case 'subscribe':
                     $this->_subscribe($data);
@@ -571,7 +570,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                     $cacheHelper->clearCache('listUnsubscribe', $object);
                     break;
                 case 'cleaned':
-                    $this->_clean($data);
+                    $this->_cleaned($data);
                     $cacheHelper->clearCache('listUnsubscribe', $object);
                     break;
                 case 'campaign':
@@ -587,7 +586,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                     $cacheHelper->clearCache('listUpdateMember', $object);
                     break;
             }
-//            Mage::log('afterswitch',NULL,"keller.log",true);
+
             if (!is_null($store)) {
                 Mage::app()->setCurrentStore($curstore);
             }
@@ -617,7 +616,6 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
                     ->save();
             } else {
-                Mage::log('else',NULL,"keller.log",true);
                 $subscriber = Mage::getModel('newsletter/subscriber')->setImportMode(TRUE);
                 if(isset($data['data']['fname'])){
                     $subscriber->setSubscriberFirstname($data['data']['fname']);
@@ -628,10 +626,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 if(isset($data['data']['merges']['STOREID'])){
                     $subscriberStoreId=$data['data']['merges']['STOREID'];
                 }else {
-                    $subscriberStoreId = Mage::app()
-                        ->getWebsite(1)
-                        ->getDefaultGroup()
-                        ->getDefaultStoreId();
+                    $subscriberStoreId = Mage::helper('monkey')->getStoreByList();
                 }
                 Mage::app()->setCurrentStore($subscriberStoreId);
                 $subscriber->subscribe($data['data']['email']);
@@ -663,9 +658,9 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     protected function _unsubscribe(array $data)
     {
-//        $subscriber = $this->loadByEmail($data['data']['email']);
         $subscriber = Mage::getSingleton('newsletter/subscriber')
             ->loadByEmail($data['data']['email']);
+
         if (!$subscriber->getId()) {
             $subscriber = Mage::getModel('newsletter/subscriber')
                 ->loadByEmail($data['data']['email']);
@@ -695,25 +690,30 @@ class Ebizmarts_MageMonkey_Model_Cron
         }
     }
 
+    /**
+     * Add "Cleaned Emails" notification to Adminnotification Inbox <cleaned>
+     *
+     * @param array $data
+     * @return void
+     */
 
-    protected function _clean(array $data)
+
+    protected function _cleaned(array $data)
     {
-
-        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
-            Mage::log('afterif', NULL, "keller.log", true);
+        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {  //This 'if' returns false even if Admin Notification is enabled on the module sometimes, must check why
             $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
-
-            $this->_getInbox()
+            $temp1=$this->_getInbox()
                 ->setTitle($text)
                 ->setDescription($text)
                 ->save();
+
         }
 
         //Delete subscriber from Magento
-        $s = $this->loadByEmail($data['data']['email']);
-        Mage::log('loadsemail?', NULL, "keller.log", true);
+        $s = Mage::getSingleton('newsletter/subscriber')
+            ->loadByEmail($data['data']['email']);
+
         if ($s->getId()) {
-            Mage::log('afterif2', NULL, "keller.log", true);
             try {
                 $s->delete();
             } catch (Exception $e) {
@@ -723,6 +723,93 @@ class Ebizmarts_MageMonkey_Model_Cron
     }
 
 
+    /**
+     * Add "Campaign Sending Status" notification to Adminnotification Inbox <campaign>
+     *
+     * @param array $data
+     * @return void
+     */
+
+    protected function _campaign(array $data)
+    {
+        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
+            $text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
+            $this->_getInbox()
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
+        }
+
+    }
+
+
+
+
+    protected function _profile(array $data)
+    {
+        $email = $data['data']['email'];
+        $subscriber = Mage::getSingleton('newsletter/subscriber')
+            ->loadByEmail($data['data']['email']);
+
+        $customerCollection = Mage::getModel('customer/customer')->getCollection()
+            ->addFieldToFilter('email', array('eq' => $email));
+        if (count($customerCollection) > 0) {
+            $toUpdate = $customerCollection->getFirstItem();
+        }else {
+            $toUpdate = $subscriber;
+        }
+        $toUpdate->setFirstname($data['data']['merges']['FNAME']);
+        $toUpdate->setLastname($data['data']['merges']['LNAME']);
+        $toUpdate->save();
+    }
+
+    /**
+     * Update customer email <upemail>
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function _updateEmail(array $data)
+    {
+        $old = $data['data']['old_email'];
+        $new = $data['data']['new_email'];
+
+
+        $oldSubscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($old);
+        $newSubscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($new);
+
+
+        $subscriberStoreId = Mage::helper('monkey')->getStoreByList();
+
+        Mage::app()->setCurrentStore($subscriberStoreId);
+
+
+        if ($oldSubscriber->getId()) {
+            $oldSubscriber->setSubscriberEmail($new)
+                ->save();
+            Mage::app()->setCurrentStore(0);
+        } elseif (!$newSubscriber->getId() && !$oldSubscriber->getId()) {
+            Mage::getModel('newsletter/subscriber')
+                ->setImportMode(TRUE)
+                ->setStoreId(Mage::app()->getStore()->getId())
+                ->subscribe($new);
+            Mage::app()->setCurrentStore(0);
+        }
+    }
+
+
+
+    /**
+     * Return Inbox model instance
+     *
+     * @return Mage_AdminNotification_Model_Inbox
+     */
+    protected function _getInbox()
+    {
+        return Mage::getModel('adminnotification/inbox')
+            ->setSeverity(4)//Notice
+            ->setDateAdded(Mage::getModel('core/date')->gmtDate());
+    }
 
 
 }
