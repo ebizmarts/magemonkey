@@ -356,6 +356,7 @@ class Ebizmarts_MageMonkey_Model_Observer
     }
 
     public function registerCheckoutSubscribeWithSagePay(Varien_Event_Observer $observer){
+        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
@@ -381,6 +382,7 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
     {
+        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
@@ -416,6 +418,7 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function registerCheckoutSuccess(Varien_Event_Observer $observer)
     {
+        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         Mage::getSingleton('core/session')->setRegisterCheckoutSuccess(TRUE);
         if (!Mage::helper('monkey')->canMonkey()) {
             Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
@@ -462,6 +465,7 @@ class Ebizmarts_MageMonkey_Model_Observer
     }
 
     protected function _handleCheckoutSubscription($order, $isSaveOrderBefore = false){
+        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         if (is_object($order) && ($order->getId() || $isSaveOrderBefore)) {
             //Set Campaign Id if exist
             $campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');

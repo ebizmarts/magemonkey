@@ -969,6 +969,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($object, $db, $orderId = null)
     {
+        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
@@ -1002,6 +1003,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE, $orderId = null)
     {
+        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
         $email = $object->getEmail();
         $storeId = $object->getStoreId();
@@ -1070,6 +1072,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function _subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db, $orderId = null)
     {
+        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
         if ($db) {
             if ($isConfirmNeed) {
