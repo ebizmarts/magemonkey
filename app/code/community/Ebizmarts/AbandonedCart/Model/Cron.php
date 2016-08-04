@@ -101,14 +101,14 @@ class Ebizmarts_AbandonedCart_Model_Cron
         // subtract days from latest run to get difference from the actual abandon date of the cart
         $diff = $this->days[$run];
         if ($run == 1 && $this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS) {
-            $diff -= $this->days[0] / 24;
+            $diff = $diff * 24 - $this->days[0];
         } elseif ($run != 0) {
             $diff -= $this->days[$run - 1];
         }
 
         // set the top date of the carts to get
         $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($diff, 'DAY'));
-        if ($run == 0 && $this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS) {
+        if ($run <= 1 && $this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS) {
             $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($diff, 'HOUR'));
         }
         $from = new Zend_Db_Expr($expr);
@@ -213,7 +213,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $today = idate('U', strtotime(now()));
                 $updatedAt = idate('U', strtotime($quote->getUpdatedAt()));
                 $updatedAtDiff = ($today - $updatedAt) / 60 / 60 / 24;
-                if ($this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run == 0) {
+                if ($this->unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS && $run <= 1) {
                     $updatedAtDiff = ($today - $updatedAt) / 60 / 60;
                 }
 
