@@ -489,6 +489,7 @@ class Ebizmarts_MageMonkey_Model_Observer
 
             }
             $orderId = $order->getId();
+            Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
 
             if(Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
                 Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb, $orderId);
