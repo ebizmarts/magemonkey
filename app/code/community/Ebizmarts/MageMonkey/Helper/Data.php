@@ -1232,6 +1232,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $customer->setMcListId($listId);
                         $subscriber = Mage::getModel('newsletter/subscriber')
                             ->setSubscriberEmail($email);
+                        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
                         $this->subscribeToList($subscriber, 0, $listId);
 
                     }
