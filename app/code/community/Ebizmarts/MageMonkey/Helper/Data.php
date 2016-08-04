@@ -976,17 +976,21 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
+                Mage::log('subscribeToList 1', null, 'ebizmarts.log', true);
                 $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
         } elseif (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe']) {
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
+                Mage::log('subscribeToList 2', null, 'ebizmarts.log', true);
                 $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
             //Subscription for One Step Checkout with force subscription
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
+            Mage::log('subscribeToList 3', null, 'ebizmarts.log', true);
             $this->subscribeToList($object, $db, null, false, $orderId);
         } elseif(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
+            Mage::log('subscribeToList 4', null, 'ebizmarts.log', true);
             $this->subscribeToList($object, $db, NULL, TRUE, $orderId);
         }
 
