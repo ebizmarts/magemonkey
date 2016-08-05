@@ -50,17 +50,17 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
         if (TRUE === $subscriber->getIsStatusChanged()) {
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
-            if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
-                $saveOnDb = Mage::helper('monkey')->config('checkout_async');
-                Mage::log('subscribeToList 6', null, 'ebizmarts.log', true);
-                Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
-            } else {
+//            if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
+//                $saveOnDb = Mage::helper('monkey')->config('checkout_async');
+//                Mage::log('subscribeToList 6', null, 'ebizmarts.log', true);
+//                Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
+//            } else {
                 $post = Mage::app()->getRequest()->getPost();
                 if (isset($post['email']) || isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || Mage::getSingleton('core/session')->getIsUpdateCustomer() || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE) {
                     Mage::log('subscribeToList 7', null, 'ebizmarts.log', true);
                     Mage::helper('monkey')->subscribeToList($subscriber, 0);
                 }
-            }
+//            }
             Mage::getSingleton('core/session')->setIsHandleSubscriber(FALSE);
         }
         return $observer;
