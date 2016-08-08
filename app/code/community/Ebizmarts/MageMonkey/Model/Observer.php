@@ -18,7 +18,6 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function handleSubscriber(Varien_Event_Observer $observer)
     {
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
@@ -52,12 +51,10 @@ class Ebizmarts_MageMonkey_Model_Observer
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
             if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
                 $saveOnDb = Mage::helper('monkey')->config('checkout_async');
-                Mage::log('subscribeToList 6', null, 'ebizmarts.log', true);
                 Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
             } else {
                 $post = Mage::app()->getRequest()->getPost();
                 if (isset($post['email']) || isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe'] || Mage::getSingleton('core/session')->getIsUpdateCustomer() || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_NOT_ACTIVE) {
-                    Mage::log('subscribeToList 7', null, 'ebizmarts.log', true);
                     Mage::helper('monkey')->subscribeToList($subscriber, 0);
                 }
             }
@@ -314,7 +311,6 @@ class Ebizmarts_MageMonkey_Model_Observer
                 $subscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
                 $monkeyPost = unserialize(Mage::getSingleton('core/session')->getMonkeyPost());
                 if (!Mage::helper('monkey')->subscribedToList($email, $defaultList) && !$isAdmin && ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED || $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED) || $monkeyPost) {
-                    Mage::log('subscribeToList 7', null, 'ebizmarts.log', true);
                     Mage::helper('monkey')->subscribeToList($customer, 0);
                     //$api->listSubscribe($defaultList, $customer->getEmail(), $mergeVars, $isConfirmNeed);
                 }
@@ -360,7 +356,6 @@ class Ebizmarts_MageMonkey_Model_Observer
     }
 
     public function registerCheckoutSubscribeWithSagePay(Varien_Event_Observer $observer){
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
@@ -386,7 +381,6 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function registerCheckoutSubscribe(Varien_Event_Observer $observer)
     {
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         if (!Mage::helper('monkey')->canMonkey()) {
             return $observer;
         }
@@ -422,7 +416,6 @@ class Ebizmarts_MageMonkey_Model_Observer
      */
     public function registerCheckoutSuccess(Varien_Event_Observer $observer)
     {
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         Mage::getSingleton('core/session')->setRegisterCheckoutSuccess(TRUE);
         if (!Mage::helper('monkey')->canMonkey()) {
             Mage::getSingleton('core/session')->setMonkeyCheckout(FALSE);
@@ -469,7 +462,6 @@ class Ebizmarts_MageMonkey_Model_Observer
     }
 
     protected function _handleCheckoutSubscription($order, $isSaveOrderBefore = false){
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
         if (is_object($order) && ($order->getId() || $isSaveOrderBefore)) {
             //Set Campaign Id if exist
             $campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');
@@ -497,7 +489,6 @@ class Ebizmarts_MageMonkey_Model_Observer
 
             }
             $orderId = $order->getId();
-            Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
 
             if(Mage::getSingleton('core/session')->getMonkeyCheckout() || Mage::getSingleton('core/session')->getIsOneStepCheckout()) {
                 Mage::helper('monkey')->listsSubscription($toSubscribe, $saveOnDb, $orderId);

@@ -969,28 +969,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function listsSubscription($object, $db, $orderId = null)
     {
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
-        Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
-                Mage::log('subscribeToList 1', null, 'ebizmarts.log', true);
                 $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
         } elseif (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe']) {
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
-                Mage::log('subscribeToList 2', null, 'ebizmarts.log', true);
                 $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
             //Subscription for One Step Checkout with force subscription
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
-            Mage::log('subscribeToList 3', null, 'ebizmarts.log', true);
             $this->subscribeToList($object, $db, null, false, $orderId);
         } elseif(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
-            Mage::log('subscribeToList 4', null, 'ebizmarts.log', true);
             $this->subscribeToList($object, $db, NULL, TRUE, $orderId);
         }
 
@@ -1007,8 +1001,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE, $orderId = null)
     {
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
-        Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
         $email = $object->getEmail();
         $storeId = $object->getStoreId();
         if ($object instanceof Mage_Customer_Model_Customer) {
@@ -1076,8 +1068,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function _subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db, $orderId = null)
     {
-        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
-        Mage::log('order id '.$orderId, null, 'ebizmarts.log', true);
         if ($db) {
             if ($isConfirmNeed) {
                 Mage::getSingleton('core/session')->addSuccess(Mage::helper('monkey')->__('Confirmation request will be sent soon.'));
@@ -1232,7 +1222,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $customer->setMcListId($listId);
                         $subscriber = Mage::getModel('newsletter/subscriber')
                             ->setSubscriberEmail($email);
-                        Mage::log(__METHOD__, null, 'ebizmarts.log', true);
                         $this->subscribeToList($subscriber, 0, $listId);
 
                     }
