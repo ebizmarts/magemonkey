@@ -626,7 +626,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 if(isset($data['data']['merges']['STOREID'])){
                     $subscriberStoreId=$data['data']['merges']['STOREID'];
                 }else {
-                    $subscriberStoreId = Mage::helper('monkey')->getStoreByList();
+                    $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['id']);
                 }
                 Mage::app()->setCurrentStore($subscriberStoreId);
                 $subscriber->subscribe($data['data']['email']);
@@ -755,11 +755,22 @@ class Ebizmarts_MageMonkey_Model_Cron
             ->addFieldToFilter('email', array('eq' => $email));
         if (count($customerCollection) > 0) {
             $toUpdate = $customerCollection->getFirstItem();
+            if(isset($data['data']['merges']['FNAME'])) {
+                $toUpdate->setFirstname($data['data']['merges']['FNAME']);
+            }
+            if(isset($data['data']['merges']['LNAME'])) {
+                $toUpdate->setLastname($data['data']['merges']['LNAME']);
+            }
         }else {
             $toUpdate = $subscriber;
+            if(isset($data['data']['merges']['FNAME'])) {
+                $toUpdate->setSubscriberFirstname($data['data']['merges']['FNAME']);
+            }
+            if(isset($data['data']['merges']['LNAME'])) {
+                $toUpdate->setSubscriberLastname($data['data']['merges']['LNAME']);
+            }
         }
-        $toUpdate->setFirstname($data['data']['merges']['FNAME']);
-        $toUpdate->setLastname($data['data']['merges']['LNAME']);
+
         $toUpdate->save();
     }
 
@@ -779,7 +790,7 @@ class Ebizmarts_MageMonkey_Model_Cron
         $newSubscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($new);
 
 
-        $subscriberStoreId = Mage::helper('monkey')->getStoreByList();
+        $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['list_id']);
 
         Mage::app()->setCurrentStore($subscriberStoreId);
 

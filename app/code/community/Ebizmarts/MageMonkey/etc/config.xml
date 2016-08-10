@@ -293,7 +293,7 @@
                 <order_status>all_status</order_status>
             </ecommerce360>
             <notifications>
-                <updates_url><![CDATA[http://store.ebizmarts.com/media/feeds/]]></updates_url>
+                <updates_url><![CDATA[https://store.ebizmarts.com/media/feeds/]]></updates_url>
                 <check_frequency>86400</check_frequency>
             </notifications>
         </monkey>
