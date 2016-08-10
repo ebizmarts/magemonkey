@@ -286,6 +286,7 @@
                 <enable_log>1</enable_log>
                 <checkout_async>1</checkout_async>
                 <markfield>HASCLICKED</markfield>
+                <enable_webhooks>1</enable_webhooks>
             </general>
             <ecommerce360>
                 <active>0</active>
