@@ -95,10 +95,11 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         $order = $observer->getEvent()->getOrder();
         if (is_object($order) && $order->getId()) {
             //Set Campaign Id if exist
-            $campaign_id = Mage::getModel('monkey/ecommerce360')->getCookie()->get('magemonkey_campaign_id');
+            $campaign_id = $this->_getCampaignCookie();
             if ($campaign_id && $order->getEbizmartsMagemonkeyCampaignId() == null) {
                 $order->setEbizmartsMagemonkeyCampaignId($campaign_id)->save();
             }
+            $this->_deleteCampaignCookie();
             $customerEmail = $order->getCustomerEmail();
             $collection = Mage::getModel('monkey/lastorder')->getCollection()
                 ->addFieldToFilter('email', array('eq' => $customerEmail));
@@ -313,7 +314,21 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
      */
     protected function _getCampaignCookie()
     {
-        return $this->getCookie()->get('magemonkey_campaign_id');
+        $cookie = Mage::getModel('core/cookie')->get('magemonkey_campaign_id');
+        if($cookie && Mage::getModel('core/cookie')->getLifetime('magemonkey_campaign_id') == 3600) {
+            return $cookie;
+        }
+        else {
+            return null;
+        }
+    }
+
+    protected function _deleteCampaignCookie()
+    {
+        if($this->_getCampaignCookie())
+        {
+            Mage::getModel('core/cookie')->delete('magemonkey_campaign_id');
+        }
     }
 
     /**

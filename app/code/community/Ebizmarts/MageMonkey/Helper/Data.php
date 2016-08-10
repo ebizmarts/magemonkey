@@ -437,7 +437,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if($customer->getSubscriberFirstname()){
                 $guestFirstName = $this->config('guest_name', $customer->getStoreId());
             }elseif($this->config('guest_name', $customer->getStoreId())) {
-                $guestFirstName = $customer->getSubscriberFirstname();
+                $guestFirstName = $this->config('guest_name', $customer->getStoreId());
             }
 
             if ($guestFirstName) {
@@ -449,7 +449,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             if($customer->getSubscriberLastname()){
                 $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
             }elseif($this->config('guest_lastname', $customer->getStoreId())){
-                $guestLastName = $customer->getSubscriberLastname();
+                $guestLastName = $this->config('guest_lastname', $customer->getStoreId());
             }
 
             if ($guestLastName) {
@@ -496,6 +496,49 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $merge_vars = array_merge($merge_vars, $blank->toArray());
         }
         //magemonkey_mergevars_after
+        return $merge_vars;
+    }
+
+    public function getMergeVarsFromOrder($maps, $order, $merge_vars){
+
+        foreach ($maps as $map) {
+
+            $customAtt = $map['magento'];
+            $chimpTag = $map['mailchimp'];
+
+            if ($chimpTag && $customAtt) {
+
+                $key = strtoupper($chimpTag);
+
+                switch ($customAtt) {
+
+                    case 'billing_address':
+                    case 'shipping_address':
+                        $merge_vars = array_merge($merge_vars, $this->_setAddress($customAtt,$merge_vars, $order, $key));
+                        break;
+                    case 'date_of_purchase':
+
+                            $merge_vars[$key] = $order->getUpdatedAt();
+
+                        break;
+
+                    case 'store_code':
+                        $storeId = (string)$order->getData('store_id');
+                        $storeCode = Mage::getModel('core/store')->load($storeId)->getCode();
+                        if ($storeCode) {
+                            $merge_vars[$key] = $storeCode;
+                        }
+                        break;
+                    case 'fname':
+                        $merge_vars[$key] = $order->getCustomerFirstname();
+                        break;
+                    case 'lname':
+                        $merge_vars[$key] = $order->getCustomerLastname();
+                        break;
+                }
+
+            }
+        }
         return $merge_vars;
     }
     private function _setMaps($maps,$customer,$merge_vars, $websiteId)
@@ -593,14 +636,19 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $merge_vars;
     }
-    protected function _setAddress($customAtt,$merge_vars, $customer, $key)
+    protected function _setAddress($customAtt,$merge_vars, $object, $key)
     {
+        if($object instanceof Mage_Sales_Model_Order){
+            $addr = explode('_', $customAtt);
+            $address = $object->{'get' . ucfirst($addr[0]) . 'Address'}();
+        }else {
 
-        $addr = explode('_', $customAtt);
-        $address = $customer->{'getPrimary' . ucfirst($addr[0]) . 'Address'}();
-        if (!$address) {
-            if ($customer->{'getDefault' . ucfirst($addr[0])}()) {
-                $address = Mage::getModel('customer/address')->load($customer->{'getDefault' . ucfirst($addr[0])}());
+            $addr = explode('_', $customAtt);
+            $address = $object->{'getPrimary' . ucfirst($addr[0]) . 'Address'}();
+            if (!$address) {
+                if ($object->{'getDefault' . ucfirst($addr[0])}()) {
+                    $address = Mage::getModel('customer/address')->load($object->{'getDefault' . ucfirst($addr[0])}());
+                }
             }
         }
         if ($address) {
@@ -917,26 +965,27 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @param $object
      * @param $db
+     * @param $orderId
      */
-    public function listsSubscription($object, $db)
+    public function listsSubscription($object, $db, $orderId = null)
     {
         $monkeyPost = Mage::getSingleton('core/session')->getMonkeyPost();
         $post = unserialize($monkeyPost);
         if (isset($post['magemonkey_force'])) {
             foreach ($post['list'] as $list) {
                 $listId = $list['subscribed'];
-                $this->subscribeToList($object, $db, $listId);
+                $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
         } elseif (isset($post['magemonkey_subscribe']) && $post['magemonkey_subscribe']) {
             $lists = explode(',', $post['magemonkey_subscribe']);
             foreach ($lists as $listId) {
-                $this->subscribeToList($object, $db, $listId);
+                $this->subscribeToList($object, $db, $listId, false, $orderId);
             }
             //Subscription for One Step Checkout with force subscription
         } elseif (Mage::getSingleton('core/session')->getIsOneStepCheckout() && Mage::helper('monkey')->config('checkout_subscribe') > 2 && !Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
-            $this->subscribeToList($object, $db);
+            $this->subscribeToList($object, $db, null, false, $orderId);
         } elseif(!Mage::getSingleton('core/session')->getMonkeyCheckout()){
-            $this->subscribeToList($object, $db, NULL, TRUE);
+            $this->subscribeToList($object, $db, NULL, TRUE, $orderId);
         }
 
     }
@@ -947,8 +996,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $object
      * @param $db
      * @param null $listId
+     * @param $forceSubscribe
+     * @param $orderId
      */
-    public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE)
+    public function subscribeToList($object, $db, $listId = NULL, $forceSubscribe = FALSE, $orderId = null)
     {
         $email = $object->getEmail();
         $storeId = $object->getStoreId();
@@ -964,8 +1015,16 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $listId = $defaultList;
         }
         $alreadySubscribed = Mage::getSingleton('newsletter/subscriber')->loadByEmail($email);
+        $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
+        $isConfirmNeed = FALSE;
+        if (!Mage::helper('monkey')->isAdmin() &&
+            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $object->getStoreId()) || $forceSubscribe && Mage::getSingleton('core/session')->getMonkeyCheckout())
+        ) {
+            $isConfirmNeed = TRUE;
+        }
         if ($listId == $defaultList && !Mage::getSingleton('core/session')->getIsHandleSubscriber() && !$forceSubscribe && (!$alreadySubscribed || !$alreadySubscribed->getId())) {
             $subscriber->setStoreId($storeId)->subscribe($email);
+            $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db, $orderId);
         } else {
             $alreadyOnList = Mage::getSingleton('monkey/asyncsubscribers')->getCollection()
                 ->addFieldToFilter('lists', $listId)
@@ -973,19 +1032,12 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 ->addFieldToFilter('processed', 0);
             //if not in magemonkey_async_subscribers with processed 0 add list
             if (count($alreadyOnList) == 0) {
-                $isConfirmNeed = FALSE;
-                if (!Mage::helper('monkey')->isAdmin() &&
-                    (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $object->getStoreId()) == 1 && !Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $object->getStoreId()) || $forceSubscribe && Mage::getSingleton('core/session')->getMonkeyCheckout())
-                ) {
-                    $isConfirmNeed = TRUE;
-                }
 
                 $isOnMailChimp = Mage::helper('monkey')->subscribedToList($email, $listId);
                 //if( TRUE === $subscriber->getIsStatusChanged() ){
                 if ($isOnMailChimp == 1) {
                     if(Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
-                        $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
-                        $this->_subscribe($listId, $email, $mergeVars, 0, 1);
+                        $this->_subscribe($listId, $email, $mergeVars, 0, 1, $orderId);
                     }
                     return;
                 }
@@ -994,9 +1046,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_UNCONFIRMED);
                 }
 
-                $mergeVars = Mage::helper('monkey')->mergeVars($object, FALSE, $listId);
-                $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db);
-                if(Mage::getSingleton('core/session')->getMonkeyCheckout()){
+                $this->_subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db, $orderId);
+                $subscriberExists = Mage::getModel('newsletter/subscriber')->loadbyEmail($email);
+                if(Mage::getSingleton('core/session')->getMonkeyCheckout() && !$subscriberExists->getId()){
                     $subscriber->subscribe($email);
                 }
             }
@@ -1012,8 +1064,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $mergeVars
      * @param $isConfirmNeed
      * @param $db
+     * @param $orderId
      */
-    public function _subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db)
+    public function _subscribe($listId, $email, $mergeVars, $isConfirmNeed, $db, $orderId = null)
     {
         if ($db) {
             if ($isConfirmNeed) {
@@ -1026,6 +1079,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                 ->setConfirm($isConfirmNeed)
                 ->setProcessed(0)
                 ->setCreatedAt(Mage::getModel('core/date')->gmtDate())
+                ->setOrderId($orderId)
                 ->save();
         } else {
             if ($isConfirmNeed) {

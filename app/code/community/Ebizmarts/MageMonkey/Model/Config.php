@@ -35,6 +35,8 @@ class Ebizmarts_MageMonkey_Model_Config
     const GENERAL_ADMINHTML_NOTIFICATION = 'monkey/general/adminhtml_notification';
     const GENERAL_ENABLE_LOG = 'monkey/general/enable_log';
 
+    const GENERAL_CHECKOUT_SUBSCRIBE_DATA = 'monkey/general/checkout_subscribe_data';
+
 
     const ECOMMERCE360_ACTIVE = 'monkey/ecommerce360/active';
     const ECOMMERCE360_ORDER_STATUS = 'monkey/ecommerce360/order_status';

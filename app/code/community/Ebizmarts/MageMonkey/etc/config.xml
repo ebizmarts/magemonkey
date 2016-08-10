@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-            <version>1.2.4.1</version>
+            <version>1.2.5</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
@@ -69,6 +69,9 @@
                     <lastorder>
                         <table>magemonkey_last_order</table>
                     </lastorder>
+                    <asyncwebhooks>
+                        <table>magemonkey_async_webhooks</table>
+                    </asyncwebhooks>
                 </entities>
             </monkey_mysql4>
             <newsletter>
@@ -135,6 +138,14 @@
             </updates>
         </layout>
         <events>
+            <sagepaysuite_place_order>
+                <observers>
+                    <monkey_subscribe_checkout_with_sagepay>
+                        <class>monkey/observer</class>
+                        <method>registerCheckoutSubscribeWithSagePay</method>
+                    </monkey_subscribe_checkout_with_sagepay>
+                </observers>
+            </sagepaysuite_place_order>
             <controller_action_predispatch_onestepcheckout_index_index>
                 <observers>
                     <monkey_subscribe_checkout>
@@ -143,6 +154,14 @@
                     </monkey_subscribe_checkout>
                 </observers>
             </controller_action_predispatch_onestepcheckout_index_index>
+            <controller_action_postdispatch_firecheckout_index_saveOrder>
+                <observers>
+                    <monkey_subscribe_checkout>
+                        <class>monkey/observer</class>
+                        <method>registerCheckoutSubscribe</method>
+                    </monkey_subscribe_checkout>
+                </observers>
+            </controller_action_postdispatch_firecheckout_index_saveOrder>
             <sales_order_place_before>
                 <observers>
                     <monkey_subscribe_checkout>
@@ -267,6 +286,7 @@
                 <enable_log>1</enable_log>
                 <checkout_async>1</checkout_async>
                 <markfield>HASCLICKED</markfield>
+                <enable_webhooks>1</enable_webhooks>
             </general>
             <ecommerce360>
                 <active>0</active>
@@ -336,6 +356,14 @@
                     <model>monkey/cron::cleanSubscribersAsync</model>
                 </run>
             </magemonkey_cleansubscribers_asynch>
+            <magemonkey_webhooks_asynch>
+                <schedule>
+                    <cron_expr>*/15 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>monkey/cron::processWebhookData</model>
+                </run>
+            </magemonkey_webhooks_asynch>
         </jobs>
     </crontab>
 </config>

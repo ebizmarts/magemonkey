@@ -487,6 +487,9 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $oldList = $newList;
             }
             $mergeVars = unserialize($item->getMapfields());
+            if($item->getOrderId()){
+                $mergeVars = $this->_addOrderData($item->getOrderId(), $mergeVars);
+            }
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
                 if (count($batch) > 0) {
                     Mage::getSingleton('monkey/api')->listBatchSubscribe($oldList, $batch, $isConfirmNeed, TRUE, FALSE);
@@ -512,6 +515,13 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     }
 
+    protected function _addOrderData($orderId, $mergeVars){
+        $order = Mage::getModel('sales/order')->load($orderId);
+        $maps = Mage::helper('monkey')->getMergeMaps($order->getStoreId());
+        $mergeVars = Mage::helper('monkey')->getMergeVarsFromOrder($maps, $order, $mergeVars);
+        return $mergeVars;
+    }
+
     public function cleanSubscribersAsync()
     {
         $collection = Mage::getModel('monkey/asyncsubscribers')->getCollection();
@@ -520,4 +530,297 @@ class Ebizmarts_MageMonkey_Model_Cron
             $item->delete();
         }
     }
+
+
+    public function processWebhookData()
+    {
+
+        $collection = Mage::getModel('monkey/asyncwebhooks')->getCollection();
+        $collection->addFieldToFilter('processed', array('eq' => 0));
+
+        foreach ($collection as $item) {
+            $data=json_decode($item->getWebhookData(), true);
+            $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
+//            $store = Mage::helper('monkey')->getStoreByList($listId);
+            $subscriber = Mage::getModel('newsletter/subscriber')
+                ->loadByEmail(isset($data['data']['email']));
+            $storeId = $subscriber->getStoreId();
+            $store = Mage::getModel('core/store')->load($storeId);
+            if (!is_null($store)) {
+                $curstore = Mage::app()->getStore();
+                Mage::app()->setCurrentStore($store);
+            }
+            //        Object for cache clean
+            $object = new stdClass();
+            $object->requestParams = array();
+            $object->requestParams['id'] = $listId;
+
+            if (isset($data['data']['email'])) {
+                $object->requestParams['email_address'] = $data['data']['email'];
+            }
+            $cacheHelper = Mage::helper('monkey/cache');
+
+            switch ($item->getWebhookType()) {
+                case 'subscribe':
+                    $this->_subscribe($data);
+                    $cacheHelper->clearCache('listSubscribe', $object);
+                    break;
+                case 'unsubscribe':
+                    $this->_unsubscribe($data);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                    break;
+                case 'cleaned':
+                    $this->_cleaned($data);
+                    $cacheHelper->clearCache('listUnsubscribe', $object);
+                    break;
+                case 'campaign':
+                    $this->_campaign($data);
+                    break;
+                //case 'profile': Cuando se actualiza email en MC como merchant, te manda un upmail y un profile (no siempre en el mismo órden)
+                case 'upemail':
+                    $this->_updateEmail($data);
+                    $cacheHelper->clearCache('listUpdateMember', $object);
+                    break;
+                case 'profile':
+                    $this->_profile($data);
+                    $cacheHelper->clearCache('listUpdateMember', $object);
+                    break;
+            }
+
+            if (!is_null($store)) {
+                Mage::app()->setCurrentStore($curstore);
+            }
+            $item->setProcessed(1)->save();
+
+        }
+
+
+    }
+
+
+    /**
+     * Subscribe email to Magento list
+     *
+     * @param array $data
+     * @return void
+     */
+
+    protected function _subscribe(array $data)
+    {
+        try {
+
+            $subscriber = Mage::getSingleton('newsletter/subscriber')
+                ->loadByEmail($data['data']['email']);
+            if ($subscriber->getId()) {
+
+                $subscriber->setStatus(Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED)
+                    ->save();
+            } else {
+                $subscriber = Mage::getModel('newsletter/subscriber')->setImportMode(TRUE);
+                if(isset($data['data']['fname'])){
+                    $subscriber->setSubscriberFirstname($data['data']['fname']);
+                }
+                if(isset($data['data']['lname'])){
+                    $subscriber->setSubscriberLastname($data['data']['lname']);
+                }
+                if(isset($data['data']['merges']['STOREID'])){
+                    $subscriberStoreId=$data['data']['merges']['STOREID'];
+                }else {
+                    $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['id']);
+                }
+                Mage::app()->setCurrentStore($subscriberStoreId);
+                $subscriber->subscribe($data['data']['email']);
+                Mage::app()->setCurrentStore(0);
+
+            }
+            $customerExist = Mage::getSingleton('customer/customer')
+                ->getCollection()
+                ->addAttributeToFilter('email', array('eq' => $data['data']['email']) )
+                ->getFirstItem();
+            if($customerExist){
+                $storeId = $customerExist->getStoreId();
+            }
+            if($customerExist && Mage::getStoreConfig('sweetmonkey/general/active', $storeId)){
+                Mage::helper('sweetmonkey')->pushVars($customerExist);
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+    }
+
+
+    /**
+     * Unsubscribe or delete email from Magento list
+     *
+     * @param array $data
+     * @return void
+     */
+
+    protected function _unsubscribe(array $data)
+    {
+        $subscriber = Mage::getSingleton('newsletter/subscriber')
+            ->loadByEmail($data['data']['email']);
+
+        if (!$subscriber->getId()) {
+            $subscriber = Mage::getModel('newsletter/subscriber')
+                ->loadByEmail($data['data']['email']);
+        }
+        if($subscriber->getId()){
+            try {
+                if(!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $subscriber->getStoreId())){
+                    $subscriber->setImportMode(true);
+                }
+
+                switch ($data['data']['action']) {
+                    case 'delete' :
+                        //if config setting "Webhooks Delete action" is set as "Delete customer account"
+                        if (Mage::getStoreConfig("monkey/general/webhook_delete") == 1) {
+                            $subscriber->delete();
+                        } else {
+                            $subscriber->unsubscribe();
+                        }
+                        break;
+                    case 'unsub':
+                        $subscriber->unsubscribe();
+                        break;
+                }
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
+
+    /**
+     * Add "Cleaned Emails" notification to Adminnotification Inbox <cleaned>
+     *
+     * @param array $data
+     * @return void
+     */
+
+
+    protected function _cleaned(array $data)
+    {
+        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {  //This 'if' returns false even if Admin Notification is enabled on the module sometimes, must check why
+            $text = Mage::helper('monkey')->__('MailChimp Cleaned Emails: %s %s at %s reason: %s', $data['data']['email'], $data['type'], $data['fired_at'], $data['data']['reason']);
+            $temp1=$this->_getInbox()
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
+
+        }
+
+        //Delete subscriber from Magento
+        $s = Mage::getSingleton('newsletter/subscriber')
+            ->loadByEmail($data['data']['email']);
+
+        if ($s->getId()) {
+            try {
+                $s->delete();
+            } catch (Exception $e) {
+                Mage::logException($e);
+            }
+        }
+    }
+
+
+    /**
+     * Add "Campaign Sending Status" notification to Adminnotification Inbox <campaign>
+     *
+     * @param array $data
+     * @return void
+     */
+
+    protected function _campaign(array $data)
+    {
+        if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
+            $text = Mage::helper('monkey')->__('MailChimp Campaign Send: %s %s at %s', $data['data']['subject'], $data['data']['status'], $data['fired_at']);
+            $this->_getInbox()
+                ->setTitle($text)
+                ->setDescription($text)
+                ->save();
+        }
+
+    }
+
+
+
+
+    protected function _profile(array $data)
+    {
+        $email = $data['data']['email'];
+        $subscriber = Mage::getSingleton('newsletter/subscriber')
+            ->loadByEmail($data['data']['email']);
+
+        $customerCollection = Mage::getModel('customer/customer')->getCollection()
+            ->addFieldToFilter('email', array('eq' => $email));
+        if (count($customerCollection) > 0) {
+            $toUpdate = $customerCollection->getFirstItem();
+            if(isset($data['data']['merges']['FNAME'])) {
+                $toUpdate->setFirstname($data['data']['merges']['FNAME']);
+            }
+            if(isset($data['data']['merges']['LNAME'])) {
+                $toUpdate->setLastname($data['data']['merges']['LNAME']);
+            }
+        }else {
+            $toUpdate = $subscriber;
+            if(isset($data['data']['merges']['FNAME'])) {
+                $toUpdate->setSubscriberFirstname($data['data']['merges']['FNAME']);
+            }
+            if(isset($data['data']['merges']['LNAME'])) {
+                $toUpdate->setSubscriberLastname($data['data']['merges']['LNAME']);
+            }
+        }
+
+        $toUpdate->save();
+    }
+
+    /**
+     * Update customer email <upemail>
+     *
+     * @param array $data
+     * @return void
+     */
+    protected function _updateEmail(array $data)
+    {
+        $old = $data['data']['old_email'];
+        $new = $data['data']['new_email'];
+
+
+        $oldSubscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($old);
+        $newSubscriber = Mage::getSingleton('newsletter/subscriber')->loadByEmail($new);
+
+
+        $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['list_id']);
+
+        Mage::app()->setCurrentStore($subscriberStoreId);
+
+
+        if ($oldSubscriber->getId()) {
+            $oldSubscriber->setSubscriberEmail($new)
+                ->save();
+            Mage::app()->setCurrentStore(0);
+        } elseif (!$newSubscriber->getId() && !$oldSubscriber->getId()) {
+            Mage::getModel('newsletter/subscriber')
+                ->setImportMode(TRUE)
+                ->setStoreId(Mage::app()->getStore()->getId())
+                ->subscribe($new);
+            Mage::app()->setCurrentStore(0);
+        }
+    }
+
+
+
+    /**
+     * Return Inbox model instance
+     *
+     * @return Mage_AdminNotification_Model_Inbox
+     */
+    protected function _getInbox()
+    {
+        return Mage::getModel('adminnotification/inbox')
+            ->setSeverity(4)//Notice
+            ->setDateAdded(Mage::getModel('core/date')->gmtDate());
+    }
+
+
 }

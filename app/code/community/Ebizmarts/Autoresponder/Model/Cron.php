@@ -615,7 +615,14 @@ class Ebizmarts_Autoresponder_Model_Cron
         $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
         $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
         $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TEMPLATE, $storeId);
-        $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
+        $store=Mage::getModel('core/store')->load($storeId);
+        $storeCode=$store->getCode();
+        $storeCodeUrl = Mage::getStoreConfig('web/url/use_store', $storeId);
+        if($storeCodeUrl){
+            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . $storeCode . '/ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
+        }else {
+            $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . 'ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
+        }
         $vars = array('name' => $name, 'tags' => array($tags), 'products' => $products, 'url' => $url);
 
         $customer = Mage::getModel('customer/customer')

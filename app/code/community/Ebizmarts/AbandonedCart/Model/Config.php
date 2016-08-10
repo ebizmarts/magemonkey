@@ -33,7 +33,6 @@ class Ebizmarts_AbandonedCart_Model_Config
     const FOURTH_SUBJECT = "ebizmarts_abandonedcart/general/subject4";
     const FIFTH_SUBJECT = "ebizmarts_abandonedcart/general/subject5";
     const LOG = "ebizmarts_abandonedcart/general/log";
-    const AUTOLOGIN = "ebizmarts_abandonedcart/general/autologin";
     const ABANDONED_TAGS = 'global/ebizmarts_abandonedcart/mandrill-tag';
     const IN_DAYS = 0;
     const IN_HOURS = 1;
