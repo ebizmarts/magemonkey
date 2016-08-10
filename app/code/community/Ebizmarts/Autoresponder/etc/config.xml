@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_Autoresponder>
-            <version>1.2.1.1</version>
+            <version>1.2.2</version>
         </Ebizmarts_Autoresponder>
     </modules>
     <global>
