@@ -298,7 +298,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 }
 
             }
-            if($job->getProcessedCount() >= $job->getTotalCount()) {
+            if ($job->getProcessedCount() >= $job->getTotalCount()) {
                 $job->setStatus('finished');
             }
             $job->save();
@@ -487,7 +487,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 $oldList = $newList;
             }
             $mergeVars = unserialize($item->getMapfields());
-            if($item->getOrderId()){
+            if ($item->getOrderId()) {
                 $mergeVars = $this->_addOrderData($item->getOrderId(), $mergeVars);
             }
             if ($newList != $oldList || $eachIsConfirmNeed != $isConfirmNeed) {
@@ -500,9 +500,9 @@ class Ebizmarts_MageMonkey_Model_Cron
 
             $mergeVars['EMAIL'] = $item->getEmail();
             $isOnMailChimp = Mage::helper('monkey')->subscribedToList($item->getEmail(), $oldList);
-            if($isOnMailChimp) {
+            if ($isOnMailChimp) {
                 Mage::getSingleton('monkey/api')->listUpdateMember($oldList, $item->getEmail(), $mergeVars);
-            }else {
+            } else {
                 $batch[] = $mergeVars;
             }
             //$email = $item->getEmail();
@@ -515,7 +515,8 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     }
 
-    protected function _addOrderData($orderId, $mergeVars){
+    protected function _addOrderData($orderId, $mergeVars)
+    {
         $order = Mage::getModel('sales/order')->load($orderId);
         $maps = Mage::helper('monkey')->getMergeMaps($order->getStoreId());
         $mergeVars = Mage::helper('monkey')->getMergeVarsFromOrder($maps, $order, $mergeVars);
@@ -617,15 +618,15 @@ class Ebizmarts_MageMonkey_Model_Cron
                     ->save();
             } else {
                 $subscriber = Mage::getModel('newsletter/subscriber')->setImportMode(TRUE);
-                if(isset($data['data']['fname'])){
+                if (isset($data['data']['fname'])) {
                     $subscriber->setSubscriberFirstname($data['data']['fname']);
                 }
-                if(isset($data['data']['lname'])){
+                if (isset($data['data']['lname'])) {
                     $subscriber->setSubscriberLastname($data['data']['lname']);
                 }
-                if(isset($data['data']['merges']['STOREID'])){
+                if (isset($data['data']['merges']['STOREID'])) {
                     $subscriberStoreId=$data['data']['merges']['STOREID'];
-                }else {
+                } else {
                     $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['id']);
                 }
                 Mage::app()->setCurrentStore($subscriberStoreId);
@@ -635,12 +636,12 @@ class Ebizmarts_MageMonkey_Model_Cron
             }
             $customerExist = Mage::getSingleton('customer/customer')
                 ->getCollection()
-                ->addAttributeToFilter('email', array('eq' => $data['data']['email']) )
+                ->addAttributeToFilter('email', array('eq' => $data['data']['email']))
                 ->getFirstItem();
-            if($customerExist){
+            if ($customerExist) {
                 $storeId = $customerExist->getStoreId();
             }
-            if($customerExist && Mage::getStoreConfig('sweetmonkey/general/active', $storeId)){
+            if ($customerExist && Mage::getStoreConfig('sweetmonkey/general/active', $storeId)) {
                 Mage::helper('sweetmonkey')->pushVars($customerExist);
             }
         } catch (Exception $e) {
@@ -665,9 +666,9 @@ class Ebizmarts_MageMonkey_Model_Cron
             $subscriber = Mage::getModel('newsletter/subscriber')
                 ->loadByEmail($data['data']['email']);
         }
-        if($subscriber->getId()){
+        if ($subscriber->getId()) {
             try {
-                if(!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $subscriber->getStoreId())){
+                if (!Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CONFIRMATION_EMAIL, $subscriber->getStoreId())) {
                     $subscriber->setImportMode(true);
                 }
 
@@ -755,18 +756,18 @@ class Ebizmarts_MageMonkey_Model_Cron
             ->addFieldToFilter('email', array('eq' => $email));
         if (count($customerCollection) > 0) {
             $toUpdate = $customerCollection->getFirstItem();
-            if(isset($data['data']['merges']['FNAME'])) {
+            if (isset($data['data']['merges']['FNAME'])) {
                 $toUpdate->setFirstname($data['data']['merges']['FNAME']);
             }
-            if(isset($data['data']['merges']['LNAME'])) {
+            if (isset($data['data']['merges']['LNAME'])) {
                 $toUpdate->setLastname($data['data']['merges']['LNAME']);
             }
-        }else {
+        } else {
             $toUpdate = $subscriber;
-            if(isset($data['data']['merges']['FNAME'])) {
+            if (isset($data['data']['merges']['FNAME'])) {
                 $toUpdate->setSubscriberFirstname($data['data']['merges']['FNAME']);
             }
-            if(isset($data['data']['merges']['LNAME'])) {
+            if (isset($data['data']['merges']['LNAME'])) {
                 $toUpdate->setSubscriberLastname($data['data']['merges']['LNAME']);
             }
         }

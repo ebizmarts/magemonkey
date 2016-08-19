@@ -36,7 +36,7 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
     protected function _createCoupon($cookie)
     {
         $storeId = Mage::app()->getStore()->getId();
-        if(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId)) {
+        if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::POPUP_CREATE_COUPON, $storeId)) {
             $cookieValues = explode('/', $cookie);
             $email = $cookieValues[0];
             $email = str_replace(' ', '+', $email);
@@ -58,7 +58,8 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
         return Mage::app()->getStore()->getId();
     }
 
-    protected function _handleCookie(){
+    protected function _handleCookie()
+    {
         $storeId = Mage::app()->getStore()->getId();
         $emailCookie = Mage::getModel('core/cookie')->get('email');
         $subscribeCookie = Mage::getModel('core/cookie')->get('subscribe');
@@ -67,15 +68,15 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
         $email = str_replace(' ', '+', $email);
         $fName = $cookieValues[1];
         $lName = $cookieValues[2];
-        if($subscribeCookie == 'true'){
+        if ($subscribeCookie == 'true') {
             $subscriber = Mage::getModel('newsletter/subscriber')->loadByEmail($email);
-            if(!$subscriber->getId()) {
+            if (!$subscriber->getId()) {
                 $subscriber = Mage::getModel('newsletter/subscriber')
                     ->setStoreId($storeId);
-                if($fName){
+                if ($fName) {
                     $subscriber->setSubscriberFirstname($fName);
                 }
-                if($lName){
+                if ($lName) {
                     $subscriber->setSubscriberLastname($lName);
                 }
                 $subscriber->setStoreId($storeId)

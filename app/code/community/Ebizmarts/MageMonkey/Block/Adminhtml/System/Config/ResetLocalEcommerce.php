@@ -39,11 +39,13 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_ResetLocalEcommerce ext
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'id' => 'resetecommerce_button',
                 'label' => $this->helper('monkey')->__('Reset Local Orders Ecommerce360'),
                 'onclick' => 'javascript:check(); return false;'
-            ));
+                )
+            );
 
         return $button->toHtml();
     }

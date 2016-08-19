@@ -4,7 +4,8 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->run("
+$installer->run(
+    "
 
 	CREATE TABLE IF NOT EXISTS `{$this->getTable('magemonkey_ecommerce360')}` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
@@ -17,6 +18,7 @@ $installer->run("
 	  KEY `order_increment_id` (`order_increment_id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-");
+"
+);
 
 $installer->endSetup();

@@ -45,7 +45,8 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
             $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
             $collection->addFieldToFilter('main_table.store_id', array('in' => $storeIds));
         } elseif (!$collection->isLive()) {
-            $collection->addFieldToFilter('main_table.store_id',
+            $collection->addFieldToFilter(
+                'main_table.store_id',
                 array('eq' => Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId())
             );
         }
@@ -67,7 +68,8 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
             $storeIds = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
             $collection2->addFieldToFilter('store_id', array('in' => $storeIds));
         } elseif (!$collection2->isLive()) {
-            $collection->addFieldToFilter('store_id',
+            $collection->addFieldToFilter(
+                'store_id',
                 array('eq' => Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId())
             );
         }
@@ -96,19 +98,19 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
             $particular = array('sent' => 0, 'soft_bounces' => 0, 'hard_bounces' => 0, 'unique_opens' => 0, 'unique_clicks' => 0);
             if (!$isFilter) {
                 $stores = Mage::app()->getStores();
-                $__particular = $particular;
-                foreach ($stores as $__store => $val) {
-                    $storeid = Mage::app()->getStore($__store)->getId();
+                $particularAux = $particular;
+                foreach ($stores as $store => $val) {
+                    $storeid = Mage::app()->getStore($store)->getId();
                     $aux = $this->__getMandrillStatistics($period, $storeid);
                     if ($aux && !isset($aux['status'])) {
-                        $__particular['sent'] += $aux['sent'];
-                        $__particular['soft_bounces'] += $aux['soft_bounces'];
-                        $__particular['hard_bounces'] += $aux['hard_bounces'];
-                        $__particular['unique_opens'] += $aux['unique_opens'];
-                        $__particular['unique_clicks'] += $aux['unique_clicks'];
+                        $particularAux['sent'] += $aux['sent'];
+                        $particularAux['soft_bounces'] += $aux['soft_bounces'];
+                        $particularAux['hard_bounces'] += $aux['hard_bounces'];
+                        $particularAux['unique_opens'] += $aux['unique_opens'];
+                        $particularAux['unique_clicks'] += $aux['unique_clicks'];
                     }
                 }
-                $particular = $__particular;
+                $particular = $particularAux;
             } else {
                 $data = $this->__getMandrillStatistics($period, $this->getRequest()->getParam('store'));
                 if (!isset($data['status'])) {
@@ -119,13 +121,13 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
             if ($particular) {
 
                 $_sent = $particular['sent'];
-                $_hard_bounces = $particular['hard_bounces'];
-                $_unique_opens = $particular['unique_opens'];
-                $_unique_clicks = $particular['unique_clicks'];
+                $hardBounces = $particular['hard_bounces'];
+                $uniqueOpens = $particular['unique_opens'];
+                $uniqueClicks = $particular['unique_clicks'];
 
 
                 //Emails Sent and Received
-                $aux = $_sent - $_hard_bounces; // - $particular['soft_bounces'];
+                $aux = $_sent - $hardBounces; // - $particular['soft_bounces'];
                 if ($aux > 0) {
                     $aux2 = $aux / $_sent * 100;
                 } else {
@@ -137,23 +139,23 @@ class Ebizmarts_AbandonedCart_Block_Adminhtml_Dashboard_Totals extends Mage_Admi
                 $this->addTotal($this->__('Emails Received'), $received, true);
 
                 //Emails Opened
-                if ($_unique_opens > 0) {
-                    $emailsOpened = $_unique_opens / $_sent * 100;
+                if ($uniqueOpens > 0) {
+                    $emailsOpened = $uniqueOpens / $_sent * 100;
                 } else {
                     $emailsOpened = 0;
                 }
 
-                $opens = sprintf('%d (%2.2f%%)', $_unique_opens, $emailsOpened);
+                $opens = sprintf('%d (%2.2f%%)', $uniqueOpens, $emailsOpened);
                 $this->addTotal($this->__('Emails Opened'), $opens, true);
 
                 //Emails Clicked
-                if ($_unique_clicks > 0) {
-                    $emailsClicked = $_unique_clicks / $_unique_opens * 100;
+                if ($uniqueClicks > 0) {
+                    $emailsClicked = $uniqueClicks / $uniqueOpens * 100;
                 } else {
                     $emailsClicked = 0;
                 }
 
-                $clicks = sprintf('%d (%2.2f%%)', $_unique_clicks, $emailsClicked);
+                $clicks = sprintf('%d (%2.2f%%)', $uniqueClicks, $emailsClicked);
                 $this->addTotal($this->__('Emails Clicked'), $clicks, true);
             }
         }

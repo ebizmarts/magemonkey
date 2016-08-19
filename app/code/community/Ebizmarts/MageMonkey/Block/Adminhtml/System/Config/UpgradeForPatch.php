@@ -38,20 +38,23 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_UpgradeForPatch extends
     public function getButtonHtml()
     {
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
-            ->setData(array(
+            ->setData(
+                array(
                 'id' => 'upgradeforpatch_button',
                 'label' => $this->helper('monkey')->__('Upgrade for Patch SUPEE-6788'),
                 'onclick' => 'javascript:upgradeForPatch(); return false;'
-            ));
+                )
+            );
 
         return $button->toHtml();
     }
 
-    protected function tableExists(){
+    protected function tableExists()
+    {
         $prefix = Mage::getConfig()->getTablePrefix();
-        if($prefix[0]){
+        if ($prefix[0]) {
             $pre = $prefix[0];
-        }else{
+        } else {
             $pre = '';
         }
         $resource = Mage::getSingleton('core/resource')

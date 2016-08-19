@@ -85,16 +85,13 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $email['from_email'] = $this->getSenderEmail();
         $mandrillSenders = $mail->senders->domains();
         $senderExists = false;
-        foreach ($mandrillSenders as $sender)
-        {
+        foreach ($mandrillSenders as $sender) {
             $emailAddress = $sender['domain'];
-            if($email['from_email'] == $sender['domain'])
-            {
+            if ($email['from_email'] == $sender['domain']) {
                 $senderExists = true;
             }
         }
-        if(!$senderExists)
-        {
+        if (!$senderExists) {
             $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email');
         }
         $headers = $mail->getHeaders();
@@ -135,18 +132,20 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         if ($this->hasQueue() && $this->getQueue() instanceof Mage_Core_Model_Email_Queue) {
                         $emailQueue = $this->getQueue();
                         $emailQueue->setMessageBody($message);
-                        $emailQueue->setMessageParameters(array(
+                        $emailQueue->setMessageParameters(
+                            array(
                                     'subject'           => $subject,
                                     'return_path_email' => $returnPathEmail,
                                     'is_plain'          => $this->isPlain(),
                                     'from_email'        => $this->getSenderEmail(),
                                     'from_name'         => $this->getSenderName()
-                                    ))
+                            )
+                        )
                             ->addRecipients($emails, $names, Mage_Core_Model_Email_Queue::EMAIL_TYPE_TO)
                             ->addRecipients($this->_bccEmails, array(), Mage_Core_Model_Email_Queue::EMAIL_TYPE_BCC);
              $emailQueue->addMessageToQueue();
              return true;
-         }
+        }
         try {
             $result = $mail->messages->send($email);
         } catch (Exception $e) {

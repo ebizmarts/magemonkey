@@ -80,12 +80,10 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             if ($this->_generateReviewCoupon($reviewData)) {
                 //generate coupon
                 $customer = Mage::getModel('customer/customer')->load($reviewData->getCustomerId());
-                if($customer->getId()) {
+                if ($customer->getId()) {
                     $email = $customer->getEmail();
                     $name = $customer->getFirstname() . ' ' . $customer->getLastname();
                     $customerGroup = $customer->getGroupId();
-                }else{
-
                 }
                 if (in_array($customerGroup, $customerGroupsCoupon)) {
                     if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::REVIEW_COUPON_AUTOMATIC, $storeId) == Ebizmarts_Autoresponder_Model_Config::COUPON_AUTOMATIC) {
@@ -193,14 +191,14 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             $action = 'by_percent';
             $discount = "$couponamount%";
         }
-        $customer_group = new Mage_Customer_Model_Group();
-        $allGroups = $customer_group->getCollection()->toOptionHash();
+        $customerGroup = new Mage_Customer_Model_Group();
+        $allGroups = $customerGroup->getCollection()->toOptionHash();
         $groups = array();
         foreach ($allGroups as $groupid => $name) {
             $groups[] = $groupid;
         }
-        $coupon_rule = Mage::getModel('salesrule/rule');
-        $coupon_rule->setName("Review coupon $email")
+        $couponRule = Mage::getModel('salesrule/rule');
+        $couponRule->setName("Review coupon $email")
             ->setDescription("Review coupon $email")
             ->setFromDate($fromDate)
             ->setToDate($toDate)
@@ -223,25 +221,25 @@ class Ebizmarts_Autoresponder_Model_EventObserver
             ->setIsRss(0)
             ->setWebsiteIds($websiteid);
         $uniqueId = Mage::getSingleton('salesrule/coupon_codegenerator', array('length' => $couponlength))->generateCode();
-        $coupon_rule->setCouponCode($uniqueId);
-        $coupon_rule->save();
+        $couponRule->setCouponCode($uniqueId);
+        $couponRule->save();
         return array($uniqueId, $discount, $toDate);
     }
 
     public function orderSaved(Varien_Event_Observer $observer)
     {
         $storeId = $observer->getEvent()->getOrder()->getStoreId();
-        if(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $storeId)) {
+        if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $storeId)) {
 
 
-            $original_data = $observer->getEvent()->getData('data_object')->getOrigData();
-            $new_data = $observer->getEvent()->getData('data_object')->getData();
+            $originalData = $observer->getEvent()->getData('data_object')->getOrigData();
+            $newData = $observer->getEvent()->getData('data_object')->getData();
 
             $order = $observer->getEvent()->getOrder();
-            $configStatuses = explode(',',Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ORDER_STATUS, $storeId));
+            $configStatuses = explode(',', Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ORDER_STATUS, $storeId));
 
-            foreach($configStatuses as $status) {
-                if (isset($new_data['status']) && isset($original_data['status']) && $original_data['status'] !== $new_data['status'] && $new_data['status'] == $status) {
+            foreach ($configStatuses as $status) {
+                if (isset($newData['status']) && isset($originalData['status']) && $originalData['status'] !== $newData['status'] && $newData['status'] == $status) {
                     if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $storeId) && Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_TRIGGER, $storeId) == 1) {
                         $tags = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_MANDRILL_TAG, $storeId) . "_$storeId";
                         $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_SUBJECT, $storeId);

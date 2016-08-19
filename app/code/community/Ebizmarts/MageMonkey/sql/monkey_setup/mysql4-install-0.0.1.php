@@ -4,7 +4,8 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->run("
+$installer->run(
+    "
 
 	CREATE TABLE IF NOT EXISTS `{$this->getTable('magemonkey_api_debug')}` (
 	  `debug_id` int(10) unsigned NOT NULL auto_increment,
@@ -15,6 +16,7 @@ $installer->run("
 	  KEY `debug_at` (`debug_at`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-");
+"
+);
 
 $installer->endSetup();

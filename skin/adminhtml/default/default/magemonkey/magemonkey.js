@@ -13,7 +13,8 @@ var transactionalEmailOptionsHandler = function (evt) {
     }
 }
 
-document.observe("dom:loaded", function () {
+document.observe(
+    "dom:loaded", function () {
 
     if ($('monkey_general_transactional_emails')) {
         if ($('monkey_general_transactional_emails').getValue().toString() != 'mandrill') {
@@ -23,4 +24,5 @@ document.observe("dom:loaded", function () {
         Element.observe('monkey_general_transactional_emails', 'change', transactionalEmailOptionsHandler);
     }
 
-});
+    }
+);

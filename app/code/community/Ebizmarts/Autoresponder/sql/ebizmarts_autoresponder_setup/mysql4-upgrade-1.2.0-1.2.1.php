@@ -12,8 +12,10 @@ $installer = $this;
 
 $installer->startSetup();
 $installer->getConnection()
-    ->addColumn($installer->getTable('ebizmarts_autoresponder/backtostock'),'store_id', Varien_Db_Ddl_Table::TYPE_SMALLINT, null, array(
+    ->addColumn(
+        $installer->getTable('ebizmarts_autoresponder/backtostock'), 'store_id', Varien_Db_Ddl_Table::TYPE_SMALLINT, null, array(
         'nullable'  => false,
-    ), 'Store Id');
+        ), 'Store Id'
+    );
 
 $installer->endSetup();

@@ -10,12 +10,14 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->run("
+$installer->run(
+    "
 
 	 ALTER TABLE  `{$this->getTable('sales_flat_quote')}` CHANGE `ebizmarts_abandonedcart_counter` `ebizmarts_abandonedcart_counter` INT( 5 ) NOT NULL DEFAULT '0';
 	 ALTER TABLE  `{$this->getTable('sales_flat_quote')}` CHANGE `ebizmarts_abandonedcart_flag` `ebizmarts_abandonedcart_flag` INT( 5 ) NOT NULL DEFAULT '0';
 
 
-");
+"
+);
 
 $installer->endSetup();

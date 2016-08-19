@@ -215,10 +215,11 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         return $this->_info[$listId];
     }
 
-    public function hasGroupSelected($group){
+    public function hasGroupSelected($group)
+    {
         $ret = false;
-        foreach($group['groups'] as $g){
-            if($this->_groupAllowed($g['name'])){
+        foreach ($group['groups'] as $g) {
+            if ($this->_groupAllowed($g['name'])) {
                 $ret = true;
             }
         }
@@ -266,7 +267,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                     }
                 }
                 if (isset($groupings)) {
-                    $myGroups = $this->_setGrouping($groupings,$fieldType,$myGroups);
+                    $myGroups = $this->_setGrouping($groupings, $fieldType, $myGroups);
                 }
             }
         }
@@ -289,8 +290,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                 break;
         }
         $html = '';
-        if($fieldType!='hidden')
-        {
+        if ($fieldType!='hidden') {
             $html = $this->_generateHtml($myGroups, $group, $checked, $list, $class, $fieldType);
         }
 
@@ -449,8 +449,8 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
         if (isset($allowedGroups)) {
             foreach ($allowedGroups as $group) {
                 $group = explode('_', $group);
-                if(count($group) > 2){
-                    for ($i = 2; $i < count($group); $i++){
+                if (count($group) > 2) {
+                    for ($i = 2; $i < count($group); $i++) {
                         $group[1] .= '_'.$group[$i];
                     }
                 }

@@ -24,9 +24,13 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport extends Mage_Adm
 
     protected function _prepareLayout()
     {
-        $this->setChild('grid',
-            $this->getLayout()->createBlock($this->_blockGroup . '/' . $this->_controller . 'Export_grid',
-                $this->_controller . '.grid')->setSaveParametersInSession(true));
+        $this->setChild(
+            'grid',
+            $this->getLayout()->createBlock(
+                $this->_blockGroup . '/' . $this->_controller . 'Export_grid',
+                $this->_controller . '.grid'
+            )->setSaveParametersInSession(true)
+        );
         return Mage_Adminhtml_Block_Widget_Container::_prepareLayout();
     }
 

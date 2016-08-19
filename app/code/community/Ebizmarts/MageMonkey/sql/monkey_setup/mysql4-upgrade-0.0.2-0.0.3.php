@@ -4,7 +4,8 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->run("
+$installer->run(
+    "
 
 	CREATE TABLE IF NOT EXISTS `{$this->getTable('magemonkey_bulksync_export')}` (
 	  `id` INT(10) unsigned NOT NULL auto_increment,
@@ -19,6 +20,7 @@ $installer->run("
 	  KEY `status` (`status`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-");
+"
+);
 
 $installer->endSetup();

@@ -22,24 +22,23 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
             //restore the quote
 //            Mage::log($params['id']);
             $analytics = array();
-            if(isset($params['utm_source'])) {
+            if (isset($params['utm_source'])) {
                 $analytics['utm_source'] = $params['utm_source'];
             }
-            if(isset($params['utm_medium'])) {
+            if (isset($params['utm_medium'])) {
                 $analytics['utm_medium'] = $params['utm_medium'];
             }
-            if(isset($params['utm_campaign'])) {
+            if (isset($params['utm_campaign'])) {
                 $analytics['utm_campaign'] = $params['utm_campaign'];
             }
             $quote = Mage::getModel('sales/quote')->load($params['id']);
             $url = Mage::getUrl(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::PAGE, $quote->getStoreId()));
             $first = true;
-            foreach($analytics as $key => $value) {
-                if($first) {
+            foreach ($analytics as $key => $value) {
+                if ($first) {
                     $char = '?';
                     $first = false;
-                }
-                else {
+                } else {
                     $char = '&';
                 }
                 $url .= "$char$key=$value";
@@ -50,12 +49,11 @@ class Ebizmarts_AbandonedCart_AbandonedController extends Mage_Checkout_CartCont
             }
                 $url = Mage::getUrl(Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::PAGE, $quote->getStoreId()));
                 $first = true;
-                foreach($analytics as $key => $value) {
-                    if($first) {
+                foreach ($analytics as $key => $value) {
+                    if ($first) {
                         $char = '?';
                         $first = false;
-                    }
-                    else {
+                    } else {
                         $char = '&';
                     }
                     $url .= "$char$key=$value";
