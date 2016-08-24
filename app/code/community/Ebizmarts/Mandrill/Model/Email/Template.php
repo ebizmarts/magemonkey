@@ -20,9 +20,8 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
      */
     public function send($email, $name = null, array $variables = array())
     {
-//        $storeId = Mage::app()->getStore()->getId();
-//        $order = Mage::getModel('sales/order')->load
-        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE)) {
+        $storeId = Mage::app()->getStore()->getId();
+        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
             return parent::send($email, $name, $variables);
         }
         if (!$this->isValidForSend()) {
@@ -87,7 +86,6 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $senderExists = false;
         foreach ($mandrillSenders as $sender)
         {
-            $emailAddress = $sender['domain'];
             if($email['from_email'] == $sender['domain'])
             {
                 $senderExists = true;
