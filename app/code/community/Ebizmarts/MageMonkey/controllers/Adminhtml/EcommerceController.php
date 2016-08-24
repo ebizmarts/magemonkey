@@ -94,9 +94,9 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
             try {
                 $ecommerce = Mage::getModel('monkey/ecommerce');
                 $asyncOrders = Mage::getModel('monkey/asyncorders')->getCollection();
-                foreach($asyncOrders as $order) {
+                foreach ($asyncOrders as $order) {
                     $info = unserialize($order->getInfo());
-                    if(in_array($info['order_id'], $orderIds)){
+                    if (in_array($info['order_id'], $orderIds)) {
                         $order->delete();
                     }
                 }
@@ -175,7 +175,8 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
         Mage::app()->getResponse()->setBody($result);
     }
 
-    protected function _isAllowed() {
+    protected function _isAllowed() 
+    {
         switch ($this->getRequest()->getActionName()) {
             case 'index':
             case 'grid':
@@ -189,9 +190,10 @@ class Ebizmarts_MageMonkey_Adminhtml_EcommerceController extends Mage_Adminhtml_
             case 'resetLocalEcommerce':
             case 'resetRemoteEcommerce':
                 $acl = 'system/config/monkey';
-            break;
+                break;
             case 'masssend':
                 $acl = 'sales/orders';
+                break;
         }
         return Mage::getSingleton('admin/session')->isAllowed($acl);
     }

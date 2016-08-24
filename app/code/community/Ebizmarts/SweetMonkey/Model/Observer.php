@@ -129,7 +129,7 @@ class Ebizmarts_SweetMonkey_Model_Observer
 
                 }
 
-                $tbtVars = $this->expirationPoints($tbtVars,$tbtCustomer);
+                $tbtVars = $this->expirationPoints($tbtVars, $tbtCustomer);
 //                //Expiration Points
 //                if (array_key_exists('PTSEXP', $tbtVars)) {
 //                    $val = Mage::getSingleton('rewards/expiry')

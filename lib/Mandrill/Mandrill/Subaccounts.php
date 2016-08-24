@@ -34,7 +34,7 @@ class Mandrill_Subaccounts
      * @param string $id a unique identifier for the subaccount to be used in sending calls
      * @param string $name an optional display name to further identify the subaccount
      * @param string $notes optional extra text to associate with the subaccount
-     * @param integer $custom_quota an optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation
+     * @param integer $customQuota an optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation
      * @return struct the information saved about the new subaccount
      *     - id string a unique indentifier for the subaccount
      *     - name string an optional display name for the subaccount
@@ -47,9 +47,9 @@ class Mandrill_Subaccounts
      *     - sent_monthly integer the number of emails the subaccount has sent so far this month (months start on midnight of the 1st, UTC)
      *     - sent_total integer the number of emails the subaccount has sent since it was created
      */
-    public function add($id, $name = null, $notes = null, $custom_quota = null)
+    public function add($id, $name = null, $notes = null, $customQuota = null)
     {
-        $_params = array("id" => $id, "name" => $name, "notes" => $notes, "custom_quota" => $custom_quota);
+        $_params = array("id" => $id, "name" => $name, "notes" => $notes, "custom_quota" => $customQuota);
         return $this->master->call('subaccounts/add', $_params);
     }
 
@@ -93,7 +93,7 @@ class Mandrill_Subaccounts
      * @param string $id the unique identifier of the subaccount to update
      * @param string $name an optional display name to further identify the subaccount
      * @param string $notes optional extra text to associate with the subaccount
-     * @param integer $custom_quota an optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation
+     * @param integer $customQuota an optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based on reputation
      * @return struct the information for the updated subaccount
      *     - id string a unique indentifier for the subaccount
      *     - name string an optional display name for the subaccount
@@ -106,9 +106,9 @@ class Mandrill_Subaccounts
      *     - sent_monthly integer the number of emails the subaccount has sent so far this month (months start on midnight of the 1st, UTC)
      *     - sent_total integer the number of emails the subaccount has sent since it was created
      */
-    public function update($id, $name = null, $notes = null, $custom_quota = null)
+    public function update($id, $name = null, $notes = null, $customQuota = null)
     {
-        $_params = array("id" => $id, "name" => $name, "notes" => $notes, "custom_quota" => $custom_quota);
+        $_params = array("id" => $id, "name" => $name, "notes" => $notes, "custom_quota" => $customQuota);
         return $this->master->call('subaccounts/update', $_params);
     }
 

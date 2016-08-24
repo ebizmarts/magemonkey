@@ -33,64 +33,81 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
 
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header' => Mage::helper('monkey')->__('ID'),
             'index' => 'id',
             'type' => 'number'
-        ));
+            )
+        );
 
-        $this->addColumn('data_source_entity', array(
+        $this->addColumn(
+            'data_source_entity', array(
             'header' => Mage::helper('monkey')->__('Entity'),
             'index' => 'data_source_entity',
             'filter' => false,
             'sortable' => false,
-        ));
+            )
+        );
 
-        $this->addColumn('status', array(
+        $this->addColumn(
+            'status', array(
             'header' => Mage::helper('monkey')->__('Status'),
             'index' => 'status',
             'type' => 'options',
             'options' => Mage::getModel('monkey/system_config_source_bulksyncStatus')->toOption()
-        ));
+            )
+        );
 
-        $this->addColumn('progress', array(
+        $this->addColumn(
+            'progress', array(
             'header' => Mage::helper('monkey')->__('Progress'),
             'index' => 'progress',
             'filter' => false,
             'sortable' => false,
             'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Progress'
-        ));
+            )
+        );
 
-        $this->addColumn('lists', array(
+        $this->addColumn(
+            'lists', array(
             'header' => Mage::helper('monkey')->__('Lists'),
             'index' => 'lists',
             'filter' => false,
             'sortable' => false,
             'renderer' => 'Ebizmarts_MageMonkey_Block_Adminhtml_Renderer_Lists'
-        ));
+            )
+        );
 
-        $this->addColumn('started_at', array(
+        $this->addColumn(
+            'started_at', array(
             'header' => Mage::helper('monkey')->__('Started At'),
             'index' => 'started_at',
             'type' => 'datetime'
-        ));
+            )
+        );
 
-        $this->addColumn('updated_at', array(
+        $this->addColumn(
+            'updated_at', array(
             'header' => Mage::helper('monkey')->__('Updated At'),
             'index' => 'updated_at',
             'type' => 'datetime'
-        ));
+            )
+        );
 
-        $this->addColumn('created_at', array(
+        $this->addColumn(
+            'created_at', array(
             'header' => Mage::helper('monkey')->__('Created At'),
             'index' => 'created_at',
             'type' => 'datetime'
-        ));
+            )
+        );
 
         $views = Mage::getModel('core/store')->getCollection()->toOptionHash();
         $views[0] = Mage::helper('monkey')->__('All store views');
 
-        $this->addColumn('store_id',
+        $this->addColumn(
+            'store_id',
             array(
                 'header' => Mage::helper('monkey')->__('Store'),
                 'width' => '100px',
@@ -99,9 +116,11 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
                 'index' => 'store_id',
                 'type' => 'options',
                 'options' => $views,
-            ));
+            )
+        );
 
-        $this->addColumn('action',
+        $this->addColumn(
+            'action',
             array(
                 'header' => Mage::helper('monkey')->__('Action'),
                 'width' => '60px',
@@ -124,7 +143,8 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_QueueExport_Grid extends Mag
                 'filter' => false,
                 'sortable' => false,
                 'is_system' => true,
-            ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

@@ -1612,7 +1612,7 @@ class Ebizmarts_MageMonkey_Model_MCAPI
      *
      * @param string $id the list id to connect to. Get by calling lists()
      * @param string $email_address the email address to subscribe
-     * @param array $merge_vars optional merges for the email (FNAME, LNAME, etc.) (see examples below for handling "blank" arrays). Note that a merge field can only hold up to 255 bytes. Also, there are a few "special" keys:
+     * @param array $mergeVars optional merges for the email (FNAME, LNAME, etc.) (see examples below for handling "blank" arrays). Note that a merge field can only hold up to 255 bytes. Also, there are a few "special" keys:
      * string EMAIL set this to change the email address. This is only respected on calls using update_existing or when passed to listUpdateMember()
      * array GROUPINGS Set Interest Groups by Grouping. Each element in this array should be an array containing the "groups" parameter which contains a comma delimited list of Interest Groups to add. Commas in Interest Group names should be escaped with a backslash. ie, "," =&gt; "\," and either an "id" or "name" parameter to specify the Grouping - get from listInterestGroupings()
      * string OPTINIP Set the Opt-in IP fields. <em>Abusing this may cause your account to be suspended.</em> We do validate this and it must not be a private IP address.
@@ -1637,12 +1637,12 @@ class Ebizmarts_MageMonkey_Model_MCAPI
      * @param bool $send_welcome optional if your double_optin is false and this is true, we will send your lists Welcome Email if this subscribe succeeds - this will *not* fire if we end up updating an existing subscriber. If double_optin is true, this has no effect. defaults to false.
      * @return boolean true on success, false on failure. When using MCAPI.class.php, the value can be tested and error messages pulled from the MCAPI object (see below)
      */
-    function listSubscribe($id, $email_address, $merge_vars = NULL, $email_type = 'html', $double_optin = true, $update_existing = false, $replace_interests = true, $send_welcome = false)
+    function listSubscribe($id, $email_address, $mergeVars = NULL, $email_type = 'html', $double_optin = true, $update_existing = false, $replace_interests = true, $send_welcome = false)
     {
         $params = array();
         $params["id"] = $id;
         $params["email_address"] = $email_address;
-        $params["merge_vars"] = $merge_vars;
+        $params["merge_vars"] = $mergeVars;
         $params["email_type"] = $email_type;
         $params["double_optin"] = $double_optin;
         $params["update_existing"] = $update_existing;
@@ -1685,17 +1685,17 @@ class Ebizmarts_MageMonkey_Model_MCAPI
      *
      * @param string $id the list id to connect to. Get by calling lists()
      * @param string $email_address the current email address of the member to update OR the "id" for the member returned from listMemberInfo, Webhooks, and Campaigns
-     * @param array $merge_vars array of new field values to update the member with.  See merge_vars in listSubscribe() for details.
+     * @param array $mergeVars array of new field values to update the member with.  See mergeVars in listSubscribe() for details.
      * @param string $email_type change the email type preference for the member ("html", "text", or "mobile").  Leave blank to keep the existing preference (optional)
      * @param boolean $replace_interests flag to determine whether we replace the interest groups with the updated groups provided, or we add the provided groups to the member's interest groups (optional, defaults to true)
      * @return boolean true on success, false on failure. When using MCAPI.class.php, the value can be tested and error messages pulled from the MCAPI object
      */
-    function listUpdateMember($id, $email_address, $merge_vars, $email_type = '', $replace_interests = true)
+    function listUpdateMember($id, $email_address, $mergeVars, $email_type = '', $replace_interests = true)
     {
         $params = array();
         $params["id"] = $id;
         $params["email_address"] = $email_address;
-        $params["merge_vars"] = $merge_vars;
+        $params["merge_vars"] = $mergeVars;
         $params["email_type"] = $email_type;
         $params["replace_interests"] = $replace_interests;
         return $this->callServer("listUpdateMember", $params);

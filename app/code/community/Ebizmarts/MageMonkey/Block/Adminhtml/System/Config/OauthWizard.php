@@ -54,11 +54,13 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_System_Config_OauthWizard extends Mag
             $label = "Change API credentials";
         }
 
-        $this->addData(array(
+        $this->addData(
+            array(
             'button_label' => $this->helper('monkey')->__($label),
             'button_url' => $this->helper('monkey/oauth2')->authorizeRequestUrl(),
             'html_id' => $element->getHtmlId(),
-        ));
+            )
+        );
         return $this->_toHtml();
     }
 }

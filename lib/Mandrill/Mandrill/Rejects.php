@@ -31,7 +31,7 @@ class Mandrill_Rejects
      * entries that have expired are excluded from the results; set
      * include_expired to true to include them.
      * @param string $email an optional email address to search by
-     * @param boolean $include_expired whether to include rejections that have already expired.
+     * @param boolean $includeExpired whether to include rejections that have already expired.
      * @param string $subaccount an optional unique identifier for the subaccount to limit the blacklist
      * @return array Up to 1000 rejection entries
      *     - return[] struct the information for each rejection blacklist entry
@@ -57,9 +57,9 @@ class Mandrill_Rejects
      *             - unique_clicks integer the number of unique clicks for emails sent for this sender
      *         - subaccount string the subaccount that this blacklist entry applies to, or null if none.
      */
-    public function getList($email = null, $include_expired = false, $subaccount = null)
+    public function getList($email = null, $includeExpired = false, $subaccount = null)
     {
-        $_params = array("email" => $email, "include_expired" => $include_expired, "subaccount" => $subaccount);
+        $_params = array("email" => $email, "include_expired" => $includeExpired, "subaccount" => $subaccount);
         return $this->master->call('rejects/list', $_params);
     }
 

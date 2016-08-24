@@ -65,7 +65,7 @@ class Ebizmarts_Mandrill_Model_Email_Queue extends Mage_Core_Model_Email_Queue
                         unset($mandrill);
                         $message->setProcessedAt(Varien_Date::formatDate(true));
                         $message->save();
-                    }else{
+                    } else {
                         $parameters = new Varien_Object($message->getMessageParameters());
                         if ($parameters->getReturnPathEmail() !== null) {
                             $mailTransport = new Zend_Mail_Transport_Sendmail("-f" . $parameters->getReturnPathEmail());

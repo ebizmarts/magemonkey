@@ -30,10 +30,12 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
             $fieldToFilter = 'period';
         }
 
-        $this->addFieldToFilter($fieldToFilter, array(
+        $this->addFieldToFilter(
+            $fieldToFilter, array(
             'from' => $from->toString(Varien_Date::DATETIME_INTERNAL_FORMAT),
             'to' => $to->toString(Varien_Date::DATETIME_INTERNAL_FORMAT)
-        ));
+            )
+        );
 
         return $this;
     }
@@ -58,14 +60,18 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
             $averageExpr = $adapter->getCheckSql(
                 'SUM(main_table.orders_count) > 0',
                 'SUM(main_table.total_revenue_amount)/SUM(main_table.orders_count)',
-                0);
-            $this->getSelect()->columns(array(
+                0
+            );
+            $this->getSelect()->columns(
+                array(
                 'lifetime' => 'SUM(main_table.total_revenue_amount)',
                 'average' => $averageExpr
-            ));
+                )
+            );
 
             if (!$isFilter) {
-                $this->addFieldToFilter('main_table.store_id',
+                $this->addFieldToFilter(
+                    'main_table.store_id',
                     array('eq' => Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId())
                 );
             }
@@ -78,7 +84,8 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
                     . ' - IFNULL(main_table.base_subtotal_canceled, 0) - ABS(IFNULL(main_table.base_discount_amount, 0))'
                     . ' + IFNULL(main_table.base_discount_refunded, 0)';
             } else if (version_compare(Mage::getVersion(), '1.6.0.0', '<')) {
-                $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
+                $expr = sprintf(
+                    '%s - %s - %s - (%s - %s - %s)',
                     "IFNULL('main_table.base_total_invoiced', 0)",
                     "IFNULL('main_table.base_tax_invoiced', 0)",
                     "IFNULL('main_table.base_shipping_invoiced', 0)",
@@ -87,7 +94,8 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
                     "IFNULL('main_table.base_shipping_refunded', 0)"
                 );
             } else {
-                $expr = sprintf('%s - %s - %s - (%s - %s - %s)',
+                $expr = sprintf(
+                    '%s - %s - %s - (%s - %s - %s)',
                     $adapter->getIfNullSql('main_table.base_total_invoiced', 0),
                     $adapter->getIfNullSql('main_table.base_tax_invoiced', 0),
                     $adapter->getIfNullSql('main_table.base_shipping_invoiced', 0),
@@ -102,12 +110,15 @@ class Ebizmarts_AbandonedCart_Model_Resource_Order_Collection extends Mage_Repor
             }
 
             $this->getSelect()
-                ->columns(array(
+                ->columns(
+                    array(
                     'lifetime' => "SUM({$expr})",
                     'average' => "AVG({$expr})"
-                ))
+                    )
+                )
                 ->where('main_table.status NOT IN(?)', $statuses)
-                ->where('main_table.state NOT IN(?)', array(
+                ->where(
+                    'main_table.state NOT IN(?)', array(
                         Mage_Sales_Model_Order::STATE_NEW,
                         Mage_Sales_Model_Order::STATE_PENDING_PAYMENT)
                 );

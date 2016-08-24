@@ -19,9 +19,9 @@ class Ebizmarts_Autoresponder_Model_Resource_Review extends Mage_Core_Model_Mysq
         $select = $this->_getReadAdapter()->select()
             ->from($this->getMainTable())
             ->where($this->getMainTable() . '.' . 'token =?', $token);
-        $token_id = $this->_getReadAdapter()->fetchOne($select);
-        if ($token_id) {
-            $this->load($obj, $token_id);
+        $tokenId = $this->_getReadAdapter()->fetchOne($select);
+        if ($tokenId) {
+            $this->load($obj, $tokenId);
         }
         return $this;
     }

@@ -41,12 +41,13 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($rc));
     }
 
-    public function upgradeForPatchAction(){
+    public function upgradeForPatchAction()
+    {
 
         $prefix = Mage::getConfig()->getTablePrefix();
-        if($prefix){
+        if ($prefix) {
             $pre = $prefix[0];
-        }else{
+        } else {
             $pre = '';
         }
         $resource = Mage::getSingleton('core/resource')
@@ -54,7 +55,7 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
 
         $table = $resource->getTableName($pre.'permission_block');
         $exists = (bool)$resource->showTableStatus($table);
-        if($exists) {
+        if ($exists) {
             $blocks = array(
                 array('block_name' => 'ebizmarts_abandonedcart/email_order_items', 'is_allowed' => 1),
                 array('block_name' => 'ebizmarts_autoresponder/email_backtostock_item', 'is_allowed' => 1),
@@ -90,7 +91,8 @@ class Ebizmarts_MageMonkey_Adminhtml_ConfigController extends Mage_Adminhtml_Con
         return false;
     }
 
-    protected function _isAllowed() {
+    protected function _isAllowed()
+    {
         switch ($this->getRequest()->getActionName()) {
             case 'getGroups':
             case 'upgradeForPatch':

@@ -37,10 +37,10 @@ class Ebizmarts_SweetMonkey_Adminhtml_MageMonkeyController extends Mage_Adminhtm
         if ($listId) {
 
             $api = Mage::getModel('monkey/api');
-            $e =explode('&',$this->getRequest()->getPost('merge_vars'));
+            $e =explode('&', $this->getRequest()->getPost('merge_vars'));
             $mergeVars = array();
-            foreach($e as $val) {
-                $m = explode('=',$val);
+            foreach ($e as $val) {
+                $m = explode('=', $val);
                 $mergeVars[$m[0]]=$m[1];
             }
 
@@ -70,7 +70,8 @@ class Ebizmarts_SweetMonkey_Adminhtml_MageMonkeyController extends Mage_Adminhtm
         $this->getResponse()->setBody(Zend_Json::encode(array()));
     }
 
-    protected function _isAllowed() {
+    protected function _isAllowed() 
+    {
         switch ($this->getRequest()->getActionName()) {
             case 'varsToList':
             case 'varsForList':

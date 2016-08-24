@@ -93,7 +93,8 @@ class Ebizmarts_AbandonedCart_Adminhtml_AbandonedorderController extends Mage_Ad
         return;
     }
 
-    protected function _isAllowed() {
+    protected function _isAllowed() 
+    {
         switch ($this->getRequest()->getActionName()) {
             case 'dashboard':
             case 'ajaxBlock':

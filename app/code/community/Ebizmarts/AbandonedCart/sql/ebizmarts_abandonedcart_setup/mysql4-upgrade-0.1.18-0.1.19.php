@@ -10,7 +10,8 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->run("
+$installer->run(
+    "
 	CREATE TABLE IF NOT EXISTS `{$this->getTable('magemonkey_mails_sent')}` (
 	  `id` INT(10) unsigned NOT NULL auto_increment,
 	  `store_id` smallint(5),
@@ -23,6 +24,7 @@ $installer->run("
       `sent_at` DATETIME NOT NULL ,
 	  PRIMARY KEY  (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-");
+"
+);
 
 $installer->endSetup();

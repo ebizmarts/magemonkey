@@ -13,8 +13,6 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_CustomerGroup
 
     /**
      * Load lists and store on class property
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -34,16 +32,16 @@ class Ebizmarts_MageMonkey_Model_System_Config_Source_CustomerGroup
     {
         $groups = array();
 
-        if(is_array($this->_group)){
-            foreach($this->_group as $group) {
+        if (is_array($this->_group)) {
+            foreach ($this->_group as $group) {
                 $groups[] = array('value'=> $group['id'], 'label' => $group['name'],'style'=>'font-weight: bold;');
                 $prefix = $group['id'];
-                foreach($group['groups'] as $key=>$list){
+                foreach ($group['groups'] as $key=>$list) {
                     $groups []= array('value' => $prefix.'_'.$list['name'], 'label' => $list['name'],'style'=>'padding-left:20px');
                 }
             }
 
-        }else{
+        } else {
             $groups []= array('value' => '', 'label' => Mage::helper('monkey')->__('--- No data ---'));
         }
         return $groups;

@@ -26,7 +26,7 @@ if ($tableExists) {
             )
         );
     }catch (Exception $e){
-
+        Mage::log($e->getMessage());
     }
 }
 
