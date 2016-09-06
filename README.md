@@ -21,6 +21,9 @@ MailChimp official Magento extension
 
 The latest stable version of the extension can be installed via the [Magento Connect](http://www.magentocommerce.com/magento-connect/ebizmarts-magemonkey-official-mailchimp-and-mandrill-integration.html).
 
+## Report issues
+
+For reporting issues, follow [this guidelines](https://github.com/ebizmarts/magemonkey/wiki/Issue-reporting-guidelines) or your issue will be rejected
 
 ## Support
 
