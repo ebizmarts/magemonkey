@@ -21,7 +21,6 @@ function getCampaign() {
 function createCookie(name, value, expirationInSec) {
     var now = new Date();
     var expire = new Date(now.getTime() + (expirationInSec * 1000));//[(1 * 365 * 24 * 60) * 60000] == 1 year  -- (Years * Days * Hours * Minutes) * 60000
-    alert('creating cookie');
     Mage.Cookies.expires = expire;
     Mage.Cookies.set(name,value);
 }
