@@ -46,10 +46,11 @@ class Ebizmarts_MageMonkey_Model_Observer
         if (Mage::getSingleton('core/session')->getIsOneStepCheckout() && !Mage::getSingleton('core/session')->getMonkeyCheckout()) {
             return $observer;
         }
-        if (TRUE === $subscriber->getIsStatusChanged()) {
+        if (TRUE === $subscriber->getIsStatusChanged() && !Mage::getSingleton('core/session')->getAlreadySubscribed()) {
             Mage::getSingleton('core/session')->setIsHandleSubscriber(TRUE);
             if (Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout()) {
                 $saveOnDb = Mage::helper('monkey')->config('checkout_async');
+                Mage::getSingleton('core/session')->setAlreadySubscribed(true);
                 Mage::helper('monkey')->subscribeToList($subscriber, $saveOnDb);
             } else {
                 $post = Mage::app()->getRequest()->getPost();
@@ -57,7 +58,8 @@ class Ebizmarts_MageMonkey_Model_Observer
                     Mage::helper('monkey')->subscribeToList($subscriber, 0);
                 }
             }
-            Mage::getSingleton('core/session')->setIsHandleSubscriber(FALSE);
+            Mage::getSingleton('core/session')->setAlreadySubscribed(false);
+            Mage::getSingleton('core/session')->setIsHandleSubscriber(false);
         }
         return $observer;
     }
