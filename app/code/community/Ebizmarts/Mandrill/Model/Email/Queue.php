@@ -137,12 +137,9 @@ class Ebizmarts_Mandrill_Model_Email_Queue extends Mage_Core_Model_Email_Queue
         if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
             return parent::getMail();
         }
-        if ($this->_mail) {
-            return $this->_mail;
-        } else {
-            Mage::helper('ebizmarts_mandrill')->log("store: $storeId API: " . Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
-            $this->_mail = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
-            return $this->_mail;
-        }
+
+        Mage::helper('ebizmarts_mandrill')->log("store: $storeId API: " . Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
+        $this->_mail = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
+        return $this->_mail;
     }
 }
