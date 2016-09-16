@@ -629,9 +629,12 @@ class Ebizmarts_MageMonkey_Model_Cron
                 } else {
                     $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['list_id']);
                 }
-                Mage::app()->setCurrentStore($subscriberStoreId);
-                $subscriber->subscribe($data['data']['email']);
-                Mage::app()->setCurrentStore(0);
+                
+                if ($subscriberStoreId) {
+                    Mage::app()->setCurrentStore($subscriberStoreId);
+                    $subscriber->subscribe($data['data']['email']);
+                    Mage::app()->setCurrentStore(0);
+                }
 
             }
             $customerExist = Mage::getSingleton('customer/customer')
