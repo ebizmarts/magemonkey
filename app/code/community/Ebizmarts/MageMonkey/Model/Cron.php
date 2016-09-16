@@ -627,7 +627,7 @@ class Ebizmarts_MageMonkey_Model_Cron
                 if (isset($data['data']['merges']['STOREID'])) {
                     $subscriberStoreId=$data['data']['merges']['STOREID'];
                 } else {
-                    $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['id']);
+                    $subscriberStoreId = Mage::helper('monkey')->getStoreByList($data['data']['list_id']);
                 }
                 Mage::app()->setCurrentStore($subscriberStoreId);
                 $subscriber->subscribe($data['data']['email']);
