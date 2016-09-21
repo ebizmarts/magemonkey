@@ -90,7 +90,7 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
             }
         }
         if (!$senderExists) {
-            $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email');
+            $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email', $storeId);
         }
         $headers = $mail->getHeaders();
         $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
