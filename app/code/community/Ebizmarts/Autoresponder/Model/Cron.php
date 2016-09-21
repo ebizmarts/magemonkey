@@ -886,7 +886,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
         $collection = Mage::getModel('salesrule/rule')->getCollection()
             ->addFieldToFilter('name', array('like' => $string . $email))
-            ->addFieldToFilter('website_ids', array('eq' => $websiteid));
+            ->addFieldToFilter('website_id', array('eq' => $websiteid));
 
         if (!count($collection)) {
             $couponamount = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::BIRTHDAY_DISCOUNT, $store);
