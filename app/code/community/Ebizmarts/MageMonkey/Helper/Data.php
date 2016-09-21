@@ -754,11 +754,22 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $storeId);
             if (!$customerCreateAccountSubscription && $currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
-                $subscribeGroups = array(0 => array());
+                // erisler - appears this logic will not allow customer to edit multiple groups. 
+                // Adjusted to allow multiple groups. 
+                // Also addressed warning when using dropdown type as group.
+                $subscribeGroups = array();
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
-                        $subscribeGroups[0]['id'] = $toGroups;
-                        $subscribeGroups[0]['groups'] = implode(', ', array_unique($post['list'][$currentList][$subscribeGroups[0]['id']]));
+                        $groupData = array();
+                        $groupData['id'] = $toGroups;
+                        $groups = $post['list'][$currentList][$toGroups];
+                        if (is_array($groups)) {
+                            $groups = implode(', ', array_unique($groups));
+                        }
+                        $groupData['groups'] = $groups;
+                        $subscribeGroups[] = $groupData;
+//                        $subscribeGroups[0]['id'] = $toGroups;
+//                        $subscribeGroups[0]['groups'] = implode(', ', array_unique($post['list'][$currentList][$subscribeGroups[0]['id']]));
                     }
                 }
                 $groups = NULL;
@@ -792,6 +803,33 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $subscribeGroups[] = array('id' => $currentGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
                     }
 
+                }
+                
+                // erisler - logic update: if you update a subscriber from the Mailchimp web, MC will post 
+                // a webhook "profile" type back to Magento. The webhook code for profile runs a customer save
+                // after setting first/last name. The save triggers MageMonkey to update the cusotmer profile in mailchimp
+                // again....which calls the whole mergeVars system. and we get here. We can also get here is the user simply
+                // resets their password.
+                // 
+                // Because the loop above reads all highlighted interest groups from the Magento sytem config
+                // and sets them in the $subscribeGroups array, the effect is that the user's interest groups
+                // will be overwritten if you have interest groups highlighted in Magento system config.
+                // 
+                // If we are here from a webhook, the $post data will contain the webhook selected groupings. We should simply use those and
+                // ignore the Magento ones from above.
+                //
+                // If we are here on a general customer save event, their may be nothing helpful in the $post (ie
+                // during password reset, $post only contains the password values). Because a customer object can
+                // be saved just about anywhere, lets skip updating groups if the Mage::getSingleton('core/session')->setIsUpdateCustomer(TRUE); is set
+                // and no valuable data is in the $post.
+                if (is_array($post) && isset($post['data']) && isset($post['data']['list_id']) && $post['data']['list_id']===$currentList) {
+                    if (isset($post['data']['merges']['GROUPINGS'])) {
+                        $subscribeGroups = $post['data']['merges']['GROUPINGS'];
+                    }
+                } else if (Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
+                    // we are updating the customer using the observer updateCustomer() method but nothing useful in the $post
+                    // so reset this var such that the groupsings are not altered.
+                    $subscribeGroups = array();
                 }
 
                 $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $storeId);
