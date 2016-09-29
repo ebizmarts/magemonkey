@@ -363,7 +363,10 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
         $post = $observer->getEvent()->getPost();
         $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
-        $subscribe = $post['magemonkey_subscribe'];
+        $subscribe = '';
+        if (isset($post['magemonkey_subscribe'])) {
+            $subscribe = $post['magemonkey_subscribe'];
+        }
 
         Mage::getSingleton('core/session')->setMonkeyPost(serialize($post));
         if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE, Mage::app()->getStore()->getId()) >= 3) {
