@@ -17,7 +17,15 @@ class Ebizmarts_Autoresponder_Model_Cron
         $allStores = Mage::app()->getStores();
         foreach ($allStores as $storeId => $val) {
             if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_ACTIVE, $storeId)) {
+                $emulation = Mage::getSingleton('core/app_emulation');
+                $environment = $emulation->startEnvironmentEmulation(
+                    $storeId,
+                    Mage_Core_Model_App_Area::AREA_FRONTEND,
+                    true
+                );
+                Mage::app()->getTranslator()->init('frontend', true);
                 $this->_processStore($storeId);
+                $emulation->stopEnvironmentEmulation($environment);
             }
         }
     }
@@ -27,9 +35,8 @@ class Ebizmarts_Autoresponder_Model_Cron
      */
     protected function _processStore($storeId)
     {
-        //Mage::app()->setCurrentStore($storeId);
         Mage::unregister('_singleton/core/design_package');
-        Mage::app()->setCurrentStore(Mage_Core_Model_App::ADMIN_STORE_ID);
+        Mage::app()->setCurrentStore($storeId);
         Mage::getSingleton('core/design_package')->setStore($storeId);
 
         if (Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_ACTIVE, $storeId) && Mage::helper('ebizmarts_autoresponder')->isSetTime(Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::NEWORDER_CRON_TIME, $storeId))) {
@@ -370,7 +377,7 @@ class Ebizmarts_Autoresponder_Model_Cron
 
         $collection = Mage::getResourceModel('sales/order_collection');
         $collection->addFieldToFilter('main_table.store_id', array('eq' => $storeId))
-            ->addFieldToFilter('main_table.created_at', array('from'=>$from,'to'=>$to))
+            ->addFieldToFilter('main_table.created_at', array('from' => $from, 'to' => $to))
             ->addFieldToFilter('main_table.status', array('eq' => $status));
 //        Mage::log((string)$collection->getSelect());
         if (count($customerGroups)) {
@@ -609,14 +616,15 @@ class Ebizmarts_Autoresponder_Model_Cron
         }
 
     }
-    protected function _sendVisitedProductEmail($email,$storeId,$products,$name,$tags)
+
+    protected function _sendVisitedProductEmail($email, $storeId, $products, $name, $tags)
     {
         $mailSubject = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_SUBJECT, $storeId);
         $senderId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::GENERAL_SENDER, $storeId);
         $sender = array('name' => Mage::getStoreConfig("trans_email/ident_$senderId/name", $storeId), 'email' => Mage::getStoreConfig("trans_email/ident_$senderId/email", $storeId));
         $templateId = Mage::getStoreConfig(Ebizmarts_Autoresponder_Model_Config::VISITED_TEMPLATE, $storeId);
-        $store=Mage::getModel('core/store')->load($storeId);
-        $storeCode=$store->getCode();
+        $store = Mage::getModel('core/store')->load($storeId);
+        $storeCode = $store->getCode();
         $storeCodeUrl = Mage::getStoreConfig('web/url/use_store', $storeId);
         if ($storeCodeUrl) {
             $url = Mage::getModel('core/url')->setStore($storeId)->getUrl() . $storeCode . '/ebizautoresponder/autoresponder/unsubscribe?list=visitedproducts&email=' . $email . '&store=' . $storeId;
@@ -647,6 +655,7 @@ class Ebizmarts_Autoresponder_Model_Cron
         Mage::helper('ebizmarts_abandonedcart')->saveMail('visitedproducts', $email, $name, "", $storeId);
 
     }
+
     /**
      * Process and send all notifications of Back To Stock
      * @param $storeId
@@ -740,7 +749,7 @@ class Ebizmarts_Autoresponder_Model_Cron
                 $collection
                     ->addFieldToFilter('is_active', array('eq' => 1))
                     ->addFieldToFilter('alert_id', array('eq' => $productStockAlert->getAlertId()))
-                ->addFieldToFilter('store_id', array('eq' => $storeId));
+                    ->addFieldToFilter('store_id', array('eq' => $storeId));
 
                 if (count($collection) > 0) {
 
