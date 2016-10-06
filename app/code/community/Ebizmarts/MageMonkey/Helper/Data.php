@@ -422,14 +422,14 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         if (!$customer->getDefaultShipping() && $customer->getEntityId()) {
             $customer->addData(
                 Mage::getModel('customer/customer')->load($customer->getEntityId())
-                ->setStoreId($customer->getStoreId())
-                ->toArray()
+                    ->setStoreId($customer->getStoreId())
+                    ->toArray()
             );
         } elseif ($customer->getCustomerId()) {
             $customer->addData(
                 Mage::getModel('customer/customer')->load($customer->getCustomerId())
-                ->setStoreId($customer->getStoreId())
-                ->toArray()
+                    ->setStoreId($customer->getStoreId())
+                    ->toArray()
             );
         }
 
@@ -524,9 +524,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                         $mergeVars = array_merge($mergeVars, $this->_setAddress($customAtt, $mergeVars, $order, $key));
                         break;
                     case 'date_of_purchase':
-
-                            $mergeVars[$key] = $order->getUpdatedAt();
-
+                        $mergeVars[$key] = $order->getUpdatedAt();
                         break;
 
                     case 'store_code':
@@ -548,7 +546,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $mergeVars;
     }
-    private function _setMaps($maps,$customer,$mergeVars, $websiteId)
+
+    private function _setMaps($maps, $customer, $mergeVars, $websiteId)
     {
         foreach ($maps as $map) {
             $request = Mage::app()->getRequest();
@@ -643,7 +642,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $mergeVars;
     }
-    protected function _setAddress($customAtt,$mergeVars, $object, $key)
+
+    protected function _setAddress($customAtt, $mergeVars, $object, $key)
     {
         if ($object instanceof Mage_Sales_Model_Order) {
             $addr = explode('_', $customAtt);
@@ -687,6 +687,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $mergeVars;
     }
+
     /**
      * Get Mergevars
      *
@@ -740,7 +741,8 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $mergeVars;
     }
-    protected function _checkGrouping($post,$currentList, $object)
+
+    protected function _checkGrouping($post, $currentList, $object)
     {
         $storeId = Mage::app()->getStore()->getId() ? Mage::app()->getStore()->getId() : $object->getStoreId();
         $mergeVars = array();
@@ -754,11 +756,17 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $storeId);
             if (!$customerCreateAccountSubscription && $currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
-                $subscribeGroups = array(0 => array());
+                $subscribeGroups = array();
                 foreach ($post['list'][$currentList] as $toGroups => $value) {
                     if (is_numeric($toGroups)) {
-                        $subscribeGroups[0]['id'] = $toGroups;
-                        $subscribeGroups[0]['groups'] = implode(', ', array_unique($post['list'][$currentList][$subscribeGroups[0]['id']]));
+                        $groupData = array();
+                        $groupData['id'] = $toGroups;
+                        $groups = $post['list'][$currentList][$toGroups];
+                        if (is_array($groups)) {
+                            $groups = implode(', ', array_unique($groups));
+                        }
+                        $groupData['groups'] = $groups;
+                        $subscribeGroups[] = $groupData;
                     }
                 }
                 $groups = NULL;
@@ -778,10 +786,10 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                                 $checkboxes[] = $item[1];
                                 $_prevGroup = $currentGroup;
                             } elseif ($checkboxes && isset($item[1])) {
-                                    $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
-                                    $checkboxes = array();
-                                    $_prevGroup = $currentGroup;
-                                    $checkboxes[] = $item[1];
+                                $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+                                $checkboxes = array();
+                                $_prevGroup = $currentGroup;
+                                $checkboxes[] = $item[1];
                             } else {
                                 $checkboxes = array();
                                 $_prevGroup = null;
@@ -791,9 +799,15 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
                     if ($currentGroup && $checkboxes) {
                         $subscribeGroups[] = array('id' => $currentGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
                     }
-
                 }
 
+                if (is_array($post) && isset($post['data']) && isset($post['data']['list_id']) && $post['data']['list_id'] === $currentList) {
+                    if (isset($post['data']['merges']['GROUPINGS'])) {
+                        $subscribeGroups = $post['data']['merges']['GROUPINGS'];
+                    }
+                } else if (Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
+                    $subscribeGroups = array();
+                }
                 $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $storeId);
                 $map = Mage::getStoreConfig('monkey/general/markfield', $storeId);
                 if (isset($post['magemonkey_subscribe']) && $map != "") {
@@ -824,6 +838,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $mergeVars;
     }
+
     /**
      * Register on Magento's registry GUEST customer data for MergeVars for on checkout subscribe
      *
@@ -1117,7 +1132,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             $u = explode('%5B', $v);
             if ($u[0] == 'list') {
                 $suffixListId = $u[1];
-                $listId = substr($u[1], 0, (strlen($suffixListId)-3));
+                $listId = substr($u[1], 0, (strlen($suffixListId) - 3));
                 $list[$listId] = array();
                 $listIdArray = $list[$listId];
                 $tail = explode('%5D', $u[2]);
