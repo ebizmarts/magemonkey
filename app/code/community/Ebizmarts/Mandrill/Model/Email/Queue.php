@@ -135,7 +135,7 @@ class Ebizmarts_Mandrill_Model_Email_Queue extends Mage_Core_Model_Email_Queue
     public function getMail($storeId)
     {
         if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
-            return parent::getMail();
+            return null;
         }
 
         Mage::helper('ebizmarts_mandrill')->log("store: $storeId API: " . Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
