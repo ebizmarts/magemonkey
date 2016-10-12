@@ -400,10 +400,8 @@ class Ebizmarts_MageMonkey_Model_Cron
         return $job->getFirstItem();
     }
 
-    /** Send order to MailChimp Automatically by Order Status
-     *
-     *
-     *
+    /**
+     * Send order to MailChimp Automatically by Order Status
      */
     public function autoExportSubscribers()
     {
@@ -535,14 +533,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     public function processWebhookData()
     {
-
         $collection = Mage::getModel('monkey/asyncwebhooks')->getCollection();
         $collection->addFieldToFilter('processed', array('eq' => 0));
 
         foreach ($collection as $item) {
             $data=json_decode($item->getWebhookData(), true);
-            $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
-//            $store = Mage::helper('monkey')->getStoreByList($listId);
+            $listId = $data['data']['list_id'];
             $subscriber = Mage::getModel('newsletter/subscriber')
                 ->loadByEmail($data['data']['email']);
             $storeId = $subscriber->getStoreId();
@@ -598,14 +594,12 @@ class Ebizmarts_MageMonkey_Model_Cron
 
     }
 
-
     /**
      * Subscribe email to Magento list
      *
      * @param array $data
      * @return void
      */
-
     protected function _subscribe(array $data)
     {
         try {
@@ -652,14 +646,12 @@ class Ebizmarts_MageMonkey_Model_Cron
         }
     }
 
-
     /**
      * Unsubscribe or delete email from Magento list
      *
      * @param array $data
      * @return void
      */
-
     protected function _unsubscribe(array $data)
     {
         $subscriber = Mage::getSingleton('newsletter/subscriber')
@@ -700,8 +692,6 @@ class Ebizmarts_MageMonkey_Model_Cron
      * @param array $data
      * @return void
      */
-
-
     protected function _cleaned(array $data)
     {
         if (Mage::helper('monkey')->isAdminNotificationEnabled()) {  //This 'if' returns false even if Admin Notification is enabled on the module sometimes, must check why
@@ -726,14 +716,12 @@ class Ebizmarts_MageMonkey_Model_Cron
         }
     }
 
-
     /**
      * Add "Campaign Sending Status" notification to Adminnotification Inbox <campaign>
      *
      * @param array $data
      * @return void
      */
-
     protected function _campaign(array $data)
     {
         if (Mage::helper('monkey')->isAdminNotificationEnabled()) {
@@ -745,9 +733,6 @@ class Ebizmarts_MageMonkey_Model_Cron
         }
 
     }
-
-
-
 
     protected function _profile(array $data)
     {
@@ -812,8 +797,6 @@ class Ebizmarts_MageMonkey_Model_Cron
         }
     }
 
-
-
     /**
      * Return Inbox model instance
      *
@@ -825,6 +808,4 @@ class Ebizmarts_MageMonkey_Model_Cron
             ->setSeverity(4)//Notice
             ->setDateAdded(Mage::getModel('core/date')->gmtDate());
     }
-
-
 }
