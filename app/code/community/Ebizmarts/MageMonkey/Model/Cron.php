@@ -544,7 +544,7 @@ class Ebizmarts_MageMonkey_Model_Cron
             $listId = $data['data']['list_id']; //According to the docs, the events are always related to a list_id
 //            $store = Mage::helper('monkey')->getStoreByList($listId);
             $subscriber = Mage::getModel('newsletter/subscriber')
-                ->loadByEmail(isset($data['data']['email']));
+                ->loadByEmail($data['data']['email']);
             $storeId = $subscriber->getStoreId();
             $store = Mage::getModel('core/store')->load($storeId);
             if (!is_null($store)) {
