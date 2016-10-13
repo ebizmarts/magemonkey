@@ -82,67 +82,70 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 
         $email['from_name'] = $this->getSenderName();
         $email['from_email'] = $this->getSenderEmail();
-        $mandrillSenders = $mail->senders->domains();
-        $senderExists = false;
-        foreach ($mandrillSenders as $sender) {
-            if($email['from_email'] == $sender['domain']) {
-                $senderExists = true;
+        $emailArray = explode('@', $email['from_email']);
+        if(count($emailArray) > 1) {
+            $mandrillSenders = $mail->senders->domains();
+            $senderExists = false;
+            foreach ($mandrillSenders as $sender) {
+                if ($emailArray[1] == $sender['domain']) {
+                    $senderExists = true;
+                }
             }
-        }
-        if (!$senderExists) {
-            $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email', $storeId);
-        }
-        $headers = $mail->getHeaders();
-        $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
-        $email['headers'] = $headers;
-        if (isset($variables['tags']) && count($variables['tags'])) {
-            $email ['tags'] = $variables['tags'];
-        }
+            if (!$senderExists) {
+                $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email', $storeId);
+            }
+            $headers = $mail->getHeaders();
+            $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
+            $email['headers'] = $headers;
+            if (isset($variables['tags']) && count($variables['tags'])) {
+                $email ['tags'] = $variables['tags'];
+            }
 
-        if (isset($variables['tags']) && count($variables['tags'])) {
-            $email ['tags'] = $variables['tags'];
-        } else {
-            $templateId = (string)$this->getId();
-            $templates = parent::getDefaultTemplates();
-            if (isset($templates[$templateId]) && isset($templates[$templateId]['label'])) {
-                $email ['tags'] = array(substr($templates[$templateId]['label'], 0, 50));
+            if (isset($variables['tags']) && count($variables['tags'])) {
+                $email ['tags'] = $variables['tags'];
             } else {
-                if ($this->getTemplateCode()) {
-                    $email ['tags'] = array(substr($this->getTemplateCode(), 0, 50));
+                $templateId = (string)$this->getId();
+                $templates = parent::getDefaultTemplates();
+                if (isset($templates[$templateId]) && isset($templates[$templateId]['label'])) {
+                    $email ['tags'] = array(substr($templates[$templateId]['label'], 0, 50));
                 } else {
-                    if ($templateId) {
-                        $email ['tags'] = array(substr($templateId, 0, 50));
+                    if ($this->getTemplateCode()) {
+                        $email ['tags'] = array(substr($this->getTemplateCode(), 0, 50));
                     } else {
-                        $email['tags'] = array('default_tag');
+                        if ($templateId) {
+                            $email ['tags'] = array(substr($templateId, 0, 50));
+                        } else {
+                            $email['tags'] = array('default_tag');
+                        }
                     }
                 }
             }
-        }
 
-        if ($att = $mail->getAttachments()) {
-            $email['attachments'] = $att;
-        }
-        if ($this->isPlain())
-            $email['text'] = $message;
-        else
-            $email['html'] = $message;
+            if ($att = $mail->getAttachments()) {
+                $email['attachments'] = $att;
+            }
+            if ($this->isPlain())
+                $email['text'] = $message;
+            else
+                $email['html'] = $message;
 
-        if ($this->hasQueue() && $this->getQueue() instanceof Mage_Core_Model_Email_Queue) {
-                        $emailQueue = $this->getQueue();
-                        $emailQueue->setMessageBody($message);
-                        $emailQueue->setMessageParameters(
-                            array(
-                                    'subject'           => $subject,
-                                    'return_path_email' => $returnPathEmail,
-                                    'is_plain'          => $this->isPlain(),
-                                    'from_email'        => $this->getSenderEmail(),
-                                    'from_name'         => $this->getSenderName()
-                            )
-                        )
-                            ->addRecipients($emails, $names, Mage_Core_Model_Email_Queue::EMAIL_TYPE_TO)
-                            ->addRecipients($this->_bccEmails, array(), Mage_Core_Model_Email_Queue::EMAIL_TYPE_BCC);
-             $emailQueue->addMessageToQueue();
-             return true;
+            if ($this->hasQueue() && $this->getQueue() instanceof Mage_Core_Model_Email_Queue) {
+                $emailQueue = $this->getQueue();
+                $emailQueue->setMessageBody($message);
+                $emailQueue->setMessageParameters(
+                    array(
+                        'subject' => $subject,
+                        'return_path_email' => $returnPathEmail,
+                        'is_plain' => $this->isPlain(),
+                        'from_email' => $this->getSenderEmail(),
+                        'from_name' => $this->getSenderName()
+                    )
+                )
+                    ->addRecipients($emails, $names, Mage_Core_Model_Email_Queue::EMAIL_TYPE_TO)
+                    ->addRecipients($this->_bccEmails, array(), Mage_Core_Model_Email_Queue::EMAIL_TYPE_BCC);
+                $emailQueue->addMessageToQueue();
+                return true;
+            }
         }
         try {
             $result = $mail->messages->send($email);
