@@ -167,19 +167,6 @@ class Ebizmarts_MageMonkey_Model_Cron
     }
 
     /**
-     * Process <updated> data list when importing members
-     *
-     * @param array $member
-     * @param integer $websiteId OPTIONAL
-     * @param bool $createCustomer
-     * @return void
-     */
-    protected function updated($member, $websiteId = null, $createCustomer = FALSE)
-    {
-        //TODO
-    }
-
-    /**
      * Process <unsubscribed> data list when importing members
      *
      * @param array $member

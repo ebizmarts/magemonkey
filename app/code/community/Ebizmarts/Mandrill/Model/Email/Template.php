@@ -83,51 +83,8 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         $email['from_name'] = $this->getSenderName();
         $email['from_email'] = $this->getSenderEmail();
         $emailArray = explode('@', $email['from_email']);
-        if(count($emailArray) > 1) {
-            $mandrillSenders = $mail->senders->domains();
-            $senderExists = false;
-            foreach ($mandrillSenders as $sender) {
-                if ($emailArray[1] == $sender['domain']) {
-                    $senderExists = true;
-                }
-            }
-            if (!$senderExists) {
-                $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email', $storeId);
-            }
-            $headers = $mail->getHeaders();
-            $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
-            $email['headers'] = $headers;
-            if (isset($variables['tags']) && count($variables['tags'])) {
-                $email ['tags'] = $variables['tags'];
-            }
-
-            if (isset($variables['tags']) && count($variables['tags'])) {
-                $email ['tags'] = $variables['tags'];
-            } else {
-                $templateId = (string)$this->getId();
-                $templates = parent::getDefaultTemplates();
-                if (isset($templates[$templateId]) && isset($templates[$templateId]['label'])) {
-                    $email ['tags'] = array(substr($templates[$templateId]['label'], 0, 50));
-                } else {
-                    if ($this->getTemplateCode()) {
-                        $email ['tags'] = array(substr($this->getTemplateCode(), 0, 50));
-                    } else {
-                        if ($templateId) {
-                            $email ['tags'] = array(substr($templateId, 0, 50));
-                        } else {
-                            $email['tags'] = array('default_tag');
-                        }
-                    }
-                }
-            }
-
-            if ($att = $mail->getAttachments()) {
-                $email['attachments'] = $att;
-            }
-            if ($this->isPlain())
-                $email['text'] = $message;
-            else
-                $email['html'] = $message;
+        if (count($emailArray) > 1) {
+            $email = $this->_setEmailData($message, $mail, $email, $emailArray, $storeId);
 
             if ($this->hasQueue() && $this->getQueue() instanceof Mage_Core_Model_Email_Queue) {
                 $emailQueue = $this->getQueue();
@@ -174,5 +131,55 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
             $this->_mail = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
             return $this->_mail;
         }
+    }
+
+    protected function _setEmailData($message, $mail, $email, $emailArray, $storeId)
+    {
+        $mandrillSenders = $mail->senders->domains();
+        $senderExists = false;
+        foreach ($mandrillSenders as $sender) {
+            if ($emailArray[1] == $sender['domain']) {
+                $senderExists = true;
+            }
+        }
+        if (!$senderExists) {
+            $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email', $storeId);
+        }
+        $headers = $mail->getHeaders();
+        $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
+        $email['headers'] = $headers;
+        if (isset($variables['tags']) && count($variables['tags'])) {
+            $email ['tags'] = $variables['tags'];
+        }
+
+        if (isset($variables['tags']) && count($variables['tags'])) {
+            $email ['tags'] = $variables['tags'];
+        } else {
+            $templateId = (string)$this->getId();
+            $templates = parent::getDefaultTemplates();
+            if (isset($templates[$templateId]) && isset($templates[$templateId]['label'])) {
+                $email ['tags'] = array(substr($templates[$templateId]['label'], 0, 50));
+            } else {
+                if ($this->getTemplateCode()) {
+                    $email ['tags'] = array(substr($this->getTemplateCode(), 0, 50));
+                } else {
+                    if ($templateId) {
+                        $email ['tags'] = array(substr($templateId, 0, 50));
+                    } else {
+                        $email['tags'] = array('default_tag');
+                    }
+                }
+            }
+        }
+
+        if ($att = $mail->getAttachments()) {
+            $email['attachments'] = $att;
+        }
+        if ($this->isPlain()) {
+            $email['text'] = $message;
+        } else {
+            $email['html'] = $message;
+        }
+        return $email;
     }
 }

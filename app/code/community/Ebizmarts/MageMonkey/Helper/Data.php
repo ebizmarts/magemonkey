@@ -550,95 +550,106 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     private function _setMaps($maps, $customer, $mergeVars, $websiteId)
     {
         foreach ($maps as $map) {
-            $request = Mage::app()->getRequest();
-
             $customAtt = $map['magento'];
             $chimpTag = $map['mailchimp'];
+            
+            $mergeVars = $this->_setEachField($customer, $chimpTag, $customAtt, $mergeVars, $websiteId);
+            
+        }
+        return $mergeVars;
+    }
+    
+    protected function _setEachField($customer, $chimpTag, $customAtt, $mergeVars, $websiteId)
+    {
+        $request = Mage::app()->getRequest();
+        if ($chimpTag && $customAtt) {
 
-            if ($chimpTag && $customAtt) {
+            $key = strtoupper($chimpTag);
 
-                $key = strtoupper($chimpTag);
+            switch ($customAtt) {
+                case 'gender':
+                    $val = (int)$customer->getData(strtolower($customAtt));
+                    if ($val == 1) {
+                        $mergeVars[$key] = 'Male';
+                    } elseif ($val == 2) {
+                        $mergeVars[$key] = 'Female';
+                    }
+                    break;
+                case 'dob':
+                    $dob = (string)$customer->getData(strtolower($customAtt));
+                    if ($dob) {
+                        $mergeVars[$key] = (substr($dob, 5, 2) . '/' . substr($dob, 8, 2));
+                    }
+                    break;
+                case 'billing_address':
+                case 'shipping_address':
+                    $mergeVars = array_merge($mergeVars, $this->_setAddress($customAtt, $mergeVars, $customer, $key));
+                    break;
+                case 'date_of_purchase':
 
-                switch ($customAtt) {
-                    case 'gender':
-                        $val = (int)$customer->getData(strtolower($customAtt));
-                        if ($val == 1) {
-                            $mergeVars[$key] = 'Male';
-                        } elseif ($val == 2) {
-                            $mergeVars[$key] = 'Female';
-                        }
-                        break;
-                    case 'dob':
-                        $dob = (string)$customer->getData(strtolower($customAtt));
-                        if ($dob) {
-                            $mergeVars[$key] = (substr($dob, 5, 2) . '/' . substr($dob, 8, 2));
-                        }
-                        break;
-                    case 'billing_address':
-                    case 'shipping_address':
-                        $mergeVars = array_merge($mergeVars, $this->_setAddress($customAtt, $mergeVars, $customer, $key));
-                        break;
-                    case 'date_of_purchase':
+                    $lastOrder = Mage::getModel('monkey/lastorder')
+                        ->getCollection()
+                        ->addFieldToFilter('email', array('eq' => $customer->getEmail()))
+                        ->getFirstItem();
+                    if ($lastOrder->getId()) {
+                        $mergeVars[$key] = $lastOrder->getDate();
+                    }
 
-                        $lastOrder = Mage::getModel('monkey/lastorder')
-                            ->getCollection()
-                            ->addFieldToFilter('email', array('eq' => $customer->getEmail()))
-                            ->getFirstItem();
-                        if ($lastOrder->getId()) {
-                            $mergeVars[$key] = $lastOrder->getDate();
-                        }
+                    break;
+                case 'ee_customer_balance':
 
-                        break;
-                    case 'ee_customer_balance':
+                    $mergeVars[$key] = $this->_getEECustomerBalance($mergeVars, $key, $customer, $websiteId);
 
-                        $mergeVars[$key] = '';
+                    break;
+                case 'group_id':
+                    $groupId = (int)$customer->getData(strtolower($customAtt));
+                    $customerGroup = Mage::helper('customer')->getGroups()->toOptionHash();
+                    if ($groupId == 0) {
+                        $mergeVars[$key] = 'NOT LOGGED IN';
+                    } else {
+                        $mergeVars[$key] = $customerGroup[$groupId];
+                    }
+                    break;
+                case 'store_code':
+                    $storeId = (string)$customer->getData('store_id');
+                    $storeCode = Mage::getModel('core/store')->load($storeId)->getCode();
+                    if ($storeCode) {
+                        $mergeVars[$key] = $storeCode;
+                    }
+                    break;
+                default:
+                    if (($value = (string)$customer->getData(strtolower($customAtt)))
+                        OR ($value = (string)$request->getPost(strtolower($customAtt)))
+                    ) {
+                        $mergeVars[$key] = $value;
+                    }
 
-                        if ($this->isEnterprise() && $customer->getId()) {
+                    break;
+            }
+            return $mergeVars;
+        }
+    }
 
-                            $_customer = Mage::getModel('customer/customer')->load($customer->getId());
-                            if ($_customer->getId()) {
-                                if (Mage::app()->getStore()->isAdmin()) {
-                                    $websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
-                                }
+    protected function _getEECustomerBalance($mergeVars, $key, $customer, $websiteId)
+    {
+        $mergeVars[$key] = '';
 
-                                $balance = Mage::getModel('enterprise_customerbalance/balance')
-                                    ->setWebsiteId($websiteId)
-                                    ->setCustomerId($_customer->getId())
-                                    ->loadByCustomer();
+        if ($this->isEnterprise() && $customer->getId()) {
 
-                                $mergeVars[$key] = $balance->getAmount();
-                            }
-
-                        }
-
-                        break;
-                    case 'group_id':
-                        $groupId = (int)$customer->getData(strtolower($customAtt));
-                        $customerGroup = Mage::helper('customer')->getGroups()->toOptionHash();
-                        if ($groupId == 0) {
-                            $mergeVars[$key] = 'NOT LOGGED IN';
-                        } else {
-                            $mergeVars[$key] = $customerGroup[$groupId];
-                        }
-                        break;
-                    case 'store_code':
-                        $storeId = (string)$customer->getData('store_id');
-                        $storeCode = Mage::getModel('core/store')->load($storeId)->getCode();
-                        if ($storeCode) {
-                            $mergeVars[$key] = $storeCode;
-                        }
-                        break;
-                    default:
-                        if (($value = (string)$customer->getData(strtolower($customAtt)))
-                            OR ($value = (string)$request->getPost(strtolower($customAtt)))
-                        ) {
-                            $mergeVars[$key] = $value;
-                        }
-
-                        break;
+            $_customer = Mage::getModel('customer/customer')->load($customer->getId());
+            if ($_customer->getId()) {
+                if (Mage::app()->getStore()->isAdmin()) {
+                    $websiteId = is_null($websiteId) ? Mage::app()->getStore()->getWebsiteId() : $websiteId;
                 }
 
+                $balance = Mage::getModel('enterprise_customerbalance/balance')
+                    ->setWebsiteId($websiteId)
+                    ->setCustomerId($_customer->getId())
+                    ->loadByCustomer();
+
+                $mergeVars[$key] = $balance->getAmount();
             }
+
         }
         return $mergeVars;
     }
@@ -756,58 +767,9 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
             //if can change customer set the groups set by customer else set the groups on MailChimp config
             $canChangeGroups = Mage::getStoreConfig('monkey/general/changecustomergroup', $storeId);
             if (!$customerCreateAccountSubscription && $currentList && ($currentList != $defaultList || $canChangeGroups && !$footerSubscription) && isset($post['list'][$currentList])) {
-                $subscribeGroups = array();
-                foreach ($post['list'][$currentList] as $toGroups => $value) {
-                    if (is_numeric($toGroups)) {
-                        $groupData = array();
-                        $groupData['id'] = $toGroups;
-                        $groups = $post['list'][$currentList][$toGroups];
-                        if (is_array($groups)) {
-                            $groups = implode(', ', array_unique($groups));
-                        }
-                        $groupData['groups'] = $groups;
-                        $subscribeGroups[] = $groupData;
-                    }
-                }
-                $groups = NULL;
+                $subscribeGroups = $this->_setSelectedGroups($post, $currentList);
             } elseif ($currentList == $defaultList) {
-                $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $storeId);
-                $groups = explode(",", $groups);
-                if (isset($groups[0]) && $groups[0]) {
-                    $subscribeGroups = array();
-                    $_prevGroup = null;
-                    $checkboxes = array();
-                    $currentGroup = '';
-                    foreach ($groups as $group) {
-                        $item = explode("_", $group);
-                        if ($item[0]) {
-                            $currentGroup = $item[0];
-                            if ($currentGroup == $_prevGroup || $_prevGroup == null) {
-                                $checkboxes[] = $item[1];
-                                $_prevGroup = $currentGroup;
-                            } elseif ($checkboxes && isset($item[1])) {
-                                $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
-                                $checkboxes = array();
-                                $_prevGroup = $currentGroup;
-                                $checkboxes[] = $item[1];
-                            } else {
-                                $checkboxes = array();
-                                $_prevGroup = null;
-                            }
-                        }
-                    }
-                    if ($currentGroup && $checkboxes) {
-                        $subscribeGroups[] = array('id' => $currentGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
-                    }
-                }
-
-                if (is_array($post) && isset($post['data']) && isset($post['data']['list_id']) && $post['data']['list_id'] === $currentList) {
-                    if (isset($post['data']['merges']['GROUPINGS'])) {
-                        $subscribeGroups = $post['data']['merges']['GROUPINGS'];
-                    }
-                } else if (Mage::getSingleton('core/session')->getIsUpdateCustomer()) {
-                    $subscribeGroups = array();
-                }
+                $subscribeGroups = $this->_setConfiguredGroups($post, $currentList, $storeId);
                 $force = Mage::getStoreConfig('monkey/general/checkout_subscribe', $storeId);
                 $map = Mage::getStoreConfig('monkey/general/markfield', $storeId);
                 if (isset($post['magemonkey_subscribe']) && $map != "") {
@@ -840,6 +802,81 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Set groups selected by the customer.
+     *
+     * @param $post
+     * @param $currentList
+     * @return array
+     */
+    protected function _setSelectedGroups($post, $currentList)
+    {
+        $subscribeGroups = array();
+        foreach ($post['list'][$currentList] as $toGroups => $value) {
+            if (is_numeric($toGroups)) {
+                $groupData = array();
+                $groupData['id'] = $toGroups;
+                $groups = $post['list'][$currentList][$toGroups];
+                if (is_array($groups)) {
+                    $groups = implode(', ', array_unique($groups));
+                }
+                $groupData['groups'] = $groups;
+                $subscribeGroups[] = $groupData;
+            }
+        }
+        $groups = NULL;
+        return $subscribeGroups;
+    }
+
+    /**
+     * Set groups configured by the store owner.
+     *
+     * @param $post
+     * @param $currentList
+     * @param $storeId
+     * @return array
+     */
+    protected function _setConfiguredGroups($post, $currentList, $storeId)
+    {
+        $subscribeGroups = array();
+        $groups = Mage::getStoreConfig('monkey/general/cutomergroup', $storeId);
+        $groups = explode(",", $groups);
+        if (isset($groups[0]) && $groups[0]) {
+            $subscribeGroups = array();
+            $_prevGroup = null;
+            $checkboxes = array();
+            $currentGroup = '';
+            foreach ($groups as $group) {
+                $item = explode("_", $group);
+                if ($item[0]) {
+                    $currentGroup = $item[0];
+                    if ($currentGroup == $_prevGroup || $_prevGroup == null) {
+                        $checkboxes[] = $item[1];
+                        $_prevGroup = $currentGroup;
+                    } elseif ($checkboxes && isset($item[1])) {
+                        $subscribeGroups[] = array('id' => $_prevGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+                        $checkboxes = array();
+                        $_prevGroup = $currentGroup;
+                        $checkboxes[] = $item[1];
+                    } else {
+                        $checkboxes = array();
+                        $_prevGroup = null;
+                    }
+                }
+            }
+            if ($currentGroup && $checkboxes) {
+                $subscribeGroups[] = array('id' => $currentGroup, "groups" => str_replace('%C%', '\\,', implode(', ', $checkboxes)));
+            }
+        }
+
+        if (is_array($post) && isset($post['data']) && isset($post['data']['list_id']) && $post['data']['list_id'] === $currentList) {
+            if (isset($post['data']['merges']['GROUPINGS'])) {
+                $subscribeGroups = $post['data']['merges']['GROUPINGS'];
+            }
+        }
+        return $subscribeGroups;
+    }
+
+    /**
      * Register on Magento's registry GUEST customer data for MergeVars for on checkout subscribe
      *
      * @param Mage_Sales_Model_Order $order
@@ -853,7 +890,6 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $customer = new Varien_Object;
-
         $customer->setId('guest' . time());
         $customer->setEmail($order->getBillingAddress()->getEmail());
         $customer->setStoreId($order->getStoreId());

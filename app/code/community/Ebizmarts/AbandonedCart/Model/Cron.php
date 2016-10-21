@@ -24,6 +24,8 @@ class Ebizmarts_AbandonedCart_Model_Cron
     protected $_couponlength;
     protected $_couponlabel;
     protected $_sendcoupondays;
+    protected $_suffix;
+    protected $_diff;
 
     /**
      *
@@ -99,17 +101,17 @@ class Ebizmarts_AbandonedCart_Model_Cron
     protected function _processRun($adapter, $run, $storeId)
     {
         // subtract days from latest run to get difference from the actual abandon date of the cart
-        $diff = $this->_days[$run];
+        $this->_diff = $this->_days[$run];
         if ($run == 1 && $this->_unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS) {
-            $diff -= $this->_days[0] / 24;
+            $this->_diff -= $this->_days[0] / 24;
         } elseif ($run != 0) {
-            $diff -= $this->_days[$run - 1];
+            $this->_diff -= $this->_days[$run - 1];
         }
 
         // set the top date of the carts to get
-        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($diff, 'DAY'));
+        $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($this->_diff, 'DAY'));
         if ($run == 0 && $this->_unit == Ebizmarts_AbandonedCart_Model_Config::IN_HOURS) {
-            $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($diff, 'HOUR'));
+            $expr = sprintf('DATE_SUB(%s, %s)', $adapter->quote(now()), $this->_getIntervalUnitSql($this->_diff, 'HOUR'));
         }
         $from = new Zend_Db_Expr($expr);
 
@@ -136,14 +138,14 @@ class Ebizmarts_AbandonedCart_Model_Cron
             ->getFirstItem();
         if ($item) {
             $status = $item->getCurrentStatus();
-            $suffix = '';
+            $this->_suffix = '';
             if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId) && $status == 1) {
                 $abTesting = true;
-                $suffix = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_MANDRILL_SUFFIX, $storeId);
+                $this->_suffix = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_MANDRILL_SUFFIX, $storeId);
             }
         }
         if ($abTesting) {
-            $this->_mandrillTag .= '_' . $suffix;
+            $this->_mandrillTag .= '_' . $this->_suffix;
             $this->_sendcoupondays = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_COUPON_SENDON, $storeId);
         } else {
             $this->_sendcoupondays = Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::COUPON_DAYS, $storeId);
@@ -160,8 +162,28 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 $ganalytics .= '&utm_campaign='.Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::GANALYTICS_CAMPAIGN, $storeId);
             }
         }
+        $this->_proccessQuotes($collection, $storeId, $abTesting, $ganalytics, $run);
+        if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId)) {
+            $counterCollection = Mage::getModel('ebizmarts_abandonedcart/abtesting')->getCollection();
+            $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
+            $normalFilter = array('eq' => $storeId);
+            if ($storeId == $defaultStore->getId()) {
+                $newFilter = array('eq' => '0');
+                $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
+            } else {
+                $collection->addFieldToFilter('store_id', $normalFilter);
+            }
+            $counter = $counterCollection->getFirstItem();
+            $counter->setCurrentStatus($counter->getCurrentStatus() + 1)
+                ->save();
+        }
+    }
+
+    protected function _proccessQuotes($collection, $storeId, $abTesting, $ganalytics, $run)
+    {
         // for each cart of the current run
         foreach ($collection as $quote) {
+
             $quote = $this->_proccessCollection($quote, $storeId);
 
             if (count($quote->getAllVisibleItems()) < 1) {
@@ -190,7 +212,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
             //srand((double)microtime()*1000000);
             $token = md5(rand(0, 9999999));
             if ($abTesting) {
-                    $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token . '&' . $suffix;
+                $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token . '&' . $this->_suffix;
             } else {
                 $url = Mage::getModel('core/url')->setStore($storeId)->getUrl('', array('_nosid' => true)) . 'ebizmarts_abandonedcart/abandoned/loadquote?id=' . $quote->getEntityId() . '&token=' . $token;
             }
@@ -218,7 +240,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 }
 
                 // if days have passed proceed to send mail
-                if ($updatedAtDiff >= $diff) {
+                if ($updatedAtDiff >= $this->_diff) {
                     $mailsubject = $this->_getMailSubject($run, $storeId, $abTesting);
                     $templateId = $this->_getTemplateId($run, $storeId, $abTesting);
                     if ($this->_sendcoupon && $run + 1 == $this->_sendcoupondays) {
@@ -273,21 +295,6 @@ class Ebizmarts_AbandonedCart_Model_Cron
                 }
             }
         }
-        if (Mage::getStoreConfig(Ebizmarts_AbandonedCart_Model_Config::AB_TESTING_ACTIVE, $storeId)) {
-            $counterCollection = Mage::getModel('ebizmarts_abandonedcart/abtesting')->getCollection();
-            $defaultStore = Mage::app()->getStore($storeId)->getWebsite()->getDefaultStore();
-            $normalFilter = array('eq' => $storeId);
-            if ($storeId == $defaultStore->getId()) {
-                $newFilter = array('eq' => '0');
-                $collection->addFieldToFilter('store_id', array($normalFilter, $newFilter));
-            } else {
-                $collection->addFieldToFilter('store_id', $normalFilter);
-            }
-            $counter = $counterCollection->getFirstItem();
-            $counter->setCurrentStatus($counter->getCurrentStatus() + 1)
-                ->save();
-        }
-
     }
     protected function _proccessCollection($quote, $storeId)
     {
