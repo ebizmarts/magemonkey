@@ -547,7 +547,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
         return $mergeVars;
     }
 
-    private function _setMaps($maps, $customer, $mergeVars, $websiteId)
+    protected function _setMaps($maps, $customer, $mergeVars, $websiteId)
     {
         foreach ($maps as $map) {
             $customAtt = $map['magento'];
