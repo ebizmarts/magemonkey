@@ -100,6 +100,8 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates
 
     protected function _getUpdates($resource)
     {
+        //Handles data object with the variable names provided.
+        // @codingStandardsIgnoreStart
         $feedData = array();
 
         try {
@@ -138,6 +140,6 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates
             Mage::logException($e);
             return false;
         }
+        // @codingStandardsIgnoreEnd
     }
-
 }
