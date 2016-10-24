@@ -382,7 +382,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
 
                 } elseif ($fieldType == 'radio') {
 
-                    if (strpos($_group['groups'], ',')) {
+                    if (strpos($_group['groups'], ',') !== false) {
                         $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
                         $currentGroupArray = explode(', ', $currentGroup);
                         $collapsed = str_replace('%C%', ',', $currentGroupArray);
@@ -397,7 +397,7 @@ class Ebizmarts_MageMonkey_Block_Lists extends Mage_Core_Block_Template
                     }
 
                 } else {
-                    if (strpos($_group['groups'], ',')) {
+                    if (strpos($_group['groups'], ',') !== false) {
                         $currentGroup = str_replace('\\,', '%C%', $_group['groups']);
                         $currentGroupArray = explode(', ', $currentGroup);
                         $collapsed = str_replace('%C%', ',', $currentGroupArray);
