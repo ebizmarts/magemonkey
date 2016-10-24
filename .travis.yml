@@ -19,4 +19,4 @@ script:
   - php phpcs.phar -n --standard="MEQP1" ./magemonkey/
 
 notifications:
-  slack: ebizmarts:k7A0FCTvGxkJdxsDITHlJG0Z
+  slack: ebizmarts:DqCqxnqWzW55zoFU069hxs1T
