@@ -10,7 +10,7 @@
 <config>
     <modules>
         <Ebizmarts_MageMonkey>
-            <version>1.2.7</version>
+            <version>1.2.8</version>
         </Ebizmarts_MageMonkey>
     </modules>
     <global>
