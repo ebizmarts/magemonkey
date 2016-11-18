@@ -600,10 +600,12 @@ class Ebizmarts_MageMonkey_Model_Cron
             } else {
                 $subscriber = Mage::getModel('newsletter/subscriber')->setImportMode(TRUE);
                 if (isset($data['data']['fname'])) {
-                    $subscriber->setSubscriberFirstname($data['data']['fname']);
+                    $subscriberFname = filter_var($data['data']['fname'], FILTER_SANITIZE_STRING);
+                    $subscriber->setSubscriberFirstname($subscriberFname);
                 }
                 if (isset($data['data']['lname'])) {
-                    $subscriber->setSubscriberLastname($data['data']['lname']);
+                    $subscriberLname = filter_var($data['data']['lname'], FILTER_SANITIZE_STRING);
+                    $subscriber->setSubscriberFirstname($subscriberLname);
                 }
                 if (isset($data['data']['merges']['STOREID'])) {
                     $subscriberStoreId=$data['data']['merges']['STOREID'];

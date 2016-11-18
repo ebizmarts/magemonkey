@@ -489,10 +489,12 @@ class Ebizmarts_MageMonkey_Model_Observer
             $toSubscribe = $customer;
 
             if (!$toSubscribe->getEmail()) {
+                $subscriberFname = filter_var($order->getCustomerFirstname(), FILTER_SANITIZE_STRING);
+                $subscriberLname = filter_var($order->getCustomerLastname(), FILTER_SANITIZE_STRING);
                 $toSubscribe = Mage::getModel('newsletter/subscriber')
                     ->setStoreId($order->getStoreId())
-                    ->setSubscriberFirstname($order->getCustomerFirstname())
-                    ->setSubscriberLastname($order->getCustomerLastname())
+                    ->setSubscriberFirstname($subscriberFname)
+                    ->setSubscriberLastname($subscriberLname)
                     ->setEmail($order->getCustomerEmail());
 
             }

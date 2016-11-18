@@ -74,10 +74,12 @@ class Ebizmarts_AbandonedCart_Block_Popup_Emailcatcher extends Mage_Core_Block_T
                 $subscriber = Mage::getModel('newsletter/subscriber')
                     ->setStoreId($storeId);
                 if ($fName) {
-                    $subscriber->setSubscriberFirstname($fName);
+                    $subscriberFname = filter_var($fName, FILTER_SANITIZE_STRING);
+                    $subscriber->setSubscriberFirstname($subscriberFname);
                 }
                 if ($lName) {
-                    $subscriber->setSubscriberLastname($lName);
+                    $subscriberFname = filter_var($lName, FILTER_SANITIZE_STRING);
+                    $subscriber->setSubscriberLastname($subscriberFname);
                 }
                 $subscriber->setStoreId($storeId)
                     ->subscribe($email);

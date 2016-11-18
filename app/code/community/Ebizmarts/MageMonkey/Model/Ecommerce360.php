@@ -94,12 +94,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         $storeId = Mage::app()->getStore()->getId();
         $order = $observer->getEvent()->getOrder();
         if (is_object($order) && $order->getId()) {
-            //Set Campaign Id if exist
-            $campaignId = $this->_getCampaignCookie();
-            if ($campaignId && $order->getEbizmartsMagemonkeyCampaignId() == null) {
-                $order->setEbizmartsMagemonkeyCampaignId($campaignId)->save();
-            }
-            $this->_deleteCampaignCookie();
             $customerEmail = $order->getCustomerEmail();
             $collection = Mage::getModel('monkey/lastorder')->getCollection()
                 ->addFieldToFilter('email', array('eq' => $customerEmail));
@@ -129,7 +123,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
      */
     public function logSale($order)
     {
-
+        Mage::log(__METHOD__, null, 'ebizmarts.com', true);
         $this->_order = $order;
         $api = Mage::getSingleton('monkey/api', array('store' => $this->_order->getStoreId()));
         if (!$api) {
@@ -158,6 +152,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 
         $emailCookie = $this->_getEmailCookie();
         $campaignCookie = $this->_getCampaignCookie();
+        $this->_deleteCampaignCookie();
 
         $this->setItemstoSend($this->_order->getStoreId());
         $rs = false;
@@ -169,6 +164,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             $email = $emailCookie;
             $campaignId = $campaignCookie;
             if (Mage::getStoreConfig('monkey/general/checkout_async')) {
+
                 $collection = Mage::getModel('monkey/asyncorders')->getCollection();
                 $alreadyOnDb = false;
                 foreach ($collection as $order) {
