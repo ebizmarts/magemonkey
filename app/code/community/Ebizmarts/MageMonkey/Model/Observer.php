@@ -298,12 +298,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         $isAdmin = $request->getActionName() == 'save' && $request->getControllerName() == 'customer' && $request->getModuleName() == (string)Mage::getConfig()->getNode('admin/routers/adminhtml/args/frontName');
         $customer = $observer->getEvent()->getCustomer();
         $isCheckout = $request->getControllerName() == 'sales_order_create' || $request->getModuleName() == 'firecheckout' || $request->getModuleName() == 'checkout' || $request->getModuleName() == 'sgps' || Mage::getSingleton('core/session')->getIsOneStepCheckout() || Mage::getSingleton('core/session')->getMonkeyCheckout();
-//        $isConfirmNeed = FALSE;
-//        if (!Mage::helper('monkey')->isAdmin() &&
-//            (Mage::getStoreConfig(Mage_Newsletter_Model_Subscriber::XML_PATH_CONFIRMATION_FLAG, $customer->getStoreId()) == 1)
-//        ) {
-//            $isConfirmNeed = TRUE;
-//        }
+
         if (!$isCheckout) {
             $oldEmail = $customer->getOrigData('email');
             $email = $customer->getEmail();
@@ -333,23 +328,6 @@ class Ebizmarts_MageMonkey_Model_Observer
                         $api->listUpdateMember($listId, $oldEmail, $mergeVars, '', false);
                     }
                 }
-
-                //subscribe to MailChimp when customer subscribed from admin
-                //unsubscribe from Magento when customer unsubscribed from admin
-//                if ($isAdmin) {
-//                    if ($subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED && !$customer->getData('is_subscribed')) {
-//                        $subscriber->setImportMode(TRUE)->unsubscribe();
-//                        Mage::getSingleton('monkey/api', array('store' => $customer->getStoreId()))->listUnsubscribe($defaultList, $customer->getEmail());
-//                    } else {
-//                        if($customer->getData('is_subscribed')) {
-//                            Mage::getModel('newsletter/subscriber')
-//                                ->setSubscriberEmail($customer->getEmail())
-//                                ->setStoreId($customer->getStoreId())
-//                                ->setImportMode(TRUE)
-//                                ->subscribe($customer->getEmail());
-//                        }
-//                    }
-//                }
                 Mage::getSingleton('core/session')->setIsUpdateCustomer(FALSE);
             }
         }
