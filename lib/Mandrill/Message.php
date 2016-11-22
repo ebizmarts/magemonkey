@@ -194,7 +194,7 @@ class Mandrill_Message extends Mandrill_Mandrill
             throw new Zend_Mail_Exception('Cannot set standard header from addHeader()');
         }
 
-        $this->_header[$name] = $value;
+        $this->_headers[$name] = $value;
 
         return $this;
     }
