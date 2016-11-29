@@ -9,7 +9,8 @@ $installer = $this;
 
 $installer->startSetup();
 
-$installer->run("
+$installer->run(
+    "
 
 	CREATE TABLE IF NOT EXISTS `{$this->getTable('ebizmarts_autoresponder_review')}` (
 	  `id` int(10) unsigned NOT NULL auto_increment,
@@ -21,15 +22,18 @@ $installer->run("
 	  `order_id` int(10) unsigned not null,
 	  PRIMARY KEY  (`id`)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-");
+"
+);
 try {
-    $installer->run("
+    $installer->run(
+        "
     ALTER TABLE `{$this->getTable('magemonkey_mails_sent')}`
      CHANGE `mail_type` `mail_type` ENUM( 'abandoned cart', 'happy birthday', 'new order', 'related products', 'product review', 'no activity', 'wishlist', 'review coupon' )
      CHARACTER SET utf8 NOT NULL;
-");
+"
+    );
 }catch (Exception $e){
-
+    Mage::log($e->getMessage());
 }
 
 $installer->addAttribute(

@@ -29,7 +29,7 @@ class Ebizmarts_MageMonkey_Model_Mysql4_Bulksync_Export_Collection extends Mage_
      * @param string $className
      * @return Ebizmarts_MageMonkey_Model_Mysql4_Bulksync_Export_Collection
      */
-    function setItemObjectClass($className)
+    public function setItemObjectClass($className)
     {
         $this->_itemObjectClass = 'Ebizmarts_MageMonkey_Model_BulksyncExport';
         return $this;

@@ -44,43 +44,61 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Ecommerceapi_Grid extends Mage_Adminh
 
     protected function _prepareColumns()
     {
-        $this->addColumn('store_id', array(
+        $this->addColumn(
+            'store_id', array(
             'header' => Mage::helper('monkey')->__('Store ID'),
             'index' => 'store_id',
-        ));
-        $this->addColumn('store_name', array(
+            )
+        );
+        $this->addColumn(
+            'store_name', array(
             'header' => Mage::helper('monkey')->__('Store Name'),
             'index' => 'store_name',
-        ));
-        $this->addColumn('order_id', array(
+            )
+        );
+        $this->addColumn(
+            'order_id', array(
             'header' => Mage::helper('monkey')->__('Order #'),
             'index' => 'order_id',
-        ));
-        $this->addColumn('email', array(
+            )
+        );
+        $this->addColumn(
+            'email', array(
             'header' => Mage::helper('monkey')->__('Email'),
             'index' => 'email',
-        ));
-        $this->addColumn('order_total', array(
+            )
+        );
+        $this->addColumn(
+            'order_total', array(
             'header' => Mage::helper('monkey')->__('Order Total'),
             'index' => 'order_total',
-        ));
-        $this->addColumn('tax_total', array(
+            )
+        );
+        $this->addColumn(
+            'tax_total', array(
             'header' => Mage::helper('monkey')->__('Tax Total'),
             'index' => 'tax_total',
-        ));
-        $this->addColumn('ship_total', array(
+            )
+        );
+        $this->addColumn(
+            'ship_total', array(
             'header' => Mage::helper('monkey')->__('Ship Total'),
             'index' => 'ship_total',
-        ));
-        $this->addColumn('order_date', array(
+            )
+        );
+        $this->addColumn(
+            'order_date', array(
             'header' => Mage::helper('monkey')->__('Order Date'),
             'index' => 'order_date',
-        ));
-        $this->addColumn('items', array(
+            )
+        );
+        $this->addColumn(
+            'items', array(
             'header' => Mage::helper('monkey')->__('Items'),
             'index' => 'items',
             'renderer' => 'monkey/adminhtml_ecommerceapi_renderer_items'
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

@@ -20,9 +20,8 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
      */
     public function send($email, $name = null, array $variables = array())
     {
-//        $storeId = Mage::app()->getStore()->getId();
-//        $order = Mage::getModel('sales/order')->load
-        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE)) {
+        $storeId = Mage::app()->getStore()->getId();
+        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
             return parent::send($email, $name, $variables);
         }
         if (!$this->isValidForSend()) {
@@ -83,19 +82,68 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
 
         $email['from_name'] = $this->getSenderName();
         $email['from_email'] = $this->getSenderEmail();
+        $emailArray = explode('@', $email['from_email']);
+        if (count($emailArray) > 1) {
+            $email = $this->_setEmailData($message, $mail, $email, $emailArray, $storeId);
+
+            if ($this->hasQueue() && $this->getQueue() instanceof Mage_Core_Model_Email_Queue) {
+                $emailQueue = $this->getQueue();
+                $emailQueue->setMessageBody($message);
+                $emailQueue->setMessageParameters(
+                    array(
+                        'subject' => $subject,
+                        'return_path_email' => $returnPathEmail,
+                        'is_plain' => $this->isPlain(),
+                        'from_email' => $this->getSenderEmail(),
+                        'from_name' => $this->getSenderName()
+                    )
+                )
+                    ->addRecipients($emails, $names, Mage_Core_Model_Email_Queue::EMAIL_TYPE_TO)
+                    ->addRecipients($this->_bccEmails, array(), Mage_Core_Model_Email_Queue::EMAIL_TYPE_BCC);
+                $emailQueue->addMessageToQueue();
+                return true;
+            }
+        }
+        try {
+            $result = $mail->messages->send($email);
+        } catch (Exception $e) {
+            Mage::logException($e);
+            return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * @return Mandrill_Message|Zend_Mail
+     */
+    public function getMail()
+    {
+        $storeId = Mage::app()->getStore()->getId();
+        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
+            return parent::getMail();
+        }
+        if ($this->_mail) {
+            return $this->_mail;
+        } else {
+            $storeId = Mage::app()->getStore()->getId();
+            Mage::helper('ebizmarts_mandrill')->log("store: $storeId API: " . Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
+            $this->_mail = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
+            return $this->_mail;
+        }
+    }
+
+    protected function _setEmailData($message, $mail, $email, $emailArray, $storeId)
+    {
         $mandrillSenders = $mail->senders->domains();
         $senderExists = false;
-        foreach ($mandrillSenders as $sender)
-        {
-            $emailAddress = $sender['domain'];
-            if($email['from_email'] == $sender['domain'])
-            {
+        foreach ($mandrillSenders as $sender) {
+            if ($emailArray[1] == $sender['domain']) {
                 $senderExists = true;
             }
         }
-        if(!$senderExists)
-        {
-            $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email');
+        if (!$senderExists) {
+            $email['from_email'] = Mage::getStoreConfig('trans_email/ident_general/email', $storeId);
         }
         $headers = $mail->getHeaders();
         $headers[] = Mage::helper('ebizmarts_mandrill')->getUserAgent();
@@ -127,52 +175,11 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         if ($att = $mail->getAttachments()) {
             $email['attachments'] = $att;
         }
-        if ($this->isPlain())
+        if ($this->isPlain()) {
             $email['text'] = $message;
-        else
-            $email['html'] = $message;
-
-        if ($this->hasQueue() && $this->getQueue() instanceof Mage_Core_Model_Email_Queue) {
-                        $emailQueue = $this->getQueue();
-                        $emailQueue->setMessageBody($message);
-                        $emailQueue->setMessageParameters(array(
-                                    'subject'           => $subject,
-                                    'return_path_email' => $returnPathEmail,
-                                    'is_plain'          => $this->isPlain(),
-                                    'from_email'        => $this->getSenderEmail(),
-                                    'from_name'         => $this->getSenderName()
-                                    ))
-                            ->addRecipients($emails, $names, Mage_Core_Model_Email_Queue::EMAIL_TYPE_TO)
-                            ->addRecipients($this->_bccEmails, array(), Mage_Core_Model_Email_Queue::EMAIL_TYPE_BCC);
-             $emailQueue->addMessageToQueue();
-             return true;
-         }
-        try {
-            $result = $mail->messages->send($email);
-        } catch (Exception $e) {
-            Mage::logException($e);
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * @return Mandrill_Message|Zend_Mail
-     */
-    public function getMail()
-    {
-        $storeId = Mage::app()->getStore()->getId();
-        if (!Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::ENABLE, $storeId)) {
-            return parent::getMail();
-        }
-        if ($this->_mail) {
-            return $this->_mail;
         } else {
-            $storeId = Mage::app()->getStore()->getId();
-            Mage::helper('ebizmarts_mandrill')->log("store: $storeId API: " . Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
-            $this->_mail = new Mandrill_Message(Mage::getStoreConfig(Ebizmarts_Mandrill_Model_System_Config::APIKEY, $storeId));
-            return $this->_mail;
+            $email['html'] = $message;
         }
+        return $email;
     }
 }

@@ -60,36 +60,48 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Memberactivity_Grid extends Mage_Admi
     protected function _prepareColumns()
     {
 
-        $this->addColumn('action', array(
+        $this->addColumn(
+            'action', array(
             'header' => Mage::helper('monkey')->__('Action'),
             'index' => 'action',
             'sortable' => false
-        ));
-        $this->addColumn('url', array(
+            )
+        );
+        $this->addColumn(
+            'url', array(
             'header' => Mage::helper('monkey')->__('Url'),
             'index' => 'url',
             'sortable' => false
-        ));
-        $this->addColumn('bounce_type', array(
+            )
+        );
+        $this->addColumn(
+            'bounce_type', array(
             'header' => Mage::helper('monkey')->__('Bounce Type'),
             'index' => 'bounce_type',
             'sortable' => false
-        ));
-        $this->addColumn('campaign_id', array(
+            )
+        );
+        $this->addColumn(
+            'campaign_id', array(
             'header' => Mage::helper('monkey')->__('Campaign ID'),
             'index' => 'campaign_id',
             'sortable' => false
-        ));
-        $this->addColumn('title', array(
+            )
+        );
+        $this->addColumn(
+            'title', array(
             'header' => Mage::helper('monkey')->__('Campaign Title'),
             'index' => 'title',
             'sortable' => false
-        ));
-        $this->addColumn('timestamp', array(
+            )
+        );
+        $this->addColumn(
+            'timestamp', array(
             'header' => Mage::helper('monkey')->__('Timestamp'),
             'index' => 'timestamp',
             'sortable' => false
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

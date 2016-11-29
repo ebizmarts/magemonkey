@@ -32,32 +32,40 @@ class Ebizmarts_MageMonkey_Block_Adminhtml_Bulksync_Queue_Grid extends Mage_Admi
     protected function _prepareColumns()
     {
 
-        $this->addColumn('id', array(
+        $this->addColumn(
+            'id', array(
             'header' => Mage::helper('monkey')->__('ID'),
             'width' => '80px',
             'index' => 'id',
             'type' => 'number'
-        ));
+            )
+        );
 
-        $this->addColumn('status', array(
+        $this->addColumn(
+            'status', array(
             'header' => Mage::helper('monkey')->__('Status'),
             'width' => '80px',
             'index' => 'status',
-        ));
+            )
+        );
 
-        $this->addColumn('updated_at', array(
+        $this->addColumn(
+            'updated_at', array(
             'header' => Mage::helper('monkey')->__('Date Sent'),
             'width' => '80px',
             'index' => 'updated_at',
             'type' => 'datetime'
-        ));
+            )
+        );
 
-        $this->addColumn('created_at', array(
+        $this->addColumn(
+            'created_at', array(
             'header' => Mage::helper('monkey')->__('Date Sent'),
             'width' => '80px',
             'index' => 'created_at',
             'type' => 'datetime'
-        ));
+            )
+        );
 
         return parent::_prepareColumns();
     }

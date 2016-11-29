@@ -71,17 +71,17 @@ $force = $this->getForce();
 
     };
     addGroupToPost = function (element) {
-
-        if (element.checked) {
-
+        if ((element.checked && element.type == 'checkbox') || (element.type == 'select-one' && element.value)) {
             try {
-                var group = new Element('input', {
-                    name: element.readAttribute('name'),
-                    id: "subscribe" + element.readAttribute('id'),
-                    value: element.getValue(),
-                    checked: true,
-                    type: "checkbox"
-                });
+                var group = element.cloneNode(false);
+                if (element.type == 'select-one') {
+                    var option = new Element('option', {
+                        text: element.value,
+                        value: element.value,
+                        selected: 'selected'
+                    });
+                    group.appendChild(option);
+                }
                 Element.insert(Form.findFirstElement(payment.form), group);
             } catch (notelem) {
                 $("co-payment-form").insert(group);
@@ -263,7 +263,7 @@ $force = $this->getForce();
     //
     //    }
     //Handle newsletter groups subscribe/unsubscribe checkbox events
-    $$('.interest-groupings input').each(function (group) {
+    $$('.interest-groupings input, select').each(function (group) {
         group.observe('change', function () {
             addGroupToPost(group);
         });

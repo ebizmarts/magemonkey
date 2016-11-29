@@ -94,12 +94,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
         $storeId = Mage::app()->getStore()->getId();
         $order = $observer->getEvent()->getOrder();
         if (is_object($order) && $order->getId()) {
-            //Set Campaign Id if exist
-            $campaign_id = $this->_getCampaignCookie();
-            if ($campaign_id && $order->getEbizmartsMagemonkeyCampaignId() == null) {
-                $order->setEbizmartsMagemonkeyCampaignId($campaign_id)->save();
-            }
-            $this->_deleteCampaignCookie();
             $customerEmail = $order->getCustomerEmail();
             $collection = Mage::getModel('monkey/lastorder')->getCollection()
                 ->addFieldToFilter('email', array('eq' => $customerEmail));
@@ -129,7 +123,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
      */
     public function logSale($order)
     {
-
+        Mage::log(__METHOD__, null, 'ebizmarts.com', true);
         $this->_order = $order;
         $api = Mage::getSingleton('monkey/api', array('store' => $this->_order->getStoreId()));
         if (!$api) {
@@ -158,6 +152,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 
         $emailCookie = $this->_getEmailCookie();
         $campaignCookie = $this->_getCampaignCookie();
+        $this->_deleteCampaignCookie();
 
         $this->setItemstoSend($this->_order->getStoreId());
         $rs = false;
@@ -169,6 +164,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             $email = $emailCookie;
             $campaignId = $campaignCookie;
             if (Mage::getStoreConfig('monkey/general/checkout_async')) {
+
                 $collection = Mage::getModel('monkey/asyncorders')->getCollection();
                 $alreadyOnDb = false;
                 foreach ($collection as $order) {
@@ -271,10 +267,10 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
             }
 
             $names = array();
-            $cat_ids = $product->getCategoryIds();
+            $catIds = $product->getCategoryIds();
 
-            if (is_array($cat_ids) && count($cat_ids) > 0) {
-                foreach($cat_ids as $id){
+            if (is_array($catIds) && count($catIds) > 0) {
+                foreach ($catIds as $id) {
                     $category = Mage::getModel('catalog/category')->load($id);
                     $names[] = $category->getName();
                     $mcitem['category_id'] = $id;
@@ -285,7 +281,7 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
 //                }
             }
             $mcitem['category_name'] = (count($names)) ? implode(" - ", $names) : 'None';
-            if(!isset($mcitem['category_id'])) {
+            if (!isset($mcitem['category_id'])) {
                 $mcitem['category_id'] = 0;
             }
             $mcitem['qty'] = $item->getQtyOrdered();
@@ -315,18 +311,16 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
     protected function _getCampaignCookie()
     {
         $cookie = Mage::getModel('core/cookie')->get('magemonkey_campaign_id');
-        if($cookie && Mage::getModel('core/cookie')->getLifetime('magemonkey_campaign_id') == 3600) {
+        if ($cookie && Mage::getModel('core/cookie')->getLifetime('magemonkey_campaign_id') == 3600) {
             return $cookie;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     protected function _deleteCampaignCookie()
     {
-        if($this->_getCampaignCookie())
-        {
+        if ($this->_getCampaignCookie()) {
             Mage::getModel('core/cookie')->delete('magemonkey_campaign_id');
         }
     }
@@ -354,7 +348,6 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
      */
     public function autoExportJobs($storeId)
     {
-        $allow_sent = false;
         //Get status options selected in the Configuration
         $states = explode(',', Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ORDER_STATUS, $storeId));
         $max = Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::ECOMMERCE360_ORDER_MAX, $storeId);
@@ -368,16 +361,20 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 $orders = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('main_table.store_id', array('eq' => $storeId));
 //                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null AND main_table.status = \'' . $state . '\'')
 //                    ->limit($max - $count);
-                $orders->getSelect()->where('main_table.status = \'' . $state . '\' ' .
+                $orders->getSelect()->where(
+                    'main_table.status = \'' . $state . '\' ' .
                     'AND main_table.entity_id NOT IN ' .
-                    "(SELECT ecommerce.order_id FROM {$ecommerceTable} AS ecommerce WHERE ecommerce.store_id = {$storeId})")
+                    "(SELECT ecommerce.order_id FROM {$ecommerceTable} AS ecommerce WHERE ecommerce.store_id = {$storeId})"
+                )
                     ->limit($max - $count);
             } else {
                 $orders = Mage::getResourceModel('sales/order_collection')->addFieldToFilter('main_table.store_id', array('eq' => $storeId));
 //                $orders->getSelect()->joinLeft(array('ecommerce' => Mage::getSingleton('core/resource')->getTableName('monkey/ecommerce')), 'main_table.entity_id = ecommerce.order_id', 'main_table.*')->where('ecommerce.order_id is null')
 //                    ->limit($max - $count);
-                $orders->getSelect()->where('main_table.entity_id NOT IN ' .
-                    "(SELECT ecommerce.order_id FROM {$ecommerceTable} AS ecommerce WHERE ecommerce.store_id = {$storeId})")
+                $orders->getSelect()->where(
+                    'main_table.entity_id NOT IN ' .
+                    "(SELECT ecommerce.order_id FROM {$ecommerceTable} AS ecommerce WHERE ecommerce.store_id = {$storeId})"
+                )
                     ->limit($max - $count);
             }
             $count += count($orders);

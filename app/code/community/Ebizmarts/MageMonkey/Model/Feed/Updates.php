@@ -22,9 +22,11 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates
     public function getFeedData($uri)
     {
         $curl = new Varien_Http_Adapter_Curl;
-        $curl->setConfig(array(
+        $curl->setConfig(
+            array(
             'timeout' => 30
-        ));
+            )
+        );
         $curl->write(Zend_Http_Client::GET, $uri, '1.0');
         $data = $curl->read();
         if ($data === false) {
@@ -98,6 +100,8 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates
 
     protected function _getUpdates($resource)
     {
+        //Handles data object with the variable names provided.
+        // @codingStandardsIgnoreStart
         $feedData = array();
 
         try {
@@ -111,7 +115,7 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates
 
             foreach ($node->xpath('items/item') as $item) {
 
-                if(isset($item->date_end) && (time() - strtotime($item->date_end)) > 0) {
+                if (isset($item->date_end) && (time() - strtotime($item->date_end)) > 0) {
                     $feedData[] = array(
                         'severity' => (string)$item->severity,
                         'date_added' => (string)$item->created_at,
@@ -136,6 +140,6 @@ class Ebizmarts_MageMonkey_Model_Feed_Updates
             Mage::logException($e);
             return false;
         }
+        // @codingStandardsIgnoreEnd
     }
-
 }

@@ -44,12 +44,14 @@ class Ebizmarts_SweetMonkey_Block_Adminhtml_System_Config_Autovars extends Mage_
     {
 
         $originalData = $element->getOriginalData();
-        $this->addData(array(
+        $this->addData(
+            array(
             'button_label' => Mage::helper('paypal')->__($originalData['button_label']),
             'html_id' => $element->getHtmlId(),
             'snd_button_label' => Mage::helper('paypal')->__($originalData['snd_button_label']),
             'snd_html_id' => 'sandbox_' . $element->getHtmlId(),
-        ));
+            )
+        );
         return $this->_toHtml();
     }
 }

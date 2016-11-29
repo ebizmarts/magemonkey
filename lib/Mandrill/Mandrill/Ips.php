@@ -121,7 +121,7 @@ class Mandrill_Ips
      * Moves a dedicated IP to a different pool.
      * @param string $ip a dedicated ip address
      * @param string $pool the name of the new pool to add the dedicated ip to
-     * @param boolean $create_pool whether to create the pool if it does not exist; if false and the pool does not exist, an Unknown_Pool will be thrown.
+     * @param boolean $createPool whether to create the pool if it does not exist; if false and the pool does not exist, an Unknown_Pool will be thrown.
      * @return struct Information about the updated state of the dedicated IP
      *     - ip string the ip address
      *     - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -136,9 +136,9 @@ class Mandrill_Ips
      *         - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
      *         - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
      */
-    public function setPool($ip, $pool, $create_pool = false)
+    public function setPool($ip, $pool, $createPool = false)
     {
-        $_params = array("ip" => $ip, "pool" => $pool, "create_pool" => $create_pool);
+        $_params = array("ip" => $ip, "pool" => $pool, "create_pool" => $createPool);
         return $this->master->call('ips/set-pool', $_params);
     }
 

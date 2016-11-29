@@ -10,5 +10,5 @@
  */
 class Ebizmarts_MageMonkey_Block_Signup extends Ebizmarts_MageMonkey_Block_Lists
 {
-
+    protected $_signup;
 }

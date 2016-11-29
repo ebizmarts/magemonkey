@@ -44,7 +44,7 @@ class Mandrill_Mandrill
     public $root = 'https://mandrillapp.com/api/1.0';
     public $debug = false;
 
-    public static $error_map = array(
+    public static $errorMap = array(
         "ValidationError" => "Mandrill_ValidationError",
         "Invalid_Key" => "Mandrill_Invalid_Key",
         "PaymentRequired" => "Mandrill_PaymentRequired",
@@ -132,27 +132,27 @@ class Mandrill_Mandrill
         $start = microtime(true);
         $this->log('Call to ' . $this->root . $url . '.json: ' . $params);
         if ($this->debug) {
-            $curl_buffer = fopen('php://memory', 'w+');
-            curl_setopt($ch, CURLOPT_STDERR, $curl_buffer);
+            $curlBuffer = fopen('php://memory', 'w+');
+            curl_setopt($ch, CURLOPT_STDERR, $curlBuffer);
         }
 
-        $response_body = curl_exec($ch);
+        $responseBody = curl_exec($ch);
         $info = curl_getinfo($ch);
         $time = microtime(true) - $start;
         if ($this->debug) {
-            rewind($curl_buffer);
-            $this->log(stream_get_contents($curl_buffer));
-            fclose($curl_buffer);
+            rewind($curlBuffer);
+            $this->log(stream_get_contents($curlBuffer));
+            fclose($curlBuffer);
         }
         $this->log('Completed in ' . number_format($time * 1000, 2) . 'ms');
-        $this->log('Got response: ' . $response_body);
+        $this->log('Got response: ' . $responseBody);
 
         if (curl_error($ch)) {
             throw new Mandrill_HttpError("API call to $url failed: " . curl_error($ch));
         }
 
-        $result = json_decode($response_body, true);
-        if ($result === null) throw new Mandrill_Error('We were unable to decode the JSON response from the Mandrill API: ' . $response_body);
+        $result = json_decode($responseBody, true);
+        if ($result === null) throw new Mandrill_Error('We were unable to decode the JSON response from the Mandrill API: ' . $responseBody);
 
         try {
             if (floor($info['http_code'] / 100) >= 4) {
@@ -181,7 +181,7 @@ class Mandrill_Mandrill
     {
         if ($result['status'] !== 'error' || !$result['name']) throw new Mandrill_Error('We received an unexpected error: ' . json_encode($result));
 
-        $class = (isset(self::$error_map[$result['name']])) ? self::$error_map[$result['name']] : 'Mandrill_Error';
+        $class = (isset(self::$errorMap[$result['name']])) ? self::$errorMap[$result['name']] : 'Mandrill_Error';
         return new $class($result['message'], $result['code']);
     }
 

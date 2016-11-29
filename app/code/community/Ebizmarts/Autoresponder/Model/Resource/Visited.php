@@ -21,9 +21,9 @@ class Ebizmarts_Autoresponder_Model_Resource_Visited extends Mage_Core_Model_Mys
             ->where($this->getMainTable() . '.' . 'customer_id =?', $customerId)
             ->where($this->getMainTable() . '.' . 'product_id =?', $productId)
             ->where($this->getMainTable() . '.' . 'store_id =?', $storeId);
-        $visited_id = $this->_getReadAdapter()->fetchOne($select);
-        if ($visited_id) {
-            $this->load($obj, $visited_id);
+        $visitedId = $this->_getReadAdapter()->fetchOne($select);
+        if ($visitedId) {
+            $this->load($obj, $visitedId);
         }
         return $this;
     }
