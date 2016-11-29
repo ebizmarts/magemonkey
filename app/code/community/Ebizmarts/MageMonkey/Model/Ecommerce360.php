@@ -417,11 +417,12 @@ class Ebizmarts_MageMonkey_Model_Ecommerce360
                 );
 
                 $email = $this->_order->getCustomerEmail();
+                $emailCookie = $this->_getEmailCookie();
                 $campaign = $this->_order->getEbizmartsMagemonkeyCampaignId();
                 $this->setItemstoSend($storeId);
                 $rs = false;
-                if ($email && $campaign) {
-                    $this->_info ['email_id'] = $email;
+                if ($emailCookie && $campaign) {
+                    $this->_info ['email_id'] = $emailCookie;
                     $this->_info ['campaign_id'] = $campaign;
 
                     if (Mage::getStoreConfig('monkey/general/checkout_async', Mage::app()->getStore()->getId())) {
