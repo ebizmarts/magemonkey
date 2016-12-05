@@ -13,7 +13,7 @@
 $_product = $this->getProduct();
 $formAction = $this->getSubscribeUrl();
 ?>
-<?php if ($_product && (!$_product->getStockItem()->getIsInStock() || $_product->getStockItem()->getQty() == 0 && $_product->getTypeId() == "simple") && Mage::helper('ebizmarts_autoresponder')->config('backtostock/active')): ?>
+<?php if ($_product && $_product->getStockItem()->getManageStock() && (!$_product->getStockItem()->getIsInStock() || $_product->getStockItem()->getQty() == 0 && $_product->getTypeId() == "simple") && Mage::helper('ebizmarts_autoresponder')->config('backtostock/active')): ?>
 
     <?php if ($this->isLoggedIn() || (!$this->isLoggedIn() && Mage::helper('ebizmarts_autoresponder')->isBacktoStockEnabledForGuest())): ?>
         <div class="box-collateral block-autoresponder-backtostock">
