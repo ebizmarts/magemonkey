@@ -403,7 +403,7 @@ class Ebizmarts_AbandonedCart_Model_Cron
         $websiteid = Mage::getModel('core/store')->load($store)->getWebsiteId();
         $collection = Mage::getModel('salesrule/rule')->getCollection()
             ->addFieldToFilter('name', array('like' => 'Abandoned coupon ' . $email))
-            ->addFieldToFilter('website_id', array('eq' => $websiteid));
+            ->addFieldToFilter('website_ids', array('eq' => $websiteid));
         if (!count($collection)) {
 
             $fromDate = date("Y-m-d");
