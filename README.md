@@ -1,3 +1,5 @@
+<h1>MageMonkey has been deprecated, <br>please use <a href="https://github.com/mailchimp/mc-magento">MailChimp for Magento instead</a></h1>
+
 MailChimp official Magento extension
 ====================================
 
