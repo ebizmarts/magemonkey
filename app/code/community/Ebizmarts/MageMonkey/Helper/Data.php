@@ -319,7 +319,7 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Get which store is associated to given $mcListId
+     * Get which store is associated to given $mcListId taking into account scope inheritance
      *
      * @param string $mcListId
      * @param bool $includeDefault Include <default> store or not on result
@@ -327,23 +327,33 @@ class Ebizmarts_MageMonkey_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getStoreByList($mcListId, $includeDefault = FALSE)
     {
-        $list = Mage::getModel('core/config_data')->getCollection()
-            ->addValueFilter($mcListId)->getFirstItem();
+        static $storeLists;
+        static $defaultCode;
 
-        $store = null;
-        if ($list->getId()) {
+        if (null === $storeLists) {
+            $defaultCode = Mage::app()->getDefaultStoreView()->getCode();
+            $storeLists = array();
 
-            //$isDefault = (bool)($list->getScope() == 'default');
-            $isDefault = (bool)($list->getScope() == Mage::app()->getDefaultStoreView()->getCode());
-            if (!$isDefault && !$includeDefault) {
-                $store = (string)Mage::app()->getStore($list->getScopeId())->getCode();
-            } else {
-                $store = $list->getScope();
+            foreach (Mage::app()->getStores($includeDefault) as $store) {
+                /** @var Mage_Core_Model_Store $store */
+                $listId = $store->getConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_LIST);
+                $storeLists[$store->getCode()] = $listId;
             }
-
         }
 
-        return $store;
+        // check default store match first
+        if ($storeLists[$defaultCode] == $mcListId) {
+            return $defaultCode;
+        }
+
+        // search in rest of the stores
+        foreach ($storeLists as $code => $listId) {
+            if ($listId == $mcListId) {
+                return $code;
+            }
+        }
+
+        return null;
     }
 
     /**
