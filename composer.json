@@ -10,6 +10,9 @@
             "email": "info@ebizmarts.com"
         }
     ],
+    "conflict": {
+        "aschroder/smtp_pro": "*"
+    }
     "require": {
         "magento-hackathon/magento-composer-installer": "*"
     }
