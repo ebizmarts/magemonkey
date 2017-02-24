@@ -342,11 +342,21 @@ class Ebizmarts_MageMonkey_Model_Observer
         $post = $observer->getEvent()->getPost();
         $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
         $subscribe = '';
-        if (isset($post['magemonkey_subscribe'])) {
+        $monkeyPost = null;
+        if (isset($post['magemonkey_subscribe']) && isset($post['list'])) {
+            $monkeyPost = array('magemonkey_subscribe' => $post['magemonkey_subscribe'], 'list' => $post['list']);
             $subscribe = $post['magemonkey_subscribe'];
+        } else {
+            if (isset($post['magemonkey_subscribe'])) {
+                $subscribe = $post['magemonkey_subscribe'];
+                $monkeyPost = array('magemonkey_subscribe' => $post['magemonkey_subscribe']);
+            } elseif (isset($post['list'])) {
+                $monkeyPost = array('list' => $post['list']);
+            }
         }
-
-        Mage::getSingleton('core/session')->setMonkeyPost(serialize($post));
+        if ($monkeyPost) {
+            Mage::getSingleton('core/session')->setMonkeyPost(serialize($monkeyPost));
+        }
         if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE, Mage::app()->getStore()->getId()) >= 3) {
             Mage::getSingleton('core/session')->setMonkeyCheckout(true);
         }
@@ -373,9 +383,22 @@ class Ebizmarts_MageMonkey_Model_Observer
         } else {
             $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
             if (Mage::app()->getRequest()->isPost()) {
-                $subscribe = Mage::app()->getRequest()->getPost('magemonkey_subscribe');
-
-                Mage::getSingleton('core/session')->setMonkeyPost(serialize(Mage::app()->getRequest()->getPost()));
+                $post = Mage::app()->getRequest()->getPost();
+                $monkeyPost = null;
+                if (isset($post['magemonkey_subscribe']) && isset($post['list'])) {
+                    $monkeyPost = array('magemonkey_subscribe' => $post['magemonkey_subscribe'], 'list' => $post['list']);
+                    $subscribe = $post['magemonkey_subscribe'];
+                } else {
+                    if (isset($post['magemonkey_subscribe'])) {
+                        $monkeyPost = array('magemonkey_subscribe' => $post['magemonkey_subscribe']);
+                        $subscribe = $post['magemonkey_subscribe'];
+                    } elseif (isset($post['list'])) {
+                        $monkeyPost = array('list' => $post['list']);
+                    }
+                }
+                if ($monkeyPost) {
+                    Mage::getSingleton('core/session')->setMonkeyPost(serialize($monkeyPost));
+                }
                 if (!is_null($subscribe) || Mage::getStoreConfig(Ebizmarts_MageMonkey_Model_Config::GENERAL_CHECKOUT_SUBSCRIBE, Mage::app()->getStore()->getId()) >= 3) {
                     Mage::getSingleton('core/session')->setMonkeyCheckout(true);
                 }
