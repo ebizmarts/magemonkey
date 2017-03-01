@@ -341,7 +341,7 @@ class Ebizmarts_MageMonkey_Model_Observer
         }
         $post = $observer->getEvent()->getPost();
         $oneStep = Mage::app()->getRequest()->getModuleName() == 'onestepcheckout';
-        $subscribe = '';
+        $subscribe = null;
         $monkeyPost = null;
         if (isset($post['magemonkey_subscribe']) && isset($post['list'])) {
             $monkeyPost = array('magemonkey_subscribe' => $post['magemonkey_subscribe'], 'list' => $post['list']);
@@ -385,6 +385,7 @@ class Ebizmarts_MageMonkey_Model_Observer
             if (Mage::app()->getRequest()->isPost()) {
                 $post = Mage::app()->getRequest()->getPost();
                 $monkeyPost = null;
+                $subscribe = null;
                 if (isset($post['magemonkey_subscribe']) && isset($post['list'])) {
                     $monkeyPost = array('magemonkey_subscribe' => $post['magemonkey_subscribe'], 'list' => $post['list']);
                     $subscribe = $post['magemonkey_subscribe'];
