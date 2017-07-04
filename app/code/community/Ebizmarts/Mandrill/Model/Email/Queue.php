@@ -78,10 +78,13 @@ class Ebizmarts_Mandrill_Model_Email_Queue extends Mage_Core_Model_Email_Queue
                     } else {
                         $this->_sendWithoutMandrill($message);
                     }
+                    
+                    return $this;
                 }
             }
         }
-        return $this;
+        
+        return parent::send();
     }
 
     /**
