@@ -106,7 +106,9 @@ class Ebizmarts_Mandrill_Model_Email_Template extends Mage_Core_Model_Email_Temp
         }
         try {
             $result = $mail->messages->send($email);
+            $this->_mail = null;
         } catch (Exception $e) {
+            $this->_mail = null;
             Mage::logException($e);
             return false;
         }
